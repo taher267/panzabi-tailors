@@ -66,7 +66,15 @@
                                 @if (Route::has('login'))
                                 @auth
                                 @if ( Auth::user() )
-                                <li><a href="{{(session('utype') && Auth::user()->role_id <=5)?route('admin.dashboard'):route('dashboard')}}">Dashboard</a></li>
+                                <li><a href="@if (Auth::user()->status===1)
+                                        @if (session('utype')==='ADM' && Auth::user()->role_id ===1)
+                                            {{route('admin.dashboard')}}
+                                        @elseif (session('utype')==='MGR' && Auth::user()->role_id ===2)
+                                            {{route('customer.orders')}}
+                                        @elseif (session('utype') && Auth::user()->role_id>2)
+                                            {{route('customer.orders')}}
+                                        @endif
+                                        @else{{route('dashboard')}}@endif">Dashboard</a></li>
                                 <li>
                                     <a onclick="event.preventDefault(); document.getElementById('logout_form_control').submit();" >Logout</a>
                                     <form action="{{route('logout')}}" method="POST" id="logout_form_control"> @csrf </form>

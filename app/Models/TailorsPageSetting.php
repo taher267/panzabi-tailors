@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TailorsSettingControl extends Model
+class TailorsPageSetting extends Model
 {
     use HasFactory;
+    public $timestamps=false;
+    public $table = 'tailors_page_settings';
 }

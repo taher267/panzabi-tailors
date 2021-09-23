@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTailorsSettingControlsTable extends Migration
+class CreateTailorsPageSettingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateTailorsSettingControlsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tailors_setting_controls', function (Blueprint $table) {
+        Schema::create('tailors_page_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('value');
-            $table->string('where_active')->nullable();
-            $table->timestamps();
+            $table->string('where_apply')->nullable();
         });
     }
 
@@ -29,6 +28,6 @@ class CreateTailorsSettingControlsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tailors_setting_controls');
+        Schema::dropIfExists('tailors_page_settings');
     }
 }

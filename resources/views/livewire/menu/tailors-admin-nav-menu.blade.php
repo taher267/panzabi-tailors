@@ -27,15 +27,15 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerTab"
-            aria-expanded="true" aria-controls="customerTab">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerOrder"
+            aria-expanded="true" aria-controls="customerOrder">
             <i class="fas fa-fw fa-user"></i>
-            <span>Customer</span>
+            <span>Customer/Order</span>
         </a>
-        <div id="customerTab" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="customerOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" href="buttons.html">New Customer</a>
-                <a class="collapse-item" href="cards.html">All Customers</a>
+                <a class="collapse-item" href="{{route('customer.orders')}}">ORDERS</a>
+                {{-- <a class="collapse-item" href="cards.html">All Customers</a> --}}
             </div>
         </div>
     </li>
@@ -61,7 +61,8 @@
 
 
     {{--============================= ADMIN AREA======================= --}}
-    @if ( Auth::user()->role_id === 1 )
+    @if ( Auth::user()->role_id === 1) {{-- && Request::is('admin*') --}}
+
         <!-- Divider -->
     <hr class="sidebar-divider">
     <li class="nav-item">
@@ -74,10 +75,13 @@
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Just those are Admin!</h6>
-                <a class="collapse-item" href="{{route('admin.newuser')}}">New User</a>
-                <a class="collapse-item" href="{{route('admin.productfield')}}">Product Field</a>
-                <a class="collapse-item" href="{{route('admin.roles')}}">Users</a>
-                {{-- <a class="collapse-item" href="{{route('admin.measurefield')}}">Measurment Field</a> --}}
+                <a class="collapse-item" href="{{route('admin.productmanager')}}">Products Fields</a>
+                <a class="collapse-item" href="{{route('admin.measuremanager')}}">Measurment Fields</a>
+                <a class="collapse-item" href="{{route('admin.stylemeasure')}}">Style Measurment</a>
+                <a class="collapse-item" href="{{route('admin.users')}}">Users</a>
+                <a class="collapse-item" href="{{route('admin.roles')}}">Roles</a>
+                {{-- <a class="collapse-item" href="{{route('admin.productmanager')}}">Products Fields</a> --}}
+
             </div>
         </div>
     </li>

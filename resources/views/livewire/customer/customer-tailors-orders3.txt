@@ -1,0 +1,559 @@
+<div>
+  <h1>session={{session('utype')}}, auth role ={{Auth()->user()->role_id}}, status ={{Auth()->user()->status}}</h1>
+    <style>
+        ul.custom-bg.list-group.mb-3 li:nth-child(odd) { background: #f3f3f3;}
+        label.custom-control-label span::before { height: 17px; width: 32px; position: absolute; content: ""; top: 9%; left: -24px; z-index:10;}
+
+        {!! !$personal_info_open? "@media (min-width:1200px) {div#right_sidebar {position: absolute;right: 0;overflow: hidden;padding-left: 27px;z-index:8;}}":'' !!}
+    </style>
+    {{-- container --}}
+    <div class="container-fluid px-0">
+    {{-- <div class="py-5 text-center">
+      <h2>New Order Informations</h2>
+      <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
+    </div> --}}
+
+    <div class="row">
+      <div class="col-md-12 order-md-1">
+        <h4 class="mb-3">Order confirmation</h4>
+        {{-- <style>
+          div {
+            width: 100px;
+            height: 100px;
+            background: red;
+            position: relative;
+            animation: mymove 5s infinite;
+          }
+
+          @keyframes mymove {
+            from {left: 0px;}
+            to {left: 200px;}
+          }
+        </style> --}}
+      </div>
+    </div>
+
+    {{-- container-fluid end--}}
+    @if (Session::has('msg'))
+        <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!}">{!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}</div>
+    @endif
+    <style>.nav-link.active{background:linear-gradient(180deg ,#4e73df 10%,#8C00BF 100%) !important;color: #fff !important;font-weight: bold  !important;}</style>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active {{--{!!$activatedNav=='newrole' ? 'active': '' !!}--}}" id="new_role" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true"><input name="tabactivate" value="newrole" type="radio" wire:click.prevent="navTabsActive('newrole')"  {{--{!!$activatedNav=='newrole' ? 'checked': '' !!}--}}> New Order</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {{--@if($activatedNav=='allroles') active @elseif( $activatedNav ==null) active @endif--}}"  id="all_roles" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false"><input name="tabactivate" value="allroles" type="radio" wire:click.prevent="navTabsActive('allroles')" {{--@if($activatedNav=='allroles') checked @elseif( $activatedNav ==null) checked @endif--}}>All Roles</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" checked aria-controls="contact" aria-selected="false">Contact</a>
+        </li>
+      </ul>
+      {{-- <h1>{{$activatedNav?$activatedNav:'no'}}</h1> --}}
+      {{-- Tab content Wrap start --}}
+      <div class="tab-content pt-3" id="myTabContent">
+        <div class="tab-pane fade show active {{--{!!$activatedNav=='newrole' ? 'show active': '' !!}--}}" id="home" role="tabpanel" aria-labelledby="new_role">
+            <div class="container-fluid px-0">
+                <form class="was-validated" wire:submit.prevent="fdjfdjf">
+                <div class="row">
+                  {{-- right sidebar start --}}
+                    <div style="transition: 1s all ease" class=" {!! !$personal_info_open? "col-xl-1 col-lg-1 col-md-1":'col-xl-4 col-lg-4 col-md-4' !!} col-sm-12 order-lg-2 order-sm-1 mb-4" id="right_sidebar">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <p class="d-flex">
+                            <div class="custom-checkbox d-inline-block d-flex">
+                                <input style="padding: 5px !important" type="checkbox" class="custom-control-input" id="porsonal_info_open" value="1" wire:model='personal_info_open' required>
+                                <label class="custom-control-label" for="porsonal_info_open"><span style="position: relative">Personal Information</span></label>
+                            </div>
+                          </p>
+                        <span class="badge badge-secondary badge-pill"></span>
+                        </h4>
+                        <div class="col-xl-12 show_right_sidebar">
+                        <ul class="custom-bg list-group col-sm-12 mb-3">
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="col-lg-12 mb-3">
+                                <label for="fullname">Full Name</label>
+                                <input wire:model="Full_Name" type="text" class="form-control" id="fullname" placeholder="Full Name" required>
+
+                                 <div class="invalid-feedback">@error('Full_Name'){!! $message!!} @else Valid name is required. @enderror</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="col-lg-12 mb-3">
+                                <label for="mobileNumber">Mobile No</label>
+                                <input wire:model="mobile_number" type="number" class="form-control" id="mobileNumber" placeholder="Mobile Number.." required>
+
+                                <div class="invalid-feedback">@error('mobile_number') {!!$message!!} @else Valid mobile no is required. @enderror</div>
+                              </div>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between lh-condensed">
+                            <div class="col-lg-12 mb-3">
+                                <label for="email">Email <span class="text-muted">(Optional)</span></label>
+                                <input wire:model="email" type="email" class="form-control" id="email" placeholder="you@example.com">
+                                <div class="invalid-feedback">@error('email'){!! $message!!} @else Valid email is requied!@enderror</div>
+                            </div>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div class="col-lg-12 mb-3">
+                                <label for="">Customer Photo (Optional)</label>
+                                <div class="input-group">
+                                    <input wire:model="customer_image" type="file" class="custom-file-input" id="customerPhoto" required>
+                                    <label class="custom-file-label" for="customerPhoto">Photo...</label>
+                                    <div class="invalid-feedback"></div>
+                                    <div class="invalid-feedback">@error('customer_image'){!! $message!!} @else Photo should be valid formated (jpg, jpeg, png)!@enderror</div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div class="col-lg-12 mb-3">
+                                <label for="cusaddress">Address <span class="text-muted">(Optional)</span></label>
+                                <textarea wire:model="address" rows="3" class="form-control" id="cusaddress" placeholder="Your Address"></textarea>
+                                <div class="invalid-feedback">@error('address'){!!$message!!} @else Please enter a valid address. @enderror</div>
+                            </div>
+                        </li>
+                        </ul>
+                        <div class="row m-0 py-3 px-4" style="background: #fff;">
+                            <div class="col-lg-12 mb-3">
+                              <label for="coun_try">Country</label>
+                              <select wire:model="country" class="custom-select d-block w-100" id="coun_try">
+                                <option>Choose...</option>
+                                <option>Bangladesh</option>
+                              </select>
+                              <div class="invalid-feedback">@error('country') $message!!} @else Select a country @enderror </div>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <label for="ccity">City</label>
+                                <input wire:model="city" type="text" class="form-control" id="ccity" placeholder="">
+                                <div class="invalid-feedback">@error('city') $message!!} @else City name required. @enderror</div>
+                              </div>
+                            <div class="col-lg-12 mb-3">
+                              <label for="zip">Zip-code</label>
+                              <input wire:model="zipcode" type="text" class="form-control" id="zip" placeholder="zipcode">
+                              <div class="invalid-feedback">@error('zipcode') {!!$message!!} @else Zip code required. @enderror</div>
+                            </div>
+                          </div>
+                        </div>
+                           {{-- Right Side bar End --}}
+                            <style>
+                              /* .col-md-8.order-md-1 div.row:nth-child(even){background: #ccc;} */
+                          </style>
+                  </div>
+                  {{-- Right Side bar End --}}
+                  {{--  Left side/content Start --}}
+                  <div style="transition: 1s all ease" class=" {!! !$personal_info_open? "col-xl-12 col-lg-12 col-md-12":'col-xl-8 col-lg-8 col-md-8' !!} col-sm-12 order-lg-1 order-sm-2">
+                    <h4 class="mb-3">Cloth's Details</h4>
+                    <div class="row py-3" style="background:rgba(0, 128, 90, 0.294); color:#fff !important;">
+                        <div class="col-md-12" id="tailors_product_name">
+                            <div class="row">
+
+                                {{-- <select class="custom-select" id="product" wire:model="product_name" required>
+                                    <option>Choose...</option>
+                                    <option>Panzani</option>
+                                </select> --}}
+                                {{-- @foreach ($categories as $category) --}}
+                                <div class="col-lg-12 bg-primary py-3">
+                                    <h5 class="d-block">Cloth/Dress/Apron Name কাপড়/পোষাক/অ্যাপ্রন নাম</h5>
+                                    <div class="row">
+                                        <div class="col-sm-2 col-xs-6">
+                                          <div class="custom-control custom-checkbox">
+                                            <input wire:model="peoducts" class="custom-control-input" type="checkbox" name="peoducts[]"  id="product_1" value="1" checked>
+                                            <label class="custom-control-label" for="product_1">1</label>
+                                          </div>
+                                          <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail" alt="">
+                                        </div>
+                                        <div class="col-sm-2 col-xs-6">
+                                          <div class="form-check form-check-inline">
+                                            <input wire:model="products" class="form-check-input" type="checkbox" name="peoducts[]" wire:model="products" id="inlineCheckbox1" value="1" checked>
+                                            <label class="form-check-label" for="inlineCheckbox1">1</label>
+                                          </div>
+                                          <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail" alt="">
+                                        </div>
+
+                                    </div> {{--dresh panzabi .row end--}}
+
+
+                                         {{-- <p class="d-inline-block"><input value="" type="checkbox" name="peoducts[]" wire:model="products" id="product_"> <p> --}}
+
+                                    {{-- @endforeach --}}
+                                </div>
+
+                            </div>
+                        </div>
+                        {{--  --}}
+                        <div class="col-lg-12">
+                            <h4 class="py-2 text-light">MEASUREMENT DETAILS মাপের বিবরণ</h4>
+                            {{--  --}}
+                            <div class="row">
+                                <div class="col-lg-1 col-md-4 mb-3">
+                                    <label for="clothlong">লম্বা</label>
+                                    <input wire:model="cloth_long" type="text" class="form-control" id="clothlong" placeholder="Long" required>
+                                    <div class="invalid-feedback">@error('cloth_long') {!!$message!!} @else Long code required. @enderror</div>
+                                </div>
+                                {{-- Body part Start --}}
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <div>
+                                      <label for="clothbody">বডি</label>
+                                      <input wire:model="cloth_body" type="text" class="form-control" id="clothbody" placeholder="Cloth Body" required>
+                                      <div class="invalid-feedback">@error('cloth_body') {!!$message!!} @else Body code required. @enderror</div>
+                                    </div>
+
+                                    <div>
+                                      <label for="bodyloose">বডির লুজ</label>
+                                      <input wire:model="body_loose" type="text" class="form-control" id="bodyloose" placeholder="Body Loose">
+                                      <div class="invalid-feedback">@error('body_loose') {!!$message!!} @else Body Loose code required. @enderror</div>
+                                    </div>
+
+                                    <div>
+                                      <label for="clothbelly">পেট</label>
+                                      <input wire:model="cloth_belly" type="text" class="form-control" id="clothbelly"_ placeholder="পাট/Belly" required>
+                                      <div class="invalid-feedback">@error('cloth_belly') {!!$message!!} @else Belly code required. @enderror</div>
+                                    </div>
+
+                                    <div>
+                                      <label for="bodyloose">পেটের লুজ</label>
+                                      <input wire:model="body_loose" type="text" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose">
+                                      <div class="invalid-feedback">@error('body_loose') {!!$message!!} @else Belly Loose code required. @enderror</div>
+                                    </div>
+
+                                    <div>
+                                      <label for="enclosure">ঘের</label>
+                                      <input wire:model="cloth_enclosure" type="text" class="form-control" id="enclosure" placeholder="Enclosure/ঘের">
+                                      <div class="invalid-feedback">@error('cloth_enclosure') {!!$message!!} @else Enclosure code required. @enderror</div>
+                                    </div>
+                                </div>
+                                {{-- Body Part End --}}
+                                {{-- Heeeve Area Start --}}
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                  <div class="">
+                                    <label for="handlong">হাতা</label>
+                                    <input wire:model="hand_long" type="text" class="form-control" id="handlong" placeholder="Hleeve হাতা" required>
+                                    <div class="invalid-feedback">@error('hand_long') {!!$message!!} @else Hleeve code required. @enderror</div>
+                                  </div>
+                                  <div>
+                                    <label for="sleeveless">হাতার মুহুরী</label>
+                                    <input  wire:model="sleeve_less" type="text" class="form-control" id="sleeveless" placeholder="Sleeveless হাতার মুহুরী" required>
+                                    <div class="invalid-feedback">@error('sleeve_less') {!!$message!!} @else Hand long code required. @enderror</div>
+                                  </div>
+                                  <div>
+                                    <label for="SleevePasting">হাতায় পেস্টিং</label>
+                                    <input wire:model="sleeve_pasting" type="text" class="form-control" id="SleevePasting" placeholder="Sleeve Pasting/হাতায় পেস্টিং" required>
+                                    <div class="invalid-feedback">@error('sleeve_pasting') {!!$message!!} @else Sleeve Pasting code required. @enderror</div>
+                                  </div>
+                                </div>
+                                {{-- Heeeve Area End --}}
+                                <div class="col-lg-2 col-md-3 mb-3">
+                                  <div>
+                                    <label for="cloththroat">গলা</label>
+                                    <input wire:model="cloth_throat" type="text" class="form-control" id="cloththroat" placeholder="গলা/Throat" required>
+                                    <div class="invalid-feedback">@error('cloth_throat') {!!$message!!} @else Throat field is required. @enderror</div>
+                                  </div>
+                                    <div>
+                                      <label for="clothcollar">কলার</label>
+                                      <input wire:model="cloth_collar" type="text" class="form-control" id="clothcollar" placeholder="কলার" required>
+                                      <div class="invalid-feedback">@error('cloth_collar') $message!!} @else Collar required. @enderror </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-md-4 mb-3">
+                                  <label for="clothput">পুট</label>
+                                  <input wire:model="cloth_put" type="text" class="form-control" id="clothput" placeholder="Put" required>
+                                  <div class="invalid-feedback">@error('cloth_put') {!!$message!!} @else Put is required. @enderror</div>
+                                </div>
+                                <div class="col-lg-1 col-md-4 mb-3">
+                                  <label for="clothmora">মোরা</label>
+                                  <input wire:model="cloth_mora" type="text" class="form-control" id="clothmora" placeholder="মোরা" required>
+                                  <div class="invalid-feedback">@error('cloth_mora') {!!$message!!} @else Mora code required. @enderror</div>
+                                </div>
+                                <div class="col-lg-1 col-md-4 mb-3">
+                                  <label for="nokeshoho">নক সহ</label>
+                                  <input wire:model="noke_shoho" type="text" class="form-control" id="q " placeholder="নক সহ" required>
+                                  <div class="invalid-feedback">@error('noke_shoho') {!!$message!!} @else নক সহ required. @enderror</div>
+                                </div>
+                                {{-- শেরওয়ানী কলার , শেরওয়ানী রাউন্ড কলার ক্যাটালগ,শেরওয়ানী কলার, শেরওয়ানী রাউন্ড কলার, রাউন্ড বেল্ড গলা, গলা গলা, বেল্ড কলার, শার্ট কলার, কলারে হালকা সাইভ হবে,কলার প্লেট নরম পেস্টিং হবে , কলার প্লেটে সাত সুতা হবে, কলার প্লেট --}}
+
+                                {{-- <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="additional">সংযোজিত</label>
+                                    <textarea type="text" class="form-control" id="additional" placeholder="Additional/সংযোজিত"></textarea>
+                                    <div class="invalid-feedback">@error('additional') {!!$message!!} @else Hand long code required. @enderror</div>
+                                </div> --}}
+                            </div>
+                            <div class="row">
+                              <div class="col-lg-1"></div>
+                              <div class="col-lg-10 mb-3">
+                                <label for="clothadditional">সংযোজিত</label>
+                                  <textarea wire:model="cloth_additional" rows="4" type="text" class="form-control" id="clothadditional" placeholder="Cloth Additional/সংযোজিত"></textarea>
+                                  <div class="invalid-feedback">@error('cloth_additional') {!!$message!!} @else Hand long code required. @enderror</div>
+                              </div>
+                              <div class="col-lg-1"></div>
+                            </div>
+                      </div>
+                      {{--  , ,শেরওয়ানী কলার, শেরওয়ানী রাউন্ড কলার, রাউন্ড বেল্ড গলা, গলা গলা, বেল্ড কলার, শার্ট কলার, কলারে হালকা সাইভ হবে,কলার প্লেট নরম পেস্টিং হবে , কলার প্লেটে সাত সুতা হবে, কলার প্লেট --}}
+                      {{-- colller Wrraper Start --}}
+                      <div class="col-xl-11 col-sm-12 tailors_collar_all">
+                          <h4 class="panel_heading">Collar</h4>
+                          <div class="row">
+                              <div class="card col-lg-3 collar sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})">
+                                <div class="card-body">
+                                  <p class="card-text">শেরওয়ানী রাউন্ড কলার ক্যাটালগ</p>
+                                </div>
+                                <input wire:model="sherwani_rd_clr_logue" value="1" type="checkbox">
+                                <textarea wire:model="sherwani_round_collar_catalogue_details" value="sharwani1" placeholder="size" type="text" class="form-control">শেরওয়ানী রাউন্ড কলার ক্যাটালগ<textarea>
+                              </div>
+                              <div class="card col-lg-3 collar sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})">
+                                <div class="card-body">
+                                  <p class="card-text">শেরওয়ানী কলার</p>
+                                </div>
+                                <input wire:model="" value="check_sharwani1" type="checkbox">
+                                <textarea wire:model="" value="sharwani1" placeholder="size" type="text" class="form-control">শেরওয়ানী কলার<textarea>
+                              </div>
+                              <div class="card col-lg-3 collar sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})">
+                                <div class="card-body">
+                                  <p class="card-text">শেরওয়ানী কলার</p>
+                                </div>
+                                <input wire:model="" value="check_sharwani1" type="checkbox">
+                                <textarea wire:model="" value="sharwani1" placeholder="size" type="text" class="form-control">শেরওয়ানী কলার<textarea>
+                              </div>
+                              <div class="card col-lg-3 collar sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})">
+                                <div class="card-body">
+                                  <p class="card-text">শেরওয়ানী রাউন্ড কলার</p>
+                                </div>
+                                <input wire:model="" value="check_sharwani1" type="checkbox">
+                                <textarea wire:model="" value="sharwani1" placeholder="size" type="text" class="form-control">শেরওয়ানী রাউন্ড কলার<textarea>
+                              </div>
+                          </div>
+                          <div class="row">
+                            <div class="card col-lg-3 collar sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})">
+                                <div class="card-body">
+                                  <p class="card-text">রাউন্ড বেল্ড গলা</p>
+                                </div>
+                                <input wire:model="" value="check_sharwani1" type="checkbox">
+                                <textarea wire:model="" value="sharwani1" placeholder="size" type="text" class="form-control">রাউন্ড বেল্ড গলা<textarea>
+                              </div>
+                        </div>
+                      </div>{{-- colller Wrraper End row --}}
+
+                  </div>
+                  {{-- Left side/content End--}}
+                    <hr class="mb-4">
+                      {{--========================= Trowser Start ======================================--}}
+                      <div class="row py-3" style="background:rgba(0, 128, 90, 0.294); color:#fff !important;">
+                        <div class="col-md-12" id="tailors_product_name">
+                            <div class="row">
+
+                                {{-- <select class="custom-select" id="product" wire:model="product_name" required>
+                                    <option>Choose...</option>
+                                    <option>Panzani</option>
+                                </select> --}}
+                                {{-- @foreach ($categories as $category) --}}
+                                <div class="col-lg-12 bg-primary py-3">
+                                    <h5 class="d-block">Cloth/Dress/Apron Name কাপড়/পোষাক/অ্যাপ্রন নাম</h5>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="peoducts[]" wire:model="products" id="inlineCheckbox1" value="1" checked>
+                                        <label class="form-check-label" for="inlineCheckbox1">1</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="peoducts[]" wire:model="products" id="inlineCheckbox2" value="2" checked>
+                                        <label class="form-check-label" for="inlineCheckbox2">2</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="peoducts[]" wire:model="products" id="inlineCheckbox3" value="3" checked>
+                                        <label class="form-check-label" for="inlineCheckbox3">3</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="peoducts[]" wire:model="products" id="inlineCheckbox3" value="3" checked>
+                                        <label class="form-check-label" for="inlineCheckbox3">Trowser</label>
+                                    </div>
+
+                                        {{-- <p class="d-inline-block"><input value="" type="checkbox" name="peoducts[]" wire:model="products" id="product_"> <p> --}}
+
+                                    {{-- @endforeach --}}
+                                  </div>
+                                </div>
+                        </div>
+                        {{--  --}}
+                        <div class="col-lg-12">
+                            <h4 class="py-2 text-light">MEASUREMENT DETAILS মাপের বিবরণ</h4>
+                            {{--  --}}
+                            <div class="row">
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="long">Long লম্বা</label>
+                                    <input type="text" class="form-control" id="long" placeholder="" required>
+                                    <div class="invalid-feedback">@error('product_logn') {!!$message!!} @else Long code required. @enderror</div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="body">Body বডি</label>
+                                    <input type="text" class="form-control" id="body" placeholder="" required>
+                                    <div class="invalid-feedback">@error('product_body') {!!$message!!} @else Body code required. @enderror</div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="put">Put পুট</label>
+                                    <input type="text" class="form-control" id="put" placeholder="" required>
+                                    <div class="invalid-feedback">@error('product_logn') {!!$message!!} @else Put code required. @enderror</div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="handlong">Hleeve হাতা</label>
+                                    <input type="text" class="form-control" id="handlong" placeholder="" required>
+                                    <div class="invalid-feedback">@error('hand_logn') {!!$message!!} @else Hand long code required. @enderror</div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="collar">Collar কলার</label>
+                                    <select class="custom-select d-block w-100" id="collar" required>
+                                      <option value="0">Band</option>
+                                      <option>Normal</option>
+                                    </select>
+                                    <div class="invalid-feedback">@error('email') $message!!} @enderror </div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="handlong">Sleeveless হাতার মুহুরী</label>
+                                    <input type="text" class="form-control" id="handlong" placeholder="" required>
+                                    <div class="invalid-feedback">@error('hand_logn') {!!$message!!} @else Hand long code required. @enderror</div>
+                                </div>
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="handlong">Sleeve pasting হাতায় পেস্টিং</label>
+                                    <select class="custom-select d-block w-100" id="collar" required>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    <select>
+                                    <div class="invalid-feedback">@error('hand_logn') {!!$message!!} @else Hand long code required. @enderror</div>
+                                </div>
+
+                                <div class="col-lg-2 col-md-4 mb-3">
+                                    <label for="handlong">সংযোজিত</label>
+                                    <input type="text" class="form-control" id="handlong" placeholder="Additional/Others">
+                                    <div class="invalid-feedback">@error('hand_logn') {!!$message!!} @else Hand long code required. @enderror</div>
+                                </div>
+                            </div>
+                      </div>
+                  </div>
+                      {{--========================= Trowser End ======================================--}}
+
+                      <hr class="mb-4">
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="same-address">
+                        <label class="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
+                      </div>
+                      <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="save-info">
+                        <label class="custom-control-label" for="save-info">Save this information for next time</label>
+                      </div>
+                      <hr class="mb-4">
+
+                      <h4 class="mb-3">Payment</h4>
+
+                      <div class="d-block my-3">
+                        <div class="custom-control custom-radio">
+                          <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>
+                          <label class="custom-control-label" for="credit">Credit card</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                          <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required>
+                          <label class="custom-control-label" for="debit">Debit card</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                          <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required>
+                          <label class="custom-control-label" for="paypal">Paypal</label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 mb-3">
+                          <label for="cc-name">Name on card</label>
+                          <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                          <small class="text-muted">Full name as displayed on card</small>
+                          <div class="invalid-feedback">
+                            Name on card is required
+                          </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                          <label for="cc-number">Credit card number</label>
+                          <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                          <div class="invalid-feedback">
+                            Credit card number is required
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3 mb-3">
+                          <label for="cc-expiration">Expiration</label>
+                          <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+                          <div class="invalid-feedback">
+                            Expiration date required
+                          </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                          <label for="cc-expiration">CVV</label>
+                          <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                          <div class="invalid-feedback">
+                            Security code required
+                          </div>
+                        </div>
+                      </div>
+                      <hr class="mb-4">
+                      <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                  </div>
+
+                </div>{{-- Row --}}
+            </form>
+            </div>{{-- container-fluid new order end --}}
+        {{-- =========================================== fluid --}}
+        </div>
+        <div class="tab-pane fade  {{--@if($activatedNav=='allroles') show active @elseif( $activatedNav ==null) show active @endif--}}" id="profile" role="tabpanel" aria-labelledby="all_roles">
+             <div class="user_role_container container-fluid">
+                <!-- DataTales Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Short Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{--
+                                    @foreach ($users as $user)
+                                    <tr>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->role_id }}</td>
+                                        <td>
+                                            <a href="{{route('admin.edituser', $user->id)}}" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                                            <a href="#" wire:click.prevent="userDelete({{$user->id}})" onclick="confirm('Are you sure to delete role') || event.stopImmediatePropagation()" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                    --}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            {{-- ========================================================================== --}}
+
+      </div>
+      {{-- <style>
+          #right_sidebar {
+            position: absolute !important;right: 0 !important;z-index: 99999 !important;
+            width: 100% !important;}
+          #right_sidebar div.row.show_right_sidebar{
+            transition: 1s ease-in-out;transform-origin:top;
+            {!! !$personal_info_open? "transform: scaleY(0) !important;height:0; ":'transformY:scale(1);' !!}
+          }
+      </style> --}}
+</div>
+@push('scripts')
+    <script>
+        jQuery(function(){
+            jQuery('#page-top').addClass('sidebar-toggled');
+            jQuery('.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordion').addClass('toggled');
+            $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+            });
+        });
+    </script>
+@endpush

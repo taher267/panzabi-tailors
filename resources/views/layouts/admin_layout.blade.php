@@ -9,7 +9,7 @@
     <meta name="author" content="">
 
     <title>@yield('title', 'Panzabi.com Tailors')</title>
-    <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('assets/css/bootstrap.min.css')}}"> --}}
     <!-- Custom fonts for this template-->
     <link href="{{asset('assets/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
     <link
@@ -18,8 +18,10 @@
 
     <!-- Custom styles for this template-->
     <link href="{{asset('assets/css/sb-admin-2.min.css')}}" rel="stylesheet">
+    <!-- Custom styles for this page -->
+    <link href="{{asset('assets/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
-
+@livewireStyles
 </head>
 
 <body id="page-top">
@@ -320,12 +322,20 @@
     <script src="{{asset('assets/js/sb-admin-2.min.js')}}"></script>
 
     <!-- Page level plugins -->
+
+    @if (Request::is('admin/dashboard'))
     <script src="{{asset('assets/vendor/chart.js/Chart.min.js')}}"></script>
+        <!-- Page level custom scripts -->
+        <script src="{{asset('assets/js/demo/chart-area-demo.js')}}"></script>
+        <script src="{{asset('assets/js/demo/chart-pie-demo.js')}}"></script>
+        <script src="{{asset('assets/js/demo/chart-bar-demo.js')}}"></script>
+    @endif
+    <!-- Page level plugins -->
+    <script src="{{asset('assets/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('assets/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="{{asset('assets/js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{asset('assets/js/demo/chart-pie-demo.js')}}"></script>
-    <script src="{{asset('assets/js/demo/chart-bar-demo.js')}}"></script>
+    <script src="{{asset('assets/js/demo/datatables-demo.js')}}"></script>
 
     @livewireScripts
     @stack('scripts')

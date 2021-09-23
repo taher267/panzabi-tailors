@@ -28,7 +28,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        // 'utype',
+        'status',
         'role_change',
         'username',
     ];
@@ -62,4 +62,13 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+    /**
+     * Get the role associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

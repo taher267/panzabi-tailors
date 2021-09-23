@@ -11,3 +11,25 @@
 .btn-primary:hover{
     background:linear-gradient(180deg ,#4e73df 10%,#8C00BF 100%) !important;
 }
+
+.alert-top-right{
+    position: absolute;  z-index: 999999999999; left: auto; right: 0; bottom: auto; top: 0;
+}
+
+.fixed-top-right{
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1030;
+}
+
+.tailors_collar_all .collar {
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    height: 150px !important;
+}
+h4.heading {
+    border-bottom: 1px solid;
+    width: 70%;margin: 0 auto;
+}

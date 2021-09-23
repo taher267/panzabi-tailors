@@ -20,8 +20,9 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            // $table->enum('utype', ['ADM','MGR','AHR', 'EDT','CTB','USR'])->default('USR');
             $table->tinyInteger('role_id')->default(6);
+            $table->boolean('status')->default(false);
+            $table->boolean('disabled')->default(false);
             $table->rememberToken();
             $table->foreignId('role_change_id')->nullable();
             $table->foreignId('current_team_id')->nullable();

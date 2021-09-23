@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Livewire\Customer\CustomerTailorsOrders;
+use App\Http\Livewire\Customer\CustomerTailorsEditOrder;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('base');
 })->name('home');
+Route::get('/table', function () {
+    return view('table');
+})->name('table');
 
 //Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
  //   return view('dashboard');
@@ -28,17 +34,41 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function(){
         return view('dashboard');
     })->name('dashboard');
 });
+
+
 Route::middleware(['auth:sanctum', 'verified', 'tailorsauth'])->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('/dashboard', App\Http\Livewire\Admin\TailorsAdminDashboard::class)->name('admin.dashboard');
-        Route::get('/admin-user', App\Http\Livewire\Admin\TailorsNewAdminUser::class)->name('admin.newuser');
-        Route::get('/order-fields', App\Http\Livewire\Admin\TailorsOrderItem::class)->name('admin.productfield');
+        // dd(session('utype'));
+        Route::get('/users', App\Http\Livewire\Admin\TailorsAdminUser::class)->name('admin.users');
+        Route::get('/edit-user/{user_id}', App\Http\Livewire\Admin\TailorsEditAdminUser::class)->name('admin.edituser');
+        // Route::get('/order-fields', App\Http\Livewire\Admin\TailorsOrderItem::class)->name('admin.productfield');
         Route::get('/order-measure-fields', App\Http\Livewire\Admin\TailorsOrderItemMeasurment::class)->name('admin.measurefield');
         Route::get('/user-roles', App\Http\Livewire\Admin\TailorsAdminRole::class)->name('admin.roles');
+        Route::get('/user-roles/edit/{role_id}', App\Http\Livewire\Admin\TailorsEditAdminRole::class)->name('admin.editrole');
+        Route::get('/product-manager', App\Http\Livewire\Admin\ProductNameManager::class)->name('admin.productmanager');
+        Route::get('/measure-manager', App\Http\Livewire\Admin\MeasurementManager::class)->name('admin.measuremanager');
+        Route::get('/measure-manager/product/edit/{product_id}', App\Http\Livewire\Admin\TailorsEditAdminProduct::class)->name('admin.editproduct');
+        Route::get('/measure-manager/style', App\Http\Livewire\Admin\TailorsStyleOfMeasurePart::class)->name('admin.stylemeasure');
+        Route::get('/measure-manager/style/edit/{style_id}', App\Http\Livewire\Admin\TailorsEditStyleOfMeasurePart::class)->name('admin.editstylemeasure');
+
+
     });
 
+});
 
+Route::middleware(['auth:sanctum', 'verified', 'manager.auth'])->group(function () {
+    Route::prefix('manage')->group(function () {
+        Route::get('/orders', App\Http\Livewire\Customer\CustomerTailorsOrders::class)->name('customer.orders');
+        // dd(session('utype'));
+        Route::get('/order/edit/{order_id}', App\Http\Livewire\Customer\CustomerTailorsEditOrder::class)->name('customer.editorder');
+        // Route::get('/edit-user/{user_id}', App\Http\Livewire\Admin\TailorsEditAdminUser::class)->name('admin.edituser');
+        // Route::get('/order-fields', App\Http\Livewire\Admin\TailorsOrderItem::class)->name('admin.productfield');
+        // Route::get('/order-measure-fields', App\Http\Livewire\Admin\TailorsOrderItemMeasurment::class)->name('admin.measurefield');
+        // Route::get('/user-roles', App\Http\Livewire\Admin\TailorsAdminRole::class)->name('admin.roles');
+        // Route::get('/user-roles/edit/{role_id}', App\Http\Livewire\Admin\TailorsEditAdminRole::class)->name('admin.editrole');
 
+    });
 });
 
 //Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

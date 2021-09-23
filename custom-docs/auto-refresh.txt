@@ -1,0 +1,11 @@
+create componet
+
+move refresh part into created component file
+
+add that part by @livewire('filename')
+
+goto function file
+
+protected $listeners = ['refreshComponent'=> '$refresh']; //brefore render
+//where after want refressh that part goto that file function
+$this->emitRo('livewire-file-name', 'refreshComponent');

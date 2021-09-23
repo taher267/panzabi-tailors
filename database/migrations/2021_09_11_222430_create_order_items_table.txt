@@ -1,0 +1,54 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateOrderItemsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('order_items', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('collar_id')->unsigned()->nullable();
+            $table->bigInteger('sleeve_id')->unsigned()->nullable();
+            $table->bigInteger('handcuff_id')->unsigned()->nullable();
+            $table->bigInteger('plat_id')->unsigned()->nullable();
+            $table->bigInteger('pocket_with_zip_id')->unsigned()->nullable();
+            $table->bigInteger('embroidery_id')->unsigned()->nullable();
+            $table->bigInteger('pipeing_id')->unsigned()->nullable();
+            $table->bigInteger('pipeing_id')->unsigned()->nullable();
+            $table->bigInteger('karchupi_id')->unsigned()->nullable();
+            $table->bigInteger('sewing_id')->unsigned()->nullable();
+            $table->bigInteger('order_id')->unsigned();
+            $table->decimal('price');
+            $table->integer('quantity');
+            $table->timestamps();
+            $table->foreign('collar_id')->references('id')->on('collars')->onDelete('cascade');
+            $table->foreign('sleeve_id')->references('id')->on('sleeves')->onDelete('cascade');
+            $table->foreign('handcuff_id')->references('id')->on('handcuffs')->onDelete('cascade');
+            $table->foreign('plat_id')->references('id')->on('plats')->onDelete('cascade');
+            $table->foreign('pocket_with_zip_id')->references('id')->on('pocket_with_zips')->onDelete('cascade');
+            $table->foreign('embroidery_id')->references('id')->on('embroiderys')->onDelete('cascade');
+            $table->foreign('pipeing_id')->references('id')->on('pipeings')->onDelete('cascade');
+            $table->foreign('karchupi_id')->references('id')->on('karchupis')->onDelete('cascade');
+            $table->foreign('sewing_id')->references('id')->on('sewings')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('order_items');
+    }
+}
