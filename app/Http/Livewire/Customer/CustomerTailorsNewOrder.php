@@ -8,7 +8,6 @@ use Livewire\Component;
 use App\Models\Customer;
 use App\Models\DesignItem;
 use Illuminate\Support\Str;
-use Livewire\WithPagination;
 use App\Tailors\TailorsTrait;
 use Livewire\WithFileUploads;
 use App\Models\StyleMeasurePart;
@@ -16,10 +15,9 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
-class CustomerTailorsOrders extends Component
+class CustomerTailorsNewOrder extends Component
 {
     use WithFileUploads;
-    use WithPagination;
     use TailorsTrait;
     //cloth
     public $user_id, $products=[],$designs=[],$design_values=[], $Full_Name, $mobile, $customer_image, $address, $email, $country,
@@ -199,7 +197,6 @@ class CustomerTailorsOrders extends Component
         $allproducts = Product::all();
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
-        $customers = Customer::paginate(10);
-        return view('livewire.customer.customer-tailors-orders', compact('allproducts', 'styles', 'designItems', 'customers'))->layout('layouts.manage_layout');
+        return view('livewire.customer.customer-tailors-new-order', compact('allproducts', 'styles', 'designItems'))->layout('layouts.manage_layout');
     }
 }

@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum', 'verified', 'tailorsauth'])->group(function (
 Route::middleware(['auth:sanctum', 'verified', 'manager.auth'])->group(function () {
     Route::prefix('manage')->group(function () {
         Route::get('/orders', App\Http\Livewire\Customer\CustomerTailorsOrders::class)->name('customer.orders');
+        Route::get('/new-order', App\Http\Livewire\Customer\CustomerTailorsNewOrder::class)->name('customer.neworder');
         // dd(session('utype'));
         Route::get('/order/edit/{order_id}', App\Http\Livewire\Customer\CustomerTailorsEditOrder::class)->name('customer.editorder');
         // Route::get('/edit-user/{user_id}', App\Http\Livewire\Admin\TailorsEditAdminUser::class)->name('admin.edituser');

@@ -43,7 +43,7 @@
                                                 </div>
                                             </div>
                                             @error('slug')<div class="text-danger">{{$message}}</div>@enderror
-                                            {{-- শর্ট পাঞ্জবী, একছাটা জুব্বা,এরাবিয়ান, গোলজামা,ফতুয়া, সেরোয়ানী, কটি, সেলোয়ার, পায়জামা, চোস পায়জামা, আলীগর, ধূতী  --}}
+                                            {{--একছাটা, পাঞ্জাবী , শর্ট পাঞ্জাবী , পায়জামা,একছাটা জুব্বা, কাবলী, এরাবিয়ান, গোলজামা, ফতুয়া, শেরওয়ানী,কটি, সালোয়ার, চোষ পায়জামা, আলিগড় ধুতি --}}
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="basic-addon1">Status</span>

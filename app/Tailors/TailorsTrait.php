@@ -2,9 +2,12 @@
 
 namespace App\Tailors;
 
+use Carbon\Carbon;
+use Illuminate\Support\Str;
 use App\Models\TailorsPageSetting;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Storage;
 
 // use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Illuminate\Database\Eloquent\Model;
@@ -62,9 +65,19 @@ trait TailorsTrait
     }
 
     /**
-     * make slug
+     * db image name
      */
-    
+    public function imageNameMake($slugby, $extension)
+    {
+       return Str::slug($slugby) . '-' . Carbon::now()->timestamp . '.'. $extension->extension();
+    }
+    /**image upload */
+    public function uploadImage($whatImg, $uploadOn, $slugby, $width= 250, $height=250, $disk='public')
+    {
+        //Resize image for Category and upload
+        $resizeImage = Image::make($whatImg)->resize( $width, $height )->save();
+        Storage::disk($disk)->put("$uploadOn/" . $this->imageNameMake($slugby, $whatImg), $resizeImage);
+    }
 
 }
 

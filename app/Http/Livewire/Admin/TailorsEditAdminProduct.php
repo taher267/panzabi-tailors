@@ -41,8 +41,8 @@ class TailorsEditAdminProduct extends Component
             'status'    => 'nullable',
             'option'    => 'nullable'
         ]);
-        $product            = Product::find($this->product_id);
-        if( $product->name=== $this->name && $product->slug=== $this->slug 
+        $product                = Product::find($this->product_id);
+        if( $product->name == $this->name && $product->slug == $this->slug 
             && $product->status=== $this->status && $product->option === $this->option){
                 session()->flash('msg', "<i class='far fa-thumbs-down text-warning'></i> Nothing has been updated!,warning");
         }else{
@@ -50,8 +50,10 @@ class TailorsEditAdminProduct extends Component
             $product->slug      = $this->slug;
             $product->status    = $this->status ?? true;
             $product->option    = $this->option;
-            $product->save();
-            session()->flash('msg', "<i class='fa fa-check text-info'></i> Product has been updated!,info");
+            if($product->save()){
+                session()->flash('msg', "<i class='fa fa-check text-info'></i> Product has been updated!,info");
+                $this->submitError();
+            }
         }
         
     }
