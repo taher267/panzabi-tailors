@@ -24,7 +24,7 @@ class CreateOrdersTable extends Migration
                 $table->decimal('delivery_charge')->nullable();
                 $table->string('delivery_system')->nullable();
                 $table->decimal('total');
-                $table->string('status');
+                $table->boolean('status');
                 $table->date('delivered_date')->nullable();
                 $table->timestamps();
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

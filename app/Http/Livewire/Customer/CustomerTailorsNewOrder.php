@@ -102,9 +102,8 @@ class CustomerTailorsNewOrder extends Component
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => 'required|numeric|unique:customers|digits:11',
-            'photo'    => 'image|mimes:jpg,jpeg,png|nullable',
+            'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
-            'products'          => 'required',
             'email'             =>  'email|unique:customers|nullable',
             //Measure
             'products'          => 'required|array',
