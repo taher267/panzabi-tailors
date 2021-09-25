@@ -72,12 +72,29 @@ trait TailorsTrait
        return Str::slug($slugby) . '-' . Carbon::now()->timestamp . '.'. $extension->extension();
     }
     /**image upload */
-    public function uploadImage($whatImg, $uploadOn, $slugby, $width= 250, $height=250, $disk='public')
+    public function uploadImage($whatImg, $uploadOn,  $slugby, $width= 250, $height=250, $disk='public')
     {
         //Resize image for Category and upload
         $resizeImage = Image::make($whatImg)->resize( $width, $height )->save();
-        Storage::disk($disk)->put("$uploadOn/" . $this->imageNameMake($slugby, $whatImg), $resizeImage);
+        Storage::disk($disk)->put("$uploadOn/" .$slugby, $resizeImage);
+
     }
+    // public function uploadImage($whatImg, $uploadOn,  $slugby, $width= 250, $height=250, $disk='public')
+    // {
+    //     //Resize image for Category and upload
+    //     $resizeImage = Image::make($whatImg)->resize( $width, $height )->save();
+    //     Storage::disk($disk)->put("$uploadOn/" . $this->imageNameMake($slugby, $whatImg), $resizeImage);
+
+    // }
+
+    /**image upload */
+    // public function updateUploadImage($whatImg, $uploadOn,  $slugby, $width= 250, $height=250, $disk='public')
+    // {
+    //     //Resize image for Category and upload
+    //     $resizeImage = Image::make($whatImg)->resize( $width, $height )->save();
+    //     Storage::disk($disk)->put("$uploadOn/" .$slugby, $resizeImage);
+
+    // }
 
 }
 

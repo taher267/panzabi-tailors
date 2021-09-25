@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Customer;
 
 use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\Customer;
@@ -20,7 +21,7 @@ class CustomerTailorsNewOrder extends Component
     use WithFileUploads;
     use TailorsTrait;
     //cloth
-    public $user_id, $products=[],$designs=[],$design_values=[], $Full_Name, $mobile, $customer_image, $address, $email, $country,
+    public $user_id, $products=[],$designs=[],$design_values=[], $Full_Name, $mobile, $photo, $address, $email, $country,
      $province, $city, $line1, $line2, $zipcode, $delivery_date, $order_date, $selected_product;
     public $peoducts, $cloth_long, $cloth_body, $body_loose, $cloth_enclosure, $hand_long, $cloth_belly, $belly_loose, $sleeve_less,$sleeve_pasting,
      $cloth_throat, $cloth_collar, $cloth_put, $cloth_mora, $noke_shoho, $cloth_additional;
@@ -50,7 +51,7 @@ class CustomerTailorsNewOrder extends Component
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => 'required|numeric|unique:customers|digits:11',
-            'customer_image'    => 'image|mimes:jpg,jpeg,png|nullable',
+            'photo'    => 'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
             'products'          => 'required',
             'email'             =>  'email|unique:customers|nullable',
@@ -94,14 +95,14 @@ class CustomerTailorsNewOrder extends Component
     }
     public function placeOrder()
     {
-        // dd($this->customer_image->extension());
-        // dd($this->imageNameMake($this->Full_Name, $this->customer_image));
+        // dd($this->photo->extension());
+        // dd($this->imageNameMake($this->Full_Name, $this->photo));
         $todayDate= date('Y-m-d');
         $this->validate([
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => 'required|numeric|unique:customers|digits:11',
-            'customer_image'    => 'image|mimes:jpg,jpeg,png|nullable',
+            'photo'    => 'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
             'products'          => 'required',
             'email'             =>  'email|unique:customers|nullable',
@@ -151,8 +152,12 @@ class CustomerTailorsNewOrder extends Component
         $customer_info->address     = $this->address ?? null;
         $customer_info->email       = $this->email ?? null;
         //has cusltomer photo
-        if($this->customer_image){$customer_info->photo = $this->imageNameMake($this->Full_Name, $this->customer_image);}
+        if($this->photo){
+            $customer_info->photo = $this->imageNameMake($this->Full_Name, $this->photo);
+            $this->uploadImage( $this->photo,'customers', $customer_info->photo);
+        }
         $customer_info->country = $this->country;
+        
         //has other delivery
         if($this->order_delivery){
               $customer_info->city      = $this->city;
@@ -161,15 +166,34 @@ class CustomerTailorsNewOrder extends Component
               $customer_info->line1     = $this->line1;
               $customer_info->line2     = $this->line2?? null;
         }
-        if($customer_info->save()){
-            if( $this->customer_image){
-                /**
-                 * uploadImage($whatImg=$this->customer_image, $uploadOn='customers', $slugby=$this->Full_Name, $width= 250, $height=250, $resulation=90, $disk='public');
-                 */
-                $this->uploadImage( $this->customer_image,'customers', $this->Full_Name);
-            }
+        $customer_info->save();
+        // if($customer_info->save()){
+        //     if( $this->photo){
+        //         /**
+        //          * uploadImage($whatImg=$this->photo, $uploadOn='customers', $slugby=$this->Full_Name, $width= 250, $height=250, $resulation=90, $disk='public');
+        //          */
+        //         // $this->uploadImage( $this->photo,'customers', $this->Full_Name);
+        //     }
+        //     session()->flash( 'msg', "<i class='fa fa-thumbs-up text-success'></i> কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!,success" );
+        // }
+        //Order Add
+        $order          = new Order();
+        $order->user_id = Auth::user()->id;
+        $order->customer_id = $customer_info->id;
+        $order->wages=500;//মজুরি
+        $order->quantity=1;
+        $order->subtotal=500;
+        $order->discount=0;
+        $order->delivery_charge= 0;
+        $order->delivery_system= 1;
+        $order->total=500;
+        $order->status='1';
+        $order->delivered_date = $this->delivery_date;
+        if($order->save()){
+            
             session()->flash( 'msg', "<i class='fa fa-thumbs-up text-success'></i> কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!,success" );
         }
+        
     }
 
 
@@ -177,14 +201,24 @@ class CustomerTailorsNewOrder extends Component
     // {
     //     //Resize image for Category and upload
     //     $resizeImage = Image::make($whatImg)->resize( 250, 250 )->save( 90 );
-    //     Storage::disk('public')->put("customers/" . $this->imageNameMake($this->Full_Name, $this->customer_image), $resizeImage);
-    //     // Storage::disk('public')->put("customers/" . $this->imageNameMake($slugby, $whatImg), $resizeImage);
+    //     Storage::disk('public')->put("customers/" . $this->imageNameMake($this->Full_Name, $this->photo), $resizeImage);
     // }
 
 
-    public function openPersonalInfo()
+    public function orders()
     {
-        
+        // $order          = new Order();
+        // $order->user_id = Auth::user()->id;
+        // $order->customer_id = $customer_info->id;
+        // $order->wages=500;//মজুরি
+        // $order->quantity=1;
+        // $order->subtotal=500;
+        // $order->discount=0;
+        // $order->delivery_charge= 0;
+        // $order->delivery_system= 'byhand';
+        // $order->total=500;
+        // $order->status='1';
+        // $order->delivered_date= $this->delivery_date;
     }
     public function formError()
     {

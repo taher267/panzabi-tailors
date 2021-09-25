@@ -34,7 +34,7 @@
         </a>
         <div id="customerOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" title="All Order" href="{{route('customer.orders')}}">ALL ORDERS</a>
+                <a class="collapse-item" title="All Order" href="{{route('customer.customers')}}">ALL ORDERS</a>
                 <a class="collapse-item" title="New Order" href="{{route('customer.neworder')}}">NEW ORDERS</a>
                 {{-- <a class="collapse-item" href="cards.html">All Customers</a> --}}
             </div>

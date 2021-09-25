@@ -22,7 +22,7 @@ class CreateOrdersTable extends Migration
                 $table->decimal('subtotal');
                 $table->decimal('discount')->default(0);
                 $table->decimal('delivery_charge')->nullable();
-                $table->decimal('delivery_system')->nullable();
+                $table->string('delivery_system')->nullable();
                 $table->decimal('total');
                 $table->string('status');
                 $table->date('delivered_date')->nullable();

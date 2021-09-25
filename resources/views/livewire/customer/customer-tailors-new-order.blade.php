@@ -1,19 +1,24 @@
 <div class="container-fluid">
     @if (Session::has('msg'))
-    <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!}">{!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}</div>
-@endif
+        <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!}">{!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}</div>
+    @endif
  
 <style type="text/css"> .nav-link.active{background:linear-gradient(180deg ,#4e73df 10%,#8C00BF 100%) !important;color: #fff !important;font-weight: bold  !important;} #dalivery_address{transition: 1s all ease;transform-origin: top; {{$order_delivery==1 ? 'transform:scaleY(1);height:100%;' :'transform:scaleY(0); display: none; height:0;'}} } .design_bg {padding: 25px 7px;background-size: cover !important;background-position: center !important; position: relative; margin:0 0 2px  0 !important;} .design_bg .border-right{padding: 25px 10px; border-right: 2px solid red !important;} .design_bg::after {position: absolute;content: '';width: 2px;height: 100%;background: #fff;right: 0;top: 0;} .design_bg label {color: #fff} </style>
 
 <form class="was-validated" wire:submit.prevent="placeOrder">
     <div class="row">
         <div class="col-lg-12">
-            <div style="transition: 1s all ease" class="col-xl-12" id="right_sidebar">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="d-flex">
-                  </p>
+            <div style="transition: 1s all ease" class="col-xl-12 " id="right_sidebar">
+                <div class="row bg-secondary alert ">
+                    <div class="col-xl-4">
+                        <a class="btn btn-outline-primary text-light" href="{{route('customer.customers')}}">All Customers</a>
+                    </div>
+
+                    <div class="col-xl-4">
+                        <a class="btn btn-outline-success" href="{{route('customer.neworder')}}">New Order</a>
+                    </div>
+                </div>
                 <span class="badge badge-secondary badge-pill"></span>
-                </h4>
                 <div class="col-xl-12">
                     <div class="personal_information">
                         <h2>Order Informaion</h2>
@@ -58,15 +63,15 @@
                                 <div class="col-lg-6 mb-3 customer_photo">
                                     <label for="customerPhoto">Photo (Optional)</label>
                                     <div class="input-group input_customer_photo" style="positon:relative;">
-                                        <input wire:model="customer_image" type="file" class="custom-file-input" id="customerPhoto">
+                                        <input wire:model="photo" type="file" class="custom-file-input" id="customerPhoto">
                                         <label class="custom-file-label" for="customerPhoto"></label>
                                         <div class="invalid-feedback"></div>
-                                        <div class="invalid-feedback">@error('customer_image'){!! $message!!} @else Photo should be valid formated (jpg, jpeg, png)!@enderror</div>
-                                        {{-- <img class="" src="{{$customer_image->temporaryUrl()}}" width="120"> --}}
+                                        <div class="invalid-feedback">@error('photo'){!! $message!!} @else Photo should be valid formated (jpg, jpeg, png)!@enderror</div>
+                                        {{-- <img class="" src="{{$photo->temporaryUrl()}}" width="120"> --}}
                                         
-                                        @if ( $customer_image )
+                                        @if ( $photo )
                                         <span class="temp_img_wrap" style="position: absolute;z-index: 999;">
-                                            <img src="{{$customer_image->temporaryUrl()}}" width="60" alt="">
+                                            <img src="{{$photo->temporaryUrl()}}" width="60" alt="">
                                         </span>
                                             
                                         @endif

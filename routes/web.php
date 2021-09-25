@@ -58,10 +58,14 @@ Route::middleware(['auth:sanctum', 'verified', 'tailorsauth'])->group(function (
 });
 
 Route::middleware(['auth:sanctum', 'verified', 'manager.auth'])->group(function () {
-    Route::prefix('manage')->group(function () {
-        Route::get('/orders', App\Http\Livewire\Customer\CustomerTailorsOrders::class)->name('customer.orders');
+    Route::prefix('customer')->group(function () {
+        Route::get('/customers', App\Http\Livewire\Customer\CustomerTailorsOrders::class)->name('customer.customers');
         Route::get('/new-order', App\Http\Livewire\Customer\CustomerTailorsNewOrder::class)->name('customer.neworder');
         // dd(session('utype'));
+        Route::get('/edit/{customer_id}', App\Http\Livewire\Customer\TailorsCustomerEditInfo::class)->name('customer.editinfo');
+
+        Route::get('/details/{customer_id}', App\Http\Livewire\Customer\CustomerTailorsOrderDetails::class)->name('customer.details');
+
         Route::get('/order/edit/{order_id}', App\Http\Livewire\Customer\CustomerTailorsEditOrder::class)->name('customer.editorder');
         // Route::get('/edit-user/{user_id}', App\Http\Livewire\Admin\TailorsEditAdminUser::class)->name('admin.edituser');
         // Route::get('/order-fields', App\Http\Livewire\Admin\TailorsOrderItem::class)->name('admin.productfield');

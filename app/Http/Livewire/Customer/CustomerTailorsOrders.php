@@ -40,6 +40,8 @@ class CustomerTailorsOrders extends Component
      public $collar_plate_and_sleeve_piping_in, $collar_plate_and_sleeve_piping_fld, $collar_one_side_3_side_and_sleeve_piping_in, $collar_one_side_3_side_and_sleeve_piping_fld, $collar_plate_sleeve_other_cloth_piping_in, $collar_plate_sleeve_other_cloth_piping_fld, $collar_cloth_by_other_cloth_piping_in, $collar_cloth_by_other_cloth_piping_fld;
 
     public $personal_info_open, $confirm_mail, $delivery_policy, $order_delivery, $test , $selectedtypes, $errorOut;
+    //Search
+    public $searchBy,$searchByName, $searchByEmail;
     public function mount()
     {
         $this->country ='bd';
@@ -184,9 +186,11 @@ class CustomerTailorsOrders extends Component
     // }
 
 
-    public function openPersonalInfo()
+    public function customerSearch()
     {
-        
+        // if( $this->searchBy){
+        $specificCustomer = Customer::where('mobile', '01962054584')->paginate();//->orWhere('Full_Name', $this->searchBy)->orWhere('email', $searchBy)
+        // } 
     }
     public function formError()
     {
@@ -199,7 +203,12 @@ class CustomerTailorsOrders extends Component
         $allproducts = Product::all();
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
-        $customers = Customer::paginate(10);
-        return view('livewire.customer.customer-tailors-orders', compact('allproducts', 'styles', 'designItems', 'customers'))->layout('layouts.manage_layout');
+        $customers = Customer::paginate();
+        if( $this->searchBy ){
+            // $specificCustomer = Customer::where('mobile', $this->searchBy)->orWhere('Full_Name', $this->searchBy)->orWhere('email', $this->searchBy)->paginate(2);
+            $specificCustomer = Customer::where('Full_Name', 'like', '%'. $this->searchBy.'%')->orWhere('mobile', 'like', '%'. $this->searchBy. '%')->orWhere('email', 'like', '%'. $this->searchBy. '%')->orderBy('created_at', 'DESC')->paginate();
+        }else{ $specificCustomer = [];}
+        
+        return view('livewire.customer.customer-tailors-orders', compact('allproducts', 'styles', 'designItems', 'customers', 'specificCustomer'))->layout('layouts.manage_layout');
     }
 }
