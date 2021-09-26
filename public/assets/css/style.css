@@ -33,3 +33,6 @@ h4.heading {
     border-bottom: 1px solid;
     width: 70%;margin: 0 auto;
 }
+
+@media (max-width: 575px){.col-mb-2{margin-bottom:.5rem!important}}
+@media (max-width: 7675px){.col-mb-2{margin-bottom:.5rem!important}}

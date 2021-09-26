@@ -11,13 +11,15 @@ class CustomerTailorsOrderDetails extends Component
     public $errorOut, $customer_id, $Full_Name, $mobile, $email, $address, $country, $city, $province, $line1, $line2, $new_photo, $photo, $zipcode ;
     public $allproduct, $products=[];
     //Order
-    public $delivery_date,$quantity,$subtotal,$discount,$delivery_charge,$delivery_system,$total,$delivered_date, $wages;//মজুরি
+    public $delivery_date, $additional,$quantity,$subtotal,$discount,$delivery_charge,$delivery_system,$total,$delivered_date, $wages;//মজুরি
     //Order Item
     public $cloth_long,$cloth_body,$body_loose,$cloth_belly,$belly_loose,$cloth_enclosure,$hand_long ,$sleeve_less,$sleeve_pasting ,$cloth_throat,$cloth_collar ,$cloth_put ,$cloth_mora,$noke_shoho;
     public $currentStep = 1;
-    public $name, $price, $detail, $stepstatus = 1;
+    public $name, $price, $detail, $stepstatus = 1, $status;
     public $successMsg = '', $hidesidebar;
     public $formErrorOne,$formErrorTwo, $formErrorThree;
+    //style
+    public $col_0,$col_1;
 
     public function mount($customer_id)
     {
@@ -44,6 +46,7 @@ class CustomerTailorsOrderDetails extends Component
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
             //Measure
             'products'          => 'required|array',
+            'additional'        => 'string|nullable',
             'cloth_long'        => 'required|numeric|min:5|max:100',
             'cloth_body'        => 'required|numeric|min:5|max:100',
             'body_loose'        => 'required|numeric|min:5|max:100',
@@ -84,7 +87,7 @@ class CustomerTailorsOrderDetails extends Component
     }
     public function formCheckTwo()
     {
-        if ( $this->cloth_long =='' ||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora ==''||$this->noke_shoho =='') {//||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora ==''||$this->noke_shoho =='' 
+        if ( $this->cloth_long =='' ||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora =='') {//||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora ==''||$this->noke_shoho =='' 
             $this->formErrorTwo=1;
         }else {
             $this->formErrorTwo=0;
@@ -155,6 +158,10 @@ class CustomerTailorsOrderDetails extends Component
         $this->mobile = '';
         $this->address = '';
         $this->stepstatus = 1;
+    }
+    public function sidebar()
+    {
+        $this->col_0 = 1;
     }
     ////////////////////////////////////////////////////////////////////////////////////
     

@@ -3,30 +3,27 @@
         <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!}">{!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}</div>
     @endif
     <style>
-        .display-none { display: none;}
-
-.multi-wizard-step p {
-    margin-top: 12px;
-}
+        @media (max-width: 575px){.col-mb-2{margin-bottom:.5rem!important}}
+        .display-none { display: none;} .multi-wizard-step p { margin-top: 12px; }
 
 .stepwizard-row {display: table-row;}
 .stepwizard {display: table; position: relative;width: 100%;}
 .multi-wizard-step button[disabled] {filter: alpha(opacity=100) !important; opacity: 1 !important;}
 .stepwizard-row:before {top: 14px;bottom: 0;content: " ";width: 100%;height: 1px;z-index: 0;position: absolute;background-color: #fefefe;}
 .multi-wizard-step {text-align: center;position: relative;display: table-cell;}
-#step-1 button[type='button'],#step-2 button[type='button'],#step-3 button[type='button'],#step-4 button[type='submit']{ -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+#step-1 button[type='button'],#step-2 button[type='button'],#step-3 button[type='button'],#step-4 button[type='submit'],.animated{ -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
        -moz-animation: fadein 2s; /* Firefox < 16 */
         -ms-animation: fadein 2s; /* Internet Explorer */
          -o-animation: fadein 2s; /* Opera < 12.1 */
             animation: fadein 2s;
 }
-/* @keyframes fadein {from { opacity: 0; }to{ opacity: 1; }} @-moz-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}@-webkit-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}@-ms-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}@-o-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}​ */
+
 </style>
     
     
     <div class="row">
         <div class="col-xl-12"><h3>Customer Orders</h3></div>
-        <div class="col-xl-3 bg-light pt-3 pb-2" style="border:1px solid #cfcfcf;">
+        <div class="@if($col_0==1) col-xl-0 @else col-xl-3 @endif bg-light pt-3 pb-2" style="border:1px solid #cfcfcf;">
             <div class="row">
                 <div class="col-xl-12 text-center mb-4">
                     @if ($photo)
@@ -76,7 +73,9 @@
                 </table>
             </div>
         </div>
-        <div class="col-xl-9">
+        {{-- @if($col_0==0) col-xl-0 @else col-xl-3 @endif --}}
+        {{-- @if($col_0==0) col-xl-12 @else col-xl-9 @endif --}}
+        <div class=" @if($col_0==1) col-xl-12 @else col-xl-9 @endif" wire:click="sidebar()">
             @if(!empty($successMsg))
                 <div class="alert alert-success">
                     {{ $successMsg }}
@@ -116,10 +115,12 @@
                             <div class="form-group">
                                 <label for="title">ডেলিভারী তারিখ</label>
                                 <input type="date" wire:model="delivery_date" class="form-control" id="taskTitle" required>
-                                @error('delivery_date') <div class="text-danger mt-2">{{ $message }}</div> @enderror
+                                @error('delivery_date') <span class="text-danger animated">{!!$message!!}</span> @else @error('delivery_date')<span class="text-danger">দিন!</span> @else <span class="invalid-feedback animated">ডেলিভারী তারিখ দিন!</span>  @enderror @enderror
                             </div>
                                 @if ( $allproducts->count()>0)
-                                <div class="col-sm-2 col-xs-6 col-xl-12 py-3 px-2 mb-3" style="border:1px solid #ddd;"><div class="input-group">
+                                <h4>পোশাক নির্বাচন</h4>
+                                <div class="col-sm-2 col-xs-6 col-xl-12 py-3 px-2 mb-3" style="border:1px solid #ddd;">
+                                    <div class="input-group">
                                     @foreach ($allproducts as $product)
                                         <div class="form-check form-check-inline">
                                             <input wire:model="products" class="form-check-input" type="checkbox" id="product_{{$product->id}}" value="{{$product->id}}" {{sizeof($products)==0?'required':''}}>
@@ -127,13 +128,25 @@
                                             <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail-" width="30" alt="">
                                         </div>
                                     @endforeach
-                                </div></div>
+                                     
+                                </div>
+                                    @error('products') <div class="text-danger my-3 animated">{!!$message!!}</div> @else @if ( count($products) == 0) <div style="font-size: 22px" class="text-danger my-3">কমপক্ষে একটি পোশাক নির্বাচন করুন!</div>  @endif @enderror
+                                </div>
+                               
                                 @endif
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 mx-lg-auto mb-3">
+                                    <label for="additional">সংযোজিত</label>
+                                    <textarea type="text" class="form-control" wire:model="additional" placeholder="সংযোজিত/Additional" ></textarea>
+                                    <div class="invalid-feedback">@error('additional') {!!$message!!} @else Hand long code required. @enderror</div>
+                                </div>
+                            </div>
                                 {{-- {{print_r($errors->all())}} --}}
                             @if ($formErrorOne==0 && sizeof($products))
-                            @error('delivery_date')
-                                @else
-                                <button style="transition-delay: 500ms; transition:0.4s all ease; " class="w3-animate-opacity btn btn-primary nextBtn btn-lg pull-right"  wire:click="firstStepSubmit" type="button">পরবর্তী ধাপ </button> 
+                            @error('delivery_date') @else
+                                @error('additional') @else
+                                <button style="transition-delay: 500ms; transition:0.4s all ease; " class="mt-2 btn btn-primary nextBtn btn-lg pull-right"  wire:click="firstStepSubmit" type="button">পরবর্তী ধাপ </button> 
+                            @enderror
                             @enderror
                             @else <h6 class="text-warning">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</h6>
                             @endif
@@ -170,13 +183,13 @@
         
                                     <div>
                                         <label for="bodyloose">পেটের লুজ</label>
-                                        <input wire:model="belly_loose" type="number" min="5" max="100" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose">
+                                        <input wire:model="belly_loose" type="number" min="5" max="100" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose" required>
                                         @error('belly_loose') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback"> Throat field is required.</div> @enderror
                                     </div>
         
                                     <div>
                                         <label for="enclosure">ঘের</label>
-                                        <input wire:model="cloth_enclosure" type="number" min="5" max="100" class="form-control" id="enclosure" placeholder="Enclosure/ঘের">
+                                        <input wire:model="cloth_enclosure" type="number" min="5" max="100" class="form-control" id="enclosure" placeholder="Enclosure/ঘের" required>
                                         @error('cloth_enclosure') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback"> Throat field is required.</div> @enderror
                                     </div>
                                 </div>
@@ -228,29 +241,42 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="nokeshoho">নক সহ</label>
-                                        <input wire:model="noke_shoho" type="number" min="5" max="100" class="form-control" id="q " placeholder="নক সহ">
-                                        @error('noke_shoho'|| 'cloth_long') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback"> Throat field is required.</div> @enderror
+                                        <input wire:model="noke_shoho" type="text" min="5" max="100" class="form-control" id="q " placeholder="নক সহ">
+                                        @error('noke_shoho') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback"> Throat field is required.</div> @enderror
                                     </div>
                                 </div>
                             </div>
                             {{-- <h6>{{$cloth_long}}</h6> --}}
                             {{-- {{$formErrorTwo}} --}}
-                            @if (!$formErrorTwo)
-                            @error('cloth_long') <h6>বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else
-                                @error('cloth_body')  <h6>বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
-                                    @error('body_loose')  <h6>বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else
-                                    @error('cloth_belly')  <h6>বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
-                                    @error('belly_loose')  <h6>বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
-                                    <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" wire:click="secondStepSubmit">পরবর্তী ধাপ</button>
+                            <div class="col-xl-12">
+                                <div class="row">
+                                    @if (!$formErrorTwo)
+                                    @error('cloth_long') <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else
+                                        @error('cloth_body')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('body_loose')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else
+                                        @error('cloth_belly')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('belly_loose')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('cloth_enclosure')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('hand_long')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('sleeve_less')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('sleeve_pasting')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('cloth_throat')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('cloth_collar')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('cloth_put')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('cloth_mora')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        @error('noke_shoho')  <h6 class="text-danger col-xl-12">বাধ্যতামূলক ঘরগুলো সঠিকভাবে পূরণ করুন!</h6> @else 
+                                        <div class="col-xl-3 col-sm-4 order-2 col-12">
+                                        <button class="btn btn-primary btn-lg push-right w-100 " type="button" wire:click="secondStepSubmit">পরবর্তী ধাপ</button> </div> @enderror @enderror @enderror @enderror @enderror @enderror @enderror @enderror @enderror @enderror @enderror @enderror
+                                        @enderror
                                     @enderror
-                                    @enderror
-                                    @enderror
-                                @enderror
-                            @enderror
-                            {{-- <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" wire:click="secondStepSubmit">পরবর্তী ধাপ</button> --}}
-                            @else <h6>বাধ্যতামূলক ঘরগুলো পূরণ করুন!</h6>
-                            @endif
-                            <button class="btn btn-danger nextBtn btn-lg pull-right" type="button" wire:click="back(1)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button>
+                                    {{-- <button class="btn btn-primary nextBtn btn-lg pull-right" type="button" wire:click="secondStepSubmit">পরবর্তী ধাপ</button> --}}
+                                    @else <h6 class="col-xl-12 text-danger">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</h6>
+                                    @endif
+                                    <div class="col-xl-3 col-sm-5 order-1"><button class="btn btn-danger nextBtn btn-lg col-12 col-mb-2" type="button" wire:click="back(1)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
+                                </div>
+                            </div>
+                            
+                            
                         </div>
                         
                     </div>
@@ -259,9 +285,9 @@
                             <h3> Step 3</h3>
                             <div class="form-group">
                                 <label for="description">Team Status</label><br />
-                                <label class="radio-inline"><input type="radio" wire:model="status" value="1"
+                                <label class="radio-inline"><input type="radio" name="status" wire:model="status" value="1"
                                         {{{ $stepstatus == '1' ? "checked" : "" }}}> Active</label>
-                                <label class="radion-inline"><input type="radio" wire:model="status" value="0"
+                                <label class="radion-inline"><input type="radio" name="status" wire:model="status" value="0"
                                         {{{ $stepstatus == '0' ? "checked" : "" }}}> DeActive</label>
                                 @error('status') <span class="error">{{ $message }}</span> @enderror
                             </div>
@@ -276,15 +302,26 @@
                             <table class="table">
                                 <tr>
                                     <td>Team Name:</td>
-                                    <td>{{$Full_Name}}</></td>
+                                    <td><strong>
+                                        {{-- {{print_r($products)}} --}}
+                                    @if (count($products)>0)
+                                        @foreach ($products as $product)
+                                        @foreach ($allproducts as $currentProduct)
+                                            @if ($product==$currentProduct->id)
+                                            <p>{{$currentProduct->name}}</p>
+                                            @endif                                            
+                                            @endforeach
+                                        @endforeach
+                                    @endif
+                                </strong></td>
                                 </tr>
                                 <tr>
                                     <td>Team Price:</td>
-                                    <td><strong>{{$mobile}}</strong></td>
+                                    <td><strong>{{$delivery_date}}</strong></td>
                                 </tr>
                                 <tr>
                                     <td>Team status:</td>
-                                    <td><strong>{{$stepstatus ? 'Active' : 'DeActive'}}</strong></td>
+                                    <td><strong>{{$cloth_body}}</strong></td>
                                 </tr>
                                 <tr>
                                     <td>Team Detail:</td>
@@ -742,6 +779,9 @@
             
         </div> <!--cloth_part_style End-->
     </form>
+    <style>
+        @keyframes fadein {from { opacity: 0; }to{ opacity: 1; }} @-moz-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}@-webkit-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}@-ms-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}@-o-keyframes fadein {from { opacity: 0; }to{ opacity: 1; }}​
+    </style>
 
 </div>
 @push('scripts')
