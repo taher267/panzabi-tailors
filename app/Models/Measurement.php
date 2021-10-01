@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Measurement extends Model
 {
     use HasFactory;
-    public $timestamps = false;
+    public $table= 'measurements';
 }

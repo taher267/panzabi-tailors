@@ -20,8 +20,34 @@
 
 </style>
     
-    
     <div class="row">
+        <div class="col-xl-12">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>items</th>
+                        <th>Order No</th>
+                        <th>Wages <b>({{$allOrders->sum('wages')}})</b></th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($allOrders as $order)
+                    <tr>
+                        <td scope="row">{{$order->orderitems->count()}}</td>
+                        <td scope="row">{{$order->order_number}}</td>
+                        <td>{{print_r($order->wages)}}</td>
+                        <td></td>
+                        <td></td>
+                    </tr>  
+                    @endforeach
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+
         <div class="col-xl-12"><h3>Customer Orders</h3></div>
         <div class="@if($col_0==1) col-xl-0 @else col-xl-3 @endif bg-light pt-3 pb-2" style="border:1px solid #cfcfcf;">
             <div class="row">

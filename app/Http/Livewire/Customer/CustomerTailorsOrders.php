@@ -204,11 +204,12 @@ class CustomerTailorsOrders extends Component
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
         $customers = Customer::paginate();
+        $todaysCustomers = Customer::where('created_at', '>=', Carbon::today())->get();
         if( $this->searchBy ){
             // $specificCustomer = Customer::where('mobile', $this->searchBy)->orWhere('Full_Name', $this->searchBy)->orWhere('email', $this->searchBy)->paginate(2);
             $specificCustomer = Customer::where('Full_Name', 'like', '%'. $this->searchBy.'%')->orWhere('mobile', 'like', '%'. $this->searchBy. '%')->orWhere('email', 'like', '%'. $this->searchBy. '%')->orderBy('created_at', 'DESC')->paginate();
         }else{ $specificCustomer = [];}
         
-        return view('livewire.customer.customer-tailors-orders', compact('allproducts', 'styles', 'designItems', 'customers', 'specificCustomer'))->layout('layouts.manage_layout');
+        return view('livewire.customer.customer-tailors-orders', compact('allproducts', 'styles', 'designItems', 'customers', 'specificCustomer','todaysCustomers'))->layout('layouts.manage_layout');
     }
 }

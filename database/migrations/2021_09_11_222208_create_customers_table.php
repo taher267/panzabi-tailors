@@ -17,10 +17,10 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('Full_Name');
-            $table->string('photo');
             $table->string('mobile')->unique();
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();
+            $table->string('photo')->nullable();
             $table->string('line1')->nullable();
             $table->string('line2')->nullable();
             $table->string('country')->default('bd');

@@ -36,7 +36,15 @@
                                         </div>
                                     </div>
                                     @error('slug')<div class="text-danger">{{$message}}</div>@enderror
-
+                                    
+                                    <div class="input-group mb-3 d-flex">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="basic-addon1">Price</span>
+                                        </div>
+                                        <input type="number" class="form-control" max="99999" placeholder="0000" wire:model="price">
+                                    </div>
+                                    @error('price')<div class="text-danger">{{$message}}</div>@enderror
+                                    
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="basic-addon1">Status</span>

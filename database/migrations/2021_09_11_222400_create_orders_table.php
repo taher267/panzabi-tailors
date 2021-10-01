@@ -17,12 +17,12 @@ class CreateOrdersTable extends Migration
                 $table->id();
                 $table->bigInteger('user_id')->unsigned();
                 $table->bigInteger('customer_id')->unsigned();
+                $table->bigInteger('order_number')->unsigned();
                 $table->decimal('wages');//মজুরি
-                $table->decimal('quantity');
-                $table->decimal('subtotal');
                 $table->decimal('discount')->default(0);
-                $table->decimal('delivery_charge')->nullable();
                 $table->string('delivery_system')->nullable();
+                $table->string('courier_details')->nullable();
+                $table->decimal('delivery_charge')->nullable();
                 $table->decimal('total');
                 $table->boolean('status');
                 $table->date('delivered_date')->nullable();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Customer;
 
+use App\Models\Order;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\Customer;
@@ -171,6 +172,7 @@ class CustomerTailorsOrderDetails extends Component
         $this->formCheckTwo();
         $this->formCheckThree();
         $allproducts = Product::all();
-        return view('livewire.customer.customer-tailors-order-details', compact('allproducts'))->layout('layouts.manage_layout');
+        $allOrders = Order::where('customer_id', $this->customer_id)->get();
+        return view('livewire.customer.customer-tailors-order-details', compact('allproducts', 'allOrders'))->layout('layouts.manage_layout');
     }
 }

@@ -32,7 +32,6 @@
                                                 <input type="text" class="form-control" placeholder="Product Name" wire:model="name" @if(!$customSlug) wire:keyup="generateSlug" @endif  required>
                                             </div>
                                             @error('name')<div class="text-danger">{{$message}}</div>@enderror
-                                            <div class="input-group mb-3"></div>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text" id="basic-addon1">Slug</span>
@@ -43,6 +42,15 @@
                                                 </div>
                                             </div>
                                             @error('slug')<div class="text-danger">{{$message}}</div>@enderror
+
+                                            <div class="input-group mb-3 d-flex">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" id="basic-addon1">Price</span>
+                                                </div>
+                                                <input type="number" class="form-control" max="99999" placeholder="0000" wire:model="price">
+                                            </div>
+                                            @error('price')<div class="text-danger">{{$message}}</div>@enderror
+
                                             {{--একছাটা, পাঞ্জাবী , শর্ট পাঞ্জাবী , পায়জামা,একছাটা জুব্বা, কাবলী, এরাবিয়ান, গোলজামা, ফতুয়া, শেরওয়ানী,কটি, সালোয়ার, চোষ পায়জামা, আলিগড় ধুতি --}}
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">

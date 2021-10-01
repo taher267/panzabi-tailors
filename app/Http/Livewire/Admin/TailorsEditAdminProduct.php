@@ -8,12 +8,13 @@ use Illuminate\Support\Str;
 
 class TailorsEditAdminProduct extends Component
 {
-    public $product_id, $name, $slug, $status, $option, $errorOut ,$customSlug;
+    public $product_id, $name, $slug,$price, $status, $option, $errorOut ,$customSlug;
     public function mount( $product_id)
     {
         $product = Product::find($product_id);
         $this->name         = $product->name;
         $this->slug         = $product->slug;
+        $this->price         = $product->price;
         $this->status       = $product->status;
         $this->option       = $product->option;
         $this->product_id   = $product->id;
@@ -23,6 +24,7 @@ class TailorsEditAdminProduct extends Component
         $this->validateOnly( $fields, [
             'name'      => ["required","string",\Illuminate\Validation\Rule::unique('products')->ignore($this->product_id)],
             'slug'      => ["required","string",\Illuminate\Validation\Rule::unique('products')->ignore($this->product_id)],
+            'price'     => 'regex:/^\d+(\.\d{1,2})?$/|nullable|max:7',
             'status'    => 'nullable',
             'option'    => 'nullable'
         ]);
@@ -38,16 +40,18 @@ class TailorsEditAdminProduct extends Component
         $this->validate( [
             'name'      => ["required","string", \Illuminate\Validation\Rule::unique('products')->ignore($this->product_id)],
             'slug'      => ["required","string", \Illuminate\Validation\Rule::unique('products')->ignore($this->product_id)],
+            'price'     => 'regex:/^\d+(\.\d{1,2})?$/|nullable|max:7',
             'status'    => 'nullable',
             'option'    => 'nullable'
         ]);
         $product                = Product::find($this->product_id);
         if( $product->name == $this->name && $product->slug == $this->slug 
-            && $product->status=== $this->status && $product->option === $this->option){
+        && $product->price == $this->price && $product->status=== $this->status && $product->option === $this->option){
                 session()->flash('msg', "<i class='far fa-thumbs-down text-warning'></i> Nothing has been updated!,warning");
         }else{
             $product->name      = $this->name;
             $product->slug      = $this->slug;
+            $product->price    = $this->price ?? true;
             $product->status    = $this->status ?? true;
             $product->option    = $this->option;
             if($product->save()){
@@ -61,10 +65,17 @@ class TailorsEditAdminProduct extends Component
     {
         $product = Product::find($this->product_id);
         if( $product->name=== $this->name && $product->slug=== $this->slug 
-            && $product->status=== $this->status && $product->option === $this->option){
+        && $product->price == $this->price && $product->status=== $this->status && $product->option === $this->option){
             $this->errorOut ='err';
         }else{
-            $this->errorOut ='';
+            if( $product->name === $this->name && $product->slug == $this->slug 
+            && $product->price == $this->price && $product->status== $this->status && $product->option === $this->option){
+                $this->errorOut ='err';
+            }else {
+                $this->errorOut ='';
+            }
+
+            
         }
     }
     public function render()
