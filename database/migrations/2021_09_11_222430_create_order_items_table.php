@@ -18,6 +18,7 @@ class CreateOrderItemsTable extends Migration
             $table->bigInteger('customer_id')->unsigned();
             $table->foreignId('product_id');
             $table->bigInteger('order_id')->unsigned();
+            $table->foreignId('order_number');
             $table->string('cloth_long');
             $table->string('cloth_body');
             $table->string('cloth_belly')->nullable();

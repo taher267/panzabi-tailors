@@ -203,7 +203,7 @@ class CustomerTailorsOrders extends Component
         $allproducts = Product::all();
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
-        $customers = Customer::paginate();
+        $customers = Customer::orderBy('id', "DESC")->paginate();
         $todaysCustomers = Customer::where('created_at', '>=', Carbon::today())->get();
         if( $this->searchBy ){
             // $specificCustomer = Customer::where('mobile', $this->searchBy)->orWhere('Full_Name', $this->searchBy)->orWhere('email', $this->searchBy)->paginate(2);

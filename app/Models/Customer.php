@@ -15,6 +15,6 @@ class Customer extends Model
      */
     public function Orders(): HasMany
     {
-        return $this->hasMany(Order::class, 'foreign_key', 'local_key');
+        return $this->hasMany(Order::class);
     }
 }

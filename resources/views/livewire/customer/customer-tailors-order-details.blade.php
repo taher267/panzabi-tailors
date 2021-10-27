@@ -22,10 +22,11 @@
     
     <div class="row">
         <div class="col-xl-12">
-            <table class="table">
+        <div class="col-xl-12 text-warning">{{$Full_Name}} এর অরডারসমুহ</div>
+            <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>items</th>
+                        <th>Order No/Iteams</th>
                         <th>Order No</th>
                         <th>Wages <b>({{$allOrders->sum('wages')}})</b></th>
                         <th>Action</th>
@@ -34,11 +35,16 @@
                 <tbody>
                     @foreach ($allOrders as $order)
                     <tr>
-                        <td scope="row">{{$order->orderitems->count()}}</td>
-                        <td scope="row">{{$order->order_number}}</td>
-                        <td>{{print_r($order->wages)}}</td>
+                        <td scope="row">{{$order->order_number}}/{{$order->orderitems->count()}}</td>
+                        <td scope="row"></td>
+                        <td>{{ $order->wages }}</td>
                         <td></td>
-                        <td></td>
+                        <td>
+                            <a href="{{--route('customer.orders', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i>Orders</a>
+                            <a href="{{--route('customer.details', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                            <a href="{{--route('customer.editinfo', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-edit"></i></a>
+                            @if(session('utype')==='ADM')<a href="#" wire-:click.prevent="producpelete({{--$todaysCustomer->id--}})" onclick="confirm('Are you sure to delete role') || event.stopImmediatePropagation()" class="btn btn-danger"><i class="fa fa-trash"></i></a>@endif
+                        </td>
                     </tr>  
                     @endforeach
                     
@@ -49,7 +55,7 @@
     <div class="row">
 
         <div class="col-xl-12"><h3>Customer Orders</h3></div>
-        <div class="@if($col_0==1) col-xl-0 @else col-xl-3 @endif bg-light pt-3 pb-2" style="border:1px solid #cfcfcf;">
+        <div class="col-xl-3 bg-light pt-3 pb-2" style="border:1px solid #cfcfcf;@if($col_0==1) display:none; @else @endif ">
             <div class="row">
                 <div class="col-xl-12 text-center mb-4">
                     @if ($photo)
@@ -101,7 +107,7 @@
         </div>
         {{-- @if($col_0==0) col-xl-0 @else col-xl-3 @endif --}}
         {{-- @if($col_0==0) col-xl-12 @else col-xl-9 @endif --}}
-        <div class=" @if($col_0==1) col-xl-12 @else col-xl-9 @endif" wire:click="sidebar()">
+        <div class=" @if($col_0==1) col-xl-12 @else col-xl-9 @endif" wire:click="sidebar()" style="transition:0.6s all ease; @if($col_0==1) background:#009dea; @endif">
             @if(!empty($successMsg))
                 <div class="alert alert-success">
                     {{ $successMsg }}

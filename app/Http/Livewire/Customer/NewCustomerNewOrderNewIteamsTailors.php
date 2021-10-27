@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
-class CustomerTailorsNewOrder extends Component
+class NewCustomerNewOrderNewIteamsTailors extends Component
 {
     use WithFileUploads;
     use TailorsTrait;
@@ -42,10 +42,8 @@ class CustomerTailorsNewOrder extends Component
     public $quantity,$wages,$discount,$total, $delivery_charge,$delivery_system;
 
     public $personal_info_open, $confirm_mail, $delivery_policy, $order_delivery, $courier_details, $test , $selectedtypes, $errorOut, $clothstyles, $define_key, $desingsIputKey=[], $designsresult;
-    public function mount($customer_id)
+    public function mount()
     {
-        $customer = Customer::find($customer_id);
-        $this->customer_id = $customer->id;
         $this->country ='bd';
         $this->delivery_system ='byhand';
         $this->discount =0;
@@ -56,7 +54,10 @@ class CustomerTailorsNewOrder extends Component
         $todayDate= date('Y-m-d');
         $this->validateOnly($fields,[
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
-
+            'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
+            'mobile'            => 'required|numeric|unique:customers|digits:11',
+            'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
+            'address'           => 'string|nullable',
             'products'          => 'required',
             'email'             => 'email|unique:customers|nullable',
             
@@ -96,12 +97,12 @@ class CustomerTailorsNewOrder extends Component
         //ohter delivery validation
         if ( $this->order_delivery ) {
             $this->validateOnly($fields,[
-                'courier_details'   =>  'required',
-                'country'           =>  'required',
-                'city'              =>  'required',
-                'province'          =>  'required',
-                'zipcode'           =>  'required',
-                'line1'             =>  'required',
+                'courier_details'  =>  'required',
+                'country'       =>  'required',
+                'city'          =>  'required',
+                'province'      =>  'required',
+                'zipcode'       =>  'required',
+                'line1'         =>  'required',
             ]);
         }
         
@@ -172,7 +173,7 @@ class CustomerTailorsNewOrder extends Component
        
 
         //customer personal infor 
-        $customer              = Customer::find($this->customer_id);
+        $customer              = new Customer();
         $customer->user_id     = Auth::user()->id;
         $customer->Full_Name   = $this->Full_Name;
         $customer->mobile      = $this->mobile;
@@ -348,7 +349,7 @@ class CustomerTailorsNewOrder extends Component
         $allproducts = Product::all();
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
-        return view('livewire.customer.customer-tailors-new-order', compact('allproducts', 'styles', 'designItems'))->layout('layouts.manage_layout');
+        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'styles', 'designItems'))->layout('layouts.manage_layout');
     }
 
 
