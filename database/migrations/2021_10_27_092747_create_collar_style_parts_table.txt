@@ -1,0 +1,46 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateCollarStylePartsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        if ( ! Schema::hasTable('collar_style_parts')) {
+            Schema::create('collar_style_parts', function (Blueprint $table) {
+                $table->id();
+                $table->bigInteger('customer_id')->unsigned();
+                $table->bigInteger('order_id')->unsigned();
+                $table->bigInteger('order_number')->unsigned();
+                $table->bigInteger('order_item_id')->unsigned();
+                $table->integer('style_id');
+                // $table->json('collars_check');
+                $table->text('style_details')->nullable();
+                $table->string('option')->nullable();
+                $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+                $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
+                $table->foreign('order_item_id')->references('id')->on('order_items')->onDelete('cascade');
+                // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+                // $table->timestamps();
+            });
+        }
+        
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('collar_style_parts');
+    }
+}

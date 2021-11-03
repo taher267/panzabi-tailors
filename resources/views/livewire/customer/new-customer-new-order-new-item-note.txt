@@ -1,0 +1,119 @@
+<div class="col-xl-12">
+                                    <div class="row">
+                                        @foreach ( $styles->where('dependency', $design->slug) as $style )
+                                        <div class="col-lg-2 col-sm-6 design_bg sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})"> 
+                                            <div class="custom-control custom-checkbox mb-1 d-inline-block">
+                                                <input type="checkbox" wire:model="designs_check.{{ $style->id }}" value="{{ $style->id }}" class="custom-control-input" id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '') required {{--$design_fields--}} {{--@foreach ( $design_fields as $key => $item ) @if( $key == $style->id ) required @else no @endif @endforeach--}} @endif {{--@if(sizeof($designs_check)==0)required @endif--}}>
+                                                <!-- designs_check -->
+                                                {{-- @if( $design_fields ) @foreach ( $design_fields as $key => $item ) @if($key==$style->id) disabled  @else no @endif @endforeach @endif --}}
+                                                <label class="custom-control-label" for="style_{{$style->id}}">{{$style->name}} <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail-" width="30" alt=""></label>
+                                                @error('designs_check') <div class="text-danger"> {!!$message!!}</div> {{--@else <div class="invalid-feedback text-warning">যেকোনো একটি নির্বাচন করুন </div>--}}  @enderror
+                                                
+                                                <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        @endforeach                                    
+                                    </div>  
+                                </div>
+
+
+
+
+2nd part
+
+                                @php
+
+$arr1 = $collars_check;//[1=>1,5=>5,7=>7,9=>9,6=>6,2=>2, 3=>3];
+        $arr2 = $collar_fields;//[1=>'One',3=>'Three',7=>'Seven',9=>'eleven'];
+        if (0 < count($arr1) ) {
+            $arrDiff = count($arr1) - count($arr2);
+        for ($i=1; $i <= $arrDiff; $i++) { 
+             array_push($arr2, "");
+        }
+        // array_push($arr2, "");
+        for($i=0; $i < sizeof($arr1); $i++){
+            if( array_values($arr1)[$i] == array_keys($arr2)[$i]){
+                echo array_values($arr1)[$i]. ' : '. 'is same value as '. array_values($arr2)[$i] . '<br>';
+                }else{
+                 echo array_values($arr1)[$i]. ' : '. 'is different value as '. array_values($arr2)[$i] . '<br>';
+                }
+
+        }
+
+        }
+@endphp
+                        <p>@if ( count($designs_check) > 3)
+                            {{-- {{dd($designs_check)}} --}}
+                        @endif</p>
+                        {{--sizeof($collars_check)--}}
+
+                        <h2>br</h2>
+                        {{-- {{print_r($collar_fields)}} --}}
+                        {{-- <p>{{print_r( $allarray )}}</p> --}}
+                        {{-- <p>@if( in_array( 1, array_keys($design_fields) , true) ) required  @endif</p> --}}
+                        @if ($styles && $designItems)
+                            @foreach ($designItems as $design)
+                            <div class="row py-3">
+                                <div class="col-xl-12 py-3">
+                                    <h4 class="">{{$design->name .'/'. $design->slug}}</h4>
+                                </div>
+                                <div class="col-xl-12">
+                                    <div class="row">
+                                        @foreach ( $styles->where('dependency', $design->slug) as $style )
+                                        <div class="col-lg-2 col-sm-6 design_bg sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})"> 
+                                            <div class="custom-control custom-checkbox mb-1 d-inline-block">
+                                                <input type="checkbox" wire:model="{{$design->slug}}s_check.{{ $style->id }}" value="{{ $style->id }}" class="custom-control-input" id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '') required  @endif>
+                                                <label class="custom-control-label" for="style_{{$style->id}}">{{$style->name}} <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail-" width="30" alt=""></label>
+                                                @error('designs_check') <div class="text-danger"> {!!$message!!}</div> {{--@else <div class="invalid-feedback text-warning">যেকোনো একটি নির্বাচন করুন </div>--}}  @enderror
+                                                
+                                                <textarea wire:model="{{$design->slug}}_fields.{{ $style->id }}" rows="1" class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                        @endforeach                                    
+                                    </div>  
+                                </div>
+                            </div>
+                            @endforeach
+                        @endif
+                        {{-- Type Start --}}
+  
+                        
+                    </div> <!--cloth_part_style End-->
+
+
+                    insert func
+                    $collarsStyle = new CollarStylePart();
+        $arr1 = $this->designs_check;
+            $arr2 = $this->design_fields;
+            if (0 < count($arr1) ) {
+                $arrDiff = count($arr1) - count($arr2);
+            for ($i=1; $i <= $arrDiff; $i++) { 
+                    array_push($arr2, "");
+            }
+            // array_push($arr2, "");
+            for($i=0; $i < sizeof($arr1); $i++){
+                if( array_values($arr1)[$i] == array_keys($arr2)[$i]){
+                
+                $collarsStyle->customer_id    = $customer->id;
+                $collarsStyle->order_id       = $order->id;
+                $collarsStyle->order_number   = $this->order_number;
+                $collarsStyle->order_item_id  = $orderitem->id;
+                $collarsStyle->style_id       = array_values($arr1)[$i];
+                $collarsStyle->style_details  = array_values($arr2)[$i]??null;
+                $collarsStyle->option  = null;
+                $collarsStyle->save();
+                    }else{
+                        $collarsStyle->customer_id    = $customer->id;
+                        $collarsStyle->order_id       = $order->id;
+                        $collarsStyle->order_number   = $this->order_number;
+                        $collarsStyle->order_item_id  = $orderitem->id;
+                        $collarsStyle->style_id       = array_values($arr1)[$i];
+                        $collarsStyle->style_details  = array_values($arr2)[$i]??null;
+                        $collarsStyle->option  = null;
+                        $collarsStyle->save();
+                        // echo array_values($arr1)[$i]. ' : '. 'is different value as '. array_values($arr2)[$i] . '<br>';
+                    }
+    
+            }
+    
+            }

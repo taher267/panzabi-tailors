@@ -7,7 +7,7 @@
                     <tr>
                         <th>Order No/Iteams</th>
                         <th>Order No</th>
-                        <th>Wages <b>({{$allOrders->sum('wages')}})</b></th>
+                        <th>Wages <b>({{$allOrders->sum('wages')-$allOrders->sum('discount')}})</b></th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -15,8 +15,8 @@
                     @foreach ($allOrders as $order)
                     <tr>
                         <td scope="row">{{$order->order_number}}/{{$order->orderitems->count()}}</td>
-                        <td scope="row"></td>
-                        <td>{{ $order->wages }}</td>
+                        <td scope="row">{{$order->order_number}}</td>
+                        <td>{{ $order->wages-$order->discount  }}</td>
                         <td></td>
                         {{-- route('customer.orderiteams',  --}}
                         <td>

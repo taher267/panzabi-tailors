@@ -12,6 +12,8 @@ use App\Models\DesignItem;
 use Illuminate\Support\Str;
 use App\Tailors\TailorsTrait;
 use Livewire\WithFileUploads;
+use App\Models\OrderItemStyle;
+use App\Models\SleeveStylePart;
 use App\Models\StyleMeasurePart;
 use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
@@ -24,34 +26,44 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     //cloth
     public $order_number,$user_id, $products,$designs_check=[], $design_fields=[], $Full_Name, $mobile, $photo, $address, $email, $country,
      $province, $city, $line1, $line2, $zipcode, $delivery_date, $order_date, $selected_product, $couriar_details;
-    public $peoducts, $cloth_long, $cloth_body, $body_loose, $cloth_enclosure, $hand_long, $cloth_belly, $belly_loose, $sleeve_less,$sleeve_pasting,
-     $cloth_throat, $cloth_collar, $cloth_put, $cloth_mora, $noke_shoho, $cloth_additional, $every_dress_measurement_size;
-    //collar
-     public $sherwani_clr_catalog_in, $sherwani_clr_catalog_fld, $sherwani_rnd_clr_catalog_in, $sherwani_rnd_clr_catalog_fld, $sherwani_colar_in, $sherwani_colar_fld, $sherwani_rnd_colar_in, $sherwani_rnd_colar_fld, $round_bald_throat_clr_in, $round_bald_throat_clr_fld,$round_throat_clr_in, $round_throat_clr_fld, $beld_colar_in, $beld_colar_fld, $shart_collar_in, $shart_collar_fld, $tiny_shape_cor_in, $tiny_shape_cor_fld, $clr_plate_soft_pasting_in, $clr_plate_soft_pasting_fld, $clr_plate_7_suta_in, $clr_plate_7_suta_fld, $collar_plate_in, $collar_plate_fld;
-     //Sleeve
-     public $loose_sleeve_in, $loose_sleeve_fld, $sleeve_under_3_suta_in, $sleeve_under_3_suta_fld, $sleeve_side_one_and_half_in, $sleeve_side_one_and_half_fld;
-     //Cuff
-     public $state_cuf_in, $state_cuf_fld, $round_cuf_in, $round_cuf_fld;
-     //Plate
-     public $double_plate_in, $double_plate_fld, $invarce_double_plate_in, $invarce_double_plate_fld, $normal_plate_in, $normal_plate_fld, $plate_nok_shoho_in, $plate_nok_shoho_fld, $angle_plate_in, $angle_plate_fld, $design_button_in, $design_button_fld;
-     //Pocket
-     public $one_chest_pocket_in, $one_chest_pocket_fld, $one_and_half_chest_pocket_in, $one_and_half_chest_pocket_fld, $meswak_pocket_in, $meswak_pocket_fld;
-     //piping
-     public $collar_plate_and_sleeve_piping_in, $collar_plate_and_sleeve_piping_fld, $collar_one_side_3_side_and_sleeve_piping_in, $collar_one_side_3_side_and_sleeve_piping_fld, $collar_plate_sleeve_other_cloth_piping_in, $collar_plate_sleeve_other_cloth_piping_fld, $collar_cloth_by_other_cloth_piping_in, $collar_cloth_by_other_cloth_piping_fld;
+    public $peoducts, $cloth_long, $cloth_body, $body_loose, $cloth_enclosure, $hand_long, $cloth_belly, $belly_loose, $sleeve_enclosure,$sleeve_pasting,
+     $cloth_throat, $cloth_collar, $cloth_shoulder, $cloth_mora, $noke_shoho, $cloth_additional, $every_dress_measurement_size;
+    
     //Order
-    public $quantity,$wages,$discount,$total, $delivery_charge,$delivery_system;
+    public $quantity=1,$wages,$discount=0,$total, $delivery_charge,$delivery_system, $force_id, $collar_measure_type;
 
     public $personal_info_open, $confirm_mail, $delivery_policy, $order_delivery, $courier_details, $test , $selectedtypes, $errorOut, $clothstyles, $define_key, $desingsIputKey=[], $designsresult;
+    public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
+    public $collar_fields=[], $sleeve_fields=[], $cuff_fields=[], $plate_fields=[], $pocket_fields=[], $back_fields=[], $piping_fields=[], $zip_fields=[], $sewing_fields=[], $embroidery_fields=[], $karchupi_fields=[], $other_fields=[];
+    public $collerFirstArea,$collerLastArea,$sleeveFirstArea,$sleeveLastArea,$cuffFirstArea,$cuffLastArea,$plateFirstArea,$plateLastArea,$pocketFirstArea,$pocketLastArea,$backFirstArea,$backLastArea,$pipingFirstArea,$pipingLastArea,$zipFirstArea,$zipLastArea,$sewingFirstArea,$sewingLastArea,$embroideryFirstArea,$embroideryLastArea,$karchupiFirstArea,$karchupiLastArea,$karchupotheriFirstArea,$otherLastArea;
+
     public function mount()
     {
+        
         $this->country ='bd';
         $this->delivery_system ='byhand';
-        $this->discount =0;
+        // $this->discount =0;
+        $lastOrder = Order::orderBy('id',"DESC")->first();
+        if( $lastOrder== null){
+        $this->order_number =1;
+        }else{
+            $this->order_number = $lastOrder->order_number+1;   
+        }
         
     }
     public function updated($fields)
     {
         $todayDate= date('Y-m-d');
+        $Order = Order::orderBy('id',"DESC")->first();
+        if($this->force_id==1){
+            $maxOrderNo = $this->order_number;
+        }else{
+            if(strlen($Order)>0){
+                $maxOrderNo = $Order->order_number+1;
+            }else{
+                $maxOrderNo = 1;
+            }
+        }
         $this->validateOnly($fields,[
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
@@ -62,7 +74,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'email'             => 'email|unique:customers|nullable',
             
             //Measure
-            'order_number'      => 'required|numeric|unique:orders',
+            'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
             'cloth_long'        => 'required|numeric',
             'cloth_body'        => 'required|numeric',
             'body_loose'        => 'required|numeric',
@@ -70,17 +82,19 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'belly_loose'       => 'required|numeric',
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
-            'sleeve_less'       => 'required|numeric',
+            'sleeve_enclosure'  => 'required|numeric',
             'sleeve_pasting'    => 'required|numeric',
-            'cloth_throat'      => 'required|numeric',
+            'cloth_throat'      => 'numeric|nullable',
             'cloth_collar'      => 'required|numeric',
-            'cloth_put'         => 'required|numeric',
+            'collar_measure_type'=> 'numeric|nullable',
+            'cloth_shoulder'    => 'required|numeric',
             'cloth_mora'        => 'required|numeric',
             'noke_shoho'        => 'nullable|numeric',
-            'designs_check.*'   => 'string|nullable',
-            'design_fields.*'   => 'string|nullable',
-            'cloth_additional'  => 'string|nullable',
+            'designs_check.*'   => 'nullable',
+            'design_fields.*'   => 'nullable',
+            'cloth_additional'  => 'nullable|string',
             'wages'             => 'required|numeric',
+            'quantity'          => 'required|numeric|min:1',
             'discount'          => 'required|numeric',
             'total'             => 'required|numeric',
         ],[
@@ -105,21 +119,32 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                 'line1'         =>  'required',
             ]);
         }
-        
-        //More Dress data
-        // if ( count($this->products)>1 ) {
-        //     $this->validateOnly($fields,[
-        //         'every_dress_measurement_size'   =>  'required|numeric',
-        //     ]);
-        // }
+    }
+    public function placeOrder2()
+    {
+        // if( $this->collar_measure_type ):
+        //         dd($this->cloth_collar .' মোট' ); 
+        // else:
+        //     dd($this->cloth_collar);
+        // endif;
     }
     public function placeOrder()
     {
         // dd($this->photo->extension());
         // dd($this->imageNameMake($this->Full_Name, $this->photo));
         $todayDate= date('Y-m-d');
+        $Order = Order::orderBy('id',"DESC")->first();
+        if($this->force_id==1){
+            $maxOrderNo = $this->order_number;
+        }else{
+            if(strlen($Order)>0){
+                $maxOrderNo = $Order->order_number+1;
+            }else{
+                $maxOrderNo = 1;
+            }
+        }
         $this->validate([
-            'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$todayDate,
+            'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => 'required|numeric|unique:customers|digits:11',
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
@@ -136,16 +161,17 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'belly_loose'       => 'required|numeric',
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
-            'sleeve_less'       => 'required|numeric',
+            'sleeve_enclosure'  => 'required|numeric',
             'sleeve_pasting'    => 'required|numeric',
-            'cloth_throat'      => 'required|numeric',
+            'cloth_throat'      => 'numeric|nullable',
             'cloth_collar'      => 'required|numeric',
-            'cloth_put'         => 'required|numeric',
+            'collar_measure_type'=> 'numeric|nullable',
+            'cloth_shoulder'    => 'required|numeric',
             'cloth_mora'        => 'required|numeric',
             'noke_shoho'        => 'nullable|numeric',
-            'designs_check.*'   => 'string|nullable',
-            'design_fields.*'   => 'string|nullable',
-            'cloth_additional'  => 'string|nullable',
+            'designs_check.*'   => 'nullable',
+            'design_fields.*'   => 'nullable',
+            'cloth_additional'  => 'nullable|string',
             'wages'             => 'required|numeric',
             'discount'          => 'required|numeric',
             'total'             => 'required|numeric',
@@ -161,7 +187,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         //ohter delivery validation
         if ( $this->order_delivery ) {
             $this->validate([
-                'courier_details'   =>  'required',
+                'courier_details' =>  'required',
                 'country'   =>  'required',
                 'city'      =>  'required',
                 'province'  =>  'required',
@@ -195,7 +221,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
               $customer->line2     = $this->line2 ?? null;
         }
         $customer->save();
-        // $customer->save();
+        //// $customer->save();
         // if($customer->save()){
         //     if( $this->photo){
         //         /**
@@ -214,6 +240,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $order->discount        = $this->discount??0;
         $order->delivery_charge = $this->delivery_charge??0;
         $order->delivery_system = $this->delivery_system??'byhand';
+        $order->courier_details = $this->courier_details??null;
         $order->total           = $this->total-$this->discount;
         $order->status          = true;
         $order->delivered_date = $this->delivery_date;
@@ -236,18 +263,130 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $orderitem->body_loose        = $this->body_loose;
         $orderitem->cloth_enclosure   = $this->cloth_enclosure;
         $orderitem->hand_long         = $this->hand_long;
-        $orderitem->sleeve_less       = $this->sleeve_less;
+        $orderitem->sleeve_enclosure  = $this->sleeve_enclosure;
         $orderitem->sleeve_pasting    = $this->sleeve_pasting;
         $orderitem->cloth_throat      = $this->cloth_throat;
-        $orderitem->cloth_collar      = $this->cloth_collar;
-        $orderitem->cloth_put         = $this->cloth_put;
+        if( $this->collar_measure_type ):
+            $orderitem->cloth_collar      = $this->cloth_collar .' মোট';
+            else:
+                $orderitem->cloth_collar      = $this->cloth_collar;
+            endif;
+        
+        $orderitem->cloth_shoulder    = $this->cloth_shoulder;
         $orderitem->cloth_mora        = $this->cloth_mora;
         $orderitem->noke_shoho        = $this->noke_shoho;
         $orderitem->cloth_additional  = $this->cloth_additional;
-         if($orderitem->save()){
+        $orderitem->save();
+
+        /**
+         * Design part or Style part of dress
+         * 
+         */
+         $OrderItemStyles = new OrderItemStyle();
+             if (0 < count($this->designs_check) ) {
+                 $arrDiff = count($this->designs_check) - count($this->design_fields);
+                for ($i=0; $i <= $arrDiff; $i++) { 
+                        array_push($this->design_fields, "");
+                }
+                $loopCount = count($this->designs_check);
+    
+                for($i=0; $i < $loopCount; $i++){
+                    // if( array_values($this->designs_check)[$i] == array_keys($this->design_fields)[$i]){
+                    
+                    if(0 != array_values($this->designs_check)[$i]){
+                        // dd(  array_values($this->designs_check)[$i]);
+                        //কলার/collar
+                        if(array_keys($this->designs_check)[$i] >= $this->collerFirstArea->id && array_keys($this->designs_check)[$i] 
+                        <= $this->collerLastArea->id){
+                            $OrderItemStyles = new OrderItemStyle();
+                            $OrderItemStyles->customer_id    = $customer->id;
+                            $OrderItemStyles->order_id       = $order->id;
+                            $OrderItemStyles->order_number   = $this->order_number;
+                            $OrderItemStyles->order_item_id  = $orderitem->id;
+                            $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                            $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                            $OrderItemStyles->item_style_type= $this->collerFirstArea->dependency;
+                            $OrderItemStyles->save();
+                            }
+                            //হাতা/sleeve
+                            else if(array_keys($this->designs_check)[$i] >= $this->sleeveFirstArea->id && array_keys($this->designs_check)[$i] 
+                            <= $this->sleeveLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
+                                $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                                $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                                $OrderItemStyles->item_style_type= $this->sleeveFirstArea->dependency;
+                                $OrderItemStyles->save();
+                                }
+                                // কাফ/cuff
+                                else if(array_keys($this->designs_check)[$i] >= $this->cuffFirstArea->id && array_keys($this->designs_check)[$i] 
+                            <= $this->cuffLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
+                                $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                                $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                                $OrderItemStyles->item_style_type= $this->cuffFirstArea->dependency;
+                                $OrderItemStyles->save();
+                                }
+                                //প্লেট/plate
+                                else if(array_keys($this->designs_check)[$i] >= $this->plateFirstArea->id && array_keys($this->designs_check)[$i] 
+                            <= $this->plateLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
+                                $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                                $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                                $OrderItemStyles->item_style_type= $this->plateFirstArea->dependency;
+                                $OrderItemStyles->save();
+                                }
+                                //পকেট/pocket
+                                else if(array_keys($this->designs_check)[$i] >= $this->pocketFirstArea->id && array_keys($this->designs_check)[$i] 
+                            <= $this->pocketLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
+                                $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                                $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                                $OrderItemStyles->item_style_type= $this->pocketFirstArea->dependency;
+                                $OrderItemStyles->save();
+                                }
+
+
+
+                                //পাইপিং/piping
+                                else if(array_keys($this->designs_check)[$i] >= $this->pipingFirstArea->id && array_keys($this->designs_check)[$i] 
+                            <= $this->pipingLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
+                                $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                                $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                                $OrderItemStyles->item_style_type= $this->pipingFirstArea->dependency;
+                                $OrderItemStyles->save();
+                                }
+                        }
+
+                        
+                    }
+     
+             }
+        //  if($orderitem->save()){
             
             session()->flash( 'msg', "<i class='fa fa-thumbs-up text-success'></i> কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!,success" );
-        }
+        // }
+
         
     }
 
@@ -256,7 +395,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
 // $json_insert = new DataTable;
 // $json_insert->json_column = $json_array;
-// $json_insert->save();
+//// $json_insert->save();
 
     // public function uploadImage($whatImg, $uploadOn, $slugby)
     // {
@@ -266,21 +405,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     // }
 
 
-    public function orders()
-    {
-        // $order          = new Order();
-        // $order->user_id = Auth::user()->id;
-        // $order->customer_id = $customer->id;
-        // $order->wages=500;//মজুরি
-        // $order->quantity=1;
-        // $order->subtotal=500;
-        // $order->discount=0;
-        // $order->delivery_charge= 0;
-        // $order->delivery_system= 'byhand';
-        // $order->total=500;
-        // $order->status='1';
-        // $order->delivered_date= $this->delivery_date;
-    }
+    
     public function formError()
     {
         $this->TraitFormError( $this->Full_Name, $this->mobile);
@@ -301,55 +426,96 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
 
     }
-    // public function FieldKeyDefine()
-    // {
-    //     // $this->desingsIputKey = [];
-    //     if ( count($this->design_fields ) > 0 ) {
-    //     $str = implode(',', $this->design_fields );
-    //     foreach (explode(',', $str) as $val2) {
-    //             $this->desingsIputKey[$val2] = $val2;
-    //     }
-    //     return $this->desingsIputKey;
-    //     }else {
-    //         $this->desingsIputKey=[];
-    //     }
-
-
-    // }
+    
     public $output;
     public function isRequiredField()
     {
         $this->output=[];
         if ( count($this->design_fields)> 0 && is_array($this->design_fields)) {
-            // foreach ($this->design_fields as $key => $requireOut) {
-            //     // if($key==$style->id){
-
-            //     // }
-            // }
+            
         }
-        // @if( sizeof($design_fields) ) @foreach ( $design_fields as $key => $item ) @if( $key==$style->id ) 
-        // required @else no @endif @endforeach @else  @endif
+        
     }
     public $dresses;
     public function allproductsarray()
     {
-        // $this->dresses=[];
-        // foreach ( Product::all() as $value) {
-        //     $this->dresses[$value->id] = $value->name;
-        // }
-        // return $this->dresses;
-        if ( count($this->design_fields) > 3):
-            //  dd($this->design_fields);       
+        
+        if ( count($this->design_fields) > 3):      
         endif;
+    }
+    public function StyleIdArea()
+    {
+        $this->collerFirstArea = StyleMeasurePart::where('dependency', 'collar')->first();//->id;
+        $this->collerLastArea = StyleMeasurePart::where('dependency', 'collar')->orderBy('id','DESC')->first();//->id;
+
+        $this->sleeveFirstArea = StyleMeasurePart::where('dependency', 'sleeve')->first();//->id;
+        $this->sleeveLastArea = StyleMeasurePart::where('dependency', 'sleeve')->orderBy('id','DESC')->first();//->id;
+
+        $this->cuffFirstArea = StyleMeasurePart::where('dependency', 'cuff')->first();//->id;
+        $this->cuffLastArea = StyleMeasurePart::where('dependency', 'cuff')->orderBy('id','DESC')->first();//->id;
+
+        $this->plateFirstArea = StyleMeasurePart::where('dependency', 'plate')->first();//->id;
+        $this->plateLastArea = StyleMeasurePart::where('dependency', 'plate')->orderBy('id','DESC')->first();//->id;
+
+        $this->pocketFirstArea = StyleMeasurePart::where('dependency', 'pocket')->first();//->id;
+        $this->pocketLastArea = StyleMeasurePart::where('dependency', 'pocket')->orderBy('id','DESC')->first();//->id;
+
+        $this->backFirstArea = StyleMeasurePart::where('dependency', 'back')->first();//->id;
+        $this->backLastArea = StyleMeasurePart::where('dependency', 'back')->orderBy('id','DESC')->first();//->id;
+
+        $this->pipingFirstArea = StyleMeasurePart::where('dependency', 'piping')->first();//->id;
+        $this->pipingLastArea = StyleMeasurePart::where('dependency', 'piping')->orderBy('id','DESC')->first();//->id;
+
+        // $this->zipFirstArea = StyleMeasurePart::where('dependency', 'zip')->first()->id;
+        // $this->zipLastArea = StyleMeasurePart::where('dependency', 'zip')->orderBy('id','DESC')->first()->id;
+
+        // $this->sewingFirstArea = StyleMeasurePart::where('dependency', 'sewing')->first()->id;
+        // $this->sewingLastArea = StyleMeasurePart::where('dependency', 'sewing')->orderBy('id','DESC')->first()->id;
+
+        // $this->embroideryFirstArea = StyleMeasurePart::where('dependency', 'embroidery')->first()->id;
+        // $this->embroideryLastArea = StyleMeasurePart::where('dependency', 'embroidery')->orderBy('id','DESC')->first()->id;
+
+        // $this->karchupiFirstArea = StyleMeasurePart::where('dependency', 'karchupi')->first()->id;
+        // $this->karchupiLastArea = StyleMeasurePart::where('dependency', 'karchupi')->orderBy('id','DESC')->first()->id;
+
+        // $this->karchupotheriFirstArea = StyleMeasurePart::where('dependency', 'other')->first()->id;
+        // $this->otherLastArea = StyleMeasurePart::where('dependency', 'other')->orderBy('id','DESC')->first()->id;
+
+        // print_r($collerFirstArea+$collerLastArea-1);
+        // print_r($collerFirstArea);
+        // echo '</pre>';
+    }
+    public function WagesCalculation()
+    {
+        if($this->wages != ''|| $this->wages>0): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0); endif;
+    }
+    public $minOrderId, $maxOrderId;
+    public function minMaxOrderId()
+    {
+        if(count(Order::all())>0 && ! $this->force_id){
+            $this->minOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
+            $this->maxOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
+        }else if(! $this->force_id){
+            $this->minOrderId=1;
+            $this->maxOrderId=1;   
+        }else{
+            $this->minOrderId=$this->order_number;
+            $this->maxOrderId=$this->order_number;  
+        }
+        // @if(DB::table('orders')->get()->count()>0 && ! $force_id){{DB::table('orders')->orderBy('id','DESC')->first()->order_number+1}}@else{{'1'}}@endif"
     }
     public function render()
     {
+        $this->minMaxOrderId();
+        $this->WagesCalculation();
+        $this->StyleIdArea();
         $this->allproductsarray();
         // $this->checkboxKeyDefine();
         $allproducts = Product::all();
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
-        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'styles', 'designItems'))->layout('layouts.manage_layout');
+        $collarStyle = OrderItemStyle::all();
+        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'styles', 'designItems','collarStyle'))->layout('layouts.manage_layout');
     }
 
 
@@ -390,6 +556,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     //         $assign_subject->pass_mark         = $request->pass_mark[$i];
     //         $assign_subject->subjective_mark   = $request->subjective_mark[$i];
             
-    //          $assign_subject->save();
+    ////          $assign_subject->save();
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Customer;
 use App\Models\Order;
 use Livewire\Component;
 use App\Models\Customer;
+use App\Models\OrderItem;
 
 class TailorsCustomerOrderItems extends Component
 {
@@ -29,8 +30,8 @@ class TailorsCustomerOrderItems extends Component
     }
     public function render()
     {
-        $orders = Order::where('order_number', $this->order_number)->get();
-        return view('livewire.customer.tailors-customer-order-items', compact('orders'))->layout('layouts.manage_layout');
+        $orderItems = OrderItem::where('order_number', $this->order_number)->where('customer_id', $this->customer_id)->get();
+        return view('livewire.customer.tailors-customer-order-items', compact('orderItems'))->layout('layouts.manage_layout');
     }
 }
 
