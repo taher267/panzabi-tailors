@@ -120,10 +120,13 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             ]);
         }
     }
-    public function placeOrder3()
+    public function placeOrder2()
     {
-        dd(count($this->designs_check));
-       
+        // if( $this->collar_measure_type ):
+        //         dd($this->cloth_collar .' মোট' ); 
+        // else:
+        //     dd($this->cloth_collar);
+        // endif;
     }
     public function placeOrder()
     {
@@ -279,23 +282,27 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
          * Design part or Style part of dress
          * 
          */
-         
+         $OrderItemStyles = new OrderItemStyle();
              if (0 < count($this->designs_check) ) {
-                //  $arrDiff = count($this->designs_check) - count($this->design_fields);
+                 $arrDiff = count($this->designs_check) - count($this->design_fields);
+                for ($i=0; $i <= $arrDiff; $i++) { 
+                        array_push($this->design_fields, "");
+                }
                 $loopCount = count($this->designs_check);
     
                 for($i=0; $i < $loopCount; $i++){
+                    // if( array_values($this->designs_check)[$i] == array_keys($this->design_fields)[$i]){
                     
                     if(0 != array_values($this->designs_check)[$i]){
                         // dd(  array_values($this->designs_check)[$i]);
-                        $OrderItemStyles = new OrderItemStyle();
+                        //কলার/collar
+                        if(array_keys($this->designs_check)[$i] >= $this->collerFirstArea->id && array_keys($this->designs_check)[$i] 
+                        <= $this->collerLastArea->id){
+                            $OrderItemStyles = new OrderItemStyle();
                             $OrderItemStyles->customer_id    = $customer->id;
                             $OrderItemStyles->order_id       = $order->id;
                             $OrderItemStyles->order_number   = $this->order_number;
                             $OrderItemStyles->order_item_id  = $orderitem->id;
-                        //কলার/collar
-                        if(array_keys($this->designs_check)[$i] >= $this->collerFirstArea->id && array_keys($this->designs_check)[$i] 
-                        <= $this->collerLastArea->id){
                             $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
                             $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
                             $OrderItemStyles->item_style_type= $this->collerFirstArea->dependency;
@@ -304,6 +311,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                             //হাতা/sleeve
                             else if(array_keys($this->designs_check)[$i] >= $this->sleeveFirstArea->id && array_keys($this->designs_check)[$i] 
                             <= $this->sleeveLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
                                 $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
                                 $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
                                 $OrderItemStyles->item_style_type= $this->sleeveFirstArea->dependency;
@@ -312,6 +324,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                                 // কাফ/cuff
                                 else if(array_keys($this->designs_check)[$i] >= $this->cuffFirstArea->id && array_keys($this->designs_check)[$i] 
                             <= $this->cuffLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
                                 $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
                                 $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
                                 $OrderItemStyles->item_style_type= $this->cuffFirstArea->dependency;
@@ -320,6 +337,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                                 //প্লেট/plate
                                 else if(array_keys($this->designs_check)[$i] >= $this->plateFirstArea->id && array_keys($this->designs_check)[$i] 
                             <= $this->plateLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
                                 $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
                                 $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
                                 $OrderItemStyles->item_style_type= $this->plateFirstArea->dependency;
@@ -328,6 +350,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                                 //পকেট/pocket
                                 else if(array_keys($this->designs_check)[$i] >= $this->pocketFirstArea->id && array_keys($this->designs_check)[$i] 
                             <= $this->pocketLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
                                 $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
                                 $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
                                 $OrderItemStyles->item_style_type= $this->pocketFirstArea->dependency;
@@ -339,6 +366,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                                 //পাইপিং/piping
                                 else if(array_keys($this->designs_check)[$i] >= $this->pipingFirstArea->id && array_keys($this->designs_check)[$i] 
                             <= $this->pipingLastArea->id){
+                                $OrderItemStyles = new OrderItemStyle();
+                                $OrderItemStyles->customer_id    = $customer->id;
+                                $OrderItemStyles->order_id       = $order->id;
+                                $OrderItemStyles->order_number   = $this->order_number;
+                                $OrderItemStyles->order_item_id  = $orderitem->id;
                                 $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
                                 $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
                                 $OrderItemStyles->item_style_type= $this->pipingFirstArea->dependency;
@@ -470,41 +502,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             $this->minOrderId=$this->order_number;
             $this->maxOrderId=$this->order_number;  
         }
-        
-    }
-    public function fillEmptyStyleField($style_id){
-        
-        if ($style_id != null) {
-            // dd($style_id);
-            if (in_array($style_id,array_keys($this->designs_check), true) ) {
-                if (in_array($style_id,array_keys($this->design_fields), true )) {
-                    $this->design_fields[$style_id]=$this->design_fields[$style_id];
-                }else {
-                    $this->design_fields[$style_id]=' ';
-                }
-                // $this->design_fields[2]='Bismillah';
-            }
-
-            if (in_array($style_id,array_keys($this->designs_check), false) ) {
-                // $this->design_fields[$style_id]=null;
-                // if (in_array($style_id,array_keys($this->design_fields), true )) {
-                //     $this->design_fields[$style_id]=$this->design_fields[$style_id];
-                // }else {
-                //     $this->design_fields[$style_id]='Bismillah';
-                // }
-                // // $this->design_fields[2]='Bismillah';
-            }
-           
-            
-        }
-        
+        // @if(DB::table('orders')->get()->count()>0 && ! $force_id){{DB::table('orders')->orderBy('id','DESC')->first()->order_number+1}}@else{{'1'}}@endif"
     }
     public function render()
     {
-        // if (count($this->designs_check)>0 && in_array($style_id, array_keys($this->designs_check) , true) && in_array($style_id, array_keys($this->design_fields) , false )) {
-            // $this->fillEmptyStyleField($style_id='');
-        // }
-        
         $this->minMaxOrderId();
         $this->WagesCalculation();
         $this->StyleIdArea();

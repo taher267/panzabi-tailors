@@ -6,6 +6,13 @@
     display: none;
     opacity: 0;
 }
+.cloth_part_style .design_bg::after {
+    position: absolute;content: '';width: 100%; height: 100%;
+    /*3e3e3e */  background: radial-gradient(#8C00BF, transparent);
+}
+.custom-control-input.is-valid~.custom-control-label, .was-validated .cloth_part_style .custom-control-input:valid~.custom-control-label {
+    color: #ffffff;
+}
     </style>
     @if (Session::has('msg'))
         <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!}">{!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}</div>
@@ -15,6 +22,32 @@
 
 div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { display: none !important;}
 </style>
+
+@php
+    // $arr1 = [2=>2, 4=>4,6=>6];
+    // $arr2 = [2=>"two", 4,6=>'six'];
+    // echo '<pre>';
+    // print_r(array_merge($arr1,$arr2));
+    // echo '</pre>';
+    // echo '</br>';
+    // echo '<pre>';
+    //     print_r(array_merge_recursive($arr1,$arr2));
+    // echo '</pre>';
+    // echo '</br>';
+    // echo '<pre>';
+        
+    //     // print_r(array_combine($arr1,$arr2));
+    // echo '</pre>';
+    // for ($i=0; $i < count($arr1); $i++) { 
+    //     print_r(array_values($arr1));
+    // }
+@endphp
+<br>
+<br>
+<br>
+<br>
+<br>
+
 <form class="was-validated" wire:submit.prevent="placeOrder">
     <div class="row">
         <div class="col-lg-12">
@@ -31,18 +64,18 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                 <span class="badge badge-secondary badge-pill"></span>
                 <div class="col-xl-12">
                     <div class="personal_information">
-                        <h2>Order Informaion</h2>
+                        <h2>অর্ডারের তথ্য</h2>
                         <div class="row">
                             <div class="col-lg-4">
-                                <label for="deliverydate">Delivery Date</label>
+                                <label for="deliverydate">ডেলিভেরি তারিখঃ</label>
                                 <input type="date" class="form-control" wire:model="delivery_date" id="deliverydate" required>
-                                @error('delivery_date') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback">Delivery date is required.</div> @enderror
+                                @error('delivery_date') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback">ডেলিভারি তারিখ দিন!</div> @enderror
                             </div>
                             <div class="col-lg-4">
                                 <div class="row">
                                     <div class="col-lg-9">                             
-                                        <label for="order_number">Order Number <span class="text-danger">(Last Order No- @if (DB::table('orders')->get()->count()>0){{DB::table('orders')->orderBy('id','DESC')->first()->order_number}} @else 0 @endif)</span></label>
-                                        <input type="number" class="form-control" min="{{!$force_id ? $maxOrderId: $order_number}}" max="{{$maxOrderId}}" wire:model="order_number" id="order_number" required>
+                                        <label for="order_number">অর্ডার নং- <span class="text-danger">(সর্বশেষ অর্ডার নং-- @if (DB::table('orders')->get()->count()>0){{DB::table('orders')->orderBy('id','DESC')->first()->order_number}} @else 0 @endif)</span></label>
+                                        <input type="number" class="form-control" @if(!$force_id) min="{{!$force_id ? $maxOrderId: $order_number}}" max="{{$maxOrderId}}" @endif wire:model="order_number" id="order_number" required>
                                         {{-- @if(DB::table('orders')->get()->count()>0){{DB::table('orders')->orderBy('id','DESC')->first()->order_number+1}} @endif --}}
                                         @error('order_number') <div class="text-danger">{!!$message!!}</div>@else @if(! $force_id)<div class="invalid-feedback">Order Number is required.</div>@endif @enderror
                                     </div>
@@ -52,7 +85,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                 </div>
                             </div>
                             <div class="col-lg-4">
-                                <label for="orderdate">Order Date </label>
+                                <label for="orderdate">অর্ডার তারিখঃ </label>
                                 <input type="date" class="form-control" wire:model="order_date" id="orderdate">
                                 @error('order_date') <div class="text-danger">{!!$message!!}</div>@enderror
                             </div>
@@ -60,36 +93,37 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                         <div class="row my-3" style="background: linear-gradient(34deg, #ddddd08, #f3f3f3">
                             <div class="col-xl-12 text-center text-warning"><h4 class="heading pb-3 mb-4">Personal/Identicaton Info </h4></div>
                                 <div class="col-lg-6 mb-3">
-                                    <label for="fullname">Full Name</label>
-                                    <input wire:model="Full_Name" type="text" class="form-control" id="fullname" placeholder="Full Name" required>
-                                    @error('Full_Name') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback"> Valid name is required.</div> @enderror
+                                    <label for="fullname">অর্ডারকারীর পুরো নামঃ</label>
+                                    <input wire:model="Full_Name" type="text" class="form-control" id="fullname" placeholder="পুরো নাম" required>
+                                    @error('Full_Name') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback"> সঠিকভাবে নাম পূরণ করুন</div> @enderror
                                 </div>
 
                                 <div class="col-lg-6 mb-3">
-                                    <label for="mobileNumber">Mobile No</label>
-                                    <input wire:model="mobile" type="number" class="form-control" id="mobileNumber" placeholder="Mobile Number.." required>
-                                    @error('mobile') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback"> Valid mobile no is required.</div> @enderror
+                                    <label for="mobileNumber">মোবাইল নম্বর</label>
+                                    <input wire:model="mobile" type="number" class="form-control" id="mobileNumber" placeholder="মোবাইল নম্বর.." required>
+                                    @error('mobile') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback"> সঠিক মোবাইল নম্বর দিন!</div> @enderror
                                 </div>
+                                 
                                 <div class="col-lg-6 mb-3">
-                                    <label for="email" class="d-flex">Email <span class="text-muted">(Optional)</span>
+                                    <label for="email" class="d-flex">ইমেইল <span class="text-muted">(অপশনাল)</span>
                                         <div class="col-lg-12 d-inline-block d-flex">
                                             <div class="custom-checkbox d-inline-block d-flex">
                                                 <input type="checkbox" class="custom-control-input" id="confirmmail" value="1" wire:model='confirm_mail'>
-                                                <label class="custom-control-label ml-3" style="" for="confirmmail">Send confirm Mail.</label>
+                                                <label class="custom-control-label ml-3" style="" for="confirmmail">আপনি কাস্টমারকে ইমেইল পাঠাতে চাচ্ছেন?</label>
                                             </div>
                                         </div>
                                     </label>
                                     <input wire:model="email" type="email" class="form-control" id="email" placeholder="you@example.com" {{ $confirm_mail ?'required':'' }} >
                                     
-                                    @error('email') <div class="alert alert-danger">{!! $message!!}</div> @else <div class="invalid-feedback"> Valid email is requied!</div>@enderror
+                                    @error('email') <div class="alert alert-danger">{!! $message!!}</div> @else <div class="invalid-feedback">সঠিক ইমেইল যুক্ত করুন</div>@enderror
                                 </div>
                                 <div class="col-lg-6 mb-3 customer_photo">
-                                    <label for="customerPhoto">Photo (Optional)</label>
+                                    <label for="customerPhoto">কাস্টমারের ছবি (অপশনাল)</label>
                                     <div class="input-group input_customer_photo" style="positon:relative;">
                                         <input wire:model="photo" type="file" class="custom-file-input" id="customerPhoto">
                                         <label class="custom-file-label" for="customerPhoto"></label>
                                         <div class="invalid-feedback"></div>
-                                        <div class="invalid-feedback">@error('photo'){!! $message!!} @else Photo should be valid formated (jpg, jpeg, png)!@enderror</div>
+                                        <div class="invalid-feedback">@error('photo'){!! $message!!} @else সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!@enderror</div>
                                         {{-- <img class="" src="{{$photo->temporaryUrl()}}" width="120"> --}}
                                         
                                         @if ( $photo )
@@ -102,9 +136,9 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     
                                 </div>
                                 <div class="col-lg-12 mb-3">
-                                    <label for="cusaddress">Address <span class="text-muted">(Optional)</span></label>
-                                    <textarea wire:model="address" rows="3" class="form-control" id="cusaddress" placeholder="Your Address"></textarea>
-                                    <div class="invalid-feedback">@error('address'){!!$message!!} @else Please enter a valid address. @enderror</div>
+                                    <label for="cusaddress">ঠিকানা <span class="text-muted">(অপশনাল)</span></label>
+                                    <textarea wire:model="address" rows="3" class="form-control" id="cusaddress" placeholder="ঠিকানা..."></textarea>
+                                    {{-- <div class="invalid-feedback">@error('address'){!!$message!!} @else Please enter a valid address. @enderror</div> --}}
                                 </div>
                         </div>
 
@@ -112,16 +146,16 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                         <div class="col-xl-12 d-flex form-group mb-4">
                             <div class="form-check custom-radio d-flex">
                                 <input value="1" wire:model='order_delivery' type="checkbox" class="custom-control-input" id="otherDelivery" name="daliveryPolicy">
-                                <label class="custom-control-label" for="otherDelivery">Other Delivery</label>
+                                <label class="custom-control-label" for="otherDelivery">অন্য কোনো মাধ্যমে আপনার পণ্য ডেলিভারি হবে?</label>
                             </div>
                         </div>
                         
                     @if ( $order_delivery == 1 )
                             <div class="row py-3 test-class" id="dalivery_address" style="background: linear-gradient(355deg,#009cea00, rgb(128 0 128 / 5%) )">
-                                <div class="col-xl-12 "><h6>Online delivery required fields</h6></div>
+                                <div class="col-xl-12 "><h6 class="text-primary">কুরিয়ার বা কোন মাধ্যমে আপনার পণ্য সমূহ ডেলিভারি হবে তার বিস্তারিত--</h6></div>
                                 <div class="col-xl-12 ">
-                                    <label for="couriername">Courier details</label>
-                                    <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="Courier Name & branch..." required>
+                                    <label for="couriername">কুরিয়ার এর তথ্য</label>
+                                    <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="কুরিয়ার এর নাম এবং শাখার বিস্তারিত..." required>
                                     @error('courier_details') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Courier details is required.</div>@enderror
                                 </div>
 
@@ -134,32 +168,32 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <div class="invalid-feedback">@error('country') $message!!} @else Select a country @enderror </div>
                                 </div>
                                 <div class="col-lg-6 mb-3">
-                                    <label for="ccity">City</label>
+                                    <label for="ccity">শহর</label>
                                     <input wire:model="city" type="text" class="form-control" id="ccity" placeholder="City" required>
-                                    @error('city') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">City is required.</div>@enderror
+                                    @error('city') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">শহর দিন!</div>@enderror
                                 </div>
 
                                 <div class="col-lg-6 mb-3">
-                                    <label for="line1">Line1</label>
-                                    <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="Line1...." required>
-                                    @error('line1') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Line1 is required.</div>@enderror
+                                    <label for="line1">লাইন ১</label>
+                                    <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="লাইন ১...." required>
+                                    @error('line1') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">লাইন ১ দিন!</div>@enderror
                                 </div>
 
                                 <div class="col-lg-6 mb-3">
-                                    <label for="line2">Line2</label>
-                                    <input wire:model="line2" type="text" class="form-control" id="line2" placeholder="Line2.." >
+                                    <label for="line2">লাইন ২</label>
+                                    <input wire:model="line2" type="text" class="form-control" id="line2" placeholder="লাইন ২.." >
                                     @error('line2') <div class="text-danger">{!!$message!!}</div> @enderror
                                 </div>
 
                                 <div class="col-lg-6 mb-3">
-                                    <label for="cprovince">Province</label>
-                                    <input wire:model="province" type="text" class="form-control" id="cprovince" placeholder="Province" required>
-                                    @error('province') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Province is required.</div>@enderror
+                                    <label for="cprovince">প্রদেশ</label>
+                                    <input wire:model="province" type="text" class="form-control" id="cprovince" placeholder="প্রদেশ" required>
+                                    @error('province') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">প্রদেশ দিন!</div>@enderror
                                 </div>
                                 <div class="col-lg-6 mb-3">
-                                <label for="zip">Zip-code</label>
-                                <input wire:model="zipcode" type="number" class="form-control" id="zip" placeholder="zipcode" required>
-                                @error('zipcode') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Zip code is required.</div>@enderror
+                                <label for="zip">জিপ-কোড</label>
+                                <input wire:model="zipcode" type="number" class="form-control" id="zip" placeholder="জিপ-কোড" required>
+                                @error('zipcode') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক জিপ-কোড দিন!</div>@enderror
                                 </div>
                             </div>
                         @endif
@@ -167,7 +201,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                     <div class="cloth_part_style">
                         <div class="row">
                             <div class="col-lg-12 bg-primary py-5">
-                                <h5 class="d-block text-light">Cloth/Dress/Apron Name কাপড়/পোষাক/অ্যাপ্রন নাম</h5>
+                                <h5 class="d-block text-light">কাপড়/পোষাক/অ্যাপ্রন নাম</h5>
                                 <div class="row">
                                     @if ( $allproducts)
                                         @foreach ($allproducts->where('status', 1) as $product)
@@ -181,49 +215,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         @endforeach
                                     @endif
                                     
-                                    {{-- <div class="col-lg-6">
-                                        @if (count($products)>0)
-                                        <p>{{array_intersect($products, $dresses)}}</p>
-                                        @endif
-
-
-                                        <label for="coun_try"></label>
-                                        <select wire:model="selected_product" class="custom-select d-block w-100" id="coun_try" required>
-                                            @foreach ($allproducts as $product)
-                                                @foreach ($products as $selProduct)
-                                                    @if ($product->id == $selProduct)
-                                                        <option value="{{$selProduct}}">{{$product->name}}</option>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                            
-                                        </select>
-                                        @error('selected_product') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">একটি নির্বাচন করুন </div>  @enderror 
-                                    </div> --}}
-
-                                    {{-- @if ( count($products)>1 )
-                                        <div class="col-xl-6">
-                                            <h6 class="text-warning">আপনি একাধিক পোশাক সিলেক্ট করেছেন!</h6>
-                                            <span class="text-danger d-flex">
-                                                @if ($every_dress_measurement_size)
-                                                  <style>
-                                                      .সবগুলো-পোশাকের-পরিমাপ{width:0; transition:0.5s all ease;overflow: hidden;}</style>  
-                                                @endif
-                                                <span class="সবগুলো-পোশাকের-পরিমাপ">সবগুলো পোশাকের পরিমাপ</span>
-                                                <div class="custom-control custom-radio d-block-inline mx-3 mb-3">
-                                                    <input type="radio" wire:model="every_dress_measurement_size" value="1" class="custom-control-input" id="customControlValidation1" name="radio-stacked" required>
-                                                    <label class="custom-control-label" for="customControlValidation1"> একই </label>
-                                                    <div class="invalid-feedback"></div>
-                                                </div>
-                                                
-                                                <div class="custom-control custom-radio d-block-inline mb-3">
-                                                    <input type="radio" wire:model="every_dress_measurement_size" value="2" class="custom-control-input" id="customControlValidation3" name="radio-stacked" required>
-                                                    <label class="custom-control-label" for="customControlValidation3"> ভিন্ন</label>
-                                                    <div class="invalid-feedback"></div>
-                                                </div>?
-                                            </span>
-                                        </div>
-                                    @endif --}}
+                                   
                                         
                                 </div> {{--dresh panzabi .row end--}}
                                 {{-- @endforeach --}}
@@ -233,38 +225,38 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                 <div class="row">
                                     <div class="col-lg-2 mb-3">
                                         <label for="clothlong">লম্বা</label>
-                                        <input wire:model="cloth_long" type="text" class="form-control" id="clothlong" placeholder="Long" required>
+                                        <input wire:model="cloth_long" type="number" class="form-control" id="clothlong" placeholder="Long" required>
                                         @error('cloth_long')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের লম্বা দিন?</div> @enderror
                                     </div>
                                     {{-- Body part Start --}}
                                     <div class="col-lg-3 col-md-6 mb-3">
                                         <div>
                                             <label for="clothbody">বডি</label>
-                                            <input wire:model="cloth_body" type="text" class="form-control" id="clothbody" placeholder="Cloth Body" required>
+                                            <input wire:model="cloth_body" type="number" class="form-control" id="clothbody" placeholder="Cloth Body" required>
                                             @error('cloth_body')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের বডি দিন?</div> @enderror
                                         </div>
 
                                         <div>
                                             <label for="bodyloose">বডির লুজ</label>
-                                            <input wire:model="body_loose" type="text" class="form-control" id="bodyloose" placeholder="Body Loose" required>
+                                            <input wire:model="body_loose" type="number" class="form-control" id="bodyloose" placeholder="Body Loose" required>
                                             @error('body_loose')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের বডি লুজ দিন?</div> @enderror
                                         </div>
 
                                         <div>
                                             <label for="clothbelly">পেট</label>
-                                            <input wire:model="cloth_belly" type="text" class="form-control" id="clothbelly"_ placeholder="পাট/Belly" required>
+                                            <input wire:model="cloth_belly" type="number" class="form-control" id="clothbelly"_ placeholder="পাট/Belly" required>
                                             @error('cloth_belly')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের পেট পরিমাপ দিন?</div> @enderror
                                         </div>
 
                                         <div>
                                             <label for="bodyloose">পেটের লুজ</label>
-                                            <input wire:model="belly_loose" type="text" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose">
+                                            <input wire:model="belly_loose" type="number" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose">
                                             @error('belly_loose') <div class="text-danger">{!!$message!!} </div> @else <div class="invalid-feedback">পোশাকের বডি পেট লুজের পরিমাপ দিন? </div> @enderror
                                         </div>
 
                                         <div>
                                             <label for="enclosure">ঘের</label>
-                                            <input wire:model="cloth_enclosure" type="text" class="form-control" id="enclosure" placeholder="Enclosure/ঘের" required>
+                                            <input wire:model="cloth_enclosure" type="number" class="form-control" id="enclosure" placeholder="Enclosure/ঘের" required>
                                             @error('cloth_enclosure')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের ঘের দিন?</div> @enderror
                                         </div>
                                     </div>
@@ -280,6 +272,11 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         <label for="sleeveless">হাতার মুহুরী</label>
                                         <input  wire:model="sleeve_enclosure" type="text" class="form-control" id="sleeveless" placeholder="Sleeve enclosure হাতার মুহুরী" required>
                                         @error('sleeve_enclosure')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতার মুহুরী দিন?</div> @enderror
+                                        </div>
+                                        <div class="">
+                                            <label for="clothmora">মোরা</label>
+                                            <input wire:model="cloth_mora" type="text" class="form-control" id="clothmora" placeholder="মোরা" required>
+                                            <div class="invalid-feedback">@error('cloth_mora') {!!$message!!} @else Mora code required. @enderror</div>
                                         </div>
                                         <div>
                                         <label for="SleevePasting">হাতায় পেস্টিং</label>
@@ -297,7 +294,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         </div>
                                         <div>
                                             <label for="clothcollar">কলার</label>
-                                            <input wire:model="cloth_collar" type="text" class="form-control" id="clothcollar" placeholder="কলার" required>
+                                            <input wire:model="cloth_collar" type="number" class="form-control" id="clothcollar" placeholder="কলার" required>
                                             @if ($cloth_collar) <select class="form-control" wire:model="collar_measure_type"><option selected value="0">সাধারণ</option><option value="1">মোট</option></select> @endif
                                             @error('cloth_collar') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> কলার পরিমাপ দিন? </div> @enderror 
                                         </div>
@@ -306,14 +303,10 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <div class="col-lg-2 col-md-6 mb-3">
                                         <div class="mb-3">
                                             <label for="clothshoulder">পুট</label>
-                                            <input wire:model="cloth_shoulder" type="text" class="form-control" id="clothshoulder" placeholder="Shoulder" required>
+                                            <input wire:model="cloth_shoulder" type="number" class="form-control" id="clothshoulder" placeholder="Shoulder" required>
                                             @error('cloth_shoulder') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> পুটের পরিমাপ দিন?</div> @enderror
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="clothmora">মোরা</label>
-                                            <input wire:model="cloth_mora" type="text" class="form-control" id="clothmora" placeholder="মোরা" required>
-                                            @error('cloth_mora') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> মোরা এর পরিমাপ দিন?</div> @enderror
-                                        </div>
+                                        
                                         <div class="mb-3">
                                             <label for="nokeshoho">নক সহ</label>
                                             <input wire:model="noke_shoho" type="text" class="form-control" id="q " placeholder="নক সহ">
@@ -330,7 +323,8 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                 </div>
                             </div>
                             {{-- Measure area End --}}
-                        </div>                  
+                        </div>  
+                        {{-- {{print_r($design_fields)}}                 --}}
                         @if ($styles && $designItems)
                             @foreach ($designItems as $design)
                             <div class="row py-3">
@@ -342,13 +336,24 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         @foreach ( $styles->where('dependency', $design->slug) as $style )
                                         <div class="col-lg-2 col-sm-6 design_bg sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})"> 
                                             <div class="custom-control custom-checkbox mb-1 d-inline-block">
-                                                <input type="checkbox" wire:model="designs_check.{{ $style->id }}" value="{{ $style->id }}" class="custom-control-input" id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '') required {{--$design_fields--}} {{--@foreach ( $design_fields as $key => $item ) @if( $key == $style->id ) required @else no @endif @endforeach--}} @endif {{--@if(sizeof($designs_check)==0)required @endif--}}>
+                                                <input type="checkbox" wire:model="designs_check.{{ $style->id }}" wire:change="fillEmptyStyleField({{$style->id}})" value="{{ $style->id }}" class="custom-control-input" id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '') required {{--$design_fields--}} {{--@foreach ( $design_fields as $key => $item ) @if( $key == $style->id ) required @else no @endif @endforeach--}} @endif {{--@if(sizeof($designs_check)==0)required @endif--}}>
                                                 <!-- designs_check -->
                                                 {{-- @if( $design_fields ) @foreach ( $design_fields as $key => $item ) @if($key==$style->id) disabled  @else no @endif @endforeach @endif --}}
                                                 <label class="custom-control-label" for="style_{{$style->id}}">{{$style->name}} <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail-" width="30" alt=""></label>
                                                 @error('designs_check') <div class="text-danger"> {!!$message!!}</div> {{--@else <div class="invalid-feedback text-warning">যেকোনো একটি নির্বাচন করুন </div>--}}  @enderror
                                                 
-                                                <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control"></textarea>
+                                                {{-- <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control" value="{{$style->id}}" >
+                                                    @if( in_array( $style->id, array_keys($designs_check) , true) && in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] == '') 
+                                                    Bismillah
+                                                    @endif
+                                                </textarea> --}}
+                                                <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control" value="{{$style->id}}" >
+                                                    {{-- @if( in_array( $style->id, array_keys($designs_check) , true) && $designs_check[$style->id] != '')
+                                                        @if (in_array( $style->id, array_keys($designs_check) , true) )
+                                                        {{$design_fields[$style->id]= 'bismillah';}}
+                                                        @endif
+                                                    @endif --}}
+                                                </textarea>
                                             </div>
                                         </div>
                                         @endforeach                                    
