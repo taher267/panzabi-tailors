@@ -21,12 +21,6 @@ class CreateCustomersTable extends Migration
             $table->string('email')->unique()->nullable();
             $table->string('address')->nullable();
             $table->string('photo')->nullable();
-            $table->string('line1')->nullable();
-            $table->string('line2')->nullable();
-            $table->string('country')->default('bd');
-            $table->string('province')->nullable();
-            $table->string('city')->nullable();
-            $table->string('zipcode')->nullable();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

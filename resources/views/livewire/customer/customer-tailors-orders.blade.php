@@ -33,7 +33,7 @@
                                         
                                             <tr>
                                                 <td>{{ $customer->id }}</td> <td>{{ $customer->Full_Name }}</td> <td>{{ $customer->mobile }}</td>
-                                                <td>@if($customer->photo)<img class="img-thumbnail" style="width:120px;" src="{{ asset("storage/assets/customers/$customer->photo") }}" alt="Photo"> @endif</td>
+                                                <td>@if($customer->photo)<img class="img-thumbnail" style="width:120px;" src="{{asset("storage/assets/customers/$customer->photo") }}" alt="Photo"> @endif</td>
                                                 <td>
                                                     <a href="{{route('customer.neworder', $customer->id)}}" target="_blank" class="btn btn-google"><i class="fa fa-plus"></i> New Order</a>
                                                     <a href="{{route('customer.orders', $customer->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i>Orders</a>

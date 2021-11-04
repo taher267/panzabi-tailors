@@ -20,9 +20,6 @@ class CreateOrdersTable extends Migration
                 $table->bigInteger('order_number')->unsigned();
                 $table->decimal('wages');//মজুরি
                 $table->decimal('discount')->default(0);
-                $table->string('delivery_system')->nullable();
-                $table->string('courier_details')->nullable();
-                $table->decimal('delivery_charge')->nullable();
                 $table->decimal('total');
                 $table->boolean('status');
                 $table->date('delivered_date')->nullable();

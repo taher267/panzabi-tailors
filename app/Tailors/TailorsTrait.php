@@ -95,7 +95,10 @@ trait TailorsTrait
     //     Storage::disk($disk)->put("$uploadOn/" .$slugby, $resizeImage);
 
     // }
-
+        public function todayDate()
+        {
+            $this->todayDate= Carbon::now('Asia/Dhaka')->format('Y-m-d');
+        }
 }
 
 

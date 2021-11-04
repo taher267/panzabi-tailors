@@ -91,7 +91,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                             </div>
                         </div>
                         <div class="row my-3" style="background: linear-gradient(34deg, #ddddd08, #f3f3f3">
-                            <div class="col-xl-12 text-center text-warning"><h4 class="heading pb-3 mb-4">Personal/Identicaton Info </h4></div>
+                            <div class="col-xl-12 text-center text-warning"><h4 class="heading pb-3 mb-4">ব্যক্তিগত/পরিচয় সংক্রান্ত তথ্য </h4></div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="fullname">অর্ডারকারীর পুরো নামঃ</label>
                                     <input wire:model="Full_Name" type="text" class="form-control" id="fullname" placeholder="পুরো নাম" required>
@@ -153,6 +153,20 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                     @if ( $order_delivery == 1 )
                             <div class="row py-3 test-class" id="dalivery_address" style="background: linear-gradient(355deg,#009cea00, rgb(128 0 128 / 5%) )">
                                 <div class="col-xl-12 "><h6 class="text-primary">কুরিয়ার বা কোন মাধ্যমে আপনার পণ্য সমূহ ডেলিভারি হবে তার বিস্তারিত--</h6></div>
+                                <div class="col-xl-6 mb-3">
+                                    <label for="deliverysystem" @error('delivery_system') class="text-danger" @enderror>কিভাবে অর্ডার ডেলিভারি নিতেচান?</label>
+                                    <select wire:model="delivery_system" class="custom-select d-block w-100" id="deliverysystem" required>
+                                        <option value="0">নির্বাচন করুন</option>
+                                        <option value="1">কুরিয়ার</option>
+                                        <option value="2">নিজে নিবেন</option>
+                                    </select>
+                                    @error('delivery_system')<div class="text-danger"> {!!$message!!}</div> @else<div class="invalid-feedback"> Select a delivery system name</div> @enderror 
+                                </div><div class="col-xl-6 mb-3">
+                                    <label for="deliverycharge">কুরিয়ার চার্জ</label>
+                                    <input wire:model="delivery_charge" type="text" class="form-control" id="deliverycharge" placeholder="কুরিয়ার চার্জ..." required>
+                                    @error('delivery_charge') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">কুরিয়ার চার্জ লিখুন!</div>@enderror
+                                </div>
+                                
                                 <div class="col-xl-12 ">
                                     <label for="couriername">কুরিয়ার এর তথ্য</label>
                                     <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="কুরিয়ার এর নাম এবং শাখার বিস্তারিত..." required>
@@ -165,7 +179,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         <option>...</option>
                                         <option value="bd">Bangladesh</option>
                                     </select>
-                                    <div class="invalid-feedback">@error('country') $message!!} @else Select a country @enderror </div>
+                                     @error('country') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Select a country</div> @enderror 
                                 </div>
                                 <div class="col-lg-6 mb-3">
                                     <label for="ccity">শহর</label>
@@ -336,24 +350,12 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         @foreach ( $styles->where('dependency', $design->slug) as $style )
                                         <div class="col-lg-2 col-sm-6 design_bg sarwani" style="background:url({{asset('assets/img/single_blog_2.png')}})"> 
                                             <div class="custom-control custom-checkbox mb-1 d-inline-block">
-                                                <input type="checkbox" wire:model="designs_check.{{ $style->id }}" wire:change="fillEmptyStyleField({{$style->id}})" value="{{ $style->id }}" class="custom-control-input" id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '') required {{--$design_fields--}} {{--@foreach ( $design_fields as $key => $item ) @if( $key == $style->id ) required @else no @endif @endforeach--}} @endif {{--@if(sizeof($designs_check)==0)required @endif--}}>
-                                                <!-- designs_check -->
-                                                {{-- @if( $design_fields ) @foreach ( $design_fields as $key => $item ) @if($key==$style->id) disabled  @else no @endif @endforeach @endif --}}
+                                                <input type="checkbox" wire:model="designs_check.{{ $style->id }}" wire:change="fillEmptyStyleField({{$style->id}})" value="{{ $style->id }}" class="custom-control-input" id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '')required @endif>
                                                 <label class="custom-control-label" for="style_{{$style->id}}">{{$style->name}} <img src="{{asset('assets/img/undraw_profile.svg')}}" class="img-thumbnail-" width="30" alt=""></label>
+                                                <div class="invalid-feedback"> <i class="fa fa-check " style="color: #34E3A4"></i> টিক দিন!</div>
                                                 @error('designs_check') <div class="text-danger"> {!!$message!!}</div> {{--@else <div class="invalid-feedback text-warning">যেকোনো একটি নির্বাচন করুন </div>--}}  @enderror
+                                                <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control" value="{{$style->id}}"></textarea>
                                                 
-                                                {{-- <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control" value="{{$style->id}}" >
-                                                    @if( in_array( $style->id, array_keys($designs_check) , true) && in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] == '') 
-                                                    Bismillah
-                                                    @endif
-                                                </textarea> --}}
-                                                <textarea wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control" value="{{$style->id}}" >
-                                                    {{-- @if( in_array( $style->id, array_keys($designs_check) , true) && $designs_check[$style->id] != '')
-                                                        @if (in_array( $style->id, array_keys($designs_check) , true) )
-                                                        {{$design_fields[$style->id]= 'bismillah';}}
-                                                        @endif
-                                                    @endif --}}
-                                                </textarea>
                                             </div>
                                         </div>
                                         @endforeach                                    
@@ -385,7 +387,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr class="text-center"><th>পোশাক</th>
-                                                <th>পরিমাণ@error('quantity')<span class="text-danger">{{$message}}</span> @enderror </th>
+                                                <th>পরিমাণ@error('quantity')<span class="text-danger">{{--$message--}} দিন!</span> @enderror </th>
                                                 <th>মজুরি  @error('wages')<span class="text-danger">{{$message}}</span> @enderror </th>
                                                 <th>ছাড় @error('discount')<span class="text-danger">{{$message}}</span> @enderror </th>
                                                 <th>মোট</th>
@@ -409,12 +411,14 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                                     @endforeach
                                                 </td>
                                                 <td>
-                                                    <input type="number" min="1" wire:model="quantity" class="form-control" placeholder="পরিমাণ">
+                                                    <input type="number" min="1" wire:model="quantity" class="form-control" placeholder="পরিমাণ" required>
                                                    
                                                 </td>
-                                                <td><input type="number" wire:model="wages" class="form-control" placeholder="মজুরি"></td>
+                                                <td><input type="number" wire:model="wages" class="form-control" placeholder="মজুরি" required>
+                                                    <div class="invalid-feedback">আইটেম এর পরিমান দিন!</div>
+                                                </td>
                                                 <td><input type="number" wire:model="discount" class="form-control" placeholder="ছাড়"></td>
-                                                <td><input type="number" wire:model="total" class="form-control" placeholder="মোট"></td>
+                                                <td><input type="number" wire:model="total" class="form-control" placeholder="মোট" required></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -433,7 +437,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
     @endif
     {{-- <h1>{{$errorOut}}--</h1> --}}
     {{-- <button class="btn btn-primary btn-lg btn-block" type="submit">Place Order</button> --}}
-    <button type="{{$errors->any() || $errorOut=='err' ? 'button':'submit'}}" {{ $errors->any() || $errorOut=='err' ? 'disabled':''}} class="btn btn-primary btn-lg btn-block">Place Order</button>
+    <button type="{{$errors->any() || $errorOut=='err' ? 'button':'submit'}}" {{ $errors->any() || $errorOut=='err' ? 'disabled':''}} class="btn btn-primary btn-lg btn-block">অর্ডার করুন</button>
 </form>
 
 
