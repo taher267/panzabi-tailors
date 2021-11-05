@@ -22,32 +22,6 @@
 
 div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { display: none !important;}
 </style>
-
-@php
-    // $arr1 = [2=>2, 4=>4,6=>6];
-    // $arr2 = [2=>"two", 4,6=>'six'];
-    // echo '<pre>';
-    // print_r(array_merge($arr1,$arr2));
-    // echo '</pre>';
-    // echo '</br>';
-    // echo '<pre>';
-    //     print_r(array_merge_recursive($arr1,$arr2));
-    // echo '</pre>';
-    // echo '</br>';
-    // echo '<pre>';
-        
-    //     // print_r(array_combine($arr1,$arr2));
-    // echo '</pre>';
-    // for ($i=0; $i < count($arr1); $i++) { 
-    //     print_r(array_values($arr1));
-    // }
-@endphp
-<br>
-<br>
-<br>
-<br>
-<br>
-
 <form class="was-validated" wire:submit.prevent="placeOrder">
     <div class="row">
         <div class="col-lg-12">

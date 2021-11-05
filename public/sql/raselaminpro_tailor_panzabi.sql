@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 27, 2021 at 04:50 PM
+-- Generation Time: Nov 05, 2021 at 12:18 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.12
 
@@ -35,15 +35,16 @@ CREATE TABLE `customers` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `line1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `line2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `country` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'bd',
-  `province` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `zipcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`id`, `user_id`, `Full_Name`, `mobile`, `email`, `address`, `photo`, `created_at`, `updated_at`) VALUES
+(1, 1, 'হাসিব স্যার', '12345678768', NULL, NULL, 'hasib-szar-1636067685.jpg', '2021-11-04 17:14:45', '2021-11-04 17:14:45');
 
 -- --------------------------------------------------------
 
@@ -70,7 +71,7 @@ INSERT INTO `design_items` (`id`, `name`, `slug`) VALUES
 (6, 'পিছনে', 'back'),
 (7, 'পাইপিং', 'piping'),
 (8, 'চেইন', 'zip'),
-(9, 'সেলাই', 'Sewing'),
+(9, 'সেলাই', 'sewing'),
 (10, 'এমব্রয়ডারি', 'embroidery'),
 (11, 'কারচুপি', 'karchupi'),
 (12, 'অন্যান্য', 'other');
@@ -110,18 +111,20 @@ CREATE TABLE `migrations` (
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (1, '2014_10_12_000000_create_users_table', 1),
 (2, '2014_10_12_100000_create_password_resets_table', 1),
-(3, '2014_10_12_200000_add_two_factor_columns_to_users_table', 1),
 (4, '2019_08_19_000000_create_failed_jobs_table', 1),
 (5, '2019_12_14_000001_create_personal_access_tokens_table', 1),
 (6, '2021_09_01_192539_create_sessions_table', 1),
 (7, '2021_09_07_075245_create_roles_table', 1),
 (8, '2021_09_08_193748_create_tailors_page_settings_table', 1),
 (9, '2021_09_09_071441_create_products_table', 1),
-(10, '2021_09_11_222208_create_customers_table', 1),
-(11, '2021_09_11_222400_create_orders_table', 1),
-(12, '2021_09_11_222430_create_order_items_table', 1),
 (15, '2021_09_23_104226_create_design_items_table', 2),
-(16, '2021_09_22_092010_create_style_measure_parts_table', 3);
+(35, '2021_09_22_092010_create_style_measure_parts_table', 2),
+(115, '2014_10_12_200000_add_two_factor_columns_to_users_table', 3),
+(131, '2021_09_11_222208_create_customers_table', 4),
+(132, '2021_09_11_222400_create_orders_table', 4),
+(133, '2021_09_11_222430_create_order_items_table', 4),
+(134, '2021_11_03_084801_create_order_item_styles_table', 4),
+(135, '2021_11_04_213316_create_order_delivery_addresses_table', 4);
 
 -- --------------------------------------------------------
 
@@ -136,15 +139,50 @@ CREATE TABLE `orders` (
   `order_number` bigint(20) UNSIGNED NOT NULL,
   `wages` decimal(8,2) NOT NULL,
   `discount` decimal(8,2) NOT NULL DEFAULT 0.00,
-  `delivery_system` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `courier_details` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `delivery_charge` decimal(8,2) DEFAULT NULL,
   `total` decimal(8,2) NOT NULL,
   `status` tinyint(1) NOT NULL,
   `delivered_date` date DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `user_id`, `customer_id`, `order_number`, `wages`, `discount`, `total`, `status`, `delivered_date`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, '56.00', '0.00', '176.00', 1, '2021-11-06', '2021-11-04 17:14:45', '2021-11-04 17:14:45');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_delivery_addresses`
+--
+
+CREATE TABLE `order_delivery_addresses` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `customer_id` bigint(20) UNSIGNED NOT NULL,
+  `order_id` bigint(20) UNSIGNED NOT NULL,
+  `order_number` int(11) NOT NULL,
+  `delivery_system` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `courier_details` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `delivery_charge` decimal(8,2) DEFAULT NULL,
+  `country` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'bd',
+  `line1` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `line2` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `province` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `city` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `zipcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_delivery_addresses`
+--
+
+INSERT INTO `order_delivery_addresses` (`id`, `customer_id`, `order_id`, `order_number`, `delivery_system`, `courier_details`, `delivery_charge`, `country`, `line1`, `line2`, `province`, `city`, `zipcode`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, '1', 'সুন্দারবন কুরিয়ার', '120.00', 'bd', 'রায়ান্দা, শরন খোলা ', NULL, 'খুলনা', 'বাগেরহাট', '4567', '2021-11-04 17:14:45', '2021-11-04 17:14:45');
 
 -- --------------------------------------------------------
 
@@ -165,17 +203,50 @@ CREATE TABLE `order_items` (
   `body_loose` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cloth_enclosure` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `hand_long` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `sleeve_less` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sleeve_enclosure` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sleeve_pasting` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cloth_throat` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cloth_throat` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cloth_collar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `cloth_put` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cloth_shoulder` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `cloth_mora` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `noke_shoho` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `cloth_additional` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `customer_id`, `product_id`, `order_id`, `order_number`, `cloth_long`, `cloth_body`, `cloth_belly`, `belly_loose`, `body_loose`, `cloth_enclosure`, `hand_long`, `sleeve_enclosure`, `sleeve_pasting`, `cloth_throat`, `cloth_collar`, `cloth_shoulder`, `cloth_mora`, `noke_shoho`, `cloth_additional`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 1, 1, '12', '8', '8', '8', '8', '8', '8', '8', '8', '8', '8', '8', '8', NULL, NULL, '2021-11-04 17:14:45', '2021-11-04 17:14:45');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_item_styles`
+--
+
+CREATE TABLE `order_item_styles` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `customer_id` bigint(20) UNSIGNED NOT NULL,
+  `order_id` bigint(20) UNSIGNED NOT NULL,
+  `order_number` bigint(20) UNSIGNED NOT NULL,
+  `order_item_id` bigint(20) UNSIGNED NOT NULL,
+  `style_id` int(11) NOT NULL,
+  `style_details` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `item_style_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_item_styles`
+--
+
+INSERT INTO `order_item_styles` (`id`, `customer_id`, `order_id`, `order_number`, `order_item_id`, `style_id`, `style_details`, `item_style_type`) VALUES
+(1, 1, 1, 1, 1, 1, ' ', 'collar'),
+(2, 1, 1, 1, 1, 3, ' ', 'collar'),
+(3, 1, 1, 1, 1, 23, 'fdkfjdkjf', 'pocket');
 
 -- --------------------------------------------------------
 
@@ -278,8 +349,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('o6sU4jAMczGjhd2fyohd1pBHTZrVYJhCUX3qc9oT', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiUEJ1NmxSRDhFTnhWZUdqVmhLMUJFbkZHZVR1WE9LT25Na2tXeTkyayI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTU6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jdXN0b21lci9uZXctY3VzdG9tZXItb3JkZXItaXRlbXMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6NToidXR5cGUiO3M6MzoiQURNIjtzOjE3OiJwYXNzd29yZF9oYXNoX3dlYiI7czo2MDoiJDJ5JDEwJFAuN3dqWkxzdFFobWZQOGNvTWMzb09wcGFZQlZ4b09tWlY5b2ZOVS9JMzg2MG4uS2cwdFRPIjtzOjIxOiJwYXNzd29yZF9oYXNoX3NhbmN0dW0iO3M6NjA6IiQyeSQxMCRQLjd3alpMc3RRaG1mUDhjb01jM29PcHBhWUJWeG9PbVpWOW9mTlUvSTM4NjBuLktnMHRUTyI7fQ==', 1635343229),
-('qCCC1a7wpIUNAZMZUDFEEwglfdaeouSKuZLsJyFk', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36 Edg/95.0.1020.30', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiNVl2Z3k2dDdZaXZqZU16WkZPaWkyam1mVjJWZWRrZmFEUVhOeTdrbyI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjU1OiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvY3VzdG9tZXIvbmV3LWN1c3RvbWVyLW9yZGVyLWl0ZW1zIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MTtzOjU6InV0eXBlIjtzOjM6IkFETSI7czoxNzoicGFzc3dvcmRfaGFzaF93ZWIiO3M6NjA6IiQyeSQxMCRQLjd3alpMc3RRaG1mUDhjb01jM29PcHBhWUJWeG9PbVpWOW9mTlUvSTM4NjBuLktnMHRUTyI7czoyMToicGFzc3dvcmRfaGFzaF9zYW5jdHVtIjtzOjYwOiIkMnkkMTAkUC43d2paTHN0UWhtZlA4Y29NYzNvT3BwYVlCVnhvT21aVjlvZk5VL0kzODYwbi5LZzB0VE8iO30=', 1635329290);
+('CM2SS8CRzrRNAUgaykhH465LUKhtWDWuuYyHR4ka', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiZHR0a2NmMXZLQlNHelNTdlpiamVKdWxSVmdJU2pwYXNFdEIxcUtUcCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9jdXN0b21lci9jdXN0b21lcnMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6NToidXR5cGUiO3M6MzoiQURNIjtzOjE3OiJwYXNzd29yZF9oYXNoX3dlYiI7czo2MDoiJDJ5JDEwJFAuN3dqWkxzdFFobWZQOGNvTWMzb09wcGFZQlZ4b09tWlY5b2ZOVS9JMzg2MG4uS2cwdFRPIjtzOjIxOiJwYXNzd29yZF9oYXNoX3NhbmN0dW0iO3M6NjA6IiQyeSQxMCRQLjd3alpMc3RRaG1mUDhjb01jM29PcHBhWUJWeG9PbVpWOW9mTlUvSTM4NjBuLktnMHRUTyI7fQ==', 1636067752);
 
 -- --------------------------------------------------------
 
@@ -441,12 +511,29 @@ ALTER TABLE `orders`
   ADD KEY `orders_customer_id_foreign` (`customer_id`);
 
 --
+-- Indexes for table `order_delivery_addresses`
+--
+ALTER TABLE `order_delivery_addresses`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_delivery_addresses_customer_id_foreign` (`customer_id`),
+  ADD KEY `order_delivery_addresses_order_id_foreign` (`order_id`);
+
+--
 -- Indexes for table `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `order_items_customer_id_foreign` (`customer_id`),
   ADD KEY `order_items_order_id_foreign` (`order_id`);
+
+--
+-- Indexes for table `order_item_styles`
+--
+ALTER TABLE `order_item_styles`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_item_styles_customer_id_foreign` (`customer_id`),
+  ADD KEY `order_item_styles_order_id_foreign` (`order_id`),
+  ADD KEY `order_item_styles_order_item_id_foreign` (`order_item_id`);
 
 --
 -- Indexes for table `password_resets`
@@ -515,7 +602,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `design_items`
@@ -533,19 +620,31 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `order_delivery_addresses`
+--
+ALTER TABLE `order_delivery_addresses`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `order_item_styles`
+--
+ALTER TABLE `order_item_styles`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -601,11 +700,26 @@ ALTER TABLE `orders`
   ADD CONSTRAINT `orders_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `order_delivery_addresses`
+--
+ALTER TABLE `order_delivery_addresses`
+  ADD CONSTRAINT `order_delivery_addresses_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_delivery_addresses_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `order_items`
 --
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `order_item_styles`
+--
+ALTER TABLE `order_item_styles`
+  ADD CONSTRAINT `order_item_styles_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_item_styles_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `order_item_styles_order_item_id_foreign` FOREIGN KEY (`order_item_id`) REFERENCES `order_items` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `roles`
