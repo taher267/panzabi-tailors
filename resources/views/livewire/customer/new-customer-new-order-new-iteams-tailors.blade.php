@@ -253,22 +253,22 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <div class="col-lg-3 col-md-6 mb-3">
                                         <div class="">
                                         <label for="handlong">হাতা</label>
-                                        <input wire:model="hand_long" type="text" class="form-control" id="handlong" placeholder="Hleeve হাতা" required>
+                                        <input wire:model="hand_long" type="number" class="form-control" id="handlong" placeholder="Hleeve হাতা" required>
                                         @error('hand_long')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতা লম্বা দিন?</div> @enderror
                                         </div>
                                         <div>
                                         <label for="sleeveless">হাতার মুহুরী</label>
-                                        <input  wire:model="sleeve_enclosure" type="text" class="form-control" id="sleeveless" placeholder="Sleeve enclosure হাতার মুহুরী" required>
+                                        <input  wire:model="sleeve_enclosure" type="number" class="form-control" id="sleeveless" placeholder="Sleeve enclosure হাতার মুহুরী" required>
                                         @error('sleeve_enclosure')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতার মুহুরী দিন?</div> @enderror
                                         </div>
                                         <div class="">
                                             <label for="clothmora">মোরা</label>
-                                            <input wire:model="cloth_mora" type="text" class="form-control" id="clothmora" placeholder="মোরা" required>
+                                            <input wire:model="cloth_mora" type="number" class="form-control" id="clothmora" placeholder="মোরা">
                                             <div class="invalid-feedback">@error('cloth_mora') {!!$message!!} @else Mora code required. @enderror</div>
                                         </div>
                                         <div>
                                         <label for="SleevePasting">হাতায় পেস্টিং</label>
-                                        <input wire:model="sleeve_pasting" type="text" class="form-control" id="SleevePasting" placeholder="Sleeve Pasting/হাতায় পেস্টিং" required>
+                                        <input wire:model="sleeve_pasting" type="text" class="form-control" id="SleevePasting" placeholder="Sleeve Pasting/হাতায় পেস্টিং">
                                         @error('sleeve_pasting')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতা লম্বা হবে?</div> @enderror
                                         </div>
                                     </div>
@@ -277,12 +277,12 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <div class="col-lg-2 col-md-6 mb-3">
                                         <div>
                                         <label for="cloththroat">গলা</label>
-                                        <input wire:model="cloth_throat" type="text" class="form-control" id="cloththroat" placeholder="গলা/Throat" required>
+                                        <input wire:model="cloth_throat" type="number" class="form-control" id="cloththroat" max="30" placeholder="গলা/Throat" @if (!$cloth_collar) required @endif>
                                         @error('cloth_throat') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">গলার পরিমাপ দিন?</div> @enderror 
                                         </div>
                                         <div>
                                             <label for="clothcollar">কলার</label>
-                                            <input wire:model="cloth_collar" type="number" class="form-control" id="clothcollar" placeholder="কলার" required>
+                                            <input wire:model="cloth_collar" type="number" class="form-control" id="clothcollar" max="30" placeholder="কলার" @if (!$cloth_collar) required @endif>
                                             @if ($cloth_collar) <select class="form-control" wire:model="collar_measure_type"><option selected value="0">সাধারণ</option><option value="1">মোট</option></select> @endif
                                             @error('cloth_collar') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> কলার পরিমাপ দিন? </div> @enderror 
                                         </div>
@@ -291,13 +291,13 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <div class="col-lg-2 col-md-6 mb-3">
                                         <div class="mb-3">
                                             <label for="clothshoulder">পুট</label>
-                                            <input wire:model="cloth_shoulder" type="number" class="form-control" id="clothshoulder" placeholder="Shoulder" required>
+                                            <input wire:model="cloth_shoulder" type="number" class="form-control" id="clothshoulder" max="40" placeholder="Shoulder" required>
                                             @error('cloth_shoulder') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> পুটের পরিমাপ দিন?</div> @enderror
                                         </div>
                                         
                                         <div class="mb-3">
                                             <label for="nokeshoho">নক সহ</label>
-                                            <input wire:model="noke_shoho" type="text" class="form-control" id="q " placeholder="নক সহ">
+                                            <input wire:model="noke_shoho" type="text" class="form-control" id="nokeshoho" placeholder="নক সহ">
                                             @error('noke_shoho') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> নক সহ দিন?</div> @enderror
                                         </div>
                                     </div>

@@ -91,12 +91,12 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
             'sleeve_enclosure'  => 'required|numeric',
-            'sleeve_pasting'    => 'required|numeric',
+            'sleeve_pasting'    => 'nullable|string',
             'cloth_throat'      => 'numeric|nullable',
-            'cloth_collar'      => 'required|numeric',
+            'cloth_collar'      => 'nullable|numeric',
             'collar_measure_type'=> 'numeric|nullable',
             'cloth_shoulder'    => 'required|numeric',
-            'cloth_mora'        => 'required|numeric',
+            'cloth_mora'        => 'nullable|numeric',
             'noke_shoho'        => 'nullable|numeric',
             'designs_check.*'   => 'nullable',
             'design_fields.*'   => 'nullable',
@@ -167,12 +167,12 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
             'sleeve_enclosure'  => 'required|numeric',
-            'sleeve_pasting'    => 'required|numeric',
+            'sleeve_pasting'    => 'nullable|string',
             'cloth_throat'      => 'numeric|nullable',
-            'cloth_collar'      => 'required|numeric',
+            'cloth_collar'      => 'nullable|numeric',
             'collar_measure_type'=> 'numeric|nullable',
             'cloth_shoulder'    => 'required|numeric',
-            'cloth_mora'        => 'required|numeric',
+            'cloth_mora'        => 'nullable|numeric',
             'noke_shoho'        => 'nullable|numeric',
             'designs_check.*'   => 'nullable',
             'design_fields.*'   => 'nullable',
@@ -283,16 +283,16 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $orderitem->cloth_enclosure   = $this->cloth_enclosure;
         $orderitem->hand_long         = $this->hand_long;
         $orderitem->sleeve_enclosure  = $this->sleeve_enclosure;
-        $orderitem->sleeve_pasting    = $this->sleeve_pasting;
-        $orderitem->cloth_throat      = $this->cloth_throat;
-        if( $this->collar_measure_type ):
+        $orderitem->sleeve_pasting    = $this->sleeve_pasting??null;
+        $orderitem->cloth_throat      = $this->cloth_throat??null;
+        if( $this->collar_measure_type && $this->cloth_collar ):
             $orderitem->cloth_collar      = $this->cloth_collar .' মোট';
         else:
-            $orderitem->cloth_collar      = $this->cloth_collar;
+            $orderitem->cloth_collar      = $this->cloth_collar??null;
         endif;
         
         $orderitem->cloth_shoulder    = $this->cloth_shoulder;
-        $orderitem->cloth_mora        = $this->cloth_mora;
+        $orderitem->cloth_mora        = $this->cloth_mora??null;
         $orderitem->noke_shoho        = $this->noke_shoho;
         $orderitem->cloth_additional  = $this->cloth_additional;
         $orderitem->save();
