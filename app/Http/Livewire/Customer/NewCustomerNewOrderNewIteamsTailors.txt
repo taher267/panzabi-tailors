@@ -38,8 +38,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
     public $collar_fields=[], $sleeve_fields=[], $cuff_fields=[], $plate_fields=[], $pocket_fields=[], $back_fields=[], $piping_fields=[], $zip_fields=[], $sewing_fields=[], $embroidery_fields=[], $karchupi_fields=[], $other_fields=[];
     public $collerFirstArea,$collerLastArea,$sleeveFirstArea,$sleeveLastArea,$cuffFirstArea,$cuffLastArea,$plateFirstArea,$plateLastArea,$pocketFirstArea,$pocketLastArea,$backFirstArea,$backLastArea,$pipingFirstArea,$pipingLastArea,$zipFirstArea,$zipLastArea,$sewingFirstArea,$sewingLastArea,$embroideryFirstArea,$embroideryLastArea,$karchupiFirstArea,$karchupiLastArea,$karchupotheriFirstArea,$otherLastArea;
-    //Step form
-    public $currentStep;
+
     public function mount()
     {
         
@@ -54,112 +53,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }
         
     }
-    /**
-     * Step Form Start
-     */
-    public function formCheckOne()
-    {
-        if ( $this->delivery_date=='' ) {//|| sizeof($this->products) ==0
-            $this->formErrorOne=1;
-        }else {
-            $this->formErrorOne=0;
-        }
-    }
-    /**
-     * Write code on Method
-     */
-    public function firstStepSubmit()
-    {
-        // $validatedData = $this->validate([
-        //     'Full_Name' => 'required',
-        //     'mobile' => 'required|numeric',
-        //     'address' => 'required',
-        // ]);
- 
-        $this->currentStep = 2;
-    }
-    public $formErrorOne, $formErrorTwo,$stepstatus;
-    public function formCheckTwo()
-    {
-        if ( $this->cloth_long =='' ||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora =='') {//||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora ==''||$this->noke_shoho =='' 
-            $this->formErrorTwo=1;
-        }else {
-            $this->formErrorTwo=0;
-        }
-    }
-  
-    /**
-     * Write code on Method
-     */
-    public function secondStepSubmit()
-    {
-        $validatedData = $this->validate([
-            'stepstatus' => 'required',
-        ]);
-  
-        $this->currentStep = 3;
-    }
-    public function thirdStepSubmit()
-    {
-        $validatedData = $this->validate([
-            'stepstatus' => 'required',
-        ]);
-  
-        $this->currentStep = 4;
-    }
-    public function formCheckThree()
-    {
-        if ( $this->name =='' || $this->price=='') {
-            $this->formErrorThree=1;
-
-        }else {
-            $this->formErrorThree=0;
-        }
-    }
-    /**
-     * Write code on Method
-     */
-    public function submitForm()
-    {
-        // Team::create([
-        //     'name' => $this->Full_Name,
-        //     'price' => $this->mobile,
-        //     'detail' => $this->address,
-        //     'stepstatus' => $this->stepstatus,
-        // ]);
-  
-        $this->successMsg = 'Team successfully created.';
-  
-        $this->clearForm();
-  
-        $this->currentStep = 1;
-    }
-  
-    /**
-     * Write code on Method
-     */
-    public function back($step)
-    {
-        $this->currentStep = $step;    
-    }
-  
-    /**
-     * Write code on Method
-     */
-    public function clearForm()
-    {
-        $this->Full_Name = '';
-        $this->mobile = '';
-        $this->address = '';
-        $this->stepstatus = 1;
-    }
-    public function sidebar()
-    {
-        $this->col_0 = 1;
-    }
-    /**
-     * Step Form End
-     */
     public function updated($fields)
     {
 //         $timezone= date_default_timezone_set('Asia/Dhaka');
@@ -194,7 +87,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'cloth_body'        => 'required|numeric',
             'body_loose'        => 'required|numeric',
             'cloth_belly'       => 'required|numeric',
-            'belly_loose'       => 'nullable|numeric',
+            'belly_loose'       => 'required|numeric',
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
             'sleeve_enclosure'  => 'required|numeric',
@@ -270,7 +163,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'cloth_body'        => 'required|numeric',
             'body_loose'        => 'required|numeric',
             'cloth_belly'       => 'required|numeric',
-            'belly_loose'       => 'nullable|numeric',
+            'belly_loose'       => 'required|numeric',
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
             'sleeve_enclosure'  => 'required|numeric',
@@ -340,7 +233,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $order                  = new Order();
         $order->user_id         = Auth::user()->id;
         $order->customer_id     = $customer->id;
-        if ( count(Order::all() )>0 && ! $this->force_id ) {
+        if (count(Order::all())>0 && ! $this->force_id) {
             $order->order_number    = $this->order_number;
         }elseif ($this->force_id) {
             $order->order_number    = $this->order_number;
@@ -383,10 +276,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $orderitem->order_number      = $this->order_number;
         $orderitem->product_id        = $this->products;
         $orderitem->cloth_long        = $this->cloth_long;
-        $orderitem->cloth_body        = $this->cloth_body;        
-        $orderitem->body_loose        = $this->body_loose;
+        $orderitem->cloth_body        = $this->cloth_body;
         $orderitem->cloth_belly       = $this->cloth_belly;
-        $orderitem->belly_loose       = $this->belly_loose??null;
+        $orderitem->belly_loose       = $this->belly_loose;
+        $orderitem->body_loose        = $this->body_loose;
         $orderitem->cloth_enclosure   = $this->cloth_enclosure;
         $orderitem->hand_long         = $this->hand_long;
         $orderitem->sleeve_enclosure  = $this->sleeve_enclosure;
@@ -606,10 +499,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     }
     public function render()
     {
-        $this->formCheckOne();
-        // $this->formCheckTwo();
-        // $this->formCheckThree();
-
+        
         $this->minMaxOrderId();
         $this->WagesCalculation();
         $this->StyleIdArea();
@@ -617,7 +507,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $styles = StyleMeasurePart::all();
         $designItems = DesignItem::all();
         $collarStyle = OrderItemStyle::all();
-        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'styles', 'designItems'))->layout('layouts.manage_layout');
+        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'styles', 'designItems','collarStyle'))->layout('layouts.manage_layout');
     }
 
 

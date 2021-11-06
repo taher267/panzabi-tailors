@@ -22,20 +22,51 @@
 
 div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { display: none !important;}
 </style>
+<div class="row">
+    <div style="transition: 1s all ease" class="col-xl-12 " id="right_sidebar">
+        <div class="row bg-secondary alert ">
+            <div class="col-xl-4">
+                <a class="btn btn-outline-primary text-light" target="_blank" href="{{route('customer.customers')}}">সকল গ্রাহক</a>
+            </div>
+
+            <div class="col-xl-4">
+                <a class="btn btn-outline-success" href="#{{--route('customer.neworder')--}}">New Order</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="stepwizard bg-warning">
+    <div class="stepwizard-row setup-panel">
+        <div class="multi-wizard-step">
+            <a href="#step-1" type="button"
+                class="btn {{ $currentStep != 1 ? 'btn-default' : 'btn-primary' }}">১</a>
+            <p>ধাপ ১</p>
+        </div>
+        <div class="multi-wizard-step">
+            <a href="#step-2" type="button"
+                class="btn {{ $currentStep != 2 ? 'btn-default' : 'btn-primary' }}">২</a>
+            <p>ধাপ ২</p>
+        </div>
+        <div class="multi-wizard-step">
+            <a href="#step-3" type="button"
+                class="btn {{ $currentStep != 3 ? 'btn-default' : 'btn-primary' }}" disabled="disabled">৩</a>
+            <p>ধাপ ৩</p>
+        </div>
+        <div class="multi-wizard-step">
+            <a href="#step-4" type="button"
+                class="btn {{ $currentStep != 4 ? 'btn-default' : 'btn-primary' }}"
+                disabled="disabled">৪</a>
+            <p>ধাপ ৪</p>
+        </div>
+    </div>
+</div>
 <form class="was-validated" wire:submit.prevent="placeOrder">
     <div class="row">
+        
         <div class="col-lg-12">
             <div style="transition: 1s all ease" class="col-xl-12 " id="right_sidebar">
-                <div class="row bg-secondary alert ">
-                    <div class="col-xl-4">
-                        <a class="btn btn-outline-primary text-light" href="{{route('customer.customers')}}">All Customers</a>
-                    </div>
-
-                    <div class="col-xl-4">
-                        <a class="btn btn-outline-success" href="#{{--route('customer.neworder')--}}">New Order</a>
-                    </div>
-                </div>
-                <span class="badge badge-secondary badge-pill"></span>
+                <h3 class="text-primary table-bordered border-primary my-3 p-3">নতুন গ্রাহক নতুন অর্ডার যুক্ত করুন!</h3>
+                <!--Persinal information End-->
                 <div class="col-xl-12">
                     <div class="personal_information">
                         <h2>অর্ডারের তথ্য</h2>
@@ -96,8 +127,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                     <div class="input-group input_customer_photo" style="positon:relative;">
                                         <input wire:model="photo" type="file" class="custom-file-input" id="customerPhoto">
                                         <label class="custom-file-label" for="customerPhoto"></label>
-                                        <div class="invalid-feedback"></div>
-                                        <div class="invalid-feedback">@error('photo'){!! $message!!} @else সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!@enderror</div>
+                                        @error('photo')<div class="text-danger">{!! $message!!}</div> @else <div class="invalid-feedback">সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!</div>@enderror
                                         {{-- <img class="" src="{{$photo->temporaryUrl()}}" width="120"> --}}
                                         
                                         @if ( $photo )
@@ -117,75 +147,19 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                         </div>
 
 
-                        <div class="col-xl-12 d-flex form-group mb-4">
-                            <div class="form-check custom-radio d-flex">
-                                <input value="1" wire:model='order_delivery' type="checkbox" class="custom-control-input" id="otherDelivery" name="daliveryPolicy">
-                                <label class="custom-control-label" for="otherDelivery">অন্য কোনো মাধ্যমে আপনার পণ্য ডেলিভারি হবে?</label>
-                            </div>
-                        </div>
                         
-                    @if ( $order_delivery == 1 )
-                            <div class="row py-3 test-class" id="dalivery_address" style="background: linear-gradient(355deg,#009cea00, rgb(128 0 128 / 5%) )">
-                                <div class="col-xl-12 "><h6 class="text-primary">কুরিয়ার বা কোন মাধ্যমে আপনার পণ্য সমূহ ডেলিভারি হবে তার বিস্তারিত--</h6></div>
-                                <div class="col-xl-6 mb-3">
-                                    <label for="deliverysystem" @error('delivery_system') class="text-danger" @enderror>কিভাবে অর্ডার ডেলিভারি নিতেচান?</label>
-                                    <select wire:model="delivery_system" class="custom-select d-block w-100" id="deliverysystem" required>
-                                        <option value="0">নির্বাচন করুন</option>
-                                        <option value="1">কুরিয়ার</option>
-                                        <option value="2">নিজে নিবেন</option>
-                                    </select>
-                                    @error('delivery_system')<div class="text-danger"> {!!$message!!}</div> @else<div class="invalid-feedback"> Select a delivery system name</div> @enderror 
-                                </div><div class="col-xl-6 mb-3">
-                                    <label for="deliverycharge">কুরিয়ার চার্জ</label>
-                                    <input wire:model="delivery_charge" type="text" class="form-control" id="deliverycharge" placeholder="কুরিয়ার চার্জ..." required>
-                                    @error('delivery_charge') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">কুরিয়ার চার্জ লিখুন!</div>@enderror
-                                </div>
-                                
-                                <div class="col-xl-12 ">
-                                    <label for="couriername">কুরিয়ার এর তথ্য</label>
-                                    <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="কুরিয়ার এর নাম এবং শাখার বিস্তারিত..." required>
-                                    @error('courier_details') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Courier details is required.</div>@enderror
-                                </div>
-
-                                <div class="col-lg-6 mb-3">
-                                    <label for="coun_try">Country</label>
-                                    <select wire:model="country" class="custom-select d-block w-100" id="coun_try" required>
-                                        <option>...</option>
-                                        <option value="bd">Bangladesh</option>
-                                    </select>
-                                     @error('country') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Select a country</div> @enderror 
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                    <label for="ccity">শহর</label>
-                                    <input wire:model="city" type="text" class="form-control" id="ccity" placeholder="City" required>
-                                    @error('city') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">শহর দিন!</div>@enderror
-                                </div>
-
-                                <div class="col-lg-6 mb-3">
-                                    <label for="line1">লাইন ১</label>
-                                    <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="লাইন ১...." required>
-                                    @error('line1') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">লাইন ১ দিন!</div>@enderror
-                                </div>
-
-                                <div class="col-lg-6 mb-3">
-                                    <label for="line2">লাইন ২</label>
-                                    <input wire:model="line2" type="text" class="form-control" id="line2" placeholder="লাইন ২.." >
-                                    @error('line2') <div class="text-danger">{!!$message!!}</div> @enderror
-                                </div>
-
-                                <div class="col-lg-6 mb-3">
-                                    <label for="cprovince">প্রদেশ</label>
-                                    <input wire:model="province" type="text" class="form-control" id="cprovince" placeholder="প্রদেশ" required>
-                                    @error('province') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">প্রদেশ দিন!</div>@enderror
-                                </div>
-                                <div class="col-lg-6 mb-3">
-                                <label for="zip">জিপ-কোড</label>
-                                <input wire:model="zipcode" type="number" class="form-control" id="zip" placeholder="জিপ-কোড" required>
-                                @error('zipcode') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক জিপ-কোড দিন!</div>@enderror
-                                </div>
-                            </div>
-                        @endif
                     </div> <!--Persinal information End-->
+                    
+                    @if ($formErrorOne==0 ){{-- && sizeof($products) --}}
+                                @error('delivery_date') @else
+                                    @error('additional') @else
+                                    <button style="transition-delay: 500ms; transition:0.4s all ease; " class="mt-2 btn btn-primary nextBtn btn-lg pull-right"  wire:click="firstStepSubmit" type="button">পরবর্তী ধাপ </button> 
+                                @enderror
+                            @enderror
+                            @else <h6 class="text-warning">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</h6>
+                            @endif
+                </div>
+                <div class="col-lg-12">
                     <div class="cloth_part_style">
                         <div class="row">
                             <div class="col-lg-12 bg-primary py-5">
@@ -203,7 +177,7 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                         @endforeach
                                     @endif
                                     
-                                   
+                                    
                                         
                                 </div> {{--dresh panzabi .row end--}}
                                 {{-- @endforeach --}}
@@ -311,8 +285,11 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                                 </div>
                             </div>
                             {{-- Measure area End --}}
-                        </div>  
-                        {{-- {{print_r($design_fields)}}                 --}}
+                        </div>
+                    </div>
+                    {{-- Order Item Design Part Start --}}
+                    <div class="col-lg-12">
+                        {{-- {{print_r($design_fields)}}   --}}
                         @if ($styles && $designItems)
                             @foreach ($designItems as $design)
                             <div class="row py-3">
@@ -339,70 +316,144 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
                             @endforeach
                         @endif
                         {{-- Type Start --}}
-  
-                        
-                    </div> <!--cloth_part_style End-->
+                    </div>
+                    <!-- Order Item Design Part Start -->
 
                 </div>
-          </div>
-        </div>
-        {{-- <div class="col-lg-12"></div> --}}
-        <div class="col-xl-12">
-            <div>
-                <div class="row">
-                    <div class="product_role_container container-fluid">
-                        <!-- DataTales Example -->
-                        <div class="card shadow mb-4">
-                            <div class="card-header">
-                                <h3>মজুরি(WAGES)</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                        <thead>
-                                            <tr class="text-center"><th>পোশাক</th>
-                                                <th>পরিমাণ@error('quantity')<span class="text-danger">{{--$message--}} দিন!</span> @enderror </th>
-                                                <th>মজুরি  @error('wages')<span class="text-danger">{{$message}}</span> @enderror </th>
-                                                <th>ছাড় @error('discount')<span class="text-danger">{{$message}}</span> @enderror </th>
-                                                <th>মোট</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td class="products">
-                                                    {{-- @foreach ($allproducts as $product)
-                                                        @foreach ($products as $selProduct)
-                                                            @if ($product->id == $selProduct)
-                                                                <p>{{$product->name}}</p>
-                                                            @endif
-                                                        @endforeach
-                                                    @endforeach --}}
+                <!-- Order Delivery Start-->
+                <div class="col-xl-12">
+                    <div class="col-xl-12 d-flex form-group mb-4">
+                        <div class="form-check custom-radio d-flex">
+                            <input value="1" wire:model='order_delivery' type="checkbox" class="custom-control-input" id="otherDelivery" name="daliveryPolicy">
+                            <label class="custom-control-label" for="otherDelivery">অন্য কোনো মাধ্যমে আপনার পণ্য ডেলিভারি হবে?</label>
+                        </div>
+                    </div>
+                    
+                    @if ( $order_delivery == 1 )
+                            <div class="row py-3 test-class" id="dalivery_address" style="background: linear-gradient(355deg,#009cea00, rgb(128 0 128 / 5%) )">
+                                <div class="col-xl-12 "><h6 class="text-primary">কুরিয়ার বা কোন মাধ্যমে আপনার পণ্য সমূহ ডেলিভারি হবে তার বিস্তারিত--</h6></div>
+                                <div class="col-xl-6 mb-3">
+                                    <label for="deliverysystem" @error('delivery_system') class="text-danger" @enderror>কিভাবে অর্ডার ডেলিভারি নিতেচান?</label>
+                                    <select wire:model="delivery_system" class="custom-select d-block w-100" id="deliverysystem" required>
+                                        <option value="0">নির্বাচন করুন</option>
+                                        <option value="1">কুরিয়ার</option>
+                                        <option value="2">নিজে নিবেন</option>
+                                    </select>
+                                    @error('delivery_system')<div class="text-danger"> {!!$message!!}</div> @else<div class="invalid-feedback"> Select a delivery system name</div> @enderror 
+                                </div><div class="col-xl-6 mb-3">
+                                    <label for="deliverycharge">কুরিয়ার চার্জ</label>
+                                    <input wire:model="delivery_charge" type="text" class="form-control" id="deliverycharge" placeholder="কুরিয়ার চার্জ..." required>
+                                    @error('delivery_charge') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">কুরিয়ার চার্জ লিখুন!</div>@enderror
+                                </div>
+                                
+                                <div class="col-xl-12 ">
+                                    <label for="couriername">কুরিয়ার এর তথ্য</label>
+                                    <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="কুরিয়ার এর নাম এবং শাখার বিস্তারিত..." required>
+                                    @error('courier_details') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Courier details is required.</div>@enderror
+                                </div>
 
-                                                    @foreach ($allproducts as $product)
-                                                            @if ($product->id == $products)
-                                                                <p>{{$product->name}}</p>
-                                                            @endif
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    <input type="number" min="1" wire:model="quantity" class="form-control" placeholder="পরিমাণ" required>
-                                                   
-                                                </td>
-                                                <td><input type="number" wire:model="wages" class="form-control" placeholder="মজুরি" required>
-                                                    <div class="invalid-feedback">আইটেম এর পরিমান দিন!</div>
-                                                </td>
-                                                <td><input type="number" wire:model="discount" class="form-control" placeholder="ছাড়"></td>
-                                                <td><input type="number" wire:model="total" class="form-control" placeholder="মোট" required></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="coun_try">Country</label>
+                                    <select wire:model="country" class="custom-select d-block w-100" id="coun_try" required>
+                                        <option>...</option>
+                                        <option value="bd">Bangladesh</option>
+                                    </select>
+                                    @error('country') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Select a country</div> @enderror 
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    <label for="ccity">শহর</label>
+                                    <input wire:model="city" type="text" class="form-control" id="ccity" placeholder="City" required>
+                                    @error('city') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">শহর দিন!</div>@enderror
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label for="line1">লাইন ১</label>
+                                    <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="লাইন ১...." required>
+                                    @error('line1') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">লাইন ১ দিন!</div>@enderror
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label for="line2">লাইন ২</label>
+                                    <input wire:model="line2" type="text" class="form-control" id="line2" placeholder="লাইন ২.." >
+                                    @error('line2') <div class="text-danger">{!!$message!!}</div> @enderror
+                                </div>
+
+                                <div class="col-lg-6 mb-3">
+                                    <label for="cprovince">প্রদেশ</label>
+                                    <input wire:model="province" type="text" class="form-control" id="cprovince" placeholder="প্রদেশ" required>
+                                    @error('province') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">প্রদেশ দিন!</div>@enderror
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                <label for="zip">জিপ-কোড</label>
+                                <input wire:model="zipcode" type="number" class="form-control" id="zip" placeholder="জিপ-কোড" required>
+                                @error('zipcode') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক জিপ-কোড দিন!</div>@enderror
+                                </div>
+                            </div>
+                    @endif
+                </div>
+                <!-- Order Delivery Start-->
+                <!-- Start WAGES/মজুরি -->
+                <div class="col-xl-12">
+                    <div>
+                        <div class="row">
+                            <div class="product_role_container container-fluid">
+                                <!-- DataTales Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header">
+                                        <h3>মজুরি(WAGES)</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr class="text-center"><th>পোশাক</th>
+                                                        <th>পরিমাণ@error('quantity')<span class="text-danger">{{--$message--}} দিন!</span> @enderror </th>
+                                                        <th>মজুরি  @error('wages')<span class="text-danger">{{$message}}</span> @enderror </th>
+                                                        <th>ছাড় @error('discount')<span class="text-danger">{{$message}}</span> @enderror </th>
+                                                        <th>মোট</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="products">
+                                                            {{-- @foreach ($allproducts as $product)
+                                                                @foreach ($products as $selProduct)
+                                                                    @if ($product->id == $selProduct)
+                                                                        <p>{{$product->name}}</p>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endforeach --}}
+        
+                                                            @foreach ($allproducts as $product)
+                                                                    @if ($product->id == $products)
+                                                                        <p>{{$product->name}}</p>
+                                                                    @endif
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" min="1" wire:model="quantity" class="form-control" placeholder="পরিমাণ" required>
+                                                           
+                                                        </td>
+                                                        <td><input type="number" wire:model="wages" class="form-control" placeholder="মজুরি" required>
+                                                            <div class="invalid-feedback">আইটেম এর পরিমান দিন!</div>
+                                                        </td>
+                                                        <td><input type="number" wire:model="discount" class="form-control" placeholder="ছাড়"></td>
+                                                        <td><input type="number" wire:model="total" class="form-control" placeholder="মোট" required></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <!-- End WAGES/মজুরি -->
+          </div>
         </div>
+        {{-- <div class="col-lg-12"></div> --}}
+        
     </div>
     @if ( $errors->any())
         @foreach ($errors->all() as $err)
@@ -419,6 +470,23 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
    {{-- #dalivery_address{transition: 0.8s ease-in-out; transform-origin: top; transform:scaleY(0); height: 0; overflow: hidden; }
     @if ( $order_delivery == 1 ) #dalivery_address{transform:scaleY(1);height: 100%;}
     @endif--}}
+</style>
+<style>
+        @media (max-width: 575px){.col-mb-2{margin-bottom:.5rem!important}}
+        .display-none { display: none;} .multi-wizard-step p { margin-top: 12px; }
+
+.stepwizard-row {display: table-row;}
+.stepwizard {display: table; position: relative;width: 100%;}
+.multi-wizard-step button[disabled] {filter: alpha(opacity=100) !important; opacity: 1 !important;}
+.stepwizard-row:before {top: 14px;bottom: 0;content: " ";width: 100%;height: 1px;z-index: 0;position: absolute;background-color: #fefefe;}
+.multi-wizard-step {text-align: center;position: relative;display: table-cell;}
+#step-1 button[type='button'],#step-2 button[type='button'],#step-3 button[type='button'],#step-4 button[type='submit'],.animated{ -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+       -moz-animation: fadein 2s; /* Firefox < 16 */
+        -ms-animation: fadein 2s; /* Internet Explorer */
+         -o-animation: fadein 2s; /* Opera < 12.1 */
+            animation: fadein 2s;
+}
+
 </style>
 </div>
 
