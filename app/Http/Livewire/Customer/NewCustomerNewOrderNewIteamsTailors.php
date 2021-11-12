@@ -223,7 +223,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     
         }
         
-        //ohter delivery validation
+        //order delivery validation
         if ( $this->order_delivery ) {
             $this->validateOnly($fields,[
                 'delivery_system'   => 'required|min:1',
@@ -386,20 +386,20 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $orderitem->cloth_body        = $this->cloth_body;        
         $orderitem->body_loose        = $this->body_loose;
         $orderitem->cloth_belly       = $this->cloth_belly;
-        $orderitem->belly_loose       = $this->belly_loose??null;
+        $orderitem->belly_loose       = $this->belly_loose ?? null;
         $orderitem->cloth_enclosure   = $this->cloth_enclosure;
         $orderitem->hand_long         = $this->hand_long;
         $orderitem->sleeve_enclosure  = $this->sleeve_enclosure;
-        $orderitem->sleeve_pasting    = $this->sleeve_pasting??null;
-        $orderitem->cloth_throat      = $this->cloth_throat??null;
+        $orderitem->sleeve_pasting    = $this->sleeve_pasting ?? null;
+        $orderitem->cloth_throat      = $this->cloth_throat ?? null;
         if( $this->collar_measure_type && $this->cloth_collar ):
             $orderitem->cloth_collar      = $this->cloth_collar .' মোট';
         else:
-            $orderitem->cloth_collar      = $this->cloth_collar??null;
+            $orderitem->cloth_collar      = $this->cloth_collar ?? null;
         endif;
         
         $orderitem->cloth_shoulder    = $this->cloth_shoulder;
-        $orderitem->cloth_mora        = $this->cloth_mora??null;
+        $orderitem->cloth_mora        = $this->cloth_mora ?? null;
         $orderitem->noke_shoho        = $this->noke_shoho;
         $orderitem->cloth_additional  = $this->cloth_additional;
         $orderitem->save();

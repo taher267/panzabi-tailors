@@ -91,9 +91,15 @@
                                 disabled="disabled">৪</a>
                             <p>ধাপ ৪</p>
                         </div>
+                        <div class="multi-wizard-step">
+                            <a href="#step-4" type="button"
+                                class="btn {{ $currentStep != 5 ? 'btn-default' : 'btn-primary' }}"
+                                disabled="disabled">৫</a>
+                            <p>ধাপ ৫</p>
+                        </div>
                     </div>
                 </div>
-                <form class="was-validated">                    
+                <form class="was-validated" wire:submit.prevent="placeOrder">                    
                     <div class="row">
                         {{-- Step 1 --}}
                         <div class="col-xl-12 {{ $currentStep != 1 ? 'display-none' : '' }}" id="step-1">
@@ -220,19 +226,19 @@
                                         <div class="col-lg-3 col-md-6 mb-3">
                                             <div>
                                                 <label for="clothbody">বডি</label>
-                                                <input wire:model="cloth_body" type="number" class="form-control" id="clothbody" placeholder="Cloth Body" required>
+                                                <input wire:model="cloth_body" type="number" class="form-control" id="clothbody" placeholder="Cloth Body">
                                                 @error('cloth_body')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের বডি দিন?</div> @enderror
                                             </div>
     
                                             <div>
                                                 <label for="bodyloose">বডির লুজ</label>
-                                                <input wire:model="body_loose" type="number" class="form-control" id="bodyloose" placeholder="Body Loose" required>
+                                                <input wire:model="body_loose" type="number" class="form-control" id="bodyloose" placeholder="Body Loose">
                                                 @error('body_loose')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের বডি লুজ দিন?</div> @enderror
                                             </div>
     
                                             <div>
                                                 <label for="clothbelly">পেট</label>
-                                                <input wire:model="cloth_belly" type="number" class="form-control" id="clothbelly"_ placeholder="পাট/Belly" required>
+                                                <input wire:model="cloth_belly" type="number" class="form-control" id="clothbelly"_ placeholder="পাট/Belly">
                                                 @error('cloth_belly')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের পেট পরিমাপ দিন?</div> @enderror
                                             </div>
     
@@ -258,7 +264,7 @@
                                             </div>
                                             <div>
                                             <label for="sleeveenclosure">হাতার মুহুরী</label>
-                                            <input  wire:model="sleeve_enclosure" type="number" class="form-control" id="sleeveenclosure" placeholder="Sleeve enclosure হাতার মুহুরী" required>
+                                            <input  wire:model="sleeve_enclosure" type="number" class="form-control" id="sleeveenclosure" placeholder="Sleeve enclosure হাতার মুহুরী">
                                             @error('sleeve_enclosure')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতার মুহুরী দিন?</div> @enderror
                                             </div>
                                             <div class="">
@@ -355,48 +361,182 @@
                             </div>
                             @endforeach
                         @endif
-                            <button class="btn btn-primary nextBtn btn-lg pull-right" type="button"
-                                wire:click="thirdStepSubmit">Next</button>
-                            <button class="btn btn-danger nextBtn btn-lg pull-right" type="button" wire:click="back(2)">Back</button>
+                        {{$cloothDesignOutpurResult}}
+                        <br>
+                        {{print_r(count($designs_check))}}
+                        <div class="col-xl-12 mt-3">
+                            <div class="row">
+                                <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(2)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
+                                @if ($cloothDesignOutpurResult==0 && $errors->isEmpty())
+                                    <div class="col-xl-6 col-sm-4 order-2 col-12 text-right">
+                                    <button class="btn btn-primary btn-lg push-right w-50 " type="button" wire:click="designStepSubmit">পরবর্তী ধাপ</button> </div> 
+                
+                                @else  <div class="col-xl-6 col-sm-4 order-2 col-12 text-center"><h6 class="col-xl-12 text-danger"><marquee direction="right">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</marquee></h6></div>
+                                @endif
+                                
+                            </div>
+                        </div>
                         </div>
                     </div>
                     <div class="col-xl-12 {{ $currentStep != 4 ? 'display-none' : '' }}" id="step-4">
-                        <div class="col-md-12 step-4">
-                            <h3> Step 4</h3>
-                            <table class="table">
-                                <tr>
-                                    <td>Team Name:</td>
-                                    <td><strong>
-                                        {{-- {{print_r($products)}} --}}
-                                    {{-- @if (count($products)>0)
-                                        @foreach ($products as $product)
-                                        @foreach ($allproducts as $currentProduct)
-                                            @if ($product==$currentProduct->id)
-                                            <p>{{$currentProduct->name}}</p>
-                                            @endif                                            
-                                            @endforeach
-                                        @endforeach
-                                    @endif --}}
-                                </strong></td>
-                                </tr>
-                                <tr>
-                                    <td>Team Price:</td>
-                                    <td><strong>{{$delivery_date}}</strong></td>
-                                </tr>
-                                <tr>
-                                    <td>Team status:</td>
-                                    <td><strong>{{$cloth_body}}</strong></td>
-                                </tr>
-                                <tr>
-                                    <td>Team Detail:</td>
-                                    <td><strong>{{$address}}</strong></td>
-                                </tr>
-                            </table>
-                            <button class="btn btn-success btn-lg pull-right" wire:submit.prevent="PlaceOrder" type="submit">Finish!</button>
-                            <button class="btn btn-danger nextBtn btn-lg pull-right" type="button" wire:click="back(3)">Back</button>
+                       <div class="row">
+                           <!-- Order Delivery Start-->
+                            <div class="col-xl-12">
+                                <div class="col-xl-12 d-flex form-group mb-4">
+                                    <div class="form-check custom-radio d-flex">
+                                        <input value="1" wire:model='order_delivery' type="checkbox" class="custom-control-input" id="otherDelivery" name="daliveryPolicy">
+                                        <label class="custom-control-label" for="otherDelivery">অন্য কোনো মাধ্যমে আপনার পণ্য ডেলিভারি হবে?</label>
+                                    </div>
+                                </div>
+                                
+                                @if ( $order_delivery == 1 )
+                                        <div class="row py-3 test-class" id="dalivery_address" style="background: linear-gradient(355deg,#009cea00, rgb(128 0 128 / 5%) )">
+                                            <div class="col-xl-12 "><h6 class="text-primary">কুরিয়ার বা কোন মাধ্যমে আপনার পণ্য সমূহ ডেলিভারি হবে তার বিস্তারিত--</h6></div>
+                                            <div class="col-xl-6 mb-3">
+                                                <label for="deliverysystem" @error('delivery_system') class="text-danger" @enderror>কিভাবে অর্ডার ডেলিভারি নিতেচান?</label>
+                                                <select wire:model="delivery_system" class="custom-select d-block w-100" id="deliverysystem" required>
+                                                    <option value="0">নির্বাচন করুন</option>
+                                                    <option value="1">কুরিয়ার</option>
+                                                    <option value="2">নিজে নিবেন</option>
+                                                </select>
+                                                @error('delivery_system')<div class="text-danger"> {!!$message!!}</div> @else<div class="invalid-feedback"> Select a delivery system name</div> @enderror 
+                                            </div><div class="col-xl-6 mb-3">
+                                                <label for="deliverycharge">কুরিয়ার চার্জ</label>
+                                                <input wire:model="delivery_charge" type="text" class="form-control" id="deliverycharge" placeholder="কুরিয়ার চার্জ..." required>
+                                                @error('delivery_charge') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">কুরিয়ার চার্জ লিখুন!</div>@enderror
+                                            </div>
+                                            
+                                            <div class="col-xl-12 ">
+                                                <label for="couriername">কুরিয়ার এর তথ্য</label>
+                                                <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="কুরিয়ার এর নাম এবং শাখার বিস্তারিত..." required>
+                                                @error('courier_details') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Courier details is required.</div>@enderror
+                                            </div>
+
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="coun_try">Country</label>
+                                                <select wire:model="country" class="custom-select d-block w-100" id="coun_try" required>
+                                                    <option>...</option>
+                                                    <option value="bd">Bangladesh</option>
+                                                </select>
+                                                @error('country') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Select a country</div> @enderror 
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="ccity">শহর</label>
+                                                <input wire:model="city" type="text" class="form-control" id="ccity" placeholder="City" required>
+                                                @error('city') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">শহর দিন!</div>@enderror
+                                            </div>
+
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="line1">লাইন ১</label>
+                                                <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="লাইন ১...." required>
+                                                @error('line1') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">লাইন ১ দিন!</div>@enderror
+                                            </div>
+
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="line2">লাইন ২</label>
+                                                <input wire:model="line2" type="text" class="form-control" id="line2" placeholder="লাইন ২.." >
+                                                @error('line2') <div class="text-danger">{!!$message!!}</div> @enderror
+                                            </div>
+
+                                            <div class="col-lg-6 mb-3">
+                                                <label for="cprovince">প্রদেশ</label>
+                                                <input wire:model="province" type="text" class="form-control" id="cprovince" placeholder="প্রদেশ" required>
+                                                @error('province') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">প্রদেশ দিন!</div>@enderror
+                                            </div>
+                                            <div class="col-lg-6 mb-3">
+                                            <label for="zip">জিপ-কোড</label>
+                                            <input wire:model="zipcode" type="number" class="form-control" id="zip" placeholder="জিপ-কোড" required>
+                                            @error('zipcode') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক জিপ-কোড দিন!</div>@enderror
+                                            </div>
+                                        </div>
+                                @endif
+                            </div>
+                            <!-- Order Delivery Start-->
+                        <div class="col-xl-12">
+                            <div class="product_role_container container-fluid">
+                                <!-- DataTales Example -->
+                                <div class="card shadow mb-4">
+                                    <div class="card-header">
+                                        <h3>মজুরি(WAGES)</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr class="text-center"><th>পোশাক</th>
+                                                        <th>পরিমাণ@error('quantity')<span class="text-danger">{{--$message--}} দিন!</span> @enderror </th>
+                                                        <th>মজুরি  @error('wages')<span class="text-danger">{{$message}}</span> @enderror </th>
+                                                        <th>ছাড় @error('discount')<span class="text-danger">{{$message}}</span> @enderror </th>
+                                                        <th>মোট</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td class="products">
+                                                            {{-- @foreach ($allproducts as $product)
+                                                                @foreach ($products as $selProduct)
+                                                                    @if ($product->id == $selProduct)
+                                                                        <p>{{$product->name}}</p>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endforeach --}}
+                
+                                                            @foreach ($allproducts as $product)
+                                                                    @if ($product->id == $products)
+                                                                        <p>{{$product->name}}</p>
+                                                                    @endif
+                                                            @endforeach
+                                                        </td>
+                                                        <td>
+                                                            <input type="number" min="1" wire:model="quantity" class="form-control" placeholder="পরিমাণ" required>
+                                                           
+                                                        </td>
+                                                        <td><input type="number" wire:model="wages" class="form-control" placeholder="মজুরি" required>
+                                                            <div class="invalid-feedback">আইটেম এর পরিমান দিন!</div>
+                                                        </td>
+                                                        <td><input type="number" wire:model="discount" class="form-control" placeholder="ছাড়"></td>
+                                                        <td><input type="number" wire:model="total" class="form-control" placeholder="মোট" required></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
                         </div>
+                            <div class="col-xl-12 mt-3">
+                                <div class="row">
+                                    <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(3)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
+                                    @if ( $wagesOutpurResult==0 && $errors->isEmpty() )
+                                        <div class="col-xl-6 col-sm-4 order-2 col-12 text-right">
+                                        <button class="btn btn-primary btn-lg push-right w-50 " type="button" wire:click="wagesStepSubmit">পরবর্তী ধাপ</button> </div> 
                     
+                                    @else  <div class="col-xl-6 col-sm-4 order-2 col-12 text-center"><h6 class="col-xl-12 text-danger"><marquee direction="right">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</marquee></h6></div>
+                                    @endif
+                                    
+                                </div>
+                            </div>
+                       </div> 
+                           
                 </div>
+
+                <div class="col-xl-12 {{ $currentStep != 5 ? 'display-none' : '' }}" id="step-5">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <h3>Preview</h3>
+                        </div>
+                        <div class="col-xl-12 mt-3">
+                            <div class="row">
+                                <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(4)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
+                                    <div class="col-xl-6 col-sm-4 order-2 col-12 text-right">
+                                    <button type="{{$errors->isEmpty() ? 'submit':'button'}}" {{ $errors->isEmpty() ? '':'disabled'}} class="btn btn-primary btn-lg btn-block">অর্ডার করুন</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 </form>
         </div>
     

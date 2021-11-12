@@ -62,7 +62,6 @@ div#dataTable_wrapper .row:first-child,div#dataTable_wrapper .row:last-child { d
 </div>
 <form class="was-validated" wire:submit.prevent="placeOrder">
     <div class="row">
-        
         <div class="col-lg-12">
             <div style="transition: 1s all ease" class="col-xl-12 " id="right_sidebar">
                 <h3 class="text-primary table-bordered border-primary my-3 p-3">নতুন গ্রাহক নতুন অর্ডার যুক্ত করুন!</h3>

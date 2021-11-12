@@ -23,14 +23,15 @@ class CustomerTailorsOrderDetails extends Component
     public $delivery_date, $order_number, $collar_measure_type, $cloth_additional, $additional,$quantity,$subtotal,$discount,$delivery_charge,$delivery_system,$total,$delivered_date, $wages;//মজুরি
     //Order Item
     public $cloth_long,$cloth_body,$body_loose,$cloth_belly,$belly_loose,$cloth_enclosure,$hand_long ,$sleeve_enclosure,$sleeve_pasting ,$cloth_throat,$cloth_collar ,$cloth_shoulder ,$cloth_mora,$noke_shoho;
-    public $currentStep = 1;
+    public $currentStep = 1; public $minOrderId, $maxOrderId;
     public $name, $price, $detail, $stepstatus = 1, $status;
     public $successMsg = '', $hidesidebar;
-    public $formErrorOne,$formErrorTwo, $formErrorThree;
+    public $formErrorOne,$formErrorTwo, $cloothDesignOutpurResult;
     //style
     public $col_0,$col_1, $validOnlyFields, $designs_check=[],$design_fields=[];
     public $force_id,$confirm_mail;
-
+    //Order Delivery
+    public $order_delivery, $courier_details, $wagesOutpurResult;
     public function mount()//$customer_id
     {
         $this->Full_Name='Taher';
@@ -65,13 +66,13 @@ class CustomerTailorsOrderDetails extends Component
             'products'          => 'required',
             'additional'        => 'string|nullable',
             'cloth_long'        => 'required|numeric|min:5|max:100',
-            'cloth_body'        => 'required|numeric|min:5|max:100',
-            'body_loose'        => 'required|numeric|min:5|max:100',
-            'cloth_belly'       => 'required|numeric|min:5|max:100',
+            'cloth_body'        => 'nullable|numeric|min:5|max:100',
+            'body_loose'        => 'nullable|numeric|min:5|max:100',
+            'cloth_belly'       => 'nullable|numeric|min:5|max:100',
             'belly_loose'       => 'nullable|numeric|min:5|max:100',
             'cloth_enclosure'   => 'required|numeric|min:5|max:100',
             'hand_long'         => 'required|numeric|min:5|max:100',
-            'sleeve_enclosure'  => 'required|numeric|min:5|max:100',
+            'sleeve_enclosure'  => 'nullable|numeric|min:5|max:100',
             'sleeve_pasting'    => 'nullable|string',
             'cloth_throat'      => 'nullable|numeric|min:5|max:30',
             'cloth_collar'      => 'nullable|numeric|min:5|max:30',
@@ -80,6 +81,7 @@ class CustomerTailorsOrderDetails extends Component
             'cloth_mora'        => 'nullable|numeric|min:5|max:100',
             'noke_shoho'        => 'numeric|nullable|min:5|max:100',
             'photo'             => 'image|mimes:jpg,bmp,png|nullable',
+            'wages'             => 'required|numeric'
         ],['Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে',"delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
         'mobile.unique'=>'নম্বরটি পূর্ব নিবন্ধিত!','mobile.digits'=>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!', 'email.required'=>'বৈধ ইমেল হতে হবে','email.unique'=>'ইমেলটি পূর্ব নিবন্ধিত!',
         ]);
@@ -88,6 +90,19 @@ class CustomerTailorsOrderDetails extends Component
                 'email'             =>  'required|email|unique:customers,email',
                ]);
     
+        }
+
+        if ( $this->order_delivery ) {
+            $this->validateOnly($fields,[
+                'delivery_system'   => 'required|min:1',
+                'courier_details'   =>  'required',
+                'delivery_charge'   =>  'required',
+                'country'           =>  'required',
+                'city'              =>  'required',
+                'province'          =>  'required',
+                'zipcode'           =>  'required',
+                'line1'             =>  'required',
+            ]);
         }
         
     }
@@ -119,7 +134,7 @@ class CustomerTailorsOrderDetails extends Component
     }
     public function formCheckTwo()
     {
-        if ( $this->products=="" || $this->cloth_long =='' ||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly =='' || $this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_enclosure ==''||$this->cloth_shoulder  =='' || ( $this->cloth_throat=='' && $this->cloth_collar=='')) {//
+        if ( $this->products=="" || $this->cloth_long =='' || $this->cloth_enclosure ==''||$this->hand_long ==''||$this->cloth_shoulder  =='' || ( $this->cloth_throat=='' && $this->cloth_collar=='')) {//
             $this->formErrorTwo=1;
         }else {
             $this->formErrorTwo=0;
@@ -137,38 +152,61 @@ class CustomerTailorsOrderDetails extends Component
   
         $this->currentStep = 3;
     }
-    public function thirdStepSubmit()
+    public function designStepSubmit()
     {
-        $validatedData = $this->validate([
-            'stepstatus' => 'required',
-        ]);
+        // $validatedData = $this->validate([
+        //     'stepstatus' => 'required',
+        // ]);
   
         $this->currentStep = 4;
     }
     public function formCheckThree()
     {
-        if ( $this->name =='' || $this->price=='') {
-            $this->formErrorThree=1;
+        if ( count(array_values($this->designs_check)) == 0 ) {
+            $this->cloothDesignOutpurResult=1;
 
         }else {
-            $this->formErrorThree=0;
+            $this->cloothDesignOutpurResult=0;
         }
+    }
+
+    /**
+     * wages
+     */
+    public function wagesStepSubmit()
+    {  
+        $this->currentStep = 5;
+    }
+    public function wagesFormCheck()
+    {
+        
+        if ( $this->quantity == "" || $this->wages == "" || $this->total == "") {
+            $this->wagesOutpurResult=1;
+        }else {
+            if($this->order_delivery==1 && ( $this->delivery_system == "" 
+            || $this->delivery_charge == "" ||  $this->courier_details== "" ||  $this->country== "" ||  $this->line1== "" ||  $this->city== "" ||  $this->province 
+           == "" ||  $this->zipcode == "" )){
+            $this->wagesOutpurResult=1;
+           }
+            else {
+                $this->wagesOutpurResult=0;
+            }
+        }   
+    }
+    /**
+     * Preview Page/Step
+     */
+    public function previewStepSubmit()
+    {  
+        $this->currentStep = 6;
     }
     /**
      * Write code on Method
      */
     public function submitForm()
     {
-        // Team::create([
-        //     'name' => $this->Full_Name,
-        //     'price' => $this->mobile,
-        //     'detail' => $this->address,
-        //     'stepstatus' => $this->stepstatus,
-        // ]);
-  
-        $this->successMsg = 'Team successfully created.';
-  
-        $this->clearForm();
+        
+       $this->clearForm();
   
         $this->currentStep = 1;
     }
@@ -200,12 +238,14 @@ class CustomerTailorsOrderDetails extends Component
     {
         if ($this->wages != null && $this->quantity != null) {
             if($this->wages>0 || $this->quantity): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0)+ ($this->delivery_charge ? $this->delivery_charge: 0); endif;
+        }else {
+            $this->total='';
         }
     }
-    public $minOrderId, $maxOrderId;
+    
     public function minMaxOrderId()
     {
-        if(count(Order::all())>0 && ! $this->force_id){
+        if( count(Order::all())>0 && ! $this->force_id ){
             $this->minOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
             $this->maxOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
         }else if(! $this->force_id){
@@ -217,13 +257,39 @@ class CustomerTailorsOrderDetails extends Component
         }
         
     }
+    public function fillEmptyStyleField($style_id){
+        
+        if ($style_id != null) {
+            if (in_array($style_id,array_keys($this->designs_check), true) ) {
+                if (in_array($style_id,array_keys($this->design_fields), true )) {
+                    $this->design_fields[$style_id]=$this->design_fields[$style_id];
+                }else {
+                    $this->design_fields[$style_id]=' ';
+                }
+            }
+           
+            
+        }
+        
+    }
+    public function desingCheckedUpdate()
+    {
+        // $this->designs_check = count(array_values($this->designs_check));
+    }
+    public function placeOrder3()
+    {
+        // dd((array_values($this->designs_check)));
+    }
+    
     public function render()
     {
-        
+        $this->desingCheckedUpdate();
         $this->minMaxOrderId();
         $this->formCheckOne();
         $this->formCheckTwo();
         $this->formCheckThree();
+        $this->wagesFormCheck();
+        $this->WagesCalculation();
         $styleGroup = StyleMeasurePart::all();
         $designItems = DesignItem::all();
         $allproducts = Product::all();
