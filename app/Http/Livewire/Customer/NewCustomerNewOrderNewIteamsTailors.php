@@ -1,5 +1,5 @@
 <?php
-// ↓
+
 namespace App\Http\Livewire\Customer;
 
 use Carbon\Carbon;
@@ -9,60 +9,190 @@ use Livewire\Component;
 use App\Models\Customer;
 use App\Models\OrderItem;
 use App\Models\DesignItem;
-use Illuminate\Support\Str;
 use App\Tailors\TailorsTrait;
 use Livewire\WithFileUploads;
 use App\Models\OrderItemStyle;
-use App\Models\SleeveStylePart;
 use App\Models\StyleMeasurePart;
 use App\Models\OrderDeliveryAddress;
 use Illuminate\Support\Facades\Auth;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Storage;
 
 class NewCustomerNewOrderNewIteamsTailors extends Component
 {
     use WithFileUploads;
     use TailorsTrait;
-    //cloth
-    public $order_number,$user_id, $products,$designs_check=[], $design_fields=[], $Full_Name, $mobile, $photo, $address, $email, $country,
-     $province, $city, $line1, $line2, $zipcode, $delivery_date, $order_date, $selected_product, $couriar_details;
-    public $peoducts, $cloth_long, $cloth_body, $body_loose, $cloth_enclosure, $hand_long, $cloth_belly, $belly_loose, $sleeve_enclosure,$sleeve_pasting,
-     $cloth_throat, $cloth_collar, $cloth_shoulder, $cloth_mora, $noke_shoho, $cloth_additional, $every_dress_measurement_size;
-    
+    public $errorOut, $customer_id, $Full_Name, $mobile, $email, $address, $country, $city, $province, $line1, $line2, $new_photo, $photo, $zipcode ;
+    public $allproduct, $products, $weekendholiday='Thursday';
     //Order
-    public $quantity=1,$wages,$discount=0,$total, $delivery_charge,$delivery_system, $force_id, $collar_measure_type,$validCustomMessage,
-    $todayDate;
+    public $delivery_date, $order_number, $collar_measure_type, $cloth_additional, $additional,$quantity=1,$subtotal,$discount=0,
+    $delivery_charge,$delivery_system,$total,$delivered_date, $wages;//মজুরি
+    //Order Item
+    public $cloth_long,$cloth_body,$body_loose,$cloth_belly,$belly_loose,$cloth_enclosure,$hand_long ,$sleeve_enclosure,$sleeve_pasting ,
+    $cloth_throat,$cloth_collar ,$cloth_shoulder ,$cloth_mora,$noke_shoho;
+    public $currentStep = 1; public $minOrderId, $maxOrderId;
+    public $name, $price, $detail, $stepstatus = 1, $status;
+    public $successMsg = '', $hidesidebar;
+    public $formErrorOne,$formErrorTwo, $cloothDesignOutpurResult;
+    //style
+    public $col_0,$col_1, $validOnlyFields, $designs_check=[],$design_fields=[];
+    public $force_id,$confirm_mail;
+    //Order Delivery
+    public $order_delivery, $courier_details, $wagesOutpurResult;
 
-    public $personal_info_open, $confirm_mail, $delivery_policy, $order_delivery, $courier_details, $test , $selectedtypes, $errorOut, $clothstyles, $define_key, $desingsIputKey=[], $designsresult;
-    public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
-    public $collar_fields=[], $sleeve_fields=[], $cuff_fields=[], $plate_fields=[], $pocket_fields=[], $back_fields=[], $piping_fields=[], $zip_fields=[], $sewing_fields=[], $embroidery_fields=[], $karchupi_fields=[], $other_fields=[];
-    public $collerFirstArea,$collerLastArea,$sleeveFirstArea,$sleeveLastArea,$cuffFirstArea,$cuffLastArea,$plateFirstArea,$plateLastArea,$pocketFirstArea,$pocketLastArea,$backFirstArea,$backLastArea,$pipingFirstArea,$pipingLastArea,$zipFirstArea,$zipLastArea,$sewingFirstArea,$sewingLastArea,$embroideryFirstArea,$embroideryLastArea,$karchupiFirstArea,$karchupiLastArea,$karchupotheriFirstArea,$otherLastArea;
-    //Step form
-    public $currentStep;
-    public function mount()
+
+
+    public $user_id,  $order_date, $selected_product, $couriar_details;
+   public $every_dress_measurement_size;
+   
+   //Order
+   public $validCustomMessage, $todayDate;
+
+   public $personal_info_open, $delivery_policy, $selectedtypes,  $clothstyles, $define_key, $desingsIputKey=[], $designsresult, $date;
+   public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
+   public $collar_fields=[], $sleeve_fields=[], $cuff_fields=[], $plate_fields=[], $pocket_fields=[], $back_fields=[], $piping_fields=[], $zip_fields=[], $sewing_fields=[], $embroidery_fields=[], $karchupi_fields=[], $other_fields=[];
+   public $collerFirstArea,$collerLastArea,$sleeveFirstArea,$sleeveLastArea,$cuffFirstArea,$cuffLastArea,$plateFirstArea,$plateLastArea,$pocketFirstArea,$pocketLastArea,$backFirstArea,$backLastArea,$pipingFirstArea,$pipingLastArea,$zipFirstArea,$zipLastArea,$sewingFirstArea,$sewingLastArea,$embroideryFirstArea,$embroideryLastArea,$karchupiFirstArea,$karchupiLastArea,$karchupotheriFirstArea,$otherLastArea;
+   
+
+
+
+
+    public function mount()//$customer_id
     {
-        
+        $this->Full_Name='Taher';
+        $this->order_number='3';
+        $this->mobile='12555555555';
+
         $this->country ='bd';
         $this->delivery_system ='byhand';
-        // $this->discount =0;
+        $this->discount =0;
         $lastOrder = Order::orderBy('id',"DESC")->first();
         if( $lastOrder== null){
         $this->order_number =1;
         }else{
             $this->order_number = $lastOrder->order_number+1;   
         }
-        
+
+
+        $this->date = $this->todayDate();
+
+
+        // $customer = Customer::find( $customer_id);
+        // $this->customer_id      = $customer->id;
+        // $this->Full_Name        = $customer->Full_Name;
+        // $this->mobile           = $customer->mobile;
+        // $this->email            = $customer->email;
+        // $this->photo            = $customer->photo;
+        // $this->address          = $customer->address;
+        // $this->country          = $customer->country;
+        // $this->city             = $customer->city;
+        // $this->province         = $customer->province;
+        // $this->line1            = $customer->line1;
+        // $this->line2            = $customer->line2;
+        // $this->zipcode          = $customer->zipcode;
+    
     }
-    /**
-     * Step Form Start
-     */
+
+    ///////////////////////////////////////////////////////////////
+    public function updated($fields)
+    {
+        //         $timezone= date_default_timezone_set('Asia/Dhaka');
+        //         $todayDate = new DateTime( 'Thu, 31 Mar 2011 02:05:59 GMT', new DateTimeZone($timezone) );
+        // echo $todayDate->format('Y-m-d');
+
+ 
+
+        $Order = Order::orderBy('id',"DESC")->first();
+        if($this->force_id==1){
+            $maxOrderNo = $this->order_number;
+        }else{
+            if(strlen($Order)>0){
+                $maxOrderNo = $Order->order_number+1;
+            }else{
+                $maxOrderNo = 1;
+            }
+        }
+        $this->validateOnly($fields,[
+            'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
+            'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
+            'mobile'            => 'required|numeric|unique:customers|digits:11',
+            'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
+            'address'           => 'string|nullable',
+            'products'          => 'required',
+            'email'             => 'email|unique:customers|nullable',
+            
+            
+            //Measure
+            'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
+            'order_number'      => 'required|numeric|unique:orders',
+            'cloth_long'        => 'required|numeric',
+            'cloth_body'        => 'nullable|numeric',
+            'body_loose'        => 'nullable|numeric',
+            'cloth_belly'       => 'nullable|numeric',
+            'belly_loose'       => 'nullable|numeric',
+            'cloth_enclosure'   => 'required|numeric',
+            'hand_long'         => 'required|numeric',
+            'sleeve_enclosure'  => 'nullable|numeric',
+            'sleeve_pasting'    => 'nullable|string',
+            'cloth_throat'      => 'numeric|nullable',
+            'cloth_collar'      => 'nullable|numeric',
+            'collar_measure_type'=> 'numeric|nullable',
+            'cloth_shoulder'    => 'required|numeric',
+            'cloth_mora'        => 'nullable|numeric',
+            'noke_shoho'        => 'nullable|numeric',
+            'designs_check.*'   => 'nullable',
+            'design_fields.*'   => 'nullable',
+            'cloth_additional'  => 'nullable|string',
+            'wages'             => 'required|numeric',
+            'discount'          => 'nullable|numeric',
+            'total'             => 'required|numeric',
+        ],
+        ['Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে',"delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",]
+    );
+
+        if ( $this->confirm_mail ) {
+            $this->validateOnly($fields,[
+                'email'             =>  'required|email|unique:customers',
+               ]);
+    
+        }
+        
+        // if ( $this->weekendholiday && Carbon::now('Asia/Dhaka')->format('l')=='Sunday') {
+        //     $this->validateOnly($fields,[
+        //         'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.Carbon::now('Asia/Dhaka')->format('l'),
+        //        ]);
+    
+        // }else{
+        //     $this->validateOnly($fields,[
+        //         'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
+        //        ],[
+        //         "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
+        //        ]); 
+        // }
+        
+        //order delivery validation
+        if ( $this->order_delivery ) {
+            $this->validateOnly($fields,[
+                'delivery_system'   => 'required|min:1',
+                'courier_details'   =>  'required',
+                'delivery_charge'   =>  'required',
+                'country'           =>  'required',
+                'city'              =>  'required',
+                'province'          =>  'required',
+                'zipcode'           =>  'required',
+                'line1'             =>  'required',
+            ]);
+        }
+    }
+    
     public function formCheckOne()
     {
-        if ( $this->delivery_date=='' ) {//|| sizeof($this->products) ==0
-            $this->formErrorOne=1;
+        if ( $this->delivery_date == '' || $this->order_number=='' || $this->Full_Name=='' || $this->mobile=='') {//|| $this->products ==0
+            $this->formErrorOne=1; 
         }else {
-            $this->formErrorOne=0;
+            if ($this->confirm_mail ==1 && $this->email=="") {
+                $this->formErrorOne=1; 
+            }else {
+                $this->formErrorOne=0;
+            }
         }
     }
     /**
@@ -78,10 +208,9 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
  
         $this->currentStep = 2;
     }
-    public $formErrorOne, $formErrorTwo,$stepstatus;
     public function formCheckTwo()
     {
-        if ( $this->cloth_long =='' ||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora =='') {//||$this->cloth_body ==''||$this->body_loose ==''||$this->cloth_belly ==''||$this->belly_loose ==''||$this->cloth_enclosure ==''||$this->hand_long ==''||$this->sleeve_less ==''||$this->sleeve_pasting ==''||$this->cloth_throat==''||$this->cloth_collar==''||$this->cloth_put  ==''||$this->cloth_mora ==''||$this->noke_shoho =='' 
+        if ( $this->products=="" || $this->cloth_long =='' || $this->cloth_enclosure ==''||$this->hand_long ==''||$this->cloth_shoulder  =='' || ( $this->cloth_throat=='' && $this->cloth_collar=='')) {//
             $this->formErrorTwo=1;
         }else {
             $this->formErrorTwo=0;
@@ -99,38 +228,61 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
   
         $this->currentStep = 3;
     }
-    public function thirdStepSubmit()
+    public function designStepSubmit()
     {
-        $validatedData = $this->validate([
-            'stepstatus' => 'required',
-        ]);
+        // $validatedData = $this->validate([
+        //     'stepstatus' => 'required',
+        // ]);
   
         $this->currentStep = 4;
     }
     public function formCheckThree()
     {
-        if ( $this->name =='' || $this->price=='') {
-            $this->formErrorThree=1;
+        if ( count(array_values($this->designs_check)) == 0 ) {
+            $this->cloothDesignOutpurResult=1;
 
         }else {
-            $this->formErrorThree=0;
+            $this->cloothDesignOutpurResult=0;
         }
+    }
+
+    /**
+     * wages
+     */
+    public function wagesStepSubmit()
+    {  
+        $this->currentStep = 5;
+    }
+    public function wagesFormCheck()
+    {
+        
+        if ( $this->quantity == "" || $this->wages == "" || $this->total == "") {
+            $this->wagesOutpurResult=1;
+        }else {
+            if($this->order_delivery==1 && ( $this->delivery_system == "" 
+            || $this->delivery_charge == "" ||  $this->courier_details== "" ||  $this->country== "" ||  $this->line1== "" ||  $this->city== "" ||  $this->province 
+           == "" ||  $this->zipcode == "" )){
+            $this->wagesOutpurResult=1;
+           }
+            else {
+                $this->wagesOutpurResult=0;
+            }
+        }   
+    }
+    /**
+     * Preview Page/Step
+     */
+    public function previewStepSubmit()
+    {  
+        $this->currentStep = 6;
     }
     /**
      * Write code on Method
      */
     public function submitForm()
     {
-        // Team::create([
-        //     'name' => $this->Full_Name,
-        //     'price' => $this->mobile,
-        //     'detail' => $this->address,
-        //     'stepstatus' => $this->stepstatus,
-        // ]);
-  
-        $this->successMsg = 'Team successfully created.';
-  
-        $this->clearForm();
+        
+       $this->clearForm();
   
         $this->currentStep = 1;
     }
@@ -157,90 +309,52 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         $this->col_0 = 1;
     }
-    /**
-     * Step Form End
-     */
-    public function updated($fields)
+    ////////////////////////////////////////////////////////////////////////////////////
+    public function WagesCalculation()
     {
-//         $timezone= date_default_timezone_set('Asia/Dhaka');
-//         $todayDate = new DateTime( 'Thu, 31 Mar 2011 02:05:59 GMT', new DateTimeZone($timezone) );
-// echo $todayDate->format('Y-m-d');
-
- 
-
-        $Order = Order::orderBy('id',"DESC")->first();
-        if($this->force_id==1){
-            $maxOrderNo = $this->order_number;
-        }else{
-            if(strlen($Order)>0){
-                $maxOrderNo = $Order->order_number+1;
-            }else{
-                $maxOrderNo = 1;
-            }
+        if ($this->wages != null && $this->quantity != null) {
+            if($this->wages>0 || $this->quantity): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0)+ ($this->delivery_charge ? $this->delivery_charge: 0); endif;
+        }else {
+            $this->total='';
         }
-        $this->validateOnly($fields,[
-            'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-            'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
-            'mobile'            => 'required|numeric|unique:customers|digits:11',
-            'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
-            'address'           => 'string|nullable',
-            'products'          => 'required',
-            'email'             => 'email|unique:customers|nullable',
-            
-            
-            //Measure
-            'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
-            'cloth_long'        => 'required|numeric',
-            'cloth_body'        => 'required|numeric',
-            'body_loose'        => 'required|numeric',
-            'cloth_belly'       => 'required|numeric',
-            'belly_loose'       => 'nullable|numeric',
-            'cloth_enclosure'   => 'required|numeric',
-            'hand_long'         => 'required|numeric',
-            'sleeve_enclosure'  => 'required|numeric',
-            'sleeve_pasting'    => 'nullable|string',
-            'cloth_throat'      => 'numeric|nullable',
-            'cloth_collar'      => 'nullable|numeric',
-            'collar_measure_type'=> 'numeric|nullable',
-            'cloth_shoulder'    => 'required|numeric',
-            'cloth_mora'        => 'nullable|numeric',
-            'noke_shoho'        => 'nullable|numeric',
-            'designs_check.*'   => 'nullable',
-            'design_fields.*'   => 'nullable',
-            'cloth_additional'  => 'nullable|string',
-            'wages'             => 'required|numeric',
-            'quantity'          => 'required|numeric|min:1',
-            'discount'          => 'nullable|numeric',
-            'total'             => 'required|numeric',
-        ],
-        ['Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে',"delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate()) তারিখ বা তার পরের তারিখ হবে।"]
-    );
-
-        if ( $this->confirm_mail ) {
-            $this->validateOnly($fields,[
-                'email'             =>  'required|email|unique:customers',
-               ]);
+    }
     
+    public function minMaxOrderId()
+    {
+        if( count(Order::all())>0 && ! $this->force_id ){
+            $this->minOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
+            $this->maxOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
+        }else if(! $this->force_id){
+            $this->minOrderId=1;
+            $this->maxOrderId=1;   
+        }else{
+            $this->minOrderId=$this->order_number;
+            $this->maxOrderId=$this->order_number;  
         }
         
-        //order delivery validation
-        if ( $this->order_delivery ) {
-            $this->validateOnly($fields,[
-                'delivery_system'   => 'required|min:1',
-                'courier_details'   =>  'required',
-                'delivery_charge'   =>  'required',
-                'country'           =>  'required',
-                'city'              =>  'required',
-                'province'          =>  'required',
-                'zipcode'           =>  'required',
-                'line1'             =>  'required',
-            ]);
+    }
+    public function fillEmptyStyleField($style_id){
+        
+        if ($style_id != null) {
+            if (in_array($style_id,array_keys($this->designs_check), true) ) {
+                if (in_array($style_id,array_keys($this->design_fields), true )) {
+                    $this->design_fields[$style_id]=$this->design_fields[$style_id];
+                }else {
+                    $this->design_fields[$style_id]=' ';
+                }
+            }
+           
+            
         }
+        
+    }
+    public function desingCheckedUpdate()
+    {
+        // $this->designs_check = count(array_values($this->designs_check));
     }
     public function placeOrder3()
     {
-        dd(count($this->designs_check));
-       
+        // dd((array_values($this->designs_check)));
     }
     public function placeOrder()
     {
@@ -256,7 +370,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }
         $this->validate([
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-            'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => 'required|numeric|unique:customers|digits:11',
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
@@ -264,16 +377,17 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'products'          => 'required',
             'email'             => 'email|unique:customers|nullable',
             
+            
             //Measure
-            'order_number'      => 'required|numeric|unique:orders',
+            'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
             'cloth_long'        => 'required|numeric',
-            'cloth_body'        => 'required|numeric',
-            'body_loose'        => 'required|numeric',
-            'cloth_belly'       => 'required|numeric',
+            'cloth_body'        => 'nullable|numeric',
+            'body_loose'        => 'nullable|numeric',
+            'cloth_belly'       => 'nullable|numeric',
             'belly_loose'       => 'nullable|numeric',
             'cloth_enclosure'   => 'required|numeric',
             'hand_long'         => 'required|numeric',
-            'sleeve_enclosure'  => 'required|numeric',
+            'sleeve_enclosure'  => 'nullable|numeric',
             'sleeve_pasting'    => 'nullable|string',
             'cloth_throat'      => 'numeric|nullable',
             'cloth_collar'      => 'nullable|numeric',
@@ -288,20 +402,17 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'discount'          => 'nullable|numeric',
             'total'             => 'required|numeric',
         ],
-        
-        [
-            'Full_Name.regex' =>':attribute only Letters',
-        ]
-        
-    
+        ['Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে',"delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate()) তারিখ বা তার পরের তারিখ হবে।"]
     );
 
         if ( $this->confirm_mail ) {
-            $this->validate([
-                'email' =>  'required|email|unique:customers',
-            ]);
+            $this->validateOnly($fields,[
+                'email'             =>  'required|email|unique:customers',
+               ]);
+    
         }
-        //ohter delivery validation
+        
+        //order delivery validation
         if ( $this->order_delivery ) {
             $this->validate([
                 'delivery_system'   => 'required|min:1',
@@ -312,7 +423,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                 'province'          =>  'required',
                 'zipcode'           =>  'required',
                 'line1'             =>  'required',
-                'line2'             =>  'string|nullable',
             ]);
         }
        
@@ -482,182 +592,29 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
         
     }
-
-
-    //Customer Image upload
-
-    // public function uploadImage($whatImg, $uploadOn, $slugby)
-    // {
-    //     //Resize image for Category and upload
-    //     $resizeImage = Image::make($whatImg)->resize( 250, 250 )->save( 90 );
-    //     Storage::disk('public')->put("customers/" . $this->imageNameMake($this->Full_Name, $this->photo), $resizeImage);
-    // }
-
-
-    
-    public function formError()
-    {
-        $this->TraitFormError( $this->Full_Name, $this->mobile);
-    }
-    public function checkboxKeyDefine()
-    {
-        
-        if ( count($this->designs_check) > 0 ) {
-        $str = implode(',', $this->designs_check);
-        foreach (explode(',', $str) as $val2) {
-                $this->desingsIputKey[$val2] = $val2;
-        }
-        return $this->desingsIputKey;
-        }else {
-            $this->desingsIputKey=[];
-            
-        }
-
-
-    }
-    
-    public $output;
-    public function isRequiredField()
-    {
-        $this->output=[];
-        if ( count($this->design_fields)> 0 && is_array($this->design_fields)) {
-            
-        }
-        
-    }
-    
     public function StyleIdArea()
     {
-        $this->collerFirstArea = StyleMeasurePart::where('dependency', 'collar')->first();//->id;
-        $this->collerLastArea = StyleMeasurePart::where('dependency', 'collar')->orderBy('id','DESC')->first();//->id;
-
-        $this->sleeveFirstArea = StyleMeasurePart::where('dependency', 'sleeve')->first();//->id;
-        $this->sleeveLastArea = StyleMeasurePart::where('dependency', 'sleeve')->orderBy('id','DESC')->first();//->id;
-
-        $this->cuffFirstArea = StyleMeasurePart::where('dependency', 'cuff')->first();//->id;
-        $this->cuffLastArea = StyleMeasurePart::where('dependency', 'cuff')->orderBy('id','DESC')->first();//->id;
-
-        $this->plateFirstArea = StyleMeasurePart::where('dependency', 'plate')->first();//->id;
-        $this->plateLastArea = StyleMeasurePart::where('dependency', 'plate')->orderBy('id','DESC')->first();//->id;
-
-        $this->pocketFirstArea = StyleMeasurePart::where('dependency', 'pocket')->first();//->id;
-        $this->pocketLastArea = StyleMeasurePart::where('dependency', 'pocket')->orderBy('id','DESC')->first();//->id;
-
-        $this->backFirstArea = StyleMeasurePart::where('dependency', 'back')->first();//->id;
-        $this->backLastArea = StyleMeasurePart::where('dependency', 'back')->orderBy('id','DESC')->first();//->id;
-
-        $this->pipingFirstArea = StyleMeasurePart::where('dependency', 'piping')->first();//->id;
-        $this->pipingLastArea = StyleMeasurePart::where('dependency', 'piping')->orderBy('id','DESC')->first();//->id;
-
-        // $this->zipFirstArea = StyleMeasurePart::where('dependency', 'zip')->first()->id;
-        // $this->zipLastArea = StyleMeasurePart::where('dependency', 'zip')->orderBy('id','DESC')->first()->id;
-
-        // $this->sewingFirstArea = StyleMeasurePart::where('dependency', 'sewing')->first()->id;
-        // $this->sewingLastArea = StyleMeasurePart::where('dependency', 'sewing')->orderBy('id','DESC')->first()->id;
-
-        // $this->embroideryFirstArea = StyleMeasurePart::where('dependency', 'embroidery')->first()->id;
-        // $this->embroideryLastArea = StyleMeasurePart::where('dependency', 'embroidery')->orderBy('id','DESC')->first()->id;
-
-        // $this->karchupiFirstArea = StyleMeasurePart::where('dependency', 'karchupi')->first()->id;
-        // $this->karchupiLastArea = StyleMeasurePart::where('dependency', 'karchupi')->orderBy('id','DESC')->first()->id;
-
-        // $this->karchupotheriFirstArea = StyleMeasurePart::where('dependency', 'other')->first()->id;
-        // $this->otherLastArea = StyleMeasurePart::where('dependency', 'other')->orderBy('id','DESC')->first()->id;
-
-        // print_r($collerFirstArea+$collerLastArea-1);
-        // print_r($collerFirstArea);
-        // echo '</pre>';
+        $this->StyleAreaMaping();
     }
-    public function WagesCalculation()
-    {
-        if ($this->wages != null && $this->quantity != null) {
-            if($this->wages>0 || $this->quantity): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0)+ ($this->delivery_charge ? $this->delivery_charge: 0); endif;
-        }
-    }
-    public $minOrderId, $maxOrderId;
-    public function minMaxOrderId()
-    {
-        if(count(Order::all())>0 && ! $this->force_id){
-            $this->minOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
-            $this->maxOrderId = Order::orderBy('id','DESC')->first()->order_number+1;
-        }else if(! $this->force_id){
-            $this->minOrderId=1;
-            $this->maxOrderId=1;   
-        }else{
-            $this->minOrderId=$this->order_number;
-            $this->maxOrderId=$this->order_number;  
-        }
-        
-    }
-    public function fillEmptyStyleField($style_id){
-        
-        if ($style_id != null) {
-            if (in_array($style_id,array_keys($this->designs_check), true) ) {
-                if (in_array($style_id,array_keys($this->design_fields), true )) {
-                    $this->design_fields[$style_id]=$this->design_fields[$style_id];
-                }else {
-                    $this->design_fields[$style_id]=' ';
-                }
-            }
-           
-            
-        }
-        
-    }
+    public $todayDay;
     public function render()
     {
-        $this->formCheckOne();
-        // $this->formCheckTwo();
-        // $this->formCheckThree();
+        
+        //Carbon::createFromFormat('Y-m-d', $this->todayDate())->format('l');
+  
 
-        $this->minMaxOrderId();
-        $this->WagesCalculation();
         $this->StyleIdArea();
-        $allproducts = Product::all();
-        $styles = StyleMeasurePart::all();
+        $this->desingCheckedUpdate();
+        $this->minMaxOrderId();
+        $this->formCheckOne();
+        $this->formCheckTwo();
+        $this->formCheckThree();
+        $this->wagesFormCheck();
+        $this->WagesCalculation();
+        $styleGroup = StyleMeasurePart::all();
         $designItems = DesignItem::all();
-        $collarStyle = OrderItemStyle::all();
-        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'styles', 'designItems'))->layout('layouts.manage_layout');
+        $allproducts = Product::all();
+        $allOrders = Order::where('customer_id', $this->customer_id)->get();
+        return view('livewire.customer.new-customer-new-order-new-iteams-tailors', compact('allproducts', 'allOrders', 'styleGroup', 'designItems'))->layout('layouts.manage_layout');
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // $countSubject = count($request->subject_id);
-
-    // AssignSubject::where('class_id',$class_id)->delete();
-
-    // for ($i=0; $i < $countSubject ; $i++) { 
-            
-    //         $assign_subject                    = new AssignSubject();
-    //         $assign_subject->class_id          = $request->class_id;
-    //         $assign_subject->subject_id        = $request->subject_id[$i];
-    //         $assign_subject->full_mark         = $request->full_mark[$i];
-    //         $assign_subject->pass_mark         = $request->pass_mark[$i];
-    //         $assign_subject->subjective_mark   = $request->subjective_mark[$i];
-            
-    ////          $assign_subject->save();
-
 }

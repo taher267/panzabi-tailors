@@ -4,6 +4,7 @@ namespace App\Tailors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Models\StyleMeasurePart;
 use App\Models\TailorsPageSetting;
 use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
@@ -99,6 +100,49 @@ trait TailorsTrait
         {
             $this->todayDate= Carbon::now('Asia/Dhaka')->format('Y-m-d');
         }
+
+        public function StyleAreaMaping()
+    {
+        $this->collerFirstArea = StyleMeasurePart::where('dependency', 'collar')->first();//->id;
+        $this->collerLastArea = StyleMeasurePart::where('dependency', 'collar')->orderBy('id','DESC')->first();//->id;
+
+        $this->sleeveFirstArea = StyleMeasurePart::where('dependency', 'sleeve')->first();//->id;
+        $this->sleeveLastArea = StyleMeasurePart::where('dependency', 'sleeve')->orderBy('id','DESC')->first();//->id;
+
+        $this->cuffFirstArea = StyleMeasurePart::where('dependency', 'cuff')->first();//->id;
+        $this->cuffLastArea = StyleMeasurePart::where('dependency', 'cuff')->orderBy('id','DESC')->first();//->id;
+
+        $this->plateFirstArea = StyleMeasurePart::where('dependency', 'plate')->first();//->id;
+        $this->plateLastArea = StyleMeasurePart::where('dependency', 'plate')->orderBy('id','DESC')->first();//->id;
+
+        $this->pocketFirstArea = StyleMeasurePart::where('dependency', 'pocket')->first();//->id;
+        $this->pocketLastArea = StyleMeasurePart::where('dependency', 'pocket')->orderBy('id','DESC')->first();//->id;
+
+        $this->backFirstArea = StyleMeasurePart::where('dependency', 'back')->first();//->id;
+        $this->backLastArea = StyleMeasurePart::where('dependency', 'back')->orderBy('id','DESC')->first();//->id;
+
+        $this->pipingFirstArea = StyleMeasurePart::where('dependency', 'piping')->first();//->id;
+        $this->pipingLastArea = StyleMeasurePart::where('dependency', 'piping')->orderBy('id','DESC')->first();//->id;
+
+        // $this->zipFirstArea = StyleMeasurePart::where('dependency', 'zip')->first()->id;
+        // $this->zipLastArea = StyleMeasurePart::where('dependency', 'zip')->orderBy('id','DESC')->first()->id;
+
+        // $this->sewingFirstArea = StyleMeasurePart::where('dependency', 'sewing')->first()->id;
+        // $this->sewingLastArea = StyleMeasurePart::where('dependency', 'sewing')->orderBy('id','DESC')->first()->id;
+
+        // $this->embroideryFirstArea = StyleMeasurePart::where('dependency', 'embroidery')->first()->id;
+        // $this->embroideryLastArea = StyleMeasurePart::where('dependency', 'embroidery')->orderBy('id','DESC')->first()->id;
+
+        // $this->karchupiFirstArea = StyleMeasurePart::where('dependency', 'karchupi')->first()->id;
+        // $this->karchupiLastArea = StyleMeasurePart::where('dependency', 'karchupi')->orderBy('id','DESC')->first()->id;
+
+        // $this->karchupotheriFirstArea = StyleMeasurePart::where('dependency', 'other')->first()->id;
+        // $this->otherLastArea = StyleMeasurePart::where('dependency', 'other')->orderBy('id','DESC')->first()->id;
+
+        // print_r($collerFirstArea+$collerLastArea-1);
+        // print_r($collerFirstArea);
+        // echo '</pre>';
+    }
 }
 
 

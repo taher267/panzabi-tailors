@@ -54,7 +54,6 @@
     </div>
 
     <div class="row">
-
         <div class="col-xl-12"><h3>Customer Orders</h3></div>
         
         {{-- @if($col_0==0) col-xl-0 @else col-xl-3 @endif --}}
@@ -103,6 +102,7 @@
                     <div class="row">
                         {{-- Step 1 --}}
                         <div class="col-xl-12 {{ $currentStep != 1 ? 'display-none' : '' }}" id="step-1">
+                                <div class="row">
                                 <div class="personal_information">
                                     <h2>অর্ডারের তথ্য</h2>
                                     <div class="row">
@@ -110,6 +110,26 @@
                                             <label for="deliverydate">ডেলিভেরি তারিখঃ</label>
                                             <input type="date" class="form-control" wire:model="delivery_date" id="deliverydate" required>
                                             @error('delivery_date') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback">ডেলিভারি তারিখ দিন!</div> @enderror
+                                            {{-- <h3>{{Carbon\Carbon::now('Asia/Dhaka')->format('l')}}</h3> --}}
+                                            {{-- {{gettype()}} --}}
+                                            @if ($delivery_date && $weekendholiday==Carbon\Carbon::now('Asia/Dhaka')->createFromFormat('Y-m-d', $delivery_date)->format('l'))
+                                            <p class="mt-3" style="color: #2D88F3">
+                                                {{--  --}}
+                                            ({{$delivery_date}}),
+                                            নির্বাচিত তারিখটি
+                                            @if ($weekendholiday=='saturday') শনিবার
+                                            @elseif ($weekendholiday=='sunday') রবিবার
+                                            @elseif ($weekendholiday=='monday') সোমবার
+                                            @elseif ($weekendholiday=='tuesday') মঙ্গলবার
+                                            @elseif ($weekendholiday=='wednesday') বুধবার
+                                            @elseif ($weekendholiday=='Thursday') বৃহস্পতিবার
+                                            @elseif ($weekendholiday=='friday') শুক্রবার
+                                            @endif
+                                            প্রতিষ্ঠানের সাপ্তাহিক ছুটির দিন!
+                                            </p>
+                                            @endif
+                                            
+
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="row">
@@ -128,7 +148,9 @@
                                             <label for="orderdate">অর্ডার তারিখঃ </label>
                                             <input type="date" class="form-control" wire:model="order_date" id="orderdate">
                                             @error('order_date') <div class="text-danger">{!!$message!!}</div>@enderror
+                                            
                                         </div>
+
                                     </div>
                                     <div class="row my-3" style="background: linear-gradient(34deg, #ddddd08, #f3f3f3">
                                         <div class="col-xl-12 text-center text-warning"><h4 class="heading pb-3 mb-4">ব্যক্তিগত/পরিচয় সংক্রান্ত তথ্য </h4></div>
@@ -182,12 +204,18 @@
                                     </div>
             
                                 </div>
-                                    
-                                @if ( $formErrorOne==0 && $errors->isEmpty())
-                                        <button style="transition-delay: 500ms; transition:0.4s all ease; " class="mt-2 btn btn-primary nextBtn btn-lg pull-right"  wire:click="firstStepSubmit" type="button">পরবর্তী ধাপ </button> 
-
-                                @else <h6 class="text-warning">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</h6>
-                                @endif
+                                <div class="col-xl-12 mb-3">
+                                    <div class="row">
+                                        <div class="col-xl-6"></div>
+                                        <div class="col-xl-6 text-right">
+                                            @if ( $formErrorOne==0 && $errors->isEmpty())
+                                            <button style="transition-delay: 500ms; transition:0.4s all ease;" class="mt-2 btn btn-primary nextBtn btn-lg w-50"  wire:click="firstStepSubmit" type="button">পরবর্তী ধাপ </button>
+                                            @else <h6 class="text-warning">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</h6>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
                         </div>
                     {{-- Step 2 --}}
                     <div class="col-xl-12 {{ $currentStep != 2 ? 'display-none' : '' }}" id="step-2">
@@ -517,25 +545,31 @@
                                     
                                 </div>
                             </div>
-                       </div> 
-                           
-                </div>
+                       </div>  
+                    </div>
 
-                <div class="col-xl-12 {{ $currentStep != 5 ? 'display-none' : '' }}" id="step-5">
-                    <div class="row">
-                        <div class="col-xl-12">
-                            <h3>Preview</h3>
-                        </div>
-                        <div class="col-xl-12 mt-3">
-                            <div class="row">
-                                <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(4)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
-                                    <div class="col-xl-6 col-sm-4 order-2 col-12 text-right">
-                                    <button type="{{$errors->isEmpty() ? 'submit':'button'}}" {{ $errors->isEmpty() ? '':'disabled'}} class="btn btn-primary btn-lg btn-block">অর্ডার করুন</button>
-                                
+                    <div class="col-xl-12 {{ $currentStep != 5 ? 'display-none' : '' }}" id="step-5">
+                        <div class="row">
+                            <div class="col-xl-12">
+                                <h3>Preview</h3>
+                                @if ($errors->any())
+                                    @foreach ($errors->all() as $item)
+                                        <p >{{$item}} </p>
+                                    @endforeach
+                                @endif
+                            </div>
+                            <div class="col-xl-12 mt-3">
+                                <div class="row">
+                                    <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(4)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
+                                        <div class="col-xl-6 col-sm-4 order-2 col-12 text-right">
+                                            @if ($errors->isEmpty() )
+                                        <button type="{{$errors->isEmpty() ? 'submit':'button'}}" {{ $errors->isEmpty() ? '':'disabled'}} class="btn btn-primary btn-lg btn-block">অর্ডার করুন</button>
+                                        @endif
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 
                 </form>
         </div>

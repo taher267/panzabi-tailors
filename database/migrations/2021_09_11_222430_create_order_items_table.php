@@ -19,8 +19,8 @@ class CreateOrderItemsTable extends Migration
             $table->foreignId('product_id');
             $table->bigInteger('order_id')->unsigned();
             $table->foreignId('order_number');
-            $table->string('cloth_long');
-            $table->string('cloth_body');
+            $table->string('cloth_long')->nullable();
+            $table->string('cloth_body')->nullable();
             $table->string('cloth_belly')->nullable();
             $table->string('belly_loose')->nullable();
             $table->string('body_loose')->nullable();
@@ -30,8 +30,8 @@ class CreateOrderItemsTable extends Migration
             $table->string('sleeve_pasting')->nullable();
             $table->string('cloth_throat')->nullable();
             $table->string('cloth_collar')->nullable();
-            $table->string('cloth_shoulder');
-            $table->string('cloth_mora');
+            $table->string('cloth_shoulder')->nullable();
+            $table->string('cloth_mora')->nullable();
             $table->string('noke_shoho')->nullable();
             $table->string('cloth_additional')->nullable();
             $table->timestamps();
