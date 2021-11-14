@@ -44,7 +44,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
    public $every_dress_measurement_size;
    
    //Order
-   public $validCustomMessage, $todayDate;
+   public $validCustomMessage, $todayDate, $todayDay;
 
    public $personal_info_open, $delivery_policy, $selectedtypes,  $clothstyles, $define_key, $desingsIputKey=[], $designsresult, $date;
    public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
@@ -98,22 +98,21 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             
             //Measure
             'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
-            'order_number'      => 'required|numeric|unique:orders',
-            'cloth_long'        => 'required|numeric',
-            'cloth_body'        => 'nullable|numeric',
-            'body_loose'        => 'nullable|numeric',
-            'cloth_belly'       => 'nullable|numeric',
-            'belly_loose'       => 'nullable|numeric',
-            'cloth_enclosure'   => 'required|numeric',
-            'hand_long'         => 'required|numeric',
-            'sleeve_enclosure'  => 'nullable|numeric',
+            'cloth_long'        => 'required',
+            'cloth_body'        => 'nullable',
+            'body_loose'        => 'nullable',
+            'cloth_belly'       => 'nullable',
+            'belly_loose'       => 'nullable',
+            'cloth_enclosure'   => 'required',
+            'hand_long'         => 'required',
+            'sleeve_enclosure'  => 'nullable',
             'sleeve_pasting'    => 'nullable|string',
-            'cloth_throat'      => 'numeric|nullable',
-            'cloth_collar'      => 'nullable|numeric',
+            'cloth_throat'      => 'nullable',
+            'cloth_collar'      => 'nullable',
             'collar_measure_type'=> 'numeric|nullable',
-            'cloth_shoulder'    => 'required|numeric',
-            'cloth_mora'        => 'nullable|numeric',
-            'noke_shoho'        => 'nullable|numeric',
+            'cloth_shoulder'    => 'required',
+            'cloth_mora'        => 'nullable',
+            'noke_shoho'        => 'nullable',
             'designs_check.*'   => 'nullable',
             'design_fields.*'   => 'nullable',
             'cloth_additional'  => 'nullable|string',
@@ -180,10 +179,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
      */
     public function secondStepSubmit()
     {
-        $validatedData = $this->validate([
-            'stepstatus' => 'required',
-        ]);
-  
         $this->currentStep = 3;
     }
     public function designStepSubmit()
@@ -192,11 +187,17 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     }
     public function itemDesignFormCheck()
     {
-        if ( count(array_values($this->designs_check)) == 0 ) {
+        $filtered=array_filter(array_values($this->designs_check));
+        if ( count(array_values($this->designs_check)) == 0 && count($filtered)==0) {
             $this->cloothDesignOutpurResult=1;
 
         }else {
-            $this->cloothDesignOutpurResult=0;
+            
+            if (count(array_filter(array_values($this->designs_check)))==0) {
+                $this->cloothDesignOutpurResult=1;
+            }else {
+                $this->cloothDesignOutpurResult=0;
+            }
         }
     }
 
@@ -263,7 +264,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         $this->col_0 = 1;
     }
-    ////////////////////////////////////////////////////////////////////////////////////
+    
     public function WagesCalculation()
     {
         if ($this->wages != null && $this->quantity != null) {
@@ -306,27 +307,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         // $this->designs_check = count(array_values($this->designs_check));
     }
-    public function placeOrder3()
-    {
-        $loopCount = count($this->designs_check);
-        for( $i=0; $i < $loopCount; $i++ ){
-            if( 0 != array_values($this->designs_check)[$i] ){
-                
-            //    $OrderItemStyles = new OrderItemStyle();
-            //     $OrderItemStyles->customer_id    = $customer_id;
-            //     $OrderItemStyles->order_id       = $order_id;
-            //     $OrderItemStyles->order_number   = $this->order_number;
-            //     $OrderItemStyles->order_item_id  = $orderitem_id;
-            //     $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-            //     $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-            //     $OrderItemStyles->item_style_type= $this->collerFirstArea->dependency;
-            //     $OrderItemStyles->save();
-                $StyleMesure = StyleMeasurePart::find(array_values($this->designs_check)[$i])->dependency;
-                dd($StyleMesure);
-                }       
-        }
-    }
     public function placeOrder()
+    {}
+        
+       
+    public function placeOrder1()
     {
         $Order = Order::orderBy('id',"DESC")->first();
         if($this->force_id==1){
@@ -350,21 +335,21 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             
             //Measure
             'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$maxOrderNo,
-            'cloth_long'        => 'required|numeric',
-            'cloth_body'        => 'nullable|numeric',
-            'body_loose'        => 'nullable|numeric',
-            'cloth_belly'       => 'nullable|numeric',
-            'belly_loose'       => 'nullable|numeric',
-            'cloth_enclosure'   => 'required|numeric',
-            'hand_long'         => 'required|numeric',
-            'sleeve_enclosure'  => 'nullable|numeric',
+            'cloth_long'        => 'required',
+            'cloth_body'        => 'nullable',
+            'body_loose'        => 'nullable',
+            'cloth_belly'       => 'nullable',
+            'belly_loose'       => 'nullable',
+            'cloth_enclosure'   => 'required',
+            'hand_long'         => 'required',
+            'sleeve_enclosure'  => 'nullable',
             'sleeve_pasting'    => 'nullable|string',
-            'cloth_throat'      => 'numeric|nullable',
-            'cloth_collar'      => 'nullable|numeric',
+            'cloth_throat'      => 'nullable',
+            'cloth_collar'      => 'nullable',
             'collar_measure_type'=> 'numeric|nullable',
-            'cloth_shoulder'    => 'required|numeric',
-            'cloth_mora'        => 'nullable|numeric',
-            'noke_shoho'        => 'nullable|numeric',
+            'cloth_shoulder'    => 'required',
+            'cloth_mora'        => 'nullable',
+            'noke_shoho'        => 'nullable',
             'designs_check.*'   => 'nullable',
             'design_fields.*'   => 'nullable',
             'cloth_additional'  => 'nullable|string',
@@ -489,7 +474,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
          * 
          */
          
-        if (0 < count($this->designs_check) ) {
+        if ( 0 < count($this->designs_check) ) {
            
             $this->OrderItemDesign($customer->id, $order->id, $orderitem->id);
         }
@@ -499,18 +484,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
         
     }
-    public function StyleIdArea()
-    {
-        $this->StyleAreaMaping();
-    }
-    public $todayDay;
+  
+    
     public function render()
     {
-        
-        //Carbon::createFromFormat('Y-m-d', $this->todayDate())->format('l');
-  
-
-        $this->StyleIdArea();
         $this->desingCheckedUpdate();
         $this->minMaxOrderId();
         $this->CustomerAndOrderInfoformCheck();

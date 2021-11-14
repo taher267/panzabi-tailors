@@ -8,6 +8,18 @@
     background:linear-gradient(180deg ,#8C00BF 10%,#4e73df 100%) !important; color:#fff !important;
     transition:0.4s all ease-in-out;
 }
+.btn-primary-invarce {
+    background: linear-gradient(
+352deg ,#8C00BF 10%,#4e73df 100%) !important;
+    color: #fff !important;
+    transition: 0.4s all ease-in-out;
+}
+.btn-primary-invarce:hover {
+    background: linear-gradient(
+172deg ,#8C00BF 10%,#4e73df 100%) !important;
+    color: #fff !important;
+    transition: 0.4s all ease-in-out;
+}
 .btn-primary:hover{
     background:linear-gradient(180deg ,#4e73df 10%,#8C00BF 100%) !important;
 }
