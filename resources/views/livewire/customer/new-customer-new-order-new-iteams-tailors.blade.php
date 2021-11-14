@@ -258,7 +258,7 @@
                                             </div>
                                             <div>
                                             <label for="SleevePasting">হাতায় পেস্টিং</label>
-                                            <input wire:model="sleeve_pasting" type="text" class="form-control" id="SleevePasting" placeholder="Sleeve Pasting/হাতায় পেস্টিং">
+                                            <input wire:model="sleeve_pasting" type="text" class="form-control" id="SleevePasting" placeholder="হাতায় পেস্টিং">
                                             @error('sleeve_pasting')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতা লম্বা হবে?</div> @enderror
                                             </div>
                                         </div>
@@ -267,14 +267,14 @@
                                         <div class="col-lg-2 col-md-6 mb-3">
                                             <div>
                                             <label for="cloththroat">গলা</label>
-                                            <input wire:model="cloth_throat" type="number" class="form-control" id="cloththroat" max="30" placeholder="গলা/Throat" @if ($cloth_collar==null) required @endif >
+                                            <input wire:model="cloth_throat" type="number" class="form-control" id="cloththroat" max="30" placeholder="গলা" @if ($cloth_collar==null) required @endif >
                                             @error('cloth_throat') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">গলার পরিমাপ দিন?</div> @enderror 
                                             </div>
                                             <div>
                                                 <label for="clothcollar">কলার</label>
                                                 <input wire:model="cloth_collar" type="number" class="form-control" id="clothcollar" max="30" placeholder="কলার" @if ($cloth_throat==null) required @endif>
                                                 @if ($cloth_collar) <select class="form-control" wire:model="collar_measure_type"><option selected value="0">সাধারণ</option><option value="1">মোট</option></select> @endif
-                                                @error('cloth_collar') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> কলার পরিমাপ দিন? </div> @enderror 
+                                                @error('cloth_collar') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">কলার পরিমাপ দিন?</div> @enderror 
                                             </div>
                                             
                                         </div>
@@ -295,15 +295,15 @@
                                     <div class="row ">
                                         <div class="col-lg-10 col-md-12 mx-lg-auto mb-3">
                                             <label for="additional">অতিরিক্ত বিষয়গুলো এখানে লিখুন!</label>
-                                            <textarea type="text" wire:model="cloth_additional" class="form-control" placeholder="Additional/সংযোজিত"></textarea>
-                                            <div class="invalid-feedback">@error('cloth_additional') {!!$message!!} @else Hand long code required. @enderror</div>
+                                            <textarea type="text" wire:model="cloth_additional" class="form-control" placeholder="সংযোজিত"></textarea>
+                                            @error('cloth_additional') <div class="text-danger">{!!$message!!} </div>@enderror
                                         </div>
                                     </div>
                                 </div>
                                 {{-- Measure area End --}}
                                 <div class="col-xl-12 mt-3">
                                     <div class="row">
-                                        <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(1)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
+                                        <div class="col-xl-6 col-sm-5"><button class="btn btn-danger w-50 nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(1)"><i class="fa fa-arrow-left"></i> পেছন</button></div>
                                         @if ($formErrorTwo==0 && $errors->isEmpty())
                                             <div class="col-xl-6 col-sm-4 order-2 col-12 text-right">
                                             <button class="btn btn-primary btn-lg push-right w-50 " type="button" wire:click="secondStepSubmit">পরবর্তী ধাপ</button> </div> 

@@ -308,7 +308,23 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     }
     public function placeOrder3()
     {
-        // dd((array_values($this->designs_check)));
+        $loopCount = count($this->designs_check);
+        for( $i=0; $i < $loopCount; $i++ ){
+            if( 0 != array_values($this->designs_check)[$i] ){
+                
+            //    $OrderItemStyles = new OrderItemStyle();
+            //     $OrderItemStyles->customer_id    = $customer_id;
+            //     $OrderItemStyles->order_id       = $order_id;
+            //     $OrderItemStyles->order_number   = $this->order_number;
+            //     $OrderItemStyles->order_item_id  = $orderitem_id;
+            //     $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+            //     $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+            //     $OrderItemStyles->item_style_type= $this->collerFirstArea->dependency;
+            //     $OrderItemStyles->save();
+                $StyleMesure = StyleMeasurePart::find(array_values($this->designs_check)[$i])->dependency;
+                dd($StyleMesure);
+                }       
+        }
     }
     public function placeOrder()
     {
