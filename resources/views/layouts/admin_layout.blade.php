@@ -22,6 +22,7 @@
     <link href="{{asset('assets/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
 @livewireStyles
+@stack('styles')
 </head>
 
 <body id="page-top">

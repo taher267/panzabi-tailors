@@ -4,6 +4,7 @@ namespace App\Tailors;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use App\Models\OrderItemStyle;
 use App\Models\StyleMeasurePart;
 use App\Models\TailorsPageSetting;
 use Illuminate\Support\Facades\DB;
@@ -142,6 +143,77 @@ trait TailorsTrait
         // print_r($collerFirstArea+$collerLastArea-1);
         // print_r($collerFirstArea);
         // echo '</pre>';
+    }
+
+    /**
+     * item design
+     */
+    public function OrderItemDesign($customer_id,$order_id, $orderitem_id)
+    {
+        $loopCount = count($this->designs_check);
+        for($i=0; $i < $loopCount; $i++){
+            if(0 != array_values($this->designs_check)[$i]){
+                // dd(  array_values($this->designs_check)[$i]);
+                $OrderItemStyles = new OrderItemStyle();
+                    $OrderItemStyles->customer_id    = $customer_id;
+                    $OrderItemStyles->order_id       = $order_id;
+                    $OrderItemStyles->order_number   = $this->order_number;
+                    $OrderItemStyles->order_item_id  = $orderitem_id;
+                //কলার/collar
+                if(array_keys($this->designs_check)[$i] >= $this->collerFirstArea->id && array_keys($this->designs_check)[$i] 
+                <= $this->collerLastArea->id){
+                    $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                    $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                    $OrderItemStyles->item_style_type= $this->collerFirstArea->dependency;
+                    $OrderItemStyles->save();
+                    }
+                    //হাতা/sleeve
+                    else if(array_keys($this->designs_check)[$i] >= $this->sleeveFirstArea->id && array_keys($this->designs_check)[$i] 
+                    <= $this->sleeveLastArea->id){
+                        $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                        $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                        $OrderItemStyles->item_style_type= $this->sleeveFirstArea->dependency;
+                        $OrderItemStyles->save();
+                        }
+                        // কাফ/cuff
+                        else if(array_keys($this->designs_check)[$i] >= $this->cuffFirstArea->id && array_keys($this->designs_check)[$i] 
+                    <= $this->cuffLastArea->id){
+                        $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                        $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                        $OrderItemStyles->item_style_type= $this->cuffFirstArea->dependency;
+                        $OrderItemStyles->save();
+                        }
+                        //প্লেট/plate
+                        else if(array_keys($this->designs_check)[$i] >= $this->plateFirstArea->id && array_keys($this->designs_check)[$i] 
+                    <= $this->plateLastArea->id){
+                        $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                        $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                        $OrderItemStyles->item_style_type= $this->plateFirstArea->dependency;
+                        $OrderItemStyles->save();
+                        }
+                        //পকেট/pocket
+                        else if(array_keys($this->designs_check)[$i] >= $this->pocketFirstArea->id && array_keys($this->designs_check)[$i] 
+                    <= $this->pocketLastArea->id){
+                        $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                        $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                        $OrderItemStyles->item_style_type= $this->pocketFirstArea->dependency;
+                        $OrderItemStyles->save();
+                        }
+
+
+
+                        //পাইপিং/piping
+                        else if(array_keys($this->designs_check)[$i] >= $this->pipingFirstArea->id && array_keys($this->designs_check)[$i] 
+                    <= $this->pipingLastArea->id){
+                        $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
+                        $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
+                        $OrderItemStyles->item_style_type= $this->pipingFirstArea->dependency;
+                        $OrderItemStyles->save();
+                        }
+                }
+
+                
+        }
     }
 }
 

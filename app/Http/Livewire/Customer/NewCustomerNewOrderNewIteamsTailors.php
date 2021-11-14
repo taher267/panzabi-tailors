@@ -70,37 +70,13 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }else{
             $this->order_number = $lastOrder->order_number+1;   
         }
-
-
-        $this->date = $this->todayDate();
-
-
-        // $customer = Customer::find( $customer_id);
-        // $this->customer_id      = $customer->id;
-        // $this->Full_Name        = $customer->Full_Name;
-        // $this->mobile           = $customer->mobile;
-        // $this->email            = $customer->email;
-        // $this->photo            = $customer->photo;
-        // $this->address          = $customer->address;
-        // $this->country          = $customer->country;
-        // $this->city             = $customer->city;
-        // $this->province         = $customer->province;
-        // $this->line1            = $customer->line1;
-        // $this->line2            = $customer->line2;
-        // $this->zipcode          = $customer->zipcode;
-    
+        $this->date = $this->todayDate();    
     }
 
     ///////////////////////////////////////////////////////////////
     public function updated($fields)
     {
-        //         $timezone= date_default_timezone_set('Asia/Dhaka');
-        //         $todayDate = new DateTime( 'Thu, 31 Mar 2011 02:05:59 GMT', new DateTimeZone($timezone) );
-        // echo $todayDate->format('Y-m-d');
-
- 
-
-        $Order = Order::orderBy('id',"DESC")->first();
+       $Order = Order::orderBy('id',"DESC")->first();
         if($this->force_id==1){
             $maxOrderNo = $this->order_number;
         }else{
@@ -155,18 +131,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     
         }
         
-        // if ( $this->weekendholiday && Carbon::now('Asia/Dhaka')->format('l')=='Sunday') {
-        //     $this->validateOnly($fields,[
-        //         'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.Carbon::now('Asia/Dhaka')->format('l'),
-        //        ]);
-    
-        // }else{
-        //     $this->validateOnly($fields,[
-        //         'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-        //        ],[
-        //         "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
-        //        ]); 
-        // }
         
         //order delivery validation
         if ( $this->order_delivery ) {
@@ -183,7 +147,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }
     }
     
-    public function formCheckOne()
+    public function CustomerAndOrderInfoformCheck()
     {
         if ( $this->delivery_date == '' || $this->order_number=='' || $this->Full_Name=='' || $this->mobile=='') {//|| $this->products ==0
             $this->formErrorOne=1; 
@@ -199,16 +163,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
      * Write code on Method
      */
     public function firstStepSubmit()
-    {
-        // $validatedData = $this->validate([
-        //     'Full_Name' => 'required',
-        //     'mobile' => 'required|numeric',
-        //     'address' => 'required',
-        // ]);
- 
+    { 
         $this->currentStep = 2;
     }
-    public function formCheckTwo()
+    public function OrderItemMeasureformCheck()
     {
         if ( $this->products=="" || $this->cloth_long =='' || $this->cloth_enclosure ==''||$this->hand_long ==''||$this->cloth_shoulder  =='' || ( $this->cloth_throat=='' && $this->cloth_collar=='')) {//
             $this->formErrorTwo=1;
@@ -229,14 +187,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $this->currentStep = 3;
     }
     public function designStepSubmit()
-    {
-        // $validatedData = $this->validate([
-        //     'stepstatus' => 'required',
-        // ]);
-  
+    {  
         $this->currentStep = 4;
     }
-    public function formCheckThree()
+    public function itemDesignFormCheck()
     {
         if ( count(array_values($this->designs_check)) == 0 ) {
             $this->cloothDesignOutpurResult=1;
@@ -520,75 +474,12 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
          */
          
         if (0 < count($this->designs_check) ) {
-            $loopCount = count($this->designs_check);
-            for($i=0; $i < $loopCount; $i++){
-                if(0 != array_values($this->designs_check)[$i]){
-                    // dd(  array_values($this->designs_check)[$i]);
-                    $OrderItemStyles = new OrderItemStyle();
-                        $OrderItemStyles->customer_id    = $customer->id;
-                        $OrderItemStyles->order_id       = $order->id;
-                        $OrderItemStyles->order_number   = $this->order_number;
-                        $OrderItemStyles->order_item_id  = $orderitem->id;
-                    //কলার/collar
-                    if(array_keys($this->designs_check)[$i] >= $this->collerFirstArea->id && array_keys($this->designs_check)[$i] 
-                    <= $this->collerLastArea->id){
-                        $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-                        $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-                        $OrderItemStyles->item_style_type= $this->collerFirstArea->dependency;
-                        $OrderItemStyles->save();
-                        }
-                        //হাতা/sleeve
-                        else if(array_keys($this->designs_check)[$i] >= $this->sleeveFirstArea->id && array_keys($this->designs_check)[$i] 
-                        <= $this->sleeveLastArea->id){
-                            $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-                            $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-                            $OrderItemStyles->item_style_type= $this->sleeveFirstArea->dependency;
-                            $OrderItemStyles->save();
-                            }
-                            // কাফ/cuff
-                            else if(array_keys($this->designs_check)[$i] >= $this->cuffFirstArea->id && array_keys($this->designs_check)[$i] 
-                        <= $this->cuffLastArea->id){
-                            $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-                            $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-                            $OrderItemStyles->item_style_type= $this->cuffFirstArea->dependency;
-                            $OrderItemStyles->save();
-                            }
-                            //প্লেট/plate
-                            else if(array_keys($this->designs_check)[$i] >= $this->plateFirstArea->id && array_keys($this->designs_check)[$i] 
-                        <= $this->plateLastArea->id){
-                            $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-                            $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-                            $OrderItemStyles->item_style_type= $this->plateFirstArea->dependency;
-                            $OrderItemStyles->save();
-                            }
-                            //পকেট/pocket
-                            else if(array_keys($this->designs_check)[$i] >= $this->pocketFirstArea->id && array_keys($this->designs_check)[$i] 
-                        <= $this->pocketLastArea->id){
-                            $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-                            $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-                            $OrderItemStyles->item_style_type= $this->pocketFirstArea->dependency;
-                            $OrderItemStyles->save();
-                            }
-
-
-
-                            //পাইপিং/piping
-                            else if(array_keys($this->designs_check)[$i] >= $this->pipingFirstArea->id && array_keys($this->designs_check)[$i] 
-                        <= $this->pipingLastArea->id){
-                            $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
-                            $OrderItemStyles->style_details  = array_values($this->design_fields)[$i]??null;
-                            $OrderItemStyles->item_style_type= $this->pipingFirstArea->dependency;
-                            $OrderItemStyles->save();
-                            }
-                    }
-
-                    
-            }
+           
+            $this->OrderItemDesign($customer->id, $order->id, $orderitem->id);
         }
-        //  if($orderitem->save()){
             
             session()->flash( 'msg', "<i class='fa fa-thumbs-up text-success'></i> কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!,success" );
-        // }
+        
 
         
     }
@@ -606,9 +497,9 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $this->StyleIdArea();
         $this->desingCheckedUpdate();
         $this->minMaxOrderId();
-        $this->formCheckOne();
-        $this->formCheckTwo();
-        $this->formCheckThree();
+        $this->CustomerAndOrderInfoformCheck();
+        $this->OrderItemMeasureformCheck();
+        $this->itemDesignFormCheck();
         $this->wagesFormCheck();
         $this->WagesCalculation();
         $styleGroup = StyleMeasurePart::all();
