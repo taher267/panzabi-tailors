@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-xl-12">
         <div class="col-xl-12 text-warning">{{$Full_Name}} এর অরডারসমুহ</div>
-            <table class="table table-striped">
+            <table class="table table-striped table-sm">
                 <thead>
                     <tr>
                         <th>Order No/Iteams</th>
@@ -20,6 +20,7 @@
                         <td></td>
                         {{-- route('customer.orderiteams',  --}}
                         <td>
+                            <a href="{{route('customer.neworder', $order->id)}}" target="_blank" class="btn btn-primary"><i class="fa fa-plus"></i> নতুন গ্রাহক</a>
                             <a href="{{route('customer.orderiteams', [$customer_id, $order->id])}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
                             <a href="{{--route('customer.editinfo', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                             @if(session('utype')==='ADM')<a href="#" wire-:click.prevent="producpelete($todaysCustomer->id)" onclick="confirm('Are you sure to delete role') || event.stopImmediatePropagation()" class="btn btn-danger"><i class="fa fa-trash"></i></a>@endif

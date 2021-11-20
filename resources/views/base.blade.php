@@ -70,9 +70,9 @@
                                         @if (session('utype')==='ADM' && Auth::user()->role_id ===1)
                                             {{route('admin.dashboard')}}
                                         @elseif (session('utype')==='MGR' && Auth::user()->role_id ===2)
-                                            {{route('customer.orders')}}
+                                            {{route('customer.customers')}}
                                         @elseif (session('utype') && Auth::user()->role_id>2)
-                                            {{route('customer.orders')}}
+                                            {{--route('customer.orders')--}}
                                         @endif
                                         @else{{route('dashboard')}}@endif">Dashboard</a></li>
                                 <li>

@@ -10,7 +10,7 @@ use App\Tailors\TailorsTrait;
 class TailorsAdminUser extends Component
 {
     use TailorsTrait;
-    public $activatedTab;
+    public $activatedTab, $name, $email,$username, $password,$role_id, $status;
     public function mount()
     {
         if (session('utype') != 'ADM') {

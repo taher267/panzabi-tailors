@@ -26,6 +26,10 @@ Route::get('/table', function () {
 //Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
  //   return view('dashboard');
 //})->name('dashboard');
+// test pourpose
+Route::get('/custom-modal', App\Http\Livewire\FormTestComonent::class)->name('form.test');
+Route::get('customer/musti-step-form', App\Http\Livewire\MultiStepForm::class)->name('form.test');
+
 
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function(){
@@ -59,8 +63,8 @@ Route::middleware(['auth:sanctum', 'verified', 'tailorsauth'])->group(function (
 
 Route::middleware(['auth:sanctum', 'verified', 'manager.auth'])->group(function () {
     Route::prefix('customer')->group(function () {
-        Route::get('/customers', App\Http\Livewire\Customer\CustomerTailorsOrders::class)->name('customer.customers');
-        Route::get('/new-customer-order-items', App\Http\Livewire\Customer\NewCustomerNewOrderNewIteamsTailors::class)->name('customer.new.customer.order.items');
+        Route::get('/customers', App\Http\Livewire\Customer\AllCustomers::class)->name('customer.customers');
+        Route::get('/new-customer-order-items', App\Http\Livewire\Customer\NewCustomerNewOrderNewIteamsTailors::class)->name('new.customer');
         Route::get('/{customer_id}/new-order', App\Http\Livewire\Customer\CustomerTailorsNewOrder::class)->name('customer.neworder');
         // dd(session('utype'));
         Route::get('/edit/{customer_id}', App\Http\Livewire\Customer\TailorsCustomerEditInfo::class)->name('customer.editinfo');

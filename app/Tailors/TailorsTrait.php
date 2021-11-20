@@ -3,11 +3,16 @@
 namespace App\Tailors;
 
 use Carbon\Carbon;
+use App\Models\Order;
+use App\Models\Customer;
+use App\Models\OrderItem;
 use Illuminate\Support\Str;
 use App\Models\OrderItemStyle;
 use App\Models\StyleMeasurePart;
 use App\Models\TailorsPageSetting;
 use Illuminate\Support\Facades\DB;
+use App\Models\OrderDeliveryAddress;
+use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
  */
 trait TailorsTrait
 {
+    public $orderitem_id;
     // Nav activation
 /**
  * $Table DB table name
@@ -103,11 +109,177 @@ trait TailorsTrait
         }
 
         
+        public function maxOrderNoFixed($order_number)
+            {
+                $Order = Order::orderBy('id',"DESC")->first();
+                if($this->force_id==1){
+                    return $maxOrderNo = $order_number;
+                }else{
+                    if(strlen($Order)>0){
+                       return $maxOrderNo = $Order->order_number+1;
+                    }else{
+                       return $maxOrderNo = 1;
+                    }
+                }
+  }
+    
+    public function OrderItems($customer_id, $order_id)
+    {
+        $orderitem                    = new OrderItem();
+        $orderitem->customer_id       = $customer_id;
+        $orderitem->order_id          = $order_id;
 
+        $orderitem->order_number      = $added_order_number ?? $this->order_number;
+        $orderitem->product_id        = $this->products;
+        $orderitem->cloth_long        = $this->cloth_long;
+        $orderitem->cloth_body        = $this->cloth_body;        
+        $orderitem->body_loose        = $this->body_loose;
+        $orderitem->cloth_belly       = $this->cloth_belly;
+        $orderitem->belly_loose       = $this->belly_loose ?? null;
+        $orderitem->cloth_enclosure   = $this->cloth_enclosure;
+        $orderitem->hand_long         = $this->hand_long;
+        $orderitem->sleeve_enclosure  = $this->sleeve_enclosure;
+        $orderitem->sleeve_pasting    = $this->sleeve_pasting ?? null;
+        $orderitem->cloth_throat      = $this->cloth_throat ?? null;
+        if( $this->collar_measure_type && $this->cloth_collar ):
+            $orderitem->cloth_collar      = $this->cloth_collar .' মোট';
+        else:
+            $orderitem->cloth_collar      = $this->cloth_collar ?? null;
+        endif;
+        
+        $orderitem->cloth_shoulder    = $this->cloth_shoulder;
+        $orderitem->cloth_mora        = $this->cloth_mora ?? null;
+        $orderitem->noke_shoho        = $this->noke_shoho;
+        $orderitem->cloth_additional  = $this->cloth_additional;
+        $orderitem->save();
+        $this->orderitem_id =$orderitem->id;
+
+    }
+
+    public function OrderIncluding($registered_customer_id=null,$added_order_id=null, $added_order_number=null)
+    {
+        //customer personal infor
+        if ( $registered_customer_id ==null) {
+            $customer              = new Customer();
+            $customer->user_id     = Auth::user()->id;
+            $customer->Full_Name   = $this->Full_Name;
+            $customer->mobile      = $this->mobile;
+            $customer->address     = $this->address ?? null;
+            if ($this->email != ' ' && $this->email != null) {
+                $customer->email       = $this->email;
+            }else {
+                $customer->email       = null;
+            }
+            
+            //has cusltomer photo
+            if($this->photo){
+                $customer->photo = $this->imageNameMake( $this->Full_Name, $this->photo );
+                $this->uploadImage( $this->photo, 'customers', $customer->photo );
+            }
+                $customer->save();
+            }else {
+                $customer = Customer::find($registered_customer_id);
+                if ($customer->email =='' && $this->email) {
+                    $customer->email = $this->email;
+                    $customer->save();
+                }
+            }
+
+            if($added_order_id==null){
+            //Order Add
+            $order                  = new Order();
+            $order->user_id         = Auth::user()->id;
+            $order->customer_id     = $registered_customer_id??$customer->id;
+            $order->delivered_date = $this->delivery_date;
+            if ( count(Order::all() )>0 && ! $this->force_id ) {
+                $order->order_number    = $added_order_number ?? $this->order_number;
+            }elseif ($this->force_id) {
+                $order->order_number    = $added_order_number ?? $this->order_number;
+            }else {
+                $order->order_number    = 1;
+            }
+            
+            $order->wages           = $this->wages;
+            $order->discount        = $this->discount??0;
+            $order->advance        = $this->advance??0;
+            $order->total           = $this->total-$this->discount;
+            $order->status          = true;
+            //has sample photo
+            $arrName = [];
+            if($this->order_sample_images){
+                foreach($this->order_sample_images as $key=> $sample){
+                    $imagesName =  $added_order_number ?? $this->order_number. '-' .$registered_customer_id??$customer->id . '-'. Str::slug($this->Full_Name) . '-' .($key+1). '.'. $sample->extension();
+                    $arrName[$key] = $imagesName;
+                $this->uploadImage( $sample, 'order-samples', $imagesName );
+                }
+                $order->order_sample_images = $arrName;
+            }
+            
+            $order->save();
+            
+        }
+        
+        
+        //has Order delivery
+        if($this->order_delivery){
+            $delivery_address                   = new OrderDeliveryAddress();
+            $delivery_address->customer_id      = $registered_customer_id??$customer->id;
+            $delivery_address->order_id         = $added_order_id ?? $order->id;
+            $delivery_address->order_number     = $added_order_number ?? $this->order_number;
+            $delivery_address->delivery_charge  = $this->delivery_charge??0;
+            $delivery_address->delivery_system  = $this->delivery_system;
+            $delivery_address->courier_details  = $this->courier_details;
+            $delivery_address->country          = $this->country;
+            $delivery_address->city             = $this->city;
+            $delivery_address->province         = $this->province;
+            $delivery_address->zipcode          = $this->zipcode;
+            $delivery_address->line1            = $this->line1;
+            $delivery_address->line2            = $this->line2 ?? null;
+            $delivery_address->save();
+        }
+
+        $orderitem                    = new OrderItem();
+        $orderitem->customer_id       = $registered_customer_id??$customer->id;
+        $orderitem->order_id          = $added_order_id ?? $order->id;
+
+        $orderitem->order_number      = $added_order_number ?? $this->order_number;
+        $orderitem->product_id        = $this->products;
+        $orderitem->cloth_long        = $this->cloth_long;
+        $orderitem->cloth_body        = $this->cloth_body;        
+        $orderitem->body_loose        = $this->body_loose;
+        $orderitem->cloth_belly       = $this->cloth_belly;
+        $orderitem->belly_loose       = $this->belly_loose ?? null;
+        $orderitem->cloth_enclosure   = $this->cloth_enclosure;
+        $orderitem->hand_long         = $this->hand_long;
+        $orderitem->sleeve_enclosure  = $this->sleeve_enclosure;
+        $orderitem->sleeve_pasting    = $this->sleeve_pasting ?? null;
+        $orderitem->cloth_throat      = $this->cloth_throat ?? null;
+        if( $this->collar_measure_type && $this->cloth_collar ):
+            $orderitem->cloth_collar      = $this->cloth_collar .' মোট';
+        else:
+            $orderitem->cloth_collar      = $this->cloth_collar ?? null;
+        endif;
+        
+        $orderitem->cloth_shoulder    = $this->cloth_shoulder;
+        $orderitem->cloth_mora        = $this->cloth_mora ?? null;
+        $orderitem->noke_shoho        = $this->noke_shoho;
+        $orderitem->cloth_additional  = $this->cloth_additional;
+        $orderitem->save();
+
+        /**
+         * Design part or Style part of dress
+         * 
+         */
+         
+        if ( 0 < count($this->designs_check) ) {
+           
+            $this->OrderItemDesign($registered_customer_id??$customer->id, $added_order_id ?? $order->id, $orderitem->id);
+        }
+    }
     /**
      * item design
      */
-    public function OrderItemDesign($customer_id,$order_id, $orderitem_id)
+    public function OrderItemDesign($customer_id,$order_id,$orderitem_id)//, 
     {
         $loopCount = count($this->designs_check);
         for( $i=0; $i < $loopCount; $i++ ){
@@ -115,7 +287,7 @@ trait TailorsTrait
                 $OrderItemStyles = new OrderItemStyle();
                     $OrderItemStyles->customer_id    = $customer_id;
                     $OrderItemStyles->order_id       = $order_id;
-                    $OrderItemStyles->order_number   = $this->order_number;
+                    $OrderItemStyles->order_number   = $added_order_number ?? $this->order_number;
                     $OrderItemStyles->order_item_id  = $orderitem_id;
                 
                     $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];
@@ -125,6 +297,7 @@ trait TailorsTrait
                     }      
         }
     }
+
 
 }
 

@@ -40,7 +40,11 @@
         </div>
 
         @stack('modals')
-
+        {{-- <script>
+            window.addEventListerer('show-form', event=>{
+                $('#form').modal('show');
+            })
+        </script> --}}
         @livewireScripts
     </body>
 </html>

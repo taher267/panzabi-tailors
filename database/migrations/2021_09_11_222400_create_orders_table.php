@@ -20,9 +20,11 @@ class CreateOrdersTable extends Migration
                 $table->bigInteger('order_number')->unsigned();
                 $table->decimal('wages');//মজুরি
                 $table->decimal('discount')->default(0);
-                $table->decimal('total');
-                $table->boolean('status');
+                $table->decimal('advance')->nullable();
+                $table->decimal('total')->nullable();
+                $table->boolean('status')->nullable();
                 $table->date('delivered_date')->nullable();
+                $table->json('order_sample_images')->nullable();
                 $table->timestamps();
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
                 $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

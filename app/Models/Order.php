@@ -9,6 +9,9 @@ class Order extends Model
 {
     use HasFactory;
     public $table = 'orders';
+    protected $casts = [
+        'order_sample_images'=>'array'
+    ];
     /**
      * Get all of the orderitems for the Order
      *

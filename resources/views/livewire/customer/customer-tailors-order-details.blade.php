@@ -154,17 +154,7 @@
                                     </div>
                                     <div class="row my-3" style="background: linear-gradient(34deg, #ddddd08, #f3f3f3">
                                         <div class="col-xl-12 text-center text-warning"><h4 class="heading pb-3 mb-4">ব্যক্তিগত/পরিচয় সংক্রান্ত তথ্য </h4></div>
-                                            <div class="col-lg-6 mb-3">
-                                                <label for="fullname">অর্ডারকারীর পুরো নামঃ</label>
-                                                <input wire:model="Full_Name" type="text" class="form-control" id="fullname" placeholder="পুরো নাম" required>
-                                                @error('Full_Name') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback"> সঠিকভাবে নাম পূরণ করুন</div> @enderror
-                                            </div>
-            
-                                            <div class="col-lg-6 mb-3">
-                                                <label for="mobileNumber">মোবাইল নম্বর</label>
-                                                <input wire:model="mobile" type="number" class="form-control" id="mobileNumber" placeholder="মোবাইল নম্বর.." required>
-                                                @error('mobile') <div class="text-danger">{!!$message!!}</div>@else <div class="invalid-feedback"> সঠিক মোবাইল নম্বর দিন!</div> @enderror
-                                            </div>
+                                            
                                             
                                             <div class="col-lg-6 mb-3">
                                                 <label for="email" class="d-flex">ইমেইল <span class="text-muted">(অপশনাল)</span>
@@ -175,34 +165,11 @@
                                                         </div>
                                                     </div>
                                                 </label>
-                                                <input wire:model="email" type="email" class="form-control" id="email" placeholder="you@example.com" {{ $confirm_mail ?'required':'' }} >
+                                                <input wire:model="email" type="email" class="form-control" id="email" placeholder="you@example.com" @if($email) disabled @endif {{ $confirm_mail ?'required':'' }} >
                                                 
                                                 @error('email') <div class="alert alert-danger">{!! $message!!}</div> @else <div class="invalid-feedback">সঠিক ইমেইল যুক্ত করুন</div>@enderror
                                             </div>
-                                            <div class="col-lg-6 mb-3 customer_photo">
-                                                <label for="customerPhoto">কাস্টমারের ছবি (অপশনাল)</label>
-                                                <div class="input-group input_customer_photo" style="positon:relative;">
-                                                    <input wire:model="photo" type="file" class="custom-file-input" id="customerPhoto">
-                                                    <label class="custom-file-label" for="customerPhoto"></label>
-                                                    <div class="invalid-feedback"></div>
-                                                    @error('photo') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!</div>@enderror
-                                                    {{-- <img class="" src="{{$photo->temporaryUrl()}}" width="120"> --}}
-                                                    
-                                                    @if ( $photo )
-                                                    <span class="temp_img_wrap" style="position: absolute;z-index: 999;">
-                                                        <img src="{{$photo->temporaryUrl()}}" width="60" alt="">
-                                                    </span>
-                                                        
-                                                    @endif
-                                                </div>
-                                                
-                                            </div>
-                                            <div class="col-lg-12 mb-3">
-                                                <label for="cusaddress">ঠিকানা <span class="text-muted">(অপশনাল)</span></label>
-                                                <textarea wire:model="address" rows="3" class="form-control" id="cusaddress" placeholder="ঠিকানা..."></textarea>
-                                            </div>
-                                    </div>
-            
+                                    </div>            
                                 </div>
                                 <div class="col-xl-12 mb-3">
                                     <div class="row">
@@ -247,38 +214,38 @@
                                     <div class="row">
                                         <div class="col-lg-2 mb-3">
                                             <label for="clothlong">লম্বা</label>
-                                            <input wire:model="cloth_long" type="number" class="form-control" id="clothlong" placeholder="Long" required>
+                                            <input wire:model="cloth_long" type="text" class="form-control" id="clothlong" placeholder="Long" required>
                                             @error('cloth_long')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের লম্বা দিন?</div> @enderror
                                         </div>
                                         {{-- Body part Start --}}
                                         <div class="col-lg-3 col-md-6 mb-3">
                                             <div>
                                                 <label for="clothbody">বডি</label>
-                                                <input wire:model="cloth_body" type="number" class="form-control" id="clothbody" placeholder="Cloth Body">
+                                                <input wire:model="cloth_body" type="text" class="form-control" id="clothbody" placeholder="Cloth Body">
                                                 @error('cloth_body')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের বডি দিন?</div> @enderror
                                             </div>
     
                                             <div>
                                                 <label for="bodyloose">বডির লুজ</label>
-                                                <input wire:model="body_loose" type="number" class="form-control" id="bodyloose" placeholder="Body Loose">
+                                                <input wire:model="body_loose" type="text" class="form-control" id="bodyloose" placeholder="Body Loose">
                                                 @error('body_loose')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের বডি লুজ দিন?</div> @enderror
                                             </div>
     
                                             <div>
                                                 <label for="clothbelly">পেট</label>
-                                                <input wire:model="cloth_belly" type="number" class="form-control" id="clothbelly"_ placeholder="পাট/Belly">
+                                                <input wire:model="cloth_belly" type="text" class="form-control" id="clothbelly"_ placeholder="পাট/Belly">
                                                 @error('cloth_belly')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের পেট পরিমাপ দিন?</div> @enderror
                                             </div>
     
                                             <div>
                                                 <label for="bodyloose">পেটের লুজ</label>
-                                                <input wire:model="belly_loose" type="number" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose">
+                                                <input wire:model="belly_loose" type="text" class="form-control" id="bodyloose" placeholder="পাটের লুজ Belly Loose">
                                                 @error('belly_loose') <div class="text-danger">{!!$message!!} </div> @else <div class="invalid-feedback">পোশাকের বডি পেট লুজের পরিমাপ দিন? </div> @enderror
                                             </div>
     
                                             <div>
                                                 <label for="enclosure">ঘের</label>
-                                                <input wire:model="cloth_enclosure" type="number" class="form-control" id="enclosure" placeholder="Enclosure/ঘের" required>
+                                                <input wire:model="cloth_enclosure" type="text" class="form-control" id="enclosure" placeholder="Enclosure/ঘের" required>
                                                 @error('cloth_enclosure')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">পোশাকের ঘের দিন?</div> @enderror
                                             </div>
                                         </div>
@@ -287,17 +254,17 @@
                                         <div class="col-lg-3 col-md-6 mb-3">
                                             <div class="">
                                             <label for="handlong">হাতা</label>
-                                            <input wire:model="hand_long" type="number" class="form-control" id="handlong" placeholder="Hleeve হাতা" required>
+                                            <input wire:model="hand_long" type="text" class="form-control" id="handlong" placeholder="Hleeve হাতা" required>
                                             @error('hand_long')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতা লম্বা দিন?</div> @enderror
                                             </div>
                                             <div>
                                             <label for="sleeveenclosure">হাতার মুহুরী</label>
-                                            <input  wire:model="sleeve_enclosure" type="number" class="form-control" id="sleeveenclosure" placeholder="Sleeve enclosure হাতার মুহুরী">
+                                            <input  wire:model="sleeve_enclosure" type="text" class="form-control" id="sleeveenclosure" placeholder="Sleeve enclosure হাতার মুহুরী">
                                             @error('sleeve_enclosure')<div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">হাতার মুহুরী দিন?</div> @enderror
                                             </div>
                                             <div class="">
                                                 <label for="clothmora">মোরা</label>
-                                                <input wire:model="cloth_mora" type="number" class="form-control" id="clothmora" placeholder="মোরা">
+                                                <input wire:model="cloth_mora" type="text" class="form-control" id="clothmora" placeholder="মোরা">
                                                 <div class="invalid-feedback">@error('cloth_mora') {!!$message!!} @else Mora code required. @enderror</div>
                                             </div>
                                             <div>
@@ -311,12 +278,12 @@
                                         <div class="col-lg-2 col-md-6 mb-3">
                                             <div>
                                             <label for="cloththroat">গলা</label>
-                                            <input wire:model="cloth_throat" type="number" class="form-control" id="cloththroat" max="30" placeholder="গলা/Throat" @if ($cloth_collar==null) required @endif >
+                                            <input wire:model="cloth_throat" type="text" class="form-control" id="cloththroat" max="30" placeholder="গলা/Throat" @if ($cloth_collar==null) required @endif >
                                             @error('cloth_throat') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback">গলার পরিমাপ দিন?</div> @enderror 
                                             </div>
                                             <div>
                                                 <label for="clothcollar">কলার</label>
-                                                <input wire:model="cloth_collar" type="number" class="form-control" id="clothcollar" max="30" placeholder="কলার" @if ($cloth_throat==null) required @endif>
+                                                <input wire:model="cloth_collar" type="text" class="form-control" id="clothcollar" max="30" placeholder="কলার" @if ($cloth_throat==null) required @endif>
                                                 @if ($cloth_collar) <select class="form-control" wire:model="collar_measure_type"><option selected value="0">সাধারণ</option><option value="1">মোট</option></select> @endif
                                                 @error('cloth_collar') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> কলার পরিমাপ দিন? </div> @enderror 
                                             </div>
@@ -325,7 +292,7 @@
                                         <div class="col-lg-2 col-md-6 mb-3">
                                             <div class="mb-3">
                                                 <label for="clothshoulder">পুট</label>
-                                                <input wire:model="cloth_shoulder" type="number" class="form-control" id="clothshoulder" max="40" placeholder="পুট.." required>
+                                                <input wire:model="cloth_shoulder" type="text" class="form-control" id="clothshoulder" max="40" placeholder="পুট.." required>
                                                 @error('cloth_shoulder') <div class="text-danger"> {!!$message!!}</div> @else <div class="invalid-feedback"> পুটের পরিমাপ দিন?</div> @enderror
                                             </div>
                                             
@@ -337,11 +304,27 @@
                                         </div>
                                     </div> 
                                     <div class="row ">
-                                        <div class="col-lg-10 col-md-12 mx-lg-auto mb-3">
+                                        <div class="col-lg-6 col-sm-12 mx-lg-auto mb-3">
                                             <label for="additional">অতিরিক্ত বিষয়গুলো এখানে লিখুন!</label>
-                                            <textarea type="text" wire:model="cloth_additional" class="form-control" placeholder="Additional/সংযোজিত"></textarea>
-                                            <div class="invalid-feedback">@error('cloth_additional') {!!$message!!} @else Hand long code required. @enderror</div>
+                                            <textarea type="text" wire:model="cloth_additional" class="form-control" placeholder="সংযোজিত"></textarea>
+                                            @error('cloth_additional') <div class="text-danger">{!!$message!!} </div>@enderror
                                         </div>
+                                        <div class="col-lg-6 col-sm-12 mx-lg-auto mb-3">
+                                                <h6>অর্ডারের নমুনা ছবিঃ</h6>
+                                            <div class="custom-file my-1">
+                                                <input wire:model="order_sample_images" type="file" class="custom-file-input" id="orderSampleImage" multiple>
+                                                <label class="custom-file-label" for="orderSampleImage">অর্ডারের নমুনা ছবিঃ</label>
+                                                @error('order_sample_images') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!</div>@enderror
+                                            </div>
+                                            @if ( $order_sample_images )
+                                                <span class="temp_img_wrap" >
+                                                    @foreach ($order_sample_images as $sample)
+                                                    <img src="{{$sample->temporaryUrl()}}" width="60" alt="">
+                                                    @endforeach
+                                                </span>
+                                            @endif
+                                        </div>
+
                                     </div>
                                 </div>
                                 {{-- Measure area End --}}
@@ -485,7 +468,7 @@
                                 <!-- DataTales Example -->
                                 <div class="card shadow mb-4">
                                     <div class="card-header">
-                                        <h3>মজুরি(WAGES)</h3>
+                                        <h3>মজুরি(WAGES) test</h3>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
@@ -592,7 +575,8 @@
 </div>
 @push('scripts')
 <script>
-    jQuery(function(){
+    
+
         jQuery('#page-top').addClass('sidebar-toggled');
         jQuery('.navbar-nav.bg-gradient-primary.sidebar.sidebar-dark.accordion').addClass('toggled');
         $(".custom-file-input").on("change", function() {

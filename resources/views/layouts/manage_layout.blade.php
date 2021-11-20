@@ -20,6 +20,7 @@
     <link href="{{asset('assets/css/sb-admin-2.min.css')}}" rel="stylesheet">
     <!-- Custom styles for this page -->
     <link href="{{asset('assets/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/toastr/build/toastr.min.css')}}" rel="stylesheet">
     <link href="{{asset('assets/css/style.css')}}" rel="stylesheet">
     
 @livewireStyles
@@ -338,7 +339,16 @@
 
     <!-- Page level custom scripts -->
     <script src="{{asset('assets/js/demo/datatables-demo.js')}}"></script>
-
+    <script src="{{asset('assets/toastr/build/toastr.min.js')}}"></script>
+    <script>
+        // $(document).ready(function(){
+        //     window.addEventListener('alert', event => { 
+        //         toastr.success(event.detail.message, "Success!")
+        //     });
+           
+        // });
+       
+    </script>
     @livewireScripts
     @stack('scripts')
 </body>

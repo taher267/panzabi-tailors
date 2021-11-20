@@ -9,6 +9,7 @@ use App\Models\Customer;
 class TailorsCustomerOrders extends Component
 {
     public $customer_id,$Full_Name;
+   
     public function mount($customer_id)
     {
         $customer = Customer::find($customer_id);
