@@ -86,6 +86,7 @@ trait TailorsTrait
         $resizeImage = Image::make($whatImg)->resize( $width, $height )->save();
         Storage::disk($disk)->put("$uploadOn/" .$slugby, $resizeImage);
 
+
     }
     // public function uploadImage($whatImg, $uploadOn,  $slugby, $width= 250, $height=250, $disk='public')
     // {
@@ -122,31 +123,6 @@ trait TailorsTrait
         //
         public function TraitDesignStepSubmit()
     {
-        
-        if (count($this->designs_check)>0) {
-            $filterOne = array_filter($this->designs_check);
-            if(count(array_filter($this->designs_check))>0){
-                // dd(count($this->designs_check));
-                // $this->validate([
-                //     'designs_check'=>'required',
-                // ]);
-                // $this->validate([
-                //     'designs_check.3'=>'required',
-                // ]);
-                // $this->validate([
-                //     'designs_check.42'=>'required',
-                // ]);
-                return 'cS4';
-            }else {
-              return 'hasErr';
-                // $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
-            }
-            
-        }else {
-            // session()->flash( 'msg', "<i class='fas fa-exclamation-triangle text-danger'></i> কিছু ডিজাইন যুক্ত করুণ!,danger" );
-            // $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
-            return 'hasErr';
-        }
         
     }
 
@@ -237,12 +213,12 @@ trait TailorsTrait
             //Order Add
             $order                  = new Order();
             $order->user_id         = Auth::user()->id;
-            $order->customer_id     = $registered_customer_id??$customer->id;
+            $order->customer_id     = $registered_customer_id?$registered_customer_id: $customer->id;
             $order->delivered_date = $this->delivery_date;
             if ( count(Order::all() )>0 && ! $this->force_id ) {
-                $order->order_number    = $added_order_number ?? $this->order_number;
+                $order->order_number    = $added_order_number ?$added_order_number : $this->order_number;
             }elseif ($this->force_id) {
-                $order->order_number    = $added_order_number ?? $this->order_number;
+                $order->order_number    = $added_order_number ?$added_order_number: $this->order_number;
             }else {
                 $order->order_number    = 1;
             }
@@ -256,13 +232,19 @@ trait TailorsTrait
             $arrName = [];
             if($this->order_sample_images){
                 foreach($this->order_sample_images as $key=> $sample){
-                    $imagesName =  $added_order_number ?? $this->order_number. '-' .$registered_customer_id??$customer->id . '-'. Str::slug($this->Full_Name) . '-' .($key+1). '.'. $sample->extension();
+                    $imagesName = ($added_order_number? $added_order_number : $this->order_number) . '-' . ($registered_customer_id ? $registered_customer_id : $customer->id ). '-'. Str::slug($this->Full_Name) . '-' .($key+1). '.'. $sample->extension();
+                    $resizeImage = Image::make($sample)->resize(150, 150 )->save();
+                    Storage::disk('public')->put("order-samples/" . $imagesName, $resizeImage);
                     $arrName[$key] = $imagesName;
-                $this->uploadImage( $sample, 'order-samples', $imagesName );
+                // $this->uploadImage( $sample, 'order-samples', $imagesName );
                 }
                 $order->order_sample_images = $arrName;
             }
             
+            // $resizeImage = Image::make($sample)->resize(150, 150 )->save();
+            // Storage::disk('public')->put("order-samples/" . $imagesName, $resizeImage);
+
+
             $order->save();
             
         }
@@ -272,8 +254,8 @@ trait TailorsTrait
         if($this->order_delivery){
             $delivery_address                   = new OrderDeliveryAddress();
             $delivery_address->customer_id      = $registered_customer_id??$customer->id;
-            $delivery_address->order_id         = $added_order_id ?? $order->id;
-            $delivery_address->order_number     = $added_order_number ?? $this->order_number;
+            $delivery_address->order_id         = $added_order_id ? $added_order_id : $order->id;
+            $delivery_address->order_number     = $added_order_number ? $added_order_number: $this->order_number;
             $delivery_address->delivery_charge  = $this->delivery_charge??0;
             $delivery_address->delivery_system  = $this->delivery_system;
             $delivery_address->courier_details  = $this->courier_details;
@@ -288,9 +270,9 @@ trait TailorsTrait
 
         $orderitem                    = new OrderItem();
         $orderitem->customer_id       = $registered_customer_id??$customer->id;
-        $orderitem->order_id          = $added_order_id ?? $order->id;
+        $orderitem->order_id          = $added_order_id ? $added_order_id: $order->id;
 
-        $orderitem->order_number      = $added_order_number ?? $this->order_number;
+        $orderitem->order_number      = $added_order_number ? $added_order_number: $this->order_number;
         $orderitem->product_id        = $this->products;
         $orderitem->cloth_long        = $this->cloth_long;
         $orderitem->cloth_body        = $this->cloth_body;        
@@ -321,13 +303,14 @@ trait TailorsTrait
          
         if ( 0 < count($this->designs_check) ) {
            
-            $this->OrderItemDesign($registered_customer_id??$customer->id, $added_order_id ?? $order->id, $orderitem->id);
+            $this->OrderItemDesign(($registered_customer_id?$registered_customer_id:$customer->id), ($added_order_id ? $added_order_id : $order->id), $orderitem->id);
         }
+        $this->instand_customer= $registered_customer_id??$customer->id;
     }
     /**
      * item design
      */
-    public function OrderItemDesign($customer_id,$order_id,$orderitem_id)//, 
+    public function OrderItemDesign($customer_id,$order_id,$orderitem_id, $added_order_number=null)//, 
     {
         $loopCount = count($this->designs_check);
         for( $i=0; $i < $loopCount; $i++ ){
@@ -335,7 +318,7 @@ trait TailorsTrait
                 $OrderItemStyles = new OrderItemStyle();
                     $OrderItemStyles->customer_id    = $customer_id;
                     $OrderItemStyles->order_id       = $order_id;
-                    $OrderItemStyles->order_number   = $added_order_number ?? $this->order_number;
+                    $OrderItemStyles->order_number   = $added_order_number ? $added_order_number: $this->order_number;
                     $OrderItemStyles->order_item_id  = $orderitem_id;
                 
                     $OrderItemStyles->style_id       = array_values($this->designs_check)[$i];

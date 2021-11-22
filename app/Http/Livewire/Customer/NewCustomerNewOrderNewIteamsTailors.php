@@ -23,11 +23,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     use WithFileUploads;
     use TailorsTrait;
     public $showloader;
-    public $errorOut, $customer_id, $Full_Name, $mobile, $email, $address, $country, $city, $province, $line1, $line2, $new_photo, $photo, $zipcode ;
+    public $errorOut, $customer_id, $instand_customer, $Full_Name, $mobile, $email, $address, $country, $city, $province, $line1, $line2, $new_photo, $photo, $zipcode ;
     public $allproduct, $products, $weekendholiday;//$new_customer_id=0
     //Order
     public $delivery_date, $order_number, $collar_measure_type, $cloth_additional, $additional,$quantity=1,$subtotal,$discount=0,
-    $delivery_charge,$delivery_system,$total,$delivered_date, $wages, $order_sample_images, $advance;//মজুরি
+    $delivery_charge,$delivery_system,$total,$delivered_date, $wages, $order_sample_images=[], $advance;//মজুরি
     //Order Item
     public $cloth_long,$cloth_body,$body_loose,$cloth_belly,$belly_loose,$cloth_enclosure,$hand_long ,$sleeve_enclosure,$sleeve_pasting ,
     $cloth_throat,$cloth_collar ,$cloth_shoulder ,$cloth_mora,$noke_shoho;
@@ -58,7 +58,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         $this->Full_Name="Jaza";
         $this->mobile='65652564924';
-        $this->delivery_date = '2021-11-21';
+        $this->delivery_date = '2021-11-25';
         // $this->delivery_date = Carbon::now('Asia/Dhaka')->format('Y-m-d');
         $this->country ='bd';
         $this->delivery_system ='byhand';
@@ -92,7 +92,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => ['required','numeric','unique:customers','digits:11'],
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
-            'order_sample_images'=> 'image|mimes:jpg,jpeg,png|nullable',
+            'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
             'email'             => 'email|unique:customers|nullable',
             //Measure
@@ -225,7 +225,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     public function measurementSubmit()
     {
         $this->validate([
-            'order_sample_images'=> 'image|mimes:jpg,jpeg,png|nullable',
+            'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
             'products'          => 'required|numeric',
             //Measure
             
@@ -391,7 +391,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
             'mobile'            => 'required|numeric|unique:customers|digits:11',
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
-            'order_sample_images'=> 'image|mimes:jpg,jpeg,png|nullable',
+            'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
             'products'          => 'required',
             'email'             => 'email|unique:customers|nullable',
@@ -449,10 +449,14 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }
        
         $this->OrderIncluding();
-            $this->dispatchBrowserEvent('alert', ['custom'=>"$this->Full_Name",'message' => "এর তথ্য যথাযথভাবে যুক্ত হয়েছে!",'effect'=>'success',]);
-            session()->flash( 'msg', "<i class='fa fa-thumbs-up text-success'></i> কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!,success" );
-            $this->currentStep = 1;
-            return redirect()->route('new.customer');
+        // if (Customer::find($this->instand_customer)->photo) {
+        //     $customer_image = "<img width='30' src='".asset("storage/assets/customers/".Customer::find($this->instand_customer)->photo)."'>";
+        // }
+        session()->flash( 'msg', ['icon'=>"<i class='fa fa-thumbs-up text-success'></i>",'message'=>"কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!",'alert'=>'success' ]);
+        redirect()->route('new.customer');
+        // usleep(1000000);
+        // $this->dispatchBrowserEvent('alert', ['message' => "এর তথ্য যথাযথভাবে যুক্ত হয়েছে!",'effect'=>'success','custom'=>"$this->Full_Name",]);
+
     }
     
     public function showPreloader($param)

@@ -2,7 +2,7 @@
 <link href="{{asset('assets/css/order.css')}}" rel="stylesheet">
 
 @endpush
-<div class="container-fluid" id="CustomContainer">↓    
+<div class="container-fluid" id="CustomContainer">↓
     @if ($currentStep==3)
     <a><i wire:click="back(2)" class="fa fa-angle-left design_back_left_angle"></i></a>
 <style> i.fa.fa-angle-left.design_back_left_angle {position: fixed;top: 90%;left:16.5%;border: 2px solid purple;border-radius: 50%;font-size: 22px;padding: 6px 11px;display: flex;justify-content: center;align-items: center;color: purple;
@@ -10,41 +10,23 @@
 }
 </style> 
 @endif
-    @if (Session::has('msg'))    
-    <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!} alert-dismissible fade show" style="position: absolute; z-index:8888; right:0; margin-top:px"  role="alert">
-        <strong></strong> {!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}
+    @if (Session::has('msg'))
+    <div id="success-msg-dismiss" class="alert d-inline alert-{!! Session::get('msg')['alert'] !!} toast-top-right position-fixed alert-dismissible fade show" style=" z-index:8888;"  role="alert">
+        <strong> {!!Session::get('msg')['icon'] !!}</strong> {!!Session::get('msg')['message'] !!}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
     </div>
+    <script>window.setTimeout(function() {$("#success-msg-dismiss").fadeTo(500, 0).slideUp(500, function(){$(this).remove();});}, 3000);</script>
+  
     @endif
    @if ($errors->any())
-       @foreach ($errors->all() as $item)
-           <p>{{$item}}</p>
-                  @endforeach
+       @foreach ($errors->all() as $err)
+           <p class="text-danger">{{$err}}</p>
+           
+    <script> toastr["error"]("{!!$err!!}",'')</script>
+        @endforeach
    @endif
-    {{-- @if ($errors->any())
-        @foreach ($errors->all() as $item)
-            <p class="text-danter">{{$item}}</p>
-        @endforeach        
-    @endif --}}
-      {{-- @if ($errors->any())
-    @foreach ($errors->all() as $key=> $err)
-    <div class="alert alert-danger alert-dismissible fade show" style="position: absolute; z-index:8888; right:0; margin-top:{{$key>0?53*$key:''}}px"  role="alert">
-        <strong></strong> {{$err}}
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    @endforeach
-@endif  --}}
-<script>function error_toastr($param){ toastr.error($param),toastr.options = {"closeButton": true,"progressBar": true,"positionClass": "toast-top-right"}}</script>
-@if ($errors->any())
-    @foreach ($errors->all() as $err)
-    <p class="text-danger"></p>
-    <script> error_toastr("{!! $err !!}")</script>
-    @endforeach
-@endif
 {{-- @push('scripts') --}}
     
    {{-- @endpush --}}
@@ -410,47 +392,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 step-3">
-                            <h5 class="d-block">কাপড়/পোষাক/অ্যাপ্রন <b class="text-info">ডিজাইন</b> সমূহের নাম ও পরিমাপ</h5>
-                            @if ($styleGroup && $designItems)
-                            @foreach ($designItems as $design)
-                            <div class="row py-1">
-                                <div class="col-xl-12 py-3">
-                                    <h4 class="">{{$design->name .'/'. $design->slug}}</h4>
-                                </div>
-                                <div class="col-xl-12">
-                                    <div class="row">
-                                        @foreach ( $styleGroup->where( 'dependency', $design->slug ) as $style )
-                                        <div class="col-lg-2 col-sm-6 design_bg sarwani" style="background:url({{asset('assets/img/')}})"> 
-                                            <div class="custom-control custom-checkbox mb-1 d-inline-block">
-                                                <input type="checkbox" wire:model="designs_check.{{ $style->id }}" wire:change="fillEmptyStyleField({{$style->id}})" value="{{ $style->id }}" class="custom-control-input " id="style_{{$style->id}}" @if( in_array( $style->id, array_keys($design_fields) , true) && $design_fields[$style->id] != '')required @endif>
-                                                <label class="custom-control-label" for="style_{{$style->id}}">{{$style->name}} </label>
-                                                <div class="invalid-feedback"> <i class="fa fa-check " style="color:#34E3A4"></i> টিক দিন!</div>
-                                                @error("designs_check.$style->id") <div class="text-danger"> {!!$message!!}</div> {{--@else <div class="invalid-feedback text-warning">যেকোনো একটি নির্বাচন করুন </div>--}}  @enderror
-                                                <textarea rows="1" wire:model="design_fields.{{ $style->id }}" rows="1" class="form-control" value="{{$style->id}}"></textarea>                                                
-                                            </div>
-                                        </div>
-                                        @endforeach                                    
-                                    </div>  
-                                </div>
-                            </div>
-                            @endforeach
-                        @endif
-                    
-                        <div class="col-xl-12 mt-3">
-                            <div class="row">
-                                <div class="col-xl-6 col-12"><button class="btn btn-danger nextBtn btn-lg col-12 col-mb-2" type="button" wire:click="back({{$currentStep-1}})"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
-                                {{-- $cloothDesignOutpurResult==0 &&  --}}
-                                @if ($errors->isEmpty())
-                                    <div class="col-xl-6 col-12">
-                                    <button class="btn btn-primary btn-lg w-100" type="button" wire:click="designStepSubmit">পরবর্তী ধাপ <i class="fa fa-arrow-right"></i></button> </div> 
-                    
-                                @else  <div class="col-xl-6 col-12 text-center"><h6 class="col-xl-12 text-danger"><marquee direction="right">বাধ্যতামূলক ঘরগুলো পূরণ করুন!</marquee></h6></div>
-                                @endif
-                                
-                            </div>
-                        </div>
-                        </div>
+                        
                     </div>
                     
                     {{-- Step 3 --}}
