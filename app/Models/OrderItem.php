@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
+    public $timestamps=false;
     use HasFactory;
     /**
      * Get all of the collarsStaylePart for the OrderItem

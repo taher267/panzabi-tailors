@@ -9,7 +9,7 @@
     </div>
         <div class="container my-4">
             <div class="row">
-                <div class="col-xl-3"><a class="btn btn-facebook" href="{{route('customer.new.customer.order.items')}}"><i class="fa fa-plus"></i> নতুন গ্রাহক যুক্ত করুন</a></div>
+                <div class="col-xl-3"><a class="btn btn-facebook" href="{{route('new.customer')}}"><i class="fa fa-plus"></i> নতুন গ্রাহক যুক্ত করুন</a></div>
                 <div class="col-xl-3"><a class="btn btn-facebook" href="#">আজকের যুক্ত গ্রাহক</a></div>
                 <div class="col-xl-3"><a class="btn btn-outline-primary" href="">Google</a> <button type="button" wire:click.prevent="AddNewCustomer" class="btn btn-primary" data-toggle="modal" data-target="#addCustomer">Add Custoemr</button></div>
                 <div class="col-xl-3 md-form active-cyan-2">

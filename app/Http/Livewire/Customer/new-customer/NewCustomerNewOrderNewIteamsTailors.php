@@ -35,8 +35,8 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     public $name, $price, $detail, $stepstatus = 1, $status;
     public $successMsg = '', $hidesidebar;
     public $formErrorOne,$formErrorTwo, $cloothDesignOutpurResult;
-    //style
-    public $col_0,$col_1, $validOnlyFields, $designs_check=[],$design_fields=[];
+    //style/Design
+    public $col_0,$col_1, $validOnlyFields, $designs_check=[],$design_fields=[],$designPartFieldOutput;
     public $force_id,$confirm_mail;
     //Order Delivery
     public $order_delivery, $courier_details, $wagesOutpurResult;
@@ -44,21 +44,19 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
 
     public $user_id,  $order_date, $selected_product, $couriar_details;
-    public $every_dress_measurement_size, $fixed_size;
+    public $every_dress_measurement_size, $fixed_size=1;
     
     //Order
     public $validCustomMessage, $todayDate, $todayDay;
 
     public $personal_info_open, $delivery_policy, $selectedtypes,  $clothstyles, $define_key, $desingsIputKey=[], $designsresult, $date,$test;
-    public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
-    public $collar_fields=[], $sleeve_fields=[], $cuff_fields=[], $plate_fields=[], $pocket_fields=[], $back_fields=[], $piping_fields=[], $zip_fields=[], $sewing_fields=[], $embroidery_fields=[], $karchupi_fields=[], $other_fields=[];
-    public $collerFirstArea,$collerLastArea,$sleeveFirstArea,$sleeveLastArea,$cuffFirstArea,$cuffLastArea,$plateFirstArea,$plateLastArea,$pocketFirstArea,$pocketLastArea,$backFirstArea,$backLastArea,$pipingFirstArea,$pipingLastArea,$zipFirstArea,$zipLastArea,$sewingFirstArea,$sewingLastArea,$embroideryFirstArea,$embroideryLastArea,$karchupiFirstArea,$karchupiLastArea,$karchupotheriFirstArea,$otherLastArea;
+   
     
     public function mount()
     {
         $this->Full_Name="Jaza";
-        $this->mobile='65652564924';
-        $this->delivery_date = '2021-11-21';
+        $this->mobile='65256114924';
+        $this->delivery_date = '2021-11-22';
         // $this->delivery_date = Carbon::now('Asia/Dhaka')->format('Y-m-d');
         $this->country ='bd';
         $this->delivery_system ='byhand';
@@ -113,9 +111,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'cloth_shoulder'    => 'required',
             'cloth_mora'        => 'nullable',
             'noke_shoho'        => 'nullable',
-            'designs_check.*'   => 'nullable',
-            'design_fields.*'   => 'nullable',
-            // 'design_fields.36'  => 'required',
             'cloth_additional'  => 'nullable|string',
             'wages'             => 'required|numeric',
             'quantity'          => 'min:1|required|numeric',
@@ -254,28 +249,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
    
     public function designStepSubmit()
     {
-        // dd(count($this->designs_check));
-        if (count($this->designs_check)>0) {
-            $filterOne = array_filter($this->designs_check);
-            if(count(array_filter($this->designs_check))>0){
-
-                $this->validate([
-                    'designs_check'=>'required',
-                ]);
-                // $this->validate([
-                //     'designs_check.3'=>'required',
-                // ]);
-                // $this->validate([
-                //     'designs_check.42'=>'required',
-                // ]);
-                $this->currentStep = 4;
-            }else {
-                $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
-            }
-            
-        }else {
-            // session()->flash( 'msg', "<i class='fas fa-exclamation-triangle text-danger'></i> কিছু ডিজাইন যুক্ত করুণ!,danger" );
+        if($this->TraitDesignStepSubmit()=='hasErr'){
             $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+        }else {
+            $this->currentStep=4;
         }
         
     }
@@ -372,11 +349,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }
         
     }
-    public function fillEmptyStyleField($style_id){
+    // public function fillEmptyStyleField($style_id){
         
-        $this->TraitfillEmptyStyleField($style_id);
+    //     $this->TraitfillEmptyStyleField($style_id);
         
-    }
+    // }
     public function desingCheckedUpdate()
     {
         // $this->designs_check = count(array_values($this->designs_check));

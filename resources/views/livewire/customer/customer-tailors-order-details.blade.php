@@ -3,10 +3,7 @@
         <div class="d-inline alert fixed-top-right alert-{!! implode(",", array_slice( explode(",", Session::get('msg')), -1,1)) !!}">{!!implode(",", array_slice( explode(",", Session::get('msg')), 0, -1)) !!}</div>
     @endif
     <style>
-        @media (max-width: 575px){.col-mb-2{margin-bottom:.5rem!important}}
-        .display-none { display: none;} .multi-wizard-step p { margin-top: 12px; }
-
-.stepwizard-row {display: table-row;}
+        @media (max-width: 575px){.col-mb-2{margin-bottom:.5rem !important}}.display-none { display: none;} .multi-wizard-step p { margin-top: 12px; }.stepwizard-row {display: table-row;}
 .stepwizard {display: table; position: relative;width: 100%;}
 .multi-wizard-step button[disabled] {filter: alpha(opacity=100) !important; opacity: 1 !important;}
 .stepwizard-row:before {top: 14px;bottom: 0;content: " ";width: 100%;height: 1px;z-index: 0;position: absolute;background-color: #fefefe;}
@@ -16,9 +13,7 @@
         -ms-animation: fadein 2s; /* Internet Explorer */
          -o-animation: fadein 2s; /* Opera < 12.1 */
             animation: fadein 2s;
-}
-
-</style>
+}</style>
     
     <div class="row">
         <div class="col-xl-12">
@@ -41,7 +36,7 @@
                         <td></td>
                         <td>
                             <a href="{{--route('customer.orders', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i>Orders</a>
-                            <a href="{{--route('customer.details', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                            <a href="{{route('customer.orderiteams', [$reg_customer_id, $order->id])}}" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
                             <a href="{{--route('customer.editinfo', $todaysCustomer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                             @if(session('utype')==='ADM')<a href="#" wire-:click.prevent="producpelete({{--$todaysCustomer->id--}})" onclick="confirm('Are you sure to delete role') || event.stopImmediatePropagation()" class="btn btn-danger"><i class="fa fa-trash"></i></a>@endif
                         </td>

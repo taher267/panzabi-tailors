@@ -19,9 +19,9 @@ class CreateOrdersTable extends Migration
                 $table->bigInteger('customer_id')->unsigned();
                 $table->bigInteger('order_number')->unsigned();
                 $table->decimal('wages');//মজুরি
-                $table->decimal('discount')->default(0);
-                $table->decimal('advance')->nullable();
-                $table->decimal('total')->nullable();
+                $table->text('discount')->default(0);
+                $table->text('advance')->nullable();
+                $table->text('total')->nullable();
                 $table->boolean('status')->nullable();
                 $table->date('delivered_date')->nullable();
                 $table->json('order_sample_images')->nullable();

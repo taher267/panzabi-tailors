@@ -103,6 +103,54 @@ trait TailorsTrait
     //     Storage::disk($disk)->put("$uploadOn/" .$slugby, $resizeImage);
 
     // }
+
+        public function TraitfillEmptyStyleField($style_id){
+            
+            if ($style_id != null) {
+                if (in_array($style_id,array_keys($this->designs_check), true) ) {
+                    if (in_array($style_id,array_keys($this->design_fields), true )) {
+                        $this->design_fields[$style_id]=$this->design_fields[$style_id];
+                    }else {
+                        $this->design_fields[$style_id]=' ';
+                    }
+                }
+            
+                
+            }
+            
+        }
+        //
+        public function TraitDesignStepSubmit()
+    {
+        
+        if (count($this->designs_check)>0) {
+            $filterOne = array_filter($this->designs_check);
+            if(count(array_filter($this->designs_check))>0){
+                // dd(count($this->designs_check));
+                // $this->validate([
+                //     'designs_check'=>'required',
+                // ]);
+                // $this->validate([
+                //     'designs_check.3'=>'required',
+                // ]);
+                // $this->validate([
+                //     'designs_check.42'=>'required',
+                // ]);
+                return 'cS4';
+            }else {
+              return 'hasErr';
+                // $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+            }
+            
+        }else {
+            // session()->flash( 'msg', "<i class='fas fa-exclamation-triangle text-danger'></i> কিছু ডিজাইন যুক্ত করুণ!,danger" );
+            // $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+            return 'hasErr';
+        }
+        
+    }
+
+
         public function todayDate()
         {
             $this->todayDate= Carbon::now('Asia/Dhaka')->format('Y-m-d');
