@@ -67,7 +67,7 @@
                         <form wire:submit.prevent="submit">
                             <div class="shadow overflow-hidden sm:rounded-md">
                                 <div class="px-4 py-5 bg-primary sm:p-6">
-                                    @if ($currentPage === 1)mu
+                                    @if ($currentPage === 1)
                                         <h2>Step 01</h2>
                                     @elseif ($currentPage === 2)
                                         <h2>step 02</h2>
@@ -83,16 +83,16 @@
                                     @if ($currentPage === 1)
                                         <div></div>
                                     @else
-                                        <button wire:click="goToPreviousPage" type="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gray-400 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+                                        <button wire:click="goToPreviousPage" type="button" class="btn btn-success">
                                             Back
                                         </button>
                                     @endif
                                     @if ($currentPage === count($pages))
-                                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <button type="submit" class="btn btn-primary">
                                             Submit
                                         </button>
                                     @else
-                                        <button wire:click="goToNextPage" type="button" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <button wire:click="goToNextPage" type="button" class="btn btn-primary">
                                             Next
                                         </button>
                                     @endif

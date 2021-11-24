@@ -17,11 +17,13 @@ use App\Models\OrderItemStyle;
 use App\Models\StyleMeasurePart;
 use App\Models\OrderDeliveryAddress;
 use Illuminate\Support\Facades\Auth;
+use App\Tailors\TailorsErrorMsgTrait;
 
 class NewCustomerNewOrderNewIteamsTailors extends Component
 {
     use WithFileUploads;
     use TailorsTrait;
+    use TailorsErrorMsgTrait;
     public $showloader;
     public $errorOut, $customer_id, $instand_customer, $Full_Name, $mobile, $email, $address, $country, $city, $province, $line1, $line2, $new_photo, $photo, $zipcode ;
     public $allproduct, $products, $weekendholiday;//$new_customer_id=0
@@ -50,20 +52,37 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     public $validCustomMessage, $todayDate, $todayDay;
 
     public $personal_info_open, $delivery_policy, $selectedtypes,  $clothstyles, $define_key, $desingsIputKey=[], $designsresult, $date,$test;
-    public $collars_check=[], $sleeves_check=[], $cuffs_check=[], $plates_check=[], $pockets_check=[], $backs_check=[], $pipings_check=[], $zips_check=[], $sewings_check=[], $embroiderys_check=[], $karchupis_check=[], $others_check=[];
-    public $collar_fields=[], $sleeve_fields=[], $cuff_fields=[], $plate_fields=[], $pocket_fields=[], $back_fields=[], $piping_fields=[], $zip_fields=[], $sewing_fields=[], $embroidery_fields=[], $karchupi_fields=[], $other_fields=[];
-    public $collerFirstArea,$collerLastArea,$sleeveFirstArea,$sleeveLastArea,$cuffFirstArea,$cuffLastArea,$plateFirstArea,$plateLastArea,$pocketFirstArea,$pocketLastArea,$backFirstArea,$backLastArea,$pipingFirstArea,$pipingLastArea,$zipFirstArea,$zipLastArea,$sewingFirstArea,$sewingLastArea,$embroideryFirstArea,$embroideryLastArea,$karchupiFirstArea,$karchupiLastArea,$karchupotheriFirstArea,$otherLastArea;
     
+    public $errMessages = [
+        'customer'=>[
+            
+            
+        ],'delivery'=>[
+            'delivery_system.required'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???','delivery_system.min'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???',
+            'courier_details.required'=> 'কুরিয়ার সম্পর্কে বিস্তারিত লিখুন','delivery_charge.required'=> 'ডেলিভারি চার্জ লিখুন',
+            'delivery_charge.numeric'=> 'সন্দেহজনক! ডেলিভারি চার্জ নম্বর হবে','country.required'=> 'দেশের নাম সিলেক্ট করুন',
+            'city.required'=> 'শহরের নাম লিখুন','province.required'=> 'প্রদেশের নাম লিখুন','zipcode.required'=> 'জিপ কোড লিখুন','line1.required'=> 'বাড়ি নং,গ্রাম/মহল্লা সড়ক নং লিখুন',
+        ],'measurement'=>[
+            'products.required'=>'পণ্য নির্বাচন করুণ!','cloth_enclosure.required' => 'ঘেরের পরিমাপ দিন','hand_long.required' =>'হাতার লম্বার পরিমাপ দিন!','cloth_shoulder.required' => 'পুটের পরিমাপ দিন',
+            'order_sample_images.image'=>'ছবি যুক্ত করুন','cloth_long.required' => 'লম্বার পরিমাপ দিন','order_sample_images.mimes'=>'jpg অথবা jpeg অথবা png এর ছবি যুক্ত করুন',
+            
+        ],'wages'=>[
+            'wages.required'=> "মজুরি লিখুন!",'wages.numeric'=> "মজুরি শুধুমাত্র নম্বর !",'discount.numeric'=> "ডিসকাউন্ট নম্বর হবে!",'advance.numeric'=> "অ্যাডভান্স নম্বর হবে!",'total.required'=> "মোট মজুরি দিন!",'total.numeric'=> "মোট মজুরি নম্বর হবে!",
+        ],
+    ];
     public function mount()
     {
         $this->Full_Name="Jaza";
-        $this->mobile='65652564924';
+        $this->mobile='65652111924';
         $this->delivery_date = '2021-11-25';
+        $this->fixed_size = 1;
+        $this->products = 1;
         // $this->delivery_date = Carbon::now('Asia/Dhaka')->format('Y-m-d');
         $this->country ='bd';
-        $this->delivery_system ='byhand';
+        
         $this->discount = 0;
         $this->advance = 0;
+            $this->delivery_system =2;
         $lastOrder = Order::orderBy('id',"DESC")->first();
         
         if( $lastOrder== null){
@@ -89,7 +108,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
         $this->validateOnly($fields,[
             'delivery_date'     => 'required|date|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-            'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
+            'Full_Name'         => 'required|max:255|regex:/[A-Za-z\s]/',
             'mobile'            => ['required','numeric','unique:customers','digits:11'],
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
             'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
@@ -115,47 +134,35 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'noke_shoho'        => 'nullable',
             'designs_check.*'   => 'nullable',
             'design_fields.*'   => 'nullable',
-            // 'design_fields.36'  => 'required',
             'cloth_additional'  => 'nullable|string',
-            'wages'             => 'required|numeric',
-            'quantity'          => 'min:1|required|numeric',
+            'wages'             => 'integer|numeric|gt:0',
+            'quantity'          => 'gt:0|required|numeric',
             'discount'          => 'nullable|numeric',
             'advance'          => 'nullable|numeric',
             'total'             => 'required|numeric',
-        ],
+        ], 
         [
-        'order_number.required' =>'অর্ডার নম্বর দিন!','order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.numeric' =>'অর্ডার নম্বর শুধুমাত্র সংখ্যা!','order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
-        'Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে','Full_Name.required' =>'নাম লিখুন!',//'order_number.max' =>"$this->maxOrderNo($this->order_number) নং অর্ডার পূর্ব নিবন্ধিত!",
-        "delivery_date.required"=>'ডেলিভারির তারিখ দিন!',"delivery_date.date"=>'সঠিকভাবে তারিখ দিন!',"delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
-        'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!',
-        'cloth_long.required' => 'লম্বার পরিমাপ দিন','cloth_enclosure.required' => 'ঘেরের পরিমাপ দিন','cloth_shoulder.required' => 'পুটের পরিমাপ দিন','hand_long.required' =>'হাতার লম্বার পরিমাপ দিন!',
-        'quantity.required' => $this->products? Product::find($this->products)->name:''." পশাকের পরিমাপ দিন!",'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",'email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!",
-        ]);
-        if ($this->cloth_long !="" && $this->cloth_enclosure !="" && $this->hand_long !="" && $this->cloth_shoulder !="" && ($this->cloth_collar == ''  && $this->cloth_throat == '')  && $this->currentStep==2 ) {
+            'order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
+            "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
+            'quantity.required' => ($this->products ? Product::find($this->products)->name:'')." পশাকের পরিমাপ দিন!",'quantity.numeric' => ($this->products? Product::find($this->products)->name:'')." পরিমাণ নম্বর হবে!",
+            "delivery_date.required"=>'ডেলিভারির তারিখ দিন!',"delivery_date.date"=>'সঠিকভাবে তারিখ দিন!','Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে','Full_Name.required' =>'নাম লিখুন!',
+            'order_number.numeric' =>'অর্ডার নম্বর শুধুমাত্র সংখ্যা!','order_number.required' =>'অর্ডার নম্বর দিন!','email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!",
+            'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!','email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
+            'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",
+
+            'delivery_system.required'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???','delivery_system.min'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???',
+            'courier_details.required'=> 'কুরিয়ার সম্পর্কে বিস্তারিত লিখুন','delivery_charge.required'=> 'ডেলিভারি চার্জ লিখুন',
+            'delivery_charge.numeric'=> 'সন্দেহজনক! ডেলিভারি চার্জ নম্বর হবে','country.required'=> 'দেশের নাম সিলেক্ট করুন',
+            'city.required'=> 'শহরের নাম লিখুন','province.required'=> 'প্রদেশের নাম লিখুন','zipcode.required'=> 'জিপ কোড লিখুন','line1.required'=> 'বাড়ি নং,গ্রাম/মহল্লা সড়ক নং লিখুন',
+            'products.required'=>'পণ্য নির্বাচন করুণ!','cloth_enclosure.required' => 'ঘেরের পরিমাপ দিন','hand_long.required' =>'হাতার লম্বার পরিমাপ দিন!','cloth_shoulder.required' => 'পুটের পরিমাপ দিন',
+            'order_sample_images.image'=>'ছবি যুক্ত করুন','cloth_long.required' => 'লম্বার পরিমাপ দিন','order_sample_images.mimes'=>'jpg অথবা jpeg অথবা png এর ছবি যুক্ত করুন',
+            'wages.required'=> "মজুরি লিখুন!",'wages.numeric'=> "মজুরি শুধুমাত্র নম্বর !",'discount.numeric'=> "ডিসকাউন্ট নম্বর হবে!",'advance.numeric'=> "অ্যাডভান্স নম্বর হবে!",'total.required'=> "মোট মজুরি দিন!",'total.numeric'=> "মোট মজুরি নম্বর হবে!",
+        ],);
+        if (! empty($this->cloth_long) &&  !empty($this->cloth_enclosure) && !empty($this->hand_long) && $this->cloth_shoulder !="" && (empty($this->cloth_collar) && empty($this->cloth_throat)) && $this->currentStep==2 ) {
             $this->validateOnly($fields, ['cloth_throat'          => 'required|string','cloth_collar'          => 'required|string', ],['cloth_throat.required'=>'গলার পরিমাপ করুণ!','cloth_collar.required' =>'কলারের পরিমাপ দিন!',]);
             
         }
-        // if ($this->cloth_collar == ''  && $this->cloth_throat == ''  && $this->currentStep==2 ) {
-        //     $this->validate( ['cloth_throat'          => 'required|string','cloth_collar'          => 'required|string', ]);
-            
-        // }elseif ($this->cloth_collar == ''  && $this->currentStep==2 ) {
-        //     $this->validate( ['cloth_throat'          => 'required|string' ]);
-            
-        // }elseif ($this->cloth_throat == ''  && $this->currentStep==2 ) {
-        //     $this->validate( ['cloth_collar'          => 'required|string' ]);
-            
-        // }
-
-        // if ($this->cloth_throat) {
-        //     $this->validate( ['cloth_collar'          => 'required|string']);
-        // }
-
-        if ( $this->confirm_mail ) {
-            $this->validateOnly($fields,[
-                'email'             =>  'required|email|unique:customers',
-               ],['email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",'email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!", ]);
-    
-        }
+        
         if (count($this->design_fields)>0) {
             $filterOne = array_filter($this->design_fields);
             if(count(array_filter($this->design_fields))>0){
@@ -175,15 +182,17 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         //order delivery validation
         if ( $this->order_delivery ) {
             $this->validateOnly($fields,[
-                'delivery_system'   => 'required|min:1',
+                'delivery_system'   => 'required|gt:0',
                 'courier_details'   =>  'required',
-                'delivery_charge'   =>  'required',
+                'delivery_charge'   =>  'required|numeric',
                 'country'           =>  'required',
                 'city'              =>  'required',
                 'province'          =>  'required',
                 'zipcode'           =>  'required',
                 'line1'             =>  'required',
-            ]);
+            ],
+            $this->newCustomerErrMsgs()['delivery'],
+        );
         }
     }
     /**
@@ -200,13 +209,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'address'           => 'string|nullable',
             'email'             => 'email|unique:customers|nullable',
             'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$this->maxOrderNoFixed($this->order_number),
-        ],[
-        'order_number.required' =>'অর্ডার নম্বর দিন!','order_number.numeric' =>'অর্ডার নম্বর শুধুমাত্র সংখ্যা!','order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",'Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে',
-        "delivery_date.required"=>'ডেলিভারির তারিখ দিন!',"delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
-        'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!',
-        'email.required' =>'ইমেইল অ্যাড্রেস দিন!','email.unique' =>'ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!', 'cloth_long' => 'লম্বার পরিমাপ দিন','cloth_enclosure' => 'ঘেরের পরিমাপ দিন','cloth_shoulder.required' => 'পুটের পরিমাপ দিন',
-        'photo.image'=>'ছবি যুক্ত করুন','photo.mimes'=>'jpg অথবা jpeg অথবা png এর ছবি যুক্ত করুন',
-        ]
+        ], $this->newCustomerErrMsgs()['customer'],
+        [
+            'order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
+            "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",]
     );
         $this->currentStep = 2;
     }
@@ -234,16 +240,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'hand_long'         => 'required',
             'collar_measure_type'=> 'numeric|nullable',
             'cloth_shoulder'    => 'required',
-        ],
-        [
-            'order_sample_images.image'=>'ছবি যুক্ত করুন','order_sample_images.mimes'=>'jpg অথবা jpeg অথবা png এর ছবি যুক্ত করুন',
-            'products.required'=>'পণ্য নির্বাচন করুণ!',
-            'cloth_long.required' =>'লম্বার পরিমাপ দিন!','cloth_enclosure.required' =>"ঘেরের পরিমাপ দিন!",'hand_long.required' =>'হাতার লম্বার পরিমাপ দিন!','cloth_shoulder.required' =>"পুটের পরিমাপ দিন!",
-        ]
+        ],$this->newCustomerErrMsgs()['measurement'],
         );
-        if ($this->cloth_long !="" && $this->cloth_enclosure !="" && $this->hand_long !="" && $this->cloth_shoulder !="" && ($this->cloth_collar == ''  && $this->cloth_throat == '')  && $this->currentStep==2 ) {
+        if ($this->cloth_long !=" " && $this->cloth_enclosure !=" " && $this->hand_long !=" " && $this->cloth_shoulder !=" " && ($this->cloth_collar == ''  && $this->cloth_throat == '')  && $this->currentStep==2 ) {
             $this->validate(['cloth_throat'          => 'required|string','cloth_collar'          => 'required|string', ],
-            ['cloth_throat.required'=>'গলার পরিমাপ করুণ!','cloth_collar.required' =>'কলারের পরিমাপ দিন!' ]
+            $this->newCustomerErrMsgs()['measurement'],
         );
             
         }
@@ -255,22 +256,23 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     public function designStepSubmit()
     {
         // dd(count($this->designs_check));
-        if (count($this->designs_check)>0) {
+        // $checkCount = count($this->designs_check);
+        if ( count($this->designs_check) > 0 ) {
             $filterOne = array_filter($this->designs_check);
-            if(count(array_filter($this->designs_check))>0){
-
-                $this->validate([
-                    'designs_check'=>'required',
-                ]);
-                // $this->validate([
-                //     'designs_check.3'=>'required',
-                // ]);
-                // $this->validate([
-                //     'designs_check.42'=>'required',
-                // ]);
-                $this->currentStep = 4;
+            $filterTwo = array_filter($this->design_fields);
+            // dd($filterTwo);
+            foreach(array_filter($filterOne) as $item){
+                // dd(count($filterOne).' = '.count($filterTwo));
+                if (in_array($item,array_keys($filterTwo), false ) ) {
+                    array_values($this->design_fields)[$item]= ' ';
+                    // array_filter(array_values($this->design_fields))[$item]= ' ';
+                }
+            }
+            if( count(array_filter($this->designs_check)) > 0 && count($this->design_fields) > 0 && count(array_filter($this->designs_check)) == count($this->design_fields) ){
+                    $this->currentStep = 4;
+                
             }else {
-                $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+                $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "লাল রঙের বক্স গুলো <i class='fa fa-check text-success'></i> দিন! </span>",'effect'=>'warning',]);
             }
             
         }else {
@@ -372,6 +374,12 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         }
         
     }
+
+    public function fillEmptyStyleCheck($style_detail_id)
+    {
+        // $this->TraitFillEmptyStyleCheck($style_detail_id);
+    }
+
     public function fillEmptyStyleField($style_id){
         
         $this->TraitfillEmptyStyleField($style_id);
@@ -385,7 +393,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
        
     public function placeOrder()
     {
-        
+        $maxOrderNo=$this->maxOrderNoFixed($this->order_number);        
         $this->validate([
             'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
             'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
@@ -415,17 +423,33 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'designs_check.*'   => 'nullable',
             'design_fields.*'   => 'nullable',
             'cloth_additional'  => 'nullable|string',            
-            'wages'             => 'required|numeric',
+            'wages'             => 'required|integer|min:1',
             'quantity'          => 'min:1|required|numeric',
             'discount'          => 'nullable|numeric',
             'advance'          => 'nullable|numeric',
             'total'             => 'required|numeric',
-        ],
-        ['Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে',
-        "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate()) তারিখ বা তার পরের তারিখ হবে।",
-        'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!'
-        ]
-    );
+        ],$this->newCustomerErrMsgs()['customer'],
+        [
+            'order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
+            "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
+            'quantity.required' => ($this->products ? Product::find($this->products)->name:'')." পশাকের পরিমাপ দিন!",'quantity.numeric' => ($this->products? Product::find($this->products)->name:'')." পরিমাণ নম্বর হবে!",
+            "delivery_date.required"=>'ডেলিভারির তারিখ দিন!',"delivery_date.date"=>'সঠিকভাবে তারিখ দিন!','Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে','Full_Name.required' =>'নাম লিখুন!',
+            'order_number.numeric' =>'অর্ডার নম্বর শুধুমাত্র সংখ্যা!','order_number.required' =>'অর্ডার নম্বর দিন!','email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!",
+            'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!','email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
+            'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",
+
+            'delivery_system.required'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???','delivery_system.min'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???',
+            'courier_details.required'=> 'কুরিয়ার সম্পর্কে বিস্তারিত লিখুন','delivery_charge.required'=> 'ডেলিভারি চার্জ লিখুন',
+            'delivery_charge.numeric'=> 'সন্দেহজনক! ডেলিভারি চার্জ নম্বর হবে','country.required'=> 'দেশের নাম সিলেক্ট করুন',
+            'city.required'=> 'শহরের নাম লিখুন','province.required'=> 'প্রদেশের নাম লিখুন','zipcode.required'=> 'জিপ কোড লিখুন','line1.required'=> 'বাড়ি নং,গ্রাম/মহল্লা সড়ক নং লিখুন',
+            'products.required'=>'পণ্য নির্বাচন করুণ!','cloth_enclosure.required' => 'ঘেরের পরিমাপ দিন','hand_long.required' =>'হাতার লম্বার পরিমাপ দিন!','cloth_shoulder.required' => 'পুটের পরিমাপ দিন',
+            'order_sample_images.image'=>'ছবি যুক্ত করুন','cloth_long.required' => 'লম্বার পরিমাপ দিন','order_sample_images.mimes'=>'jpg অথবা jpeg অথবা png এর ছবি যুক্ত করুন',
+            'wages.required'=> "মজুরি লিখুন!",'wages.numeric'=> "মজুরি শুধুমাত্র নম্বর !",'discount.numeric'=> "ডিসকাউন্ট নম্বর হবে!",'advance.numeric'=> "অ্যাডভান্স নম্বর হবে!",'total.required'=> "মোট মজুরি দিন!",'total.numeric'=> "মোট মজুরি নম্বর হবে!",
+        ],);
+        if (! empty($this->cloth_long) &&  !empty($this->cloth_enclosure) && !empty($this->hand_long) && $this->cloth_shoulder !="" && (empty($this->cloth_collar) && empty($this->cloth_throat)) && $this->currentStep==2 ) {
+            $this->validateOnly($fields, ['cloth_throat'          => 'required|string','cloth_collar'          => 'required|string', ],['cloth_throat.required'=>'গলার পরিমাপ করুণ!','cloth_collar.required' =>'কলারের পরিমাপ দিন!',]);
+            
+        }
 
         if ( $this->confirm_mail ) {
             $this->validateOnly($fields,[
@@ -437,7 +461,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         //order delivery validation
         if ( $this->order_delivery ) {
             $this->validate([
-                'delivery_system'   => 'required|min:1',
+                'delivery_system'   => 'required|gt:0',
                 'courier_details'   =>  'required',
                 'delivery_charge'   =>  'required',
                 'country'           =>  'required',
@@ -445,13 +469,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                 'province'          =>  'required',
                 'zipcode'           =>  'required',
                 'line1'             =>  'required',
-            ]);
+            ],$this->newCustomerErrMsgs()['delivery'],);
         }
        
         $this->OrderIncluding();
-        // if (Customer::find($this->instand_customer)->photo) {
-        //     $customer_image = "<img width='30' src='".asset("storage/assets/customers/".Customer::find($this->instand_customer)->photo)."'>";
-        // }
+
         session()->flash( 'msg', ['icon'=>"<i class='fa fa-thumbs-up text-success'></i>",'message'=>"কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!",'alert'=>'success' ]);
         redirect()->route('new.customer');
         // usleep(1000000);
@@ -471,8 +493,8 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     }
     public function render()
     {
-        if ($this->wages != null && $this->quantity != null) {
-            if($this->wages>0 || $this->quantity): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0)+ ($this->delivery_charge ? $this->delivery_charge: 0); endif;
+        if ($this->wages != null && is_numeric($this->wages) && $this->quantity != null && is_numeric($this->quantity)) {
+            if($this->wages>0 || $this->quantity): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0)+ (($this->delivery_charge && is_numeric($this->delivery_charge)) ? $this->delivery_charge: 0); endif;
         }else {
             $this->total='';
         }

@@ -1,7 +1,4 @@
-@push('styles')
-<link href="{{asset('assets/css/order.css')}}" rel="stylesheet">
-
-@endpush
+@push('styles')<link href="{{asset('assets/css/order.css')}}" rel="stylesheet">@endpush
 <div class="container-fluid" id="CustomContainer">↓
     @if ($currentStep==3)
     <a><i wire:click="back(2)" class="fa fa-angle-left design_back_left_angle"></i></a>
@@ -52,13 +49,6 @@
 </div>
 <div class="row">
     <div class="col-xl-12"><h3>নতুন গ্রাহক, নতুন অর্ডার তৈরি করুন!</h3></div>
-            
-                @if(!empty($successMsg))
-                <div class="col-xl-12 "  style="transition:0.6s all ease; ">
-                    <div class="alert alert-success">
-                        {{ $successMsg }}
-                    </div> <div>
-                @endif
            
             <div class="stepwizard my-3">
                 <div class="stepwizard-row setup-panel">
@@ -92,11 +82,10 @@
                 </div>
             </div>
             <div class="form_wrappar" >
-                
             <form class="was-validated" wire:submit.prevent="placeOrder" >                    
                 <div class="row">
                     {{-- Step 1 --}}
-                    <div class="col-xl-12 {{ $currentStep != 1 ? 'display-none' : '' }}" id="step-1">
+                    <div class="col-xl-12 {{ $currentStep != 1 ? 'display-none' : '' }}">
                             <div class="row">
                             <div class="personal_information">
                                 <h2>অর্ডারের তথ্য</h2>
@@ -128,7 +117,6 @@
                                                 <label for="order_number" style="letter-spacing:px" >অর্ডার নং- <span class="text-info">(সর্বশেষ অর্ডার নং-@if (DB::table('orders')->get()->count()>0){{DB::table('orders')->orderBy('id','DESC')->first()->order_number}} @else 0 @endif)</span></label>
                                                 <input type="number" class="form-control @error('order_number') is-invalid @enderror" @if(!$force_id) min="{{!$force_id ? $maxOrderId: $order_number}}" max="{{$maxOrderId}}" @endif wire:model="order_number"  id="order_number" required>
                                                 @error('order_number')<div class="invalid-feedback">{!!$message!!}</div>@enderror
-                                                {{-- @error('order_number') <div class="text-danger">{!!$message!!}</div>@else @if(! $force_id)<div class="invalid-feedback">Order Number is required.</div>@endif @enderror --}}
                                             </div>
                                             <div class="col-lg-3">
                                                 <input type="checkbox" value="1" wire:model="force_id" id="force_wish"> <label for="force_wish">পূর্ববর্তী অর্ডার নং যুক্ত করুন</label>
@@ -217,7 +205,7 @@
                     </div>
                     {{-- Step 1 Ebd --}}
                     {{-- Step 2 --}}
-                    <div class="col-xl-12 {{ $currentStep != 2 ? 'display-none' : '' }} " id="step-2">
+                    <div class="col-xl-12 {{ $currentStep != 2 ? 'display-none' : '' }} ">
                         <div class="cloth_part_style">
                             <div class="row">
                                 <div class="col-lg-12 py-5 @error('products')bg-warning @enderror product_name cloth_name" >
@@ -240,24 +228,23 @@
                                 </div>
                                 <div class="col-xl-12">
                                     <div class="row">
-                                        <div class="col-xl-6 mb-3">
-                                        </div>
-                                            @if (DB::table('size_charts')->count()>0)
-                                                <div class="col-xl-6 mb-3">
-                                                    <label for="deliverysystem"> নির্ধারিত সাইজ </label>
-                                                    <select wire:model="fixed_size" class="custom-select d-block w-100" id="deliverysystem" required>
-                                                        <option value="0">Select Size</option>
-                                                        @foreach (DB::table('size_charts')->get() as $item)
-                                                        <option value="{{$item->id}}">{{$item->name}}</option>
-                                                        @endforeach
-                                                        
-                                                    </select>
-                                                    @error('fized_size')<div class="text-danger"> {!!$message!!}</div> @else<div class="invalid-feedback"> Select a delivery system name</div> @enderror 
-                                                </div>
-                                            @endif                                   
-                                        </div>
+                                        <div class="col-xl-6 mb-3"> </div>
+                                        @if (DB::table('size_charts')->count()>0)
+                                            <div class="col-xl-6 mb-3">
+                                                <label for="deliverysystem"> নির্ধারিত সাইজ </label>
+                                                <select wire:model="fixed_size" class="custom-select d-block w-100" id="deliverysystem" required>
+                                                    <option value="0">Select Size</option>
+                                                    @foreach (DB::table('size_charts')->get() as $item)
+                                                    <option value="{{$item->id}}">{{$item->name}}</option>
+                                                    @endforeach
+                                                    
+                                                </select>
+                                                @error('fixed_size')<div class="text-danger"> {!!$message!!}</div> @else<div class="invalid-feedback"> Select a delivery system name</div> @enderror 
+                                            </div>
+                                        @endif                                   
                                     </div>
                                 </div>
+                            </div>
                                 <div class="col-xl-12">
                                 {{-- Measure ment area --}}
                                 <div class="col-lg-12 pt-4">
@@ -361,20 +348,19 @@
                                         </div>
                                         <div class="col-lg-6 col-sm-12 mx-lg-auto mb-3">
                                                 <h6>অর্ডারের নমুনা ছবিঃ</h6>
-                                            <div class="custom-file my-1">
-                                                <input wire:model="order_sample_images" type="file" class="custom-file-input" id="orderSampleImage" multiple>
-                                                <label class="custom-file-label" for="orderSampleImage">অর্ডারের নমুনা ছবিঃ</label>
-                                                @error('order_sample_images') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!</div>@enderror
-                                            </div>
-                                            @if ( $order_sample_images )
-                                                <span class="temp_img_wrap" >
-                                                    @foreach ($order_sample_images as $sample)
-                                                    <img src="{{$sample->temporaryUrl()}}" width="60" alt="">
-                                                    @endforeach
-                                                </span>
-                                            @endif
+                                                <div class="custom-file my-1">
+                                                    <input wire:model="order_sample_images" type="file" class="custom-file-input" id="orderSampleImage" multiple>
+                                                    <label class="custom-file-label" for="orderSampleImage">অর্ডারের নমুনা ছবিঃ</label>
+                                                    @error('order_sample_images') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">সঠিক ছবি যুক্ত করুন! ছবির ধরন (jpg, jpeg, png)!</div>@enderror
+                                                </div>
+                                                @if ( $order_sample_images )
+                                                    <span class="temp_img_wrap" >
+                                                        @foreach ($order_sample_images as $sample)
+                                                        <img src="{{$sample->temporaryUrl()}}" width="60" alt="">
+                                                        @endforeach
+                                                    </span>
+                                                @endif
                                         </div>
-
                                     </div>
                                 </div>
                                 {{-- Measure area End --}}
@@ -392,11 +378,10 @@
                                 </div>
                             </div>
                         </div>
-                        
                     </div>
                     
                     {{-- Step 3 --}}
-                    <div class="col-xl-12 {{ $currentStep != 3 ? 'display-none' : '' }} " id="step-3">
+                    <div class="col-xl-12 {{ $currentStep != 3 ? 'display-none' : '' }} ">
                         <div class="col-md-12 step-3">
                             <h5 class="d-block">কাপড়/পোষাক/অ্যাপ্রন <b class="text-info">ডিজাইন</b> সমূহের নাম ও পরিমাপ</h5>
                             @if ($styleGroup && $designItems)
@@ -442,7 +427,7 @@
                     </div>
                     
                     {{-- Step 4 Start --}}
-                    <div class="col-lg-12 {{ $currentStep != 4 ? 'display-none' : '' }} " id="step-4">
+                    <div class="col-lg-12 {{ $currentStep != 4 ? 'display-none' : '' }} ">
                         <div class="row">
                             <!-- Order Delivery Start-->
                             <div class="col-xl-12">
@@ -467,18 +452,18 @@
                                         </div>
                                         <div class="col-xl-6 mb-3">
                                             <label for="deliverycharge">কুরিয়ার চার্জ</label>
-                                            <input wire:model="delivery_charge" type="text" class="form-control" id="deliverycharge" placeholder="কুরিয়ার চার্জ..." required>
+                                            <input wire:model="delivery_charge" type="number" class="form-control" id="deliverycharge" placeholder="কুরিয়ার চার্জ..." required>
                                             @error('delivery_charge') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">কুরিয়ার চার্জ লিখুন!</div>@enderror
                                         </div>
                                         
-                                        <div class="col-xl-12 ">
+                                        <div class="col-xl-12 mb-3">
                                             <label for="couriername">কুরিয়ার এর তথ্য</label>
                                             <input wire:model="courier_details" type="text" class="form-control" id="couriername" placeholder="কুরিয়ার এর নাম এবং শাখার বিস্তারিত..." required>
                                             @error('courier_details') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">Courier details is required.</div>@enderror
                                         </div>
                     
                                         <div class="col-lg-6 mb-3">
-                                            <label for="coun_try">Country</label>
+                                            <label for="coun_try">দেশ</label>
                                             <select wire:model="country" class="custom-select d-block w-100" id="coun_try" required>
                                                 <option>...</option>
                                                 <option value="bd">Bangladesh</option>
@@ -493,7 +478,7 @@
                     
                                         <div class="col-lg-6 mb-3">
                                             <label for="line1">লাইন ১</label>
-                                            <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="লাইন ১...." required>
+                                            <input wire:model="line1" type="text" class="form-control" id="line1" placeholder="বাড়ি নং,গ্রাম/মহল্লা সড়ক নং লিখুন...." required>
                                             @error('line1') <div class="text-danger">{!!$message!!}</div> @else <div class="invalid-feedback">লাইন ১ দিন!</div>@enderror
                                         </div>
                     
@@ -543,7 +528,7 @@
                                                 </div>
 
                                                 <div class="col-lg-2">
-                                                    <h6 class="text-center border-bottom mb-2 pb-1">মজুরি  @error('wages')<span class="text-danger">{{$message}}</span> @enderror </h6>
+                                                    <h6 class="text-center border-bottom mb-2 pb-1">@error('wages')<span class="text-danger">{{$message}}</span> @else মজুরি @enderror </h6>
                                                     <p>
                                                         <input type="number" wire:model="wages" class="form-control" placeholder="মজুরি" required>
                                                         <div class="invalid-feedback">আইটেম এর পরিমান দিন!</div>
@@ -581,7 +566,7 @@
                     </div>  
                     {{-- Step 4 End --}}
                     {{-- Step 5 Start --}}
-                    <div class="col-lg-12 {{ $currentStep != 5 ? 'display-none' : '' }} " id="step-5">
+                    <div class="col-lg-12 {{ $currentStep != 5 ? 'display-none' : '' }} ">
                         <div class="row">
                             <div class="col-lg-12">
                                 @if ($errors->any())
@@ -590,6 +575,8 @@
                                     @endforeach
                                 @endif
                             </div>
+                            
+                            <div class="col-lg-12"><h3 class="text-warning text-center mb-3 border-bottom pb-2">পুনরায় সকল তথ্য যাচাই করুন</h3></div>
                             <div class="col-lg-12">
                                 <div class="row">
                                     <div class="col-lg-4 col-sm-12">ডেলিভারি তারিখঃ- <span class="text-info">{{$delivery_date}}</span>, <span class="text-info">@if ($weekendholiday=='saturday') শনিবার @elseif ($weekendholiday=='sunday') রবিবার @elseif ($weekendholiday=='monday') সোমবার @elseif ($weekendholiday=='tuesday') মঙ্গলবার @elseif ($weekendholiday=='wednesday') বুধবার @elseif ($weekendholiday=='Thursday') বৃহস্পতিবার @elseif ($weekendholiday=='friday') শুক্রবার @endif </div>
@@ -634,13 +621,27 @@
                                 <div class="col-lg-12">
                                     @if( count($designs_check)>0 )
                                         <div class="row">
+                                            <div class="col-lg-12 col-sm-12">
                                             @for( $i=0; $i < count($designs_check); $i++ )
                                                 @if( 0 != array_values($designs_check)[$i] )
-                                                <div class="col-lg-3 col-sm-12">{{DB::table('style_measure_parts')->find(array_values($this->designs_check)[$i])->name}}-<span class="text-info">{{array_values($this->design_fields)[$i]}}</span></div>@endif  
+                                                <span class="text-secondary d-inline-block" style="max-width:100%"><b class="text-primary">{{$i+1}})</b> {{DB::table('style_measure_parts')->find(array_values($this->designs_check)[$i])->name}}-<span class="text-info">{{array_values($this->design_fields)[$i]}} @if($i < count($designs_check)-1 ), @endif</span></span>@endif  
                                             @endfor 
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
+                                <div class="col-lg-12 border-top border-secondary my-3"></div>
+                                <h4 class="text-secondary">অর্ডার ডেলিভারিঃ</h4>
+                                @if ($order_delivery==1)
+                                <div class="col-lg-12 mb-3">
+                                    <div class="row">
+                                    <div class="col-lg-2">কুরিয়ার তথ্যঃ- <span class="text-info">{{$wages}}</span></div>
+                                    <div class="col-lg-2">কুরিয়ার চার্জঃ- <span class="text-info">{{$delivery_charge}}</span></div>
+                                    <div class="col-lg-8">কাস্টমারের তথ্যঃ- <span class="text-info">{{$line2? $line2.", ":''}}{{$line1}}-{{$zipcode}}, {{$city}},  {{$province}}, {{$country}}</span></div>
+                                    </div>
+                                </div>  
+                                @endif
+
                                 <div class="col-lg-12 border-top border-secondary my-3"></div>
                                 <h4 class="text-secondary">মজুরিঃ</h4>
                                 <div class="col-lg-12 mb-3">
@@ -673,24 +674,6 @@
     </div>
     </div>
     </div>
-    {{-- toastr["success"]("My name is Inigo Montoya. You killed my father. Prepare to die!") --}}
-            {{-- toastr.options = {
-             "closeButton": false,
-             "debug": false,
-             "newestOnTop": false,
-             "progressBar": true,
-             "positionClass": "toast-top-right",
-             "preventDuplicates": false,
-             "onclick": null,
-             "showDuration": "300",
-             "hideDuration": "1000",
-             "timeOut": "5000",
-             "extendedTimeOut": "1000",
-             "showEasing": "swing",
-             "hideEasing": "linear",
-             "showMethod": "fadeIn",
-             "hideMethod": "fadeOut"
-             } --}}
 </div>
 
 @push('scripts')

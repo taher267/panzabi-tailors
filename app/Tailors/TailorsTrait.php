@@ -85,8 +85,6 @@ trait TailorsTrait
         //Resize image for Category and upload
         $resizeImage = Image::make($whatImg)->resize( $width, $height )->save();
         Storage::disk($disk)->put("$uploadOn/" .$slugby, $resizeImage);
-
-
     }
     // public function uploadImage($whatImg, $uploadOn,  $slugby, $width= 250, $height=250, $disk='public')
     // {
@@ -110,7 +108,7 @@ trait TailorsTrait
             if ($style_id != null) {
                 if (in_array($style_id,array_keys($this->designs_check), true) ) {
                     if (in_array($style_id,array_keys($this->design_fields), true )) {
-                        $this->design_fields[$style_id]=$this->design_fields[$style_id];
+                        $this->design_fields[$style_id] = $this->design_fields[$style_id];
                     }else {
                         $this->design_fields[$style_id]=' ';
                     }
@@ -119,8 +117,20 @@ trait TailorsTrait
                 
             }
             
+        } 
+        public function TraitFillEmptyStyleCheck($style_detail_id){
+            if ($style_detail_id !=null) {
+                if (in_array($style_detail_id ,array_keys($this->design_fields), true) ) {
+                    if (in_array($style_detail_id,array_values( $this->designs_check ), true )) {
+                    $this->designs_check[$style_detail_id]=$style_detail_id;
+                        
+                    }else {
+                        
+                    }
+                }  
+            }
+            
         }
-        //
         public function TraitDesignStepSubmit()
     {
         

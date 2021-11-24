@@ -1,6 +1,6 @@
 <div>
     <style>
-            .modal-custom {
+            .tailors-modal-form {
           --gap: 15px;
 
           position: fixed;
@@ -66,19 +66,54 @@
     
 @endif --}}
 @if ($formId==0)
-<button type="button" class="btn btn-success" wire:click="formController(1)">Create User</button>
-@endif
-@if ($formId==1)
-  <div class="modal-custom" id="modalWraper" style="display: block;padding-top:100px;">
-    <div class="row ">
-      <div class="modal__inner bg-info py-5">
-      
-          <div class="col-xl-12 w-100 text-right"><button wire:click="formController(0)" type="button" class="btn btn-primary"><i class="fa fa-clock"></i>* Close</button></div>
-          <div class="col-xl-10 mx-auto ">
-            <form autocomplete="off" wire:submit.prevent="createTest">
-                <div class="row">
-                    <div class="col-xl-6">
-                        
+    <button type="button" class="btn btn-success" wire:click="formController(1)">Create User</button>
+    @endif
+    @if ($formId==1)
+    <div class="tailors-modal-form" id="modalWraper" style="display: block;padding-top:100px;">
+        <div class="row d-block">
+        <div class="modal__inner bg-info py-5">
+        
+            <div class="col-xl-12 w-100 text-right"><button wire:click="formController(0)" type="button" class="btn btn-primary"><i class="fa fa-clock"></i>* Close</button></div>
+            <div class="col-xl-10 mx-auto ">
+                <form autocomplete="off" wire:submit.prevent="createTest">
+                    <div class="row ">
+                        <div class="col-xl-6">
+                            
+                                @if ($errors->any())
+                                @foreach ($errors->all() as $item)
+                                    <div class="text-danger">{{$item}}</div>
+                                @endforeach
+                            @endif
+                                <div class="form-group">
+                                <label for="exampleInputEmail1">Email address</label>
+                                <input type="email" wire:model="email" class="form-control @error('email') is-invalid @enderror"  id="exampleInputEmail1" aria-describedby="emailHelp" >
+                                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputPassword1">Password</label>
+                                <input type="password" wire:model="password" class="form-control" id="exampleInputPassword1" >
+                                </div>
+                                
+                        </div>
+                        <div class="col-xl-6">
+                            
+                            @if ($errors->any())
+                            @foreach ($errors->all() as $item)
+                                <div class="text-danger">{{$item}}</div>
+                            @endforeach
+                        @endif
+                            <div class="form-group">
+                            <label for="exampleInputEmail1">Email address</label>
+                            <input type="email" wire:model="email" class="form-control @error('email') is-invalid @enderror"  id="exampleInputEmail1" aria-describedby="emailHelp" >
+                            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                            </div>
+                            <div class="form-group">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" wire:model="password" class="form-control" id="exampleInputPassword1" >
+                            </div>
+                            
+                    </div>  <div class="col-xl-6">
+                            
                             @if ($errors->any())
                             @foreach ($errors->all() as $item)
                                 <div class="text-danger">{{$item}}</div>
@@ -95,52 +130,17 @@
                             </div>
                             
                     </div>
-                    <div class="col-xl-6">
-                        
-                        @if ($errors->any())
-                        @foreach ($errors->all() as $item)
-                            <div class="text-danger">{{$item}}</div>
-                        @endforeach
-                    @endif
-                        <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" wire:model="email" class="form-control @error('email') is-invalid @enderror"  id="exampleInputEmail1" aria-describedby="emailHelp" >
-                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        <div class="col-xl-12">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
                         </div>
-                        <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" wire:model="password" class="form-control" id="exampleInputPassword1" >
                         </div>
-                        
-                </div>  <div class="col-xl-6">
-                        
-                        @if ($errors->any())
-                        @foreach ($errors->all() as $item)
-                            <div class="text-danger">{{$item}}</div>
-                        @endforeach
-                    @endif
-                        <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" wire:model="email" class="form-control @error('email') is-invalid @enderror"  id="exampleInputEmail1" aria-describedby="emailHelp" >
-                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                        </div>
-                        <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" wire:model="password" class="form-control" id="exampleInputPassword1" >
-                        </div>
-                        
-                </div>
-                    <div class="col-xl-12">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
-                    </div>
-                </div>
-            </form>
-          </div>
-      </div>
+                </form>
+            </div>
+        </div>
+        </div>
     </div>
-  </div>
   @endif
   
 
