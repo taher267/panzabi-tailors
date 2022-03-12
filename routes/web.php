@@ -55,6 +55,7 @@ Route::middleware(['auth:sanctum', 'verified', 'tailorsauth'])->group(function (
         Route::get('/measure-manager/product/edit/{product_id}', App\Http\Livewire\Admin\TailorsEditAdminProduct::class)->name('admin.editproduct');
         Route::get('/measure-manager/style', App\Http\Livewire\Admin\TailorsStyleOfMeasurePart::class)->name('admin.stylemeasure');
         Route::get('/measure-manager/style/edit/{style_id}', App\Http\Livewire\Admin\TailorsEditStyleOfMeasurePart::class)->name('admin.editstylemeasure');
+        Route::get('/all-orders', App\Http\Livewire\CustomerAllOrder::class)->name('customer.all.orders');
 
 
     });
@@ -74,13 +75,15 @@ Route::middleware(['auth:sanctum', 'verified', 'manager.auth'])->group(function 
         Route::get('/order/edit/{order_id}', App\Http\Livewire\Customer\CustomerTailorsEditOrder::class)->name('customer.editorder');
         
         Route::get('/{customer_id}/orders', App\Http\Livewire\Customer\TailorsCustomerOrders::class)->name('customer.orders');
-        Route::get('{customer_id}/order/{order_number}', App\Http\Livewire\Customer\TailorsCustomerOrderItems::class)->name('customer.orderiteams');
+        Route::get('/{customer_id}/order/{order_number}', App\Http\Livewire\Customer\TailorsCustomerOrderItems::class)->name('customer.orderiteams');
+        // Route::get('/all-orders', App\Http\Livewire\Customer\CustomerAllOrder::class)->name('customer.all.orders');
+
         
         // Route::get('/edit-user/{user_id}', App\Http\Livewire\Admin\TailorsEditAdminUser::class)->name('admin.edituser');
         // Route::get('/order-fields', App\Http\Livewire\Admin\TailorsOrderItem::class)->name('admin.productfield');
         // Route::get('/order-measure-fields', App\Http\Livewire\Admin\TailorsOrderItemMeasurment::class)->name('admin.measurefield');
         // Route::get('/user-roles', App\Http\Livewire\Admin\TailorsAdminRole::class)->name('admin.roles');
-        // Route::get('/user-roles/edit/{role_id}', App\Http\Livewire\Admin\TailorsEditAdminRole::class)->name('admin.editrole');
+        // Route::get('/user-roles/edit/{role_id}', TailorsEditAdminRole::class)->name('admin.editrole');
 
     });
 });

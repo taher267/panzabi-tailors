@@ -3,11 +3,14 @@
 namespace App\Http\Livewire\Menu;
 
 use Livewire\Component;
+use App\Models\Customer;
 
 class TailorsAdminNavMenu extends Component
-{
+{   
+
     public function render()
     {
-        return view('livewire.menu.tailors-admin-nav-menu');
+        $customers = Customer::all();
+        return view('livewire.menu.tailors-admin-nav-menu',compact('customers'));
     }
 }

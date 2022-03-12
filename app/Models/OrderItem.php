@@ -19,4 +19,14 @@ class OrderItem extends Model
         return $this->hasMany(OrderItemStyle::class, 'order_number', 'id');
     }
 
+    /**
+     * Get the product that owns the OrderItem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class);//, 'foreign_key', 'other_key'
+    }
+
 }

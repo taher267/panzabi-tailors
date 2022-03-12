@@ -5,7 +5,7 @@
     span.relative.z-0.inline-flex.rounded-md.shadow-sm { display: none; }
     </style>
     <div class="row">
-        
+    @section('title', 'All customers')
     </div>
         <div class="container my-4">
             <div class="row">
@@ -14,7 +14,7 @@
                 <div class="col-xl-3"><a class="btn btn-outline-primary" href="">Google</a> <button type="button" wire:click.prevent="AddNewCustomer" class="btn btn-primary" data-toggle="modal" data-target="#addCustomer">Add Custoemr</button></div>
                 <div class="col-xl-3 md-form active-cyan-2">
                     <form class="was-validated">
-                        <input class="form-control" type="search" placeholder="গ্রাহক অনুসন্ধান..." wire:model.defer="searchBy" aria-label="Search" required>
+                        <input class="form-control" type="search" placeholder="গ্রাহক অনুসন্ধান..." wire:model="searchBy" aria-label="Search" required>
                     </form>
                 </div>
             </div>
@@ -53,7 +53,8 @@
                                                 <td>
                                                     <a href="{{route('customer.neworder', $customer->id)}}" title="{{$customer->Full_Name}} এর নতুন অর্ডার যুক্ত করুন" target="_blank" class="btn btn-google"><i class="fa fa-plus"></i></a>
                                                     <a href="{{route('customer.orders', $customer->id)}}" target="_blank" title="{{$customer->Full_Name}} এর সকল অর্ডার দেখুন" class="btn btn-primary"><i class="fa fa-eye"></i>অর্ডারসমূহ</a>
-                                                    <a href="{{route('customer.details', $customer->id)}}" title="গ্রাহক({{$customer->Full_Name}}) এর ব্যক্তিগত তথ্য" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                                                    {{-- <a href="{{route('customer.details', $customer->id)}}" title="গ্রাহক({{$customer->Full_Name}}) এর ব্যক্তিগত তথ্য" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a> --}}
+                                                    <a href="#" title="Customer Details" class="btn btn-info"><i class="fa fa-eye"></i></a>
 
                                                     <a href="{{--route('customer.editinfo', $customer->id)--}}" target="_blank" class="btn btn-primary"><i class="fa fa-edit"></i></a>
                                                     @if(session('utype')==='ADM')<a href="#" wire-:click.prevent="productDelete({{$customer->id}})" onclick="confirm('Are you sure to delete role') || event.stopImmediatePropagation()" class="btn btn-danger"><i class="fa fa-trash"></i></a>@endif
@@ -64,14 +65,15 @@
                                     @elseif ($customers)
                                     @foreach ($customers as $customerinfo)
                                     {{-- @if ($customerinfo->created_at >= Carbon\Carbon::today()->setTimezone('Asia/dhaka') && $customerinfo->created_at <= Carbon\Carbon::today()->addDays()->setTimezone('Asia/dhaka')) --}}
-                                    <tr  @if ($customerinfo->created_at >= Carbon\Carbon::today()->setTimezone('Asia/dhaka') && $customerinfo->created_at <= Carbon\Carbon::today()->addDays()->setTimezone('Asia/dhaka')) style="background: #2597cf; color:#fff"@endif>
-                                        <td>{{-- $customerinfo->id--}} <span>{{Carbon\Carbon::now('Asia/Dhaka')->format('d-M-Y',$customerinfo->created_at) }}</span></td> <td>{{ $customerinfo->Full_Name }}</td> <td>{{ $customerinfo->mobile }}</td>
+                                    <tr  @if ($customerinfo->created_at >= Carbon\Carbon::today()->setTimezone('Asia/dhaka') && $customerinfo->created_at <= Carbon\Carbon::today()->addDays()->setTimezone('Asia/dhaka')) style="background: rgba(0,128,0,.7); color:#fff"@endif>
+                                        <td>{{-- $customerinfo->id--}} <span>{{ Carbon\Carbon::parse($customerinfo->created_at)->format('Y-M-d H:m') }}</span></td> <td>{{ $customerinfo->Full_Name }}</td> <td>{{ $customerinfo->mobile }}</td>
                                         {{-- <td>@if($customerinfo->photo)<img class="mx-auto" style="width:40px;" src="{{ asset("storage/assets/customers/$customerinfo->photo") }}" alt="Photo"> @endif</td> --}}
 
                                         <td>
                                             <a href="{{route('customer.neworder', $customerinfo->id)}}" title="{{$customerinfo->Full_Name}} এর নতুন অর্ডার যুক্ত করুন" target="_blank" class="btn btn-google"><i class="fa fa-plus"></i></a>
                                             <a href="{{route('customer.orders', $customerinfo->id)}}" title="{{$customerinfo->Full_Name}} এর সকল অর্ডার দেখুন" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i>অর্ডারসমূহ</a>
-                                            <a href="{{route('customer.details', $customerinfo->id)}}" title="গ্রাহক({{$customerinfo->Full_Name}}) এর ব্যক্তিগত তথ্য" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                                            {{-- <a href="{{route('customer.details', $customerinfo->id)}}" title="গ্রাহক({{$customerinfo->Full_Name}}) এর ব্যক্তিগত তথ্য" target="_blank" class="btn btn-primary"><i class="fa fa-eye"></i></a> --}}
+                                            <a data-toggle="modal" data-target="#customerDetailModal" wire:click="customerDetailsModalOpen({{$customerinfo->id}})" title="New Customer" class="btn btn-info"><i class="fa fa-eye"></i></a>
                                             @if(session('utype')==='ADM'){{--route('customer.editinfo', $customer->id)--}}{{--<button type="button" class="btn btn-primary" data-toggle="modal" wire:click.prevent="edit({{$customerinfo}})" data-target="#staticBackdrop_{{$customerinfo->id}}"><i class="fa fa-edit"></i></button>--}}@endif
                                             @if(session('utype')==='ADM')<a href="#" wire-:click.prevent="productDelete({{$customerinfo->id}})" onclick="confirm('Are you sure to delete role') || event.stopImmediatePropagation()" class="btn btn-danger"><i class="fa fa-trash"></i></a>@endif
                                         </td>
@@ -160,7 +162,7 @@
         </div>
         </div>
 
-         <!-- Modal -->
+         <!-- Modal new Customer -->
             <div class="modal fade " id="addNewCustomerModal" tabindex="-1" aria-labelledby="addCustomerLabel" aria-hidden="true" wire:ignore.self>
                 <div class="modal-dialog modal-xl">
                    
@@ -192,4 +194,44 @@
                 </div>
             </div>
             {{-- modal end --}}
+
+            <!--customer detail modal Start-->
+            {{-- @if ($isDetailModalOpen) --}}
+                <div class="modal fade" id="customerDetailModal" tabindex="-1" aria-labelledby="customerDetailModalLabel" aria-hidden="true" wire:ignore.self>
+                    <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="customerDetailModalLabel">{{$selectedCustomer?$selectedCustomer->Full_Name:""}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" class="text-danger">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            @if ($selectedCustomer)
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <img src="{{asset("storage/assets/customers/".($selectedCustomer->photo?$selectedCustomer->photo:"default.jpg"))}}" alt="Customar Photo">
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-3">Name: </div><div class="col-md-9"><p>{{$selectedCustomer->Full_Name}}</p></div>
+                                                <div class="col-md-3">Mobile No: </div><div class="col-md-9"><p>{{$selectedCustomer->mobile}}</p></div>
+                                                <div class="col-md-3">Email: </div><div class="col-md-9"><p>{{$selectedCustomer->email}}</p></div>
+                                                <div class="col-md-3">Address: </div><div class="col-md-9"><p>{{$selectedCustomer->address}}</p></div>
+                                            </div>                                            
+                                        </div>
+                                    </div> 
+                                </div>
+                            @endif
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            {{-- @endif --}}
+                
+            <!--customer detail modal end-->
 </div>

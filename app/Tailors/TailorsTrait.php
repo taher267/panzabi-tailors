@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\OrderItem;
+use App\Models\SizeChart;
 use Illuminate\Support\Str;
 use App\Models\OrderItemStyle;
 use App\Models\StyleMeasurePart;
@@ -16,8 +17,6 @@ use Illuminate\Support\Facades\Auth;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
-// use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Illuminate\Database\Eloquent\Model;
 
 /**
  * 
@@ -190,16 +189,17 @@ trait TailorsTrait
 
     }
 
-    public function OrderIncluding($registered_customer_id=null,$added_order_id=null, $added_order_number=null)
+    public function OrderIncluding($registered_customer_id = null,$added_order_id=null, $added_order_number=null)
     {
+        // dd($registered_customer_id.' < customerid= > Order id '.$added_order_id.' order number > '. $added_order_number);
         //customer personal infor
-        if ( $registered_customer_id ==null) {
+        if ( $registered_customer_id == null) {
             $customer              = new Customer();
             $customer->user_id     = Auth::user()->id;
             $customer->Full_Name   = $this->Full_Name;
             $customer->mobile      = $this->mobile;
             $customer->address     = $this->address ?? null;
-            if ($this->email != ' ' && $this->email != null) {
+            if ($this->email != '' && $this->email != null) {
                 $customer->email       = $this->email;
             }else {
                 $customer->email       = null;
@@ -336,6 +336,23 @@ trait TailorsTrait
                     $OrderItemStyles->item_style_type= StyleMeasurePart::find(array_values($this->designs_check)[$i])->dependency;
                     $OrderItemStyles->save();
                     }      
+        }
+    }
+
+
+    public function fixedsizeshow()
+    {
+        if ( $this->fixed_size >0 && SizeChart::find($this->fixed_size)->count()>0 ) {
+            $sizeData = SizeChart::find($this->fixed_size);$this->cloth_long = $sizeData->cloth_long;$this->body_loose = $sizeData->body_loose;$this->belly_loose = $sizeData->belly_loose;$this->cloth_enclosure = $sizeData->cloth_enclosure;$this->hand_long = $sizeData->hand_long;$this->sleeve_enclosure = $sizeData->sleeve_enclosure;$this->sleeve_pasting = $sizeData->sleeve_pasting;$this->cloth_collar = $sizeData->cloth_collar;$this->cloth_shoulder = $sizeData->cloth_shoulder;$this->cloth_mora = $sizeData->cloth_mora;$this->plate_fara = $sizeData->plate_fara;$this->noke_shoho = $sizeData->noke_shoho;$this->cloth_additional = $sizeData->cloth_additional;
+        }
+    }
+
+    public function wagesCalculation()
+    {
+        if ($this->wages != null && is_numeric($this->wages) && $this->quantity != null && is_numeric($this->quantity)) {
+            if($this->wages>0 || $this->quantity): $this->total = $this->quantity * $this->wages - ($this->discount ? $this->discount: 0)+ (($this->delivery_charge && is_numeric($this->delivery_charge) && $this->order_delivery) ? $this->delivery_charge: 0); endif;
+        }else {
+            $this->total='';
         }
     }
 

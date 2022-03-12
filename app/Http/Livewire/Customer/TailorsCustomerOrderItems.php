@@ -9,26 +9,38 @@ use App\Models\OrderItem;
 use Livewire\WithPagination;
 use App\Tailors\TailorsTrait;
 use Livewire\WithFileUploads;
+use App\Tailors\TailorsErrorMsgTrait;
 
 class TailorsCustomerOrderItems extends Component
 {   
     use WithFileUploads;
     use WithPagination;
     use TailorsTrait;
+    use TailorsErrorMsgTrait;
     public $formId, $currentPage = 1, $success;
     //Order Item
-    public $products, $cloth_long,$cloth_body,$body_loose,$cloth_belly,$belly_loose,$cloth_enclosure,$hand_long ,$sleeve_enclosure,$sleeve_pasting ,
+    public $products, $cloth_long,$cloth_body, $email,$body_loose,$cloth_belly,$belly_loose,$cloth_enclosure,$hand_long ,$sleeve_enclosure,$sleeve_pasting ,
     $cloth_throat,$cloth_collar ,$cloth_shoulder ,$cloth_mora,$noke_shoho, $cloth_additional,$collar_measure_type, $fixed_size,$order_sample_images;
+    /**Disigning Part */
+    public $design_fields=[], $designs_check=[];
+    public $customer_id,$Full_Name, $order_id,  $order_number, $wages, $discount,$quantity, $advance,  $delivery_charge, $total, $status, $delivered_date; 
+    /**Order Delivery */
+    public $delivery_system,$courier_details,$order_delivery, $country, $city, $line1, $line2, $province,$zipcode;
+    /**Wages */
+    public $wagesOutpurResult, $added_order_id;
 
-    public $customer_id,$Full_Name, $order_id, $order_number, $wages, $discount, $delivery_system, $courier_details, $delivery_charge, $total, $status, $delivered_date;
     public function mount($customer_id, $order_number)
     {
-        $customer = Customer::find($customer_id);
+        $this->customer_id = $customer_id;
+        $this->order_number = $order_number;
+        $customer = Customer::findOrFail($customer_id);
         $this->customer_id = $customer->id;
+        // $this->email = $customer->email;
         $this->Full_Name = $customer->Full_Name;
 
-        $order = Order::find($order_number);
+        $order = Order::findOrFail($order_number);
         $this->order_number     = $order->order_number;
+        $this->added_order_id     = $order->id;
         // $this->wages            = $order->wages;
         // $this->discount         = $order->discount;
         // $this->delivery_system  = $order->delivery_system;
@@ -41,107 +53,109 @@ class TailorsCustomerOrderItems extends Component
         
     }
     /**Modal */
-    public function formController($params)
+    public function formController($key, $order_number = null)
     {
-        $this->formId = $params;
+        $this->formId = $key;
+        if($order_number != null){
+            
+        }
     }
     /**step form ////////////////////////////*/
-    public $pages =5;
-
-    public $pages2 = [
-        1 => [
-            'heading' => 'Personal Information',
-            'subheading' => 'Enter your name and email to get started.',
-        ],
-        2 => [
-            'heading' => 'Password',
-            'subheading' => 'Create a password for the new account.',
-        ],
-        3 => [
-            'heading' => 'Password3',
-            'subheading' => 'Create a password for the new account.3',
-        ],
-        4 => [
-            'heading' => 'Password4',
-            'subheading' => 'Create a password for the new account.4',
-        ],
-        5 => [
-            'heading' => 'Password5',
-            'subheading' => 'Create a password for the new account.5',
-        ],
-    ];
+    public $pages =4;
     
     private $validationRules = [
         1 => [
-            'products'          => 'required|numeric:gt:0',
-            'cloth_long'        => 'required',
-            'cloth_body'        => 'nullable',
-            'body_loose'        => 'nullable',
-            'cloth_belly'       => 'nullable',
-            'belly_loose'       => 'nullable',
-            'cloth_enclosure'   => 'required',
-            'hand_long'         => 'required',
-            'sleeve_enclosure'  => 'nullable',
-            'sleeve_pasting'    => 'nullable|string',
-            'cloth_throat'      => 'nullable',
-            'cloth_collar'      => 'nullable',
-            'collar_measure_type'=> 'numeric|nullable',
-            'cloth_shoulder'    => 'required',
-            'cloth_mora'        => 'nullable',
-            'noke_shoho'        => 'nullable',
-            // 'designs_check.*'   => 'nullable',
-            // 'design_fields.*'   => 'nullable',
-            'cloth_additional'  => 'nullable|string',
-            // 'wages'             => 'integer|numeric|gt:0',
-            // 'quantity'          => 'gt:0|required|numeric',
-            // 'discount'          => 'nullable|numeric',
-            // 'advance'          => 'nullable|numeric',
-            // 'total'             => 'required|numeric',
+            'products'              => 'required|numeric:gt:0',
+            'cloth_long'            => 'required',
+            'cloth_body'            => 'nullable',
+            'body_loose'            => 'nullable',
+            'cloth_belly'           => 'nullable',
+            'belly_loose'           => 'nullable',
+            'cloth_enclosure'       => 'required',
+            'hand_long'             => 'required',
+            'sleeve_enclosure'      => 'nullable',
+            'sleeve_pasting'        => 'nullable|string',
+            'cloth_throat'          => 'required_without:cloth_collar',
+            'cloth_collar'          => 'required_without:cloth_throat',
+            'collar_measure_type'   => 'numeric|nullable',
+            'order_sample_images.*' =>'image|mimes:jpg,jpeg,png|nullable',
+            'cloth_shoulder'        => 'required',
+            'cloth_mora'            => 'nullable',
+            'noke_shoho'            => 'nullable',
+            'cloth_additional'      => 'nullable|string'
         ],
         2 => [
-            'password' => ['required', 'string', 'min:8'],
-            'confirmPassword' => ['required', 'string', 'same:password', 'min:8'],
+            'designs_check.*'       => 'required',
+            'design_fields.*'       => 'nullable',
         ],
         3 => [
-            'password' => ['required', 'string', 'min:8'],
-            'confirmPassword' => ['required', 'string', 'same:password', 'min:8'],
-        ],
-        4 => [
-            'password' => ['required', 'string', 'min:8'],
-            'confirmPassword' => ['required', 'string', 'same:password', 'min:8'],
-        ],
-        5 => [
-            'password' => ['required', 'string', 'min:8'],
-            'confirmPassword' => ['required', 'string', 'same:password', 'min:8'],
-        ],
+                'wages'                 => 'required|numeric|gt:0',
+                'quantity'              => 'gt:0|required|numeric',
+                'discount'              => 'nullable|numeric',
+                'advance'               => 'nullable|numeric',
+                'total'                 => 'required|numeric',
+                'delivery_system'        => 'required_with:order_delivery',
+                'delivery_charge'        => 'required_with:order_delivery',
+                'country'        => 'required_with:order_delivery',
+                'city'        => 'required_with:order_delivery',
+                'province'        => 'required_with:order_delivery',
+                'line1'        => 'required_with:order_delivery',
+                'zipcode'        => 'required_with:order_delivery',        
+        ]
     ];
     public function updated($fields)
 {
-    $this->validateOnly($fields, $this->validationRules[$this->currentPage],[
-            'email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!",
-            'email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
-            'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",
-
-            'delivery_system.required'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???','delivery_system.min'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???',
-            'courier_details.required'=> 'কুরিয়ার সম্পর্কে বিস্তারিত লিখুন','delivery_charge.required'=> 'ডেলিভারি চার্জ লিখুন',
-            'delivery_charge.numeric'=> 'সন্দেহজনক! ডেলিভারি চার্জ নম্বর হবে','country.required'=> 'দেশের নাম সিলেক্ট করুন',
-            'city.required'=> 'শহরের নাম লিখুন','province.required'=> 'প্রদেশের নাম লিখুন','zipcode.required'=> 'জিপ কোড লিখুন','line1.required'=> 'বাড়ি নং,গ্রাম/মহল্লা সড়ক নং লিখুন',
-            'products.required'=>'পণ্য নির্বাচন করুণ!','cloth_enclosure.required' => 'ঘেরের পরিমাপ দিন','hand_long.required' =>'হাতার লম্বার পরিমাপ দিন!','cloth_shoulder.required' => 'পুটের পরিমাপ দিন',
-            'order_sample_images.image'=>'ছবি যুক্ত করুন','cloth_long.required' => 'লম্বার পরিমাপ দিন','order_sample_images.mimes'=>'jpg অথবা jpeg অথবা png এর ছবি যুক্ত করুন',
-            'wages.required'=> "মজুরি লিখুন!",'wages.numeric'=> "মজুরি শুধুমাত্র নম্বর !",'discount.numeric'=> "ডিসকাউন্ট নম্বর হবে!",'advance.numeric'=> "অ্যাডভান্স নম্বর হবে!",'total.required'=> "মোট মজুরি দিন!",'total.numeric'=> "মোট মজুরি নম্বর হবে!",
-    ]);
+    $this->validateOnly($fields, $this->validationRules[$this->currentPage], $this->newCustomerErrMsgs());
+}
+public function fillEmptyStyleField($style_id){
+        
+    $this->TraitfillEmptyStyleField($style_id);
+    
 }
 public function placeIteam()
 {
-    dd('Placed');
+    for ($i=1; $i < $this->pages ; $i++) {
+        $this->validate($this->validationRules[$i], $this->newCustomerErrMsgs());
+    }
+    $this->OrderIncluding($this->customer_id, $this->added_order_id, $this->order_number);
+    // $this->reset();
+        $this->resetValidation();
+    $this->currentPage=1;
+    $this->formController(0);
+
+        session()->flash( 'msg', ['icon'=>"<i class='fa fa-thumbs-up text-success'></i>",'message'=>"কাস্টমারের তথ্য যথাযথভাবে যুক্ত হয়েছে!",'alert'=>'success' ]);
+        
 }
 
 public function goToNextPage()
 {
-    // $this->validate($this->validationRules[$this->currentPage]);
+    $this->validate($this->validationRules[$this->currentPage],$this->newCustomerErrMsgs() );
     if ( $this->currentPage < $this->pages ) {
-        $this->currentPage++;
-    }else{$this->currentPage=$this->currentPage;}
+        if ($this->currentPage!=2) {
+            $this->currentPage++;
+        }else{
+            if(count(array_filter($this->designs_check))>0){
+
+                if(count(array_filter($this->designs_check))>count(array_filter($this->design_fields))){
+                    $filterOne = array_filter($this->designs_check);
+                    $filterTwo = array_filter($this->design_fields);
+                    foreach(array_keys($filterOne) as $item){
+                        if(empty($this->design_fields[$item])){
+                            $this->design_fields[$item]='  ';
+                        }
+                    }
+                }
+                $this->currentPage++;
+            }elseif(count(array_filter($this->designs_check))==0){
+                $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+            }else{$this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "সঠিকভাবে ফিল্ডগুলো পূরণ করুন!",'effect'=>'warning']);}
+        }
+
+        // if($this->currentPage == 4){
+        //     dd(count(array_filter($this->designs_check)) . ' = '. count(array_filter($this->design_fields)));
+        // }
+        
+    }
     
 }
 
@@ -151,6 +165,16 @@ public function goToPreviousPage()
         $this->currentPage--;
     }
     
+}
+
+public function designStep()
+{
+    if ( count($this->designs_check) > 0 ) {
+        $filterOne = array_filter($this->designs_check);
+        $filterTwo = array_filter($this->design_fields);
+    }else{
+        $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+    }
 }
 
 public function resetSuccess()
@@ -176,11 +200,11 @@ public function resetSuccess()
 }
 ///////////////////Step form End
     public function render()
-    {
-        $orderItems = OrderItem::where('order_number', $this->order_number)->where('customer_id', $this->customer_id)->get();
+    {   
+        if(empty($this->order_delivery)){$this->order_delivery='';}
+        $this->wagesCalculation();
+        if($this->fixed_size >0){$this->fixedsizeshow();}
+        $orderItems = OrderItem::where('order_number', $this->order_number)->where('customer_id', $this->customer_id)->paginate(4);
         return view('livewire.customer.tailors-customer-order-items', compact('orderItems'))->layout('layouts.manage_layout');
     }
 }
-
-
-//`order_number`, `wages`, `discount`, `delivery_system`, `courier_details`, `delivery_charge`, `total`, `status`, `delivered_date`

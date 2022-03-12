@@ -24,7 +24,7 @@ class AllCustomers extends Component
     use WithPagination;
     use TailorsTrait;
      //Customer Edit info
-     public $EditCustomerInfo, $showEditModal=false, $state=[], $force_id, $photo, $order_number;
+     public $EditCustomerInfo, $showEditModal=false, $state=[], $force_id, $photo, $order_number, $isDetailModalOpen=true;
     //cloth
     public $user_id, $products=[],$designs=[],$design_values=[], $Full_Name, $customer_image, $address, $email, $country,
      $province, $city, $line1, $line2, $zipcode, $delivery_date, $order_date, $selected_product;
@@ -46,6 +46,7 @@ class AllCustomers extends Component
     public $personal_info_open, $confirm_mail, $delivery_policy, $order_delivery, $test , $selectedtypes, $errorOut;
     //Search
     public $searchBy,$searchByName, $searchByEmail;
+    public $selectedCustomer;
     public function mount()
     {
         $this->country ='bd';
@@ -70,7 +71,13 @@ class AllCustomers extends Component
     public function AddNewCustomer(){
         $this->dispatchBrowserEvent('show-form');
     }
+    /**Customer detail Modal Open */
     
+    public function customerDetailsModalOpen(Customer $customer)
+    {
+        // $this->isDetailModalOpen=!$this->isDetailModalOpen;
+        $this->selectedCustomer=$customer;
+    }
 
     public function render()
     {

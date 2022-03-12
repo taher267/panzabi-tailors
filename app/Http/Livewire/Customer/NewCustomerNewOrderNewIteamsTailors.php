@@ -72,9 +72,10 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     ];
     public function mount()
     {
-        $this->Full_Name="Jaza";
-        $this->mobile='65652111924';
-        $this->delivery_date = '2021-11-25';
+        $this->Full_Name="মজুরি";
+        $this->mobile= "01".rand();
+        $dt =date( "Y-m-d");
+        $this->delivery_date = date( "Y-m-d", strtotime( date( "Y-m-d")." +10 days" ) );
         $this->fixed_size = 1;
         $this->products = 1;
         // $this->delivery_date = Carbon::now('Asia/Dhaka')->format('Y-m-d');
@@ -107,9 +108,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
 
 
         $this->validateOnly($fields,[
-            'delivery_date'     => 'required|date|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-            'Full_Name'         => 'required|max:255|regex:/[A-Za-z\s]/',
-            'mobile'            => ['required','numeric','unique:customers','digits:11'],
+            'delivery_date'     => 'required|date|date_format:Y-m-d|after:yesterday',
+            // 'delivery_date'     => 'required|date|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
+            'Full_Name'         => 'required|max:150|string',
+            'mobile'            => 'required|unique:customers|numeric|digits:11',
+            // 'mobile'            => 'required|unique:customers|regex:/^(\+88)?(88)?01([0-9]){9}$/',
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
             'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
@@ -143,11 +146,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         ], 
         [
             'order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
-            "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
+            "delivery_date.after"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
             'quantity.required' => ($this->products ? Product::find($this->products)->name:'')." পশাকের পরিমাপ দিন!",'quantity.numeric' => ($this->products? Product::find($this->products)->name:'')." পরিমাণ নম্বর হবে!",
             "delivery_date.required"=>'ডেলিভারির তারিখ দিন!',"delivery_date.date"=>'সঠিকভাবে তারিখ দিন!','Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে','Full_Name.required' =>'নাম লিখুন!',
             'order_number.numeric' =>'অর্ডার নম্বর শুধুমাত্র সংখ্যা!','order_number.required' =>'অর্ডার নম্বর দিন!','email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!",
-            'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!','email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
+            'mobile.regex' =>'সঠিক মোবাইল নম্বর দিন!','mobile.digits' =>'মোবাইল নম্বর ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!','email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
             'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",
 
             'delivery_system.required'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???','delivery_system.min'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???',
@@ -191,7 +194,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                 'zipcode'           =>  'required',
                 'line1'             =>  'required',
             ],
-            $this->newCustomerErrMsgs()['delivery'],
+            $this->errMessages['delivery'],
         );
         }
     }
@@ -202,17 +205,18 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         $maxOrderNo=$this->maxOrderNoFixed($this->order_number);
         $this->validate([
-            'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-            'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
-            'mobile'            => 'required|numeric|unique:customers|digits:11',
+            'delivery_date'     => 'required|date_format:Y-m-d|after:yesterday',
+            'Full_Name'         => 'required|max:150|string',
+            'mobile'            => 'required|unique:customers|numeric|digits:11',
+            // 'mobile'            => 'required|unique:customers|regex:/^(\+88)?(88)?01([0-9]){9}$/',
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
             'email'             => 'email|unique:customers|nullable',
             'order_number'      => 'required|numeric|unique:orders|min:1|max:'.$this->maxOrderNoFixed($this->order_number),
-        ], $this->newCustomerErrMsgs()['customer'],
-        [
+        ],[
             'order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
-            "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",]
+            "delivery_date.after"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
+            'mobile.regex' =>'সঠিক মোবাইল নম্বর দিন!','mobile.digits' =>'মোবাইল নম্বর ১১ সংখ্যার হবে!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!',]
     );
         $this->currentStep = 2;
     }
@@ -231,20 +235,16 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     public function measurementSubmit()
     {
         $this->validate([
-            'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
-            'products'          => 'required|numeric',
-            //Measure
-            
-            'cloth_long'        => 'required',
-            'cloth_enclosure'   => 'required',
-            'hand_long'         => 'required',
-            'collar_measure_type'=> 'numeric|nullable',
-            'cloth_shoulder'    => 'required',
-        ],$this->newCustomerErrMsgs()['measurement'],
+            'order_sample_images.*' =>'image|mimes:jpg,jpeg,png|nullable',
+            'products'              => 'required|numeric',            
+            'cloth_long'            => 'required',
+            'cloth_enclosure'       => 'required',
+            'hand_long'             => 'required',
+            'collar_measure_type'   => 'numeric|nullable',
+            'cloth_shoulder'        => 'required'],
         );
         if ($this->cloth_long !=" " && $this->cloth_enclosure !=" " && $this->hand_long !=" " && $this->cloth_shoulder !=" " && ($this->cloth_collar == ''  && $this->cloth_throat == '')  && $this->currentStep==2 ) {
             $this->validate(['cloth_throat'          => 'required|string','cloth_collar'          => 'required|string', ],
-            $this->newCustomerErrMsgs()['measurement'],
         );
             
         }
@@ -252,33 +252,46 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
         $this->currentStep = 3;
     }
 
+    public function checkAndValueFieldMatching()
+    {
+        $checkFilter = array_filter($this->designs_check);
+        if ( count($checkFilter) > 0 ) {
+            $filter1 = array_filter($this->designs_check);
+            $filter2 = array_filter($this->design_fields);
+            $newArr = [];
+            $firstKeyofArr = array_keys($filter1);
+            for ($i=0; $i < count($filter1); $i++) {
+                if (in_array($firstKeyofArr[$i], array_keys($filter2))) {
+                $newArr[$firstKeyofArr[$i]]=$filter2[$firstKeyofArr[$i]];
+                }else {
+                    $newArr[$firstKeyofArr[$i]]=""; 
+                }
+            }
+           return $newArr;
+
+        }else {
+            // session()->flash( 'msg', "<i class='fas fa-exclamation-triangle text-danger'></i> কিছু ডিজাইন যুক্ত করুণ!,danger" );
+            $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "লাল রঙের বক্স গুলো <i class='fa fa-check text-success'></i> দিন! </span>",'effect'=>'warning',]);
+        }
+    }
    
     public function designStepSubmit()
     {
-        // dd(count($this->designs_check));
-        // $checkCount = count($this->designs_check);
-        if ( count($this->designs_check) > 0 ) {
-            $filterOne = array_filter($this->designs_check);
-            $filterTwo = array_filter($this->design_fields);
-            // dd($filterTwo);
-            foreach(array_filter($filterOne) as $item){
-                // dd(count($filterOne).' = '.count($filterTwo));
-                if (in_array($item,array_keys($filterTwo), false ) ) {
-                    array_values($this->design_fields)[$item]= ' ';
-                    // array_filter(array_values($this->design_fields))[$item]= ' ';
-                }
-            }
-            if( count(array_filter($this->designs_check)) > 0 && count($this->design_fields) > 0 && count(array_filter($this->designs_check)) == count($this->design_fields) ){
-                    $this->currentStep = 4;
-                
-            }else {
-                $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "লাল রঙের বক্স গুলো <i class='fa fa-check text-success'></i> দিন! </span>",'effect'=>'warning',]);
-            }
-            
+        if( count(array_filter($this->designs_check)) > 0 && count($this->design_fields) > 0 && count(array_filter($this->designs_check)) == count($this->design_fields) ){
+        $this->currentStep = 4;
+    
         }else {
-            // session()->flash( 'msg', "<i class='fas fa-exclamation-triangle text-danger'></i> কিছু ডিজাইন যুক্ত করুণ!,danger" );
-            $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+            if (count(array_filter($this->designs_check))=== 0 && count(array_filter($this->design_fields)) === 0) {
+                $this->dispatchBrowserEvent('alert', ['custom'=>"",'message' => "কিছু ডিজাইন যুক্ত করুণ!",'effect'=>'warning',]);
+            }
+            else {
+                $this->checkAndValueFieldMatching();
+            }
         }
+
+       
+        
+        
         
     }
     public function itemDesignFormCheck()
@@ -395,9 +408,11 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         $maxOrderNo=$this->maxOrderNoFixed($this->order_number);        
         $this->validate([
-            'delivery_date'     => 'required|date_format:Y-m-d|after_or_equal:'.$this->todayDate(),
-            'Full_Name'         => 'required|max:255|regex:/[a-zA-Z\s]/',
-            'mobile'            => 'required|numeric|unique:customers|digits:11',
+            'delivery_date'     => 'required|date_format:Y-m-d|after:yesterday',
+            
+            'Full_Name'         => 'required|max:150|string',
+            'mobile'            => 'required|unique:customers|numeric|digits:11',
+            // 'mobile'            => 'required|unique:customers|regex:/^(\+88)?(88)?01([0-9]){9}$/',
             'photo'             => 'image|mimes:jpg,jpeg,png|nullable',
             'order_sample_images.*'=>'image|mimes:jpg,jpeg,png|nullable',
             'address'           => 'string|nullable',
@@ -428,14 +443,14 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             'discount'          => 'nullable|numeric',
             'advance'          => 'nullable|numeric',
             'total'             => 'required|numeric',
-        ],$this->newCustomerErrMsgs()['customer'],
+        ],
         [
             'order_number.unique' =>"$this->order_number নং অর্ডার পূর্ব নিবন্ধিত!",'order_number.max' =>$maxOrderNo." নং অর্ডার পূর্ব নিবন্ধিত!",
-            "delivery_date.after_or_equal"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
+            "delivery_date.after"=> "অবশ্যই ডেলিভারির তারিখ আজকের ($this->todayDate) তারিখ বা তার পরের তারিখ হবে।",
             'quantity.required' => ($this->products ? Product::find($this->products)->name:'')." পশাকের পরিমাপ দিন!",'quantity.numeric' => ($this->products? Product::find($this->products)->name:'')." পরিমাণ নম্বর হবে!",
             "delivery_date.required"=>'ডেলিভারির তারিখ দিন!',"delivery_date.date"=>'সঠিকভাবে তারিখ দিন!','Full_Name.regex' =>'নাম শুধুমাত্র অক্ষর। সংখ্যা গ্রহণযোগ্য নহে','Full_Name.required' =>'নাম লিখুন!',
             'order_number.numeric' =>'অর্ডার নম্বর শুধুমাত্র সংখ্যা!','order_number.required' =>'অর্ডার নম্বর দিন!','email.email' =>"<i class='fa fa-envelope'></i> সঠিক ইমেইল অ্যাড্রেস দিন!",
-            'mobile.digits' =>'মোবাইল নম্বর অবশ্যই ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!','email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
+            'mobile.regex' =>'সঠিক মোবাইল নম্বর দিন!','mobile.digits' =>'মোবাইল নম্বর ১১ সংখ্যার হবে!','mobile.required' =>'মোবাইল নম্বর দিন!','mobile.unique' =>'মোবাইল নম্বর পূর্ব নিবন্ধিত!','email.required' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস দিন!",
             'email.unique' =>"<i class='fa fa-envelope'></i> ইমেইল অ্যাড্রেস পূর্ব নিবন্ধিত!",
 
             'delivery_system.required'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???','delivery_system.min'=> 'সন্দেহজনক, আপনি কি করতে চাচ্ছেন???',
@@ -469,7 +484,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
                 'province'          =>  'required',
                 'zipcode'           =>  'required',
                 'line1'             =>  'required',
-            ],$this->newCustomerErrMsgs()['delivery'],);
+            ]);
         }
        
         $this->OrderIncluding();
@@ -485,12 +500,6 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
     {
         $this->showloader=$param;
     }
-    public function fixedsizeshow()
-    {
-        if ( $this->fixed_size >0 && SizeChart::find($this->fixed_size)->count()>0 ) {
-            $sizeData = SizeChart::find($this->fixed_size);$this->cloth_long = $sizeData->cloth_long;$this->body_loose = $sizeData->body_loose;$this->belly_loose = $sizeData->belly_loose;$this->cloth_enclosure = $sizeData->cloth_enclosure;$this->hand_long = $sizeData->hand_long;$this->sleeve_enclosure = $sizeData->sleeve_enclosure;$this->sleeve_pasting = $sizeData->sleeve_pasting;$this->cloth_collar = $sizeData->cloth_collar;$this->cloth_shoulder = $sizeData->cloth_shoulder;$this->cloth_mora = $sizeData->cloth_mora;$this->plate_fara = $sizeData->plate_fara;$this->noke_shoho = $sizeData->noke_shoho;$this->cloth_additional = $sizeData->cloth_additional;
-        }
-    }
     public function render()
     {
         if ($this->wages != null && is_numeric($this->wages) && $this->quantity != null && is_numeric($this->quantity)) {
@@ -499,7 +508,7 @@ class NewCustomerNewOrderNewIteamsTailors extends Component
             $this->total='';
         }
         
-        $this->fixedsizeshow();
+        if($this->fixed_size>0){$this->fixedsizeshow();}
         $this->desingCheckedUpdate();
         $this->minMaxOrderId();
         $this->OrderItemMeasureformCheck();

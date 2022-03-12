@@ -8,13 +8,16 @@ use App\Models\Customer;
 
 class TailorsCustomerOrders extends Component
 {
-    public $customer_id,$Full_Name;
+    public $customer_id,$Full_Name,$photo, $mobile,$address;
    
     public function mount($customer_id)
     {
-        $customer = Customer::find($customer_id);
-        $this->customer_id = $customer->id;
-        $this->Full_Name = $customer->Full_Name;
+        $customer           = Customer::find($customer_id);
+        $this->customer_id  = $customer->id;
+        $this->Full_Name    = $customer->Full_Name;
+        $this->photo        = $customer->photo;
+        $this->mobile       = $customer->mobile;
+        $this->address      = $customer->address;
     }
     public function render()
     {

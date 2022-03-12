@@ -60,7 +60,10 @@ background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem) !important;
 .toast-center-center {top: 50%; left: 50%;transform: translate(-50%, -50%);}
 .tailors-modal-form {--gap: 15px;position: fixed;top: 0;left: 0;width: 100vw;height: 100%;display: flex;align-items: center;justify-content: center;box-sizing: border-box;padding: var(--gap);background: rgba(0, 0, 0, 0.6);font-family: sans-serif;overflow: scroll;
 }.modal__inner{border-radius: 2px;}
-
+.light-purple{background:#F8F9FA !important;}
+/*Pagination Menu */
+.pagination-wrapper div#dataTable_wrapper .row:first-child, div#dataTable_wrapper .row:last-child {
+    display: none;} nav.flex.items-center.justify-between svg {width: 15px;} 
 
 
 @media (max-width: 575px){.col-mb-2{margin-bottom:.5rem!important}}

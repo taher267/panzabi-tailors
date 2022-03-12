@@ -24,18 +24,34 @@
     <div class="sidebar-heading">
         Interface
     </div>
-
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerOrder"
             aria-expanded="true" aria-controls="customerOrder">
             <i class="fas fa-fw fa-user"></i>
-            <span>Customer</span>
+            <span>অর্ডার @auth @if (session('utype')==='ADM' && Auth::user()->role_id ===1) <span class="text-light bg-danger p-1 rounded d-inline-block">{{DB::table('orders')->count()}}</span> @endif @endauth</span>
         </a>
         <div id="customerOrder" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <a class="collapse-item" title="New Customer, Order & items" href="{{route('new.customer')}}">New Customer, Order & Items</a>
-                <a class="collapse-item" title="All Order" href="{{route('customer.customers')}}">ALL ORDERS</a>
+                <a class="collapse-item" title="নতুন গ্রাহক, অর্ডার এবং আইটেম" href="{{route('customer.all.orders')}}">সকল অর্ডার</a>
+                {{-- <a class="collapse-item" title="সকল সকল" href="{{route('customer.customers')}}">সকল সকল</a> --}}
+                
+                {{-- <a class="collapse-item" href="cards.html">All Customers</a> --}}
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#customerCustomer"
+            aria-expanded="true" aria-controls="customerCustomer">
+            <i class="fas fa-fw fa-user"></i>
+            <span>গ্রাহক @auth @if (session('utype')==='ADM' && Auth::user()->role_id ===1) <span class="text-light bg-danger p-1 rounded d-inline-block">{{$customers->count()}}</span> @endif @endauth</span>
+        </a>
+        <div id="customerCustomer" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" title="নতুন গ্রাহক, অর্ডার এবং আইটেম" href="{{route('new.customer')}}">নতুন গ্রাহক, অর্ডার এবং আইটেম</a>
+                <a class="collapse-item" title="সকল সকল" href="{{route('customer.customers')}}">সকল গ্রাহক</a>
                 
                 {{-- <a class="collapse-item" href="cards.html">All Customers</a> --}}
             </div>

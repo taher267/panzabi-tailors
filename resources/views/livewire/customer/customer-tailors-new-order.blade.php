@@ -10,7 +10,7 @@
     <div style="transition: 1s all ease" class="col-xl-12 " id="right_sidebar">
         <div class="row btn-primary-invarce alert">
             <div class="col-xl-4 col-sm-6 col-12 text-center">
-                <a class="btn btn-outline-success" href="{{route('customer.new.customer.order.items')}}"><i class="fas fa-plus"></i> নতুন অর্ডার</a>
+                <a class="btn btn-outline-success" href="{{route('new.customer')}}"><i class="fas fa-plus"></i> নতুন অর্ডার</a>
             </div>
             <div class="col-xl-4 col-sm-6 col-12 text-center">
                 <a class="btn btn-outline-primary text-light" target="_blank" href="{{route('customer.customers')}}"><i class="fab fa-layer-group"></i> সকল অর্ডার</a>
@@ -557,7 +557,7 @@
                             <div class="col-lg-12">
                                 <div class="row">
                                     <div class="col-lg-4 col-sm-12"><button class="display-inline-block btn btn-success nextBtn btn-lg col-12 col-mb-2 " type="button" wire:click="back(4)"><i class="fa fa-arrow-left"></i> পেছনের ধাপ</button></div>
-                                    <div class="col-lg-4 col-sm-12 mb-2"><a style="margin-top:1px;" class="btn btn-danger d-block btn-lg" href="{{route('customer.new.customer.order.items')}}"><i class="fas fa-minus-circle"></i></i> সকল তথ মুছে ফেলুন</a></div>
+                                    <div class="col-lg-4 col-sm-12 mb-2"><a style="margin-top:1px;" class="btn btn-danger d-block btn-lg" href="{{route('new.customer')}}"><i class="fas fa-minus-circle"></i></i> সকল তথ মুছে ফেলুন</a></div>
                                     <div class="col-lg-4 col-sm-12">@if (!$errors->any())
                                         <button type="{{$errors->isEmpty() ? 'submit':'button'}}" {{ $errors->isEmpty() ? '':'disabled'}} class="btn btn-primary btn-lg btn-block"><i class="fas fa-plus-cicle"></i> অর্ডার করুন</button>
                                     @endif </div>
