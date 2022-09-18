@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { ANIMAL_QRY } from '../graphql/Query/animal';
+import { CUSTOMERS_QRY } from '../graphql/Query/customer';
 import { LinearProgress, Box, Rating, Typography, Button } from '@mui/material';
 export default function Animal() {
   const { id } = useParams();
@@ -17,7 +17,7 @@ export default function Animal() {
           <LinearProgress />
         </Box>
       )}
-      {!loading && data?.animal && <Detail {...data.animal} />}
+      {/* {!loading && data?.animal && <Detail {...data.animal} />} */}
     </div>
   );
 }

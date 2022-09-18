@@ -4,12 +4,14 @@ import {
   ApolloProvider,
   gql,
 } from '@apollo/client';
-import Animals from './Amimals';
-import MainCard from './MainCard';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Animal from './Amimals/animal';
 import Nav from './Nav/Nav';
-import Products from './Product/index';
+// import Products from './Product/index';
+import Dashboard from './Admin/Dashboard';
+import Customer from './Customer';
+import NewCustomer from './Customer/NewCustomer';
+import Measurement from './Admin/Measurement';
+import NewMeasuremen from './Admin/Measurement/NewMeasurement';
 const Main = () => {
   const client = new ApolloClient({
     uri: 'http://localhost:4000/',
@@ -21,9 +23,14 @@ const Main = () => {
       <BrowserRouter>
         <Nav />
         <Routes>
-          <Route path="/" element={<Animals />} />
-          <Route path="/:id" element={<Animal />} />
-          <Route path="/shop" element={<Products />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/customer" element={<Customer />} />
+          <Route path="/customer/new" element={<NewCustomer />} />
+          <Route path="/dashboard/measurement" element={<Measurement />} />
+          <Route
+            path="/dashboard/measurement/new"
+            element={<NewMeasuremen />}
+          />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>

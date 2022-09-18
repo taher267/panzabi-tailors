@@ -1,46 +1,68 @@
 import Order from '../models/Order.js';
 import mg from 'mongoose';
-import catchAsyncErrors from '../utils/catchAsyncErrors.js';
+import { UserInputError } from 'apollo-server-core';
 
 export default {
   /**
    * Create New Order
    */
-  createOrder: catchAsyncErrors(async (_parent, { order }, _context) => {
-    const newOrder = new Order(order);
-    await newOrder.save();
-    return newOrder;
-  }),
+  createOrder: async (_parent, { order }, _context) => {
+    try {
+      const newOrder = new Order(order);
+      await newOrder.save();
+      return newOrder;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * All Orders
    */
-  allOrders: catchAsyncErrors(async (_parent, { key, value }, _context) => {
-    const filter = key && value ? { [key]: value } : {};
-    return await Order.find(filter);
-  }),
+  allOrders: async (_parent, { key, value }, _context) => {
+    try {
+      const filter = key && value ? { [key]: value } : {};
+      return await Order.find(filter);
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Single Order
    */
-  getOrder: catchAsyncErrors(async (_parent, { id }, _context) => {
-    if (!mg.isValidObjectId(id)) throw new UserInputError(`Invalid delete id`);
-    return await Order.findById(id);
-  }),
+  getOrder: async (_parent, { id }, _context) => {
+    try {
+      if (!mg.isValidObjectId(id))
+        throw new UserInputError(`Invalid delete id`);
+      return await Order.findById(id);
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Create New Order
    */
-  updateOrder: catchAsyncErrors(async (_parent, { id, update }, _context) => {
-    const updated = await Order.findByIdAndUpdate(id, update, { new: true });
-    return updated;
-  }),
+  updateOrder: async (_parent, { id, update }, _context) => {
+    try {
+      const updated = await Order.findByIdAndUpdate(id, update, { new: true });
+      return updated;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Delete Order
    */
-  deleteOrder: catchAsyncErrors(async (_parent, { id: _id }) => {
-    if (!mg.isValidObjectId(_id)) throw new UserInputError(`Invalid delete id`);
-    const del = await Order.deleteOne({ _id });
-    console.log(del);
-    return del.deletedCount;
-  }),
+  deleteOrder: async (_parent, { id: _id }) => {
+    try {
+      if (!mg.isValidObjectId(_id))
+        throw new UserInputError(`Invalid delete id`);
+      const del = await Order.deleteOne({ _id });
+      console.log(del);
+      return del.deletedCount;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
 };
 
 // Order.create({

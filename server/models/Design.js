@@ -9,13 +9,14 @@ export default mg.model(
     },
     designs: [
       {
+        _id: false,
         item: {
           type: String,
           minLength: 4,
           required: [true, 'Item is mandatory!'],
           unique: true,
         },
-        _id: {
+        ds_id: {
           type: Number,
           required: [true, 'Serial is mandatory'],
           unique: true,

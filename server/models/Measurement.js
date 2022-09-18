@@ -5,11 +5,19 @@ export default mg.model(
   new mg.Schema({
     name: {
       type: String,
-      required: [true, 'Measurement field is mandatory!'],
+      required: [true, 'Measurement name is mandatory!'],
       unique: true,
+      trim: true,
+    },
+    sl_id: {
+      type: String,
+      required: [true, 'Measurement sl id is mandatory!'],
+      unique: true,
+      trim: true,
     },
     icon: {
-      _id: String,
+      _id: false,
+      id: String,
       src: String,
     },
   })

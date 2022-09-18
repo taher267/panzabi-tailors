@@ -1,44 +1,67 @@
 import Product from '../models/Product.js';
 import mg from 'mongoose';
-import catchAsyncErrors from '../utils/catchAsyncErrors.js';
+import { UserInputError } from 'apollo-server-core';
 
 export default {
   /**
    * Create New Product
    */
-  createProduct: catchAsyncErrors(async (_parent, { product }, _context) => {
-    const newProduct = new Product(product);
-    await newProduct.save();
-    return newProduct;
-  }),
+  createProduct: async (_parent, { product }, _context) => {
+    try {
+      const newProduct = new Product(product);
+      await newProduct.save();
+      return newProduct;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * All Products
    */
-  allProducts: catchAsyncErrors(async (_parent, { key, value }, _context) => {
-    const filter = key && value ? { [key]: value } : {};
-    return await Product.find(filter);
-  }),
+  allProducts: async (_parent, { key, value }, _context) => {
+    try {
+      const filter = key && value ? { [key]: value } : {};
+      return await Product.find(filter);
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Single Product
    */
-  getProduct: catchAsyncErrors(async (_parent, { id }, _context) => {
-    if (!mg.isValidObjectId(id)) throw new UserInputError(`Invalid delete id`);
-    return await Product.findById(id);
-  }),
+  getProduct: async (_parent, { id }, _context) => {
+    try {
+      if (!mg.isValidObjectId(id))
+        throw new UserInputError(`Invalid delete id`);
+      return await Product.findById(id);
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Create New Product
    */
-  updateProduct: catchAsyncErrors(async (_parent, { id, update }, _context) => {
-    const updated = await Product.findByIdAndUpdate(id, update, { new: true });
-    return updated;
-  }),
+  updateProduct: async (_parent, { id, update }, _context) => {
+    try {
+      const updated = await Product.findByIdAndUpdate(id, update, {
+        new: true,
+      });
+      return updated;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Delete Product
    */
-  deleteProduct: catchAsyncErrors(async (_parent, { id: _id }) => {
-    if (!mg.isValidObjectId(_id)) throw new UserInputError(`Invalid delete id`);
-    const del = await Product.deleteOne({ _id });
-    console.log(del);
-    return del.deletedCount;
-  }),
+  deleteProduct: async (_parent, { id: _id }) => {
+    try {
+      if (!mg.isValidObjectId(_id))
+        throw new UserInputError(`Invalid delete id`);
+      const del = await Product.deleteOne({ _id });
+      return del.deletedCount;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
 };

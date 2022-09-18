@@ -5,8 +5,12 @@ export default mg.model(
   new mg.Schema(
     {
       order_no: {
-        type: Number,
+        type: String,
         required: [true, 'Order Number is mandatory!'],
+        unique: [true, 'Please provide a unique Order no'],
+      },
+      previous_order: {
+        type: Number,
       },
       quantity: { type: Number, required: true },
       totalPrice: { type: Number, required: true },
@@ -23,7 +27,7 @@ export default mg.model(
         enum: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
         default: 'NEW',
       },
-      orders: [
+      order_items: [
         {
           order: {
             type: mg.Types.ObjectId,
@@ -33,11 +37,23 @@ export default mg.model(
           price: { type: Number, required: true },
           measurements: [
             {
-              _id: { type: mg.Types.ObjectId, required: true },
+              _id: false,
+              msr_id: { type: mg.Types.ObjectId, required: true },
               size: { type: String, required: true },
             },
           ],
-          designs: Array,
+          designs: [
+            {
+              _id: false,
+              dsn_id: { type: mg.Types.ObjectId, required: true },
+              desc: { type: String, required: true },
+            },
+          ],
+          sample: {
+            _id: false,
+            id: String,
+            src: String,
+          },
         },
       ],
     },

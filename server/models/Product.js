@@ -12,7 +12,8 @@ export default mg.model(
     description: String,
     measurementItem: [
       {
-        _id: {
+        _id: false,
+        ms_id: {
           type: Number,
           required: [true, `Measurement serial id is mandatory!`],
           unique: true,

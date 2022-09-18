@@ -18,26 +18,30 @@ export default gql`
   }
   # Order Query Start
   type OrderMeasurement {
-    _id: String!
+    msr_id: String!
     size: String!
   }
-  type Orders {
+  type OrderItemsOfOrder {
     order: String!
     price: Int!
     measurements: [OrderMeasurement!]!
+    designs: [OrderDesign!]!
+    sample: Icon
   }
-
+  type OrderDesign {
+    dsn_id: String!
+    desc: String!
+  }
   type Order {
     id: ID!
-    order_no: Int!
+    order_no: String!
     quantity: Int!
     totalPrice: Int!
     discunt: Int
     advanced: Int
     user: String!
     order_status: String
-    orders: [Orders!]!
-    designs: [String!]
+    order_items: [OrderItemsOfOrder!]!
     createdAt: String!
     updatedAt: String!
   }
@@ -46,33 +50,48 @@ export default gql`
   # Measurement Query Start
   type Measurement {
     id: ID!
+    sl_id: String!
     name: String!
     icon: Icon
   }
   # Measurement Query End
   # User Query Start
-  type Delivery {
+  type DeliveryDetails {
     delivery_by: String
     delivery_charge: Float
-    location: String
+    delivery_address: String
     delivery_phone: String
   }
+  type thirdPirtyDetails {
+    via3rd: Boolean
+    name: String
+    token: String
+    token_secret: String
+    client_id: String
+  }
+
   type User {
+    id: ID!
     name: String!
     phone_no: String!
     status: String
     roles: [String]
+    username: String
     email: String
     address: String
     order_status: String
-    delivery_detail: Delivery
+    delivery_detail: DeliveryDetails
+    engage: [String]
+    user: String!
+    orders: [String]
+    thirdPirty: [thirdPirtyDetails]
     createdAt: String!
     updatedAt: String!
   }
   # User Query End
   # Product Query Start
   type MeasurementItem {
-    _id: Int!
+    ms_id: Int!
     name: String!
     measures: String
   }
@@ -95,12 +114,12 @@ export default gql`
     icon: Icon
   }
   type Icon {
-    _id: String!
-    src: String!
+    id: String
+    src: String
   }
   type DesignItem {
     item: String!
-    _id: Int!
+    ds_id: Int!
   }
   # Design Query End
 
@@ -114,8 +133,8 @@ export default gql`
     updateProduct(id: ID!, update: Input_poduct): Product
     deleteProduct(id: ID!): Boolean
     # User
-    createUser(user: InputUser): User
-    updateUser(id: ID!, update: InputUser): User
+    createUser(user: InputCustomer): User
+    updateUser(id: ID!, update: InputCustomer): User
     deleteUser(id: ID!): Boolean
     # Measurement
     createMeasurement(measures: InputMeasurement): Measurement
@@ -129,51 +148,59 @@ export default gql`
   }
   # Order Mutation Start
   input InputOrderMeasurement {
-    _id: String!
+    msr_id: String!
     size: String!
   }
-  input InputOrders {
+  input InputOrderItemsOfOrder {
     order: String!
     price: Int!
     measurements: [InputOrderMeasurement!]!
+    designs: [InputOrderDesign!]!
+    sample: InpIcon
   }
-
+  input InputOrderDesign {
+    dsn_id: String!
+    desc: String!
+  }
   input InputOrder {
-    id: ID!
-    order_no: Int!
+    order_no: String!
     quantity: Int!
     totalPrice: Int!
     discunt: Int
     advanced: Int
     user: String!
     order_status: String
-    orders: [InputOrders!]!
-    designs: [String!]
-    createdAt: String!
-    updatedAt: String!
+    order_items: [InputOrderItemsOfOrder!]!
   }
   # Order Mutation Start
   # Measurement Mutation Start
   input InputMeasurement {
+    sl_id: String!
     name: String!
     icon: InpIcon
   }
   # Measurement Mutation End
+
   # User mutation Start
   input InputDelivery {
     delivery_by: String
     delivery_charge: Float
-    location: String
+    delivery_address: String
     delivery_phone: String
   }
-  input InputUser {
+  input InputThirdPirty {
+    via3rd: Boolean
+    name: String
+    token: String
+    token_secret: String
+    client_id: String
+  }
+  input InputCustomer {
     name: String!
     phone_no: String!
-    status: String
-    roles: [String]
     email: String
+    engage: [String]
     address: String
-    order_status: String
     delivery_detail: InputDelivery
   }
   # User mutation End
@@ -181,11 +208,11 @@ export default gql`
   # Design mutation Start
   input InpDesignItem {
     item: String!
-    _id: Int!
+    ds_id: Int!
   }
   input InpIcon {
-    _id: String!
-    src: String!
+    id: String
+    src: String
   }
   input InputDisign {
     name: String!
@@ -196,7 +223,7 @@ export default gql`
   # Design mutation end
   # Product mutation Start
   input InpMeasurementItem {
-    _id: Int!
+    ms_id: Int!
     name: String!
     measures: String
   }

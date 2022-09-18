@@ -1,48 +1,68 @@
 import mg from 'mongoose';
 import Design from '../models/Design.js';
 import catchAsyncErrors from '../utils/catchAsyncErrors.js';
-import { UserInputError } from 'apollo-server';
+import { UserInputError } from 'apollo-server-core';
 export default {
   /**
    * Create New design
    */
-  createDesign: catchAsyncErrors(async (_parent, { design }, { req, res }) => {
-    const newDesign = new Design(design);
-    await newDesign.save();
-    return newDesign;
-  }),
+  createDesign: async (_parent, { design }, context) => {
+    try {
+      const newDesign = new Design(design);
+      await newDesign.save();
+      return newDesign;
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * All designs
    */
-  designs: catchAsyncErrors(async (_parent, { key, value }, { req, res }) => {
-    const filter = key && value ? { [key]: value } : {};
-    return await Design.find(filter);
-  }),
+  designs: async (_parent, { key, value }, context) => {
+    try {
+      const filter = key && value ? { [key]: value } : {};
+      return await Design.find(filter);
+    } catch (e) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Single design
    */
-  getDesign: catchAsyncErrors(async (_parent, { id }, { req, res }) => {
-    if (!mg.isValidObjectId(_id)) throw new UserInputError(`Invalid delete id`);
-    return await Design.findById(id);
-  }),
+  getDesign: async (_parent, { id }, context) => {
+    try {
+      if (!mg.isValidObjectId(_id))
+        throw new UserInputError(`Invalid delete id`);
+      return await Design.findById(id);
+    } catch (error) {
+      throw new UserInputError(e);
+    }
+  },
   /**
    * Create New design
    */
-  updateDesign: catchAsyncErrors(
-    async (_parent, { id, update }, { req, res }) => {
+  updateDesign: async (_parent, { id, update }, context) => {
+    try {
       const updated = await Design.findByIdAndUpdate(id, update, { new: true });
       return updated;
+    } catch (error) {
+      throw new UserInputError(e);
     }
-  ),
+  },
   /**
    * Delete Design
    */
-  deleteDesign: catchAsyncErrors(async (_parent, { id: _id }) => {
-    if (!mg.isValidObjectId(_id)) throw new UserInputError(`Invalid delete id`);
-    const del = await Design.deleteOne({ _id });
-    console.log(del);
-    return del.deletedCount;
-  }),
+  deleteDesign: async (_parent, { id: _id }) => {
+    try {
+      if (!mg.isValidObjectId(_id))
+        throw new UserInputError(`Invalid delete id`);
+      const del = await Design.deleteOne({ _id });
+      console.log(del);
+      return del.deletedCount;
+    } catch (error) {
+      throw new UserInputError(e);
+    }
+  },
 };
 
 // Design.create({

@@ -10,7 +10,29 @@ export default mg.model(
         required: [true, 'Phone no is mandatory!'],
         unique: true,
       },
-      password: String,
+      password: { type: String, select: false },
+      engage: [String],
+      user: {
+        type: mg.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      orders: [
+        {
+          type: mg.Types.ObjectId,
+          ref: 'Order',
+        },
+      ],
+      thirdPirty: [
+        {
+          _id: false,
+          via3rd: { type: Boolean, default: false },
+          name: String,
+          token: String,
+          token_secret: String,
+          client_id: String,
+        },
+      ],
       status: {
         type: String,
         enum: ['ACTIVE', 'PENDING', 'REJECT'],
@@ -27,7 +49,7 @@ export default mg.model(
       delivery_detail: {
         delivery_by: String,
         delivery_charge: Number,
-        location: String,
+        delivery_address: String,
         delivery_phone: String,
       },
       nodes: String,
