@@ -1,18 +1,18 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 
 export const NEW_CUSTOMER_QRY = gql`
-  # input DeliveryDetails {
-  #   delivery_by: String
-  #   delivery_charge: Float
-  #   delivery_address: String
-  #   delivery_phone: String
-  # }
+  input InputDelivery {
+    delivery_by: String
+    delivery_charge: Float
+    delivery_address: String
+    delivery_phone: String
+  }
 
   mutation createUser(
     $name: String!
     $phone_no: String!
     $email: String
-    # $delivery_detail: DeliveryDetails
+    $delivery_detail: InputDelivery
     $address: String
     $engage: [String]
   ) {
@@ -23,7 +23,7 @@ export const NEW_CUSTOMER_QRY = gql`
         email: $email
         address: $address
         engage: $engage
-        # delivery_detail: $delivery_detail
+        delivery_detail: $delivery_detail
       }
     ) {
       name

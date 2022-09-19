@@ -15,6 +15,7 @@ export default mg.model(
       user: {
         type: mg.Types.ObjectId,
         ref: 'User',
+        required: true,
       },
       orders: [
         {

@@ -12,6 +12,7 @@ import Customer from './Customer';
 import NewCustomer from './Customer/NewCustomer';
 import Measurement from './Admin/Measurement';
 import NewMeasuremen from './Admin/Measurement/NewMeasurement';
+import DragableList from './dragableList';
 const Main = () => {
   const client = new ApolloClient({
     uri: 'http://localhost:4000/',
@@ -21,6 +22,7 @@ const Main = () => {
     <ApolloProvider client={client}>
       {/* <MainCard /> */}
       <BrowserRouter>
+        {/* <DragableList /> */}
         <Nav />
         <Routes>
           <Route path="/" element={<Dashboard />} />

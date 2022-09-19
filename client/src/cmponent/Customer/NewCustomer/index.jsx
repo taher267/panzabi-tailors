@@ -1,5 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
+import parse from 'html-react-parser';
 import {
   LinearProgress,
   Checkbox,
@@ -39,9 +40,9 @@ const NewCustomer = () => {
         //   console.log(result);
       },
       onError(err) {
-        setValidErrs(errorConversion(err));
+        // setValidErrs(errorConversion(err));
 
-        // console.log(err.graphQLErrors[0]?.extensions?.exception?.stacktrace[0].split('UserInputError: ')[1]);
+        console.log(err);
       },
       variables: values,
     }
