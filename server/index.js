@@ -8,7 +8,10 @@ import db from './config/db.js';
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req, res }) => ({ ...contexts, req, res }),
+  context: ({ req, res }) => {
+    // console.log(req.path);
+    return { ...contexts, req, res };
+  },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 

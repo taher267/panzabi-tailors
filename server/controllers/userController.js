@@ -1,23 +1,37 @@
 import User from '../models/User.js';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
-import customerValidation from '../validation/customerValidation.js';
+import userValidation from '../validation/userValidation.js';
+import { hash, genSalt } from 'bcrypt';
 
+import userServices from '../services/userCustomerServices.js';
+import getJWT from '../utils/getJWT.js';
 export default {
   /**
    * Create New User
    */
   createUser: async (_parent, { user }, { req, res }) => {
     try {
-      await customerValidation.newCustomerValidation(user);
+      await userValidation.newUserValidation(user);
       const newUserData = user;
+      if (user?.password) {
+        user.password = await hash(user.password, await genSalt(10));
+      }
+      if (!user?.roles?.length) newUserData.roles = ['USER'];
       if (!newUserData?.engage?.length) newUserData.engage = [];
       const newUser = new User({
         ...newUserData,
-        user: '63134fc4362a560e956dfc22',
       });
-      await newUser.save();
-      return newUser;
+      const saved = await newUser.save();
+
+      // return saved;
+      const token = getJWT(saved.id);
+      // console.log(saved, token);
+      return {
+        ...saved._doc,
+        id: saved.id,
+        token,
+      };
     } catch (e) {
       throw new UserInputError(e);
     }
@@ -27,8 +41,11 @@ export default {
    */
   allUsers: async (_parent, { key, value }, { req, res }) => {
     try {
-      const filter = key && value ? { [key]: value } : {};
-      const all = await User.find(filter);
+      const filter =
+        key && value
+          ? { [key]: { $in: value.split('|') } }
+          : { roles: { $in: ['USER'] } };
+      const all = await userServices.findUser(filter);
       let modified = [];
       for (const single of all) {
         let { _id, ...rest } = single._doc;
@@ -45,11 +62,17 @@ export default {
   /**
    * Single User
    */
-  getUser: async (_parent, { id }, { req, res }) => {
+  getUser: async (_parent, { key, value }, { req, res }) => {
     try {
-      if (!mg.isValidObjectId(id))
-        throw new UserInputError(`Invalid delete id`);
-      return await User.findById(id);
+      if (!key || !value)
+        throw new UserInputError(`key and value must be provide!`);
+      if (key === 'id' && !mg.isValidObjectId(value))
+        throw new UserInputError(`valid id`, {
+          errors: {
+            id: `Please provide a valid id!`,
+          },
+        });
+      return await userServices.findUser(key, value);
     } catch (e) {
       throw new UserInputError(e);
     }

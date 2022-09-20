@@ -4,7 +4,15 @@ export default mg.model(
   'User',
   new mg.Schema(
     {
-      name: { type: String, required: [true, 'Name is mandatory!'] },
+      name: {
+        type: String,
+        minlength: 4,
+        required: [true, 'Name is mandatory!'],
+      },
+      username: {
+        type: String,
+        minlength: 5,
+      },
       phone_no: {
         type: String,
         required: [true, 'Phone no is mandatory!'],
@@ -37,7 +45,7 @@ export default mg.model(
         enum: ['ACTIVE', 'PENDING', 'REJECT'],
         default: 'ACTIVE',
       },
-      roles: { type: Array, default: 'customer' },
+      roles: { type: Array, default: 'CUSTOMER' },
       order_status: {
         type: String,
         enum: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
@@ -51,7 +59,7 @@ export default mg.model(
         delivery_address: String,
         delivery_phone: String,
       },
-      nodes: String,
+      notes: String,
     },
     { timestamps: true }
   )

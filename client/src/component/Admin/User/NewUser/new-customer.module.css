@@ -1,0 +1,24 @@
+.MuiFilledInputRoot input {
+  color: #fff;
+}
+
+.MuiFilledInputRoot label {
+  color: #fff;
+}
+
+.deliveryDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 5px;
+}
+
+.enagageSelect {
+  color: #000;
+  z-index: 9999;
+}
+@media screen and (max-width: 900px) {
+  .deliveryDetails {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

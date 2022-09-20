@@ -9,10 +9,11 @@ import Nav from './Nav/Nav';
 // import Products from './Product/index';
 import Dashboard from './Admin/Dashboard';
 import Customer from './Customer';
-import NewCustomer from './Customer/NewCustomer';
+import NewCustomer from './Customer/NewCustomer/NewCustomer';
 import Measurement from './Admin/Measurement';
 import NewMeasuremen from './Admin/Measurement/NewMeasurement';
 import DragableList from './dragableList';
+import UserList from './Admin/User/UserList';
 const Main = () => {
   const client = new ApolloClient({
     uri: 'http://localhost:4000/',
@@ -29,6 +30,7 @@ const Main = () => {
           <Route path="/customer" element={<Customer />} />
           <Route path="/customer/new" element={<NewCustomer />} />
           <Route path="/dashboard/measurement" element={<Measurement />} />
+          <Route path="/user" element={<UserList />} />
           <Route
             path="/dashboard/measurement/new"
             element={<NewMeasuremen />}

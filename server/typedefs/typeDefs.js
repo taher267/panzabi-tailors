@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server-express';
 export default gql`
   type Query {
+    # auth
+    login(username: String!, password: String!): Login!
     designs(key: String, value: String): [Disign!]!
     getDesign(id: ID!): Disign!
     # Product
@@ -8,7 +10,10 @@ export default gql`
     getProduct(id: ID!): Product
     # User
     allUsers(key: String, value: String): [User]
-    getUser(id: ID!): User
+    getUser(key: String!, value: String!): User
+    # Customer
+    allCustomers(key: String, value: String): [Customer]
+    getCustomer(id: ID!): Customer
     # Measurement
     allMeasurements(key: String, value: String): [Measurement!]!
     getMeasurement(id: ID!): Measurement!
@@ -16,6 +21,11 @@ export default gql`
     allOrders(key: String, value: String): [Order!]!
     getOrder(id: ID!): Order!
   }
+  # Auth Query Start
+  type Login {
+    token: String!
+  }
+  # Auth Query end
   # Order Query Start
   type OrderMeasurement {
     msr_id: String!
@@ -76,7 +86,20 @@ export default gql`
     phone_no: String!
     status: String
     roles: [String]
-    username: String
+    username: String!
+    email: String!
+    token: String
+    thirdPirty: [thirdPirtyDetails]
+    createdAt: String!
+    updatedAt: String!
+  }
+  # User Query End
+  # Custoer Query start
+  type Customer {
+    id: ID!
+    name: String!
+    phone_no: String!
+    status: String
     email: String
     address: String
     order_status: String
@@ -84,11 +107,10 @@ export default gql`
     engage: [String]
     user: String!
     orders: [String]
-    thirdPirty: [thirdPirtyDetails]
     createdAt: String!
     updatedAt: String!
   }
-  # User Query End
+  # Custoer Query End
   # Product Query Start
   type MeasurementItem {
     ms_id: Int!
@@ -133,9 +155,14 @@ export default gql`
     updateProduct(id: ID!, update: Input_poduct): Product
     deleteProduct(id: ID!): Boolean
     # User
-    createUser(user: InputCustomer): User
-    updateUser(id: ID!, update: InputCustomer): User
+    createUser(user: InputUser): User
+    updateUser(id: ID!, update: InputUser): User
     deleteUser(id: ID!): Boolean
+
+    # Csustomer
+    createCustomer(customer: InputCustomer): Customer
+    updateCustomer(id: ID!, update: InputCustomer): Customer
+    deleteCustomer(id: ID!): Boolean
     # Measurement
     createMeasurement(measures: InputMeasurement): Measurement
     updateMeasurement(id: ID!, update: InputMeasurement): Measurement
@@ -195,15 +222,32 @@ export default gql`
     token_secret: String
     client_id: String
   }
+  input InputUser {
+    name: String!
+    phone_no: String!
+    email: String!
+    username: String!
+    password: String
+  }
+  # User mutation End
+  # Customer mutation Start
+  input InputDeliveryDetails {
+    delivery_by: String
+    delivery_charge: Float
+    delivery_address: String
+    delivery_phone: String
+  }
   input InputCustomer {
     name: String!
     phone_no: String!
+    status: String
     email: String
-    engage: [String]
     address: String
-    delivery_detail: InputDelivery
+    delivery_detail: InputDeliveryDetails
+    engage: [String]
+    orders: [String]
   }
-  # User mutation End
+  # Customer mutation End
 
   # Design mutation Start
   input InpDesignItem {

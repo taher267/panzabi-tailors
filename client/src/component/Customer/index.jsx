@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client';
-import Card from './Card';
-import { CUSTOMERS_QRY } from '../graphql/Query/customer';
+import { ALL_CUSTOMERS } from '../graphql/Query/customerQry';
 import { LinearProgress, Box } from '@mui/material';
 import AdminLayout from './../Layout/AdminLayout/index';
 import { DataGrid } from '@mui/x-data-grid';
@@ -15,13 +14,12 @@ const columns = [
   {
     field: 'name',
     headerName: 'Full Name',
-    width: 150,
+    width: 110,
     editable: true,
   },
   {
     field: 'phone_no',
     headerName: 'Phone',
-    type: 'number',
     width: 110,
     editable: true,
   },
@@ -46,20 +44,44 @@ const columns = [
     hide: true,
   },
 
+  // {
+  //   field: 'createdAt',
+  //   headerName: 'Created Date',
+  //   type: 'dateTime',
+  //   width: 150,
+  //   editable: true,
+  // },
   {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
+    field: 'createdAt',
+    headerName: 'Created Date',
+    description: 'Customer Created',
     sortable: false,
     width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+    valueGetter: (pms) => {
+      return pms.row.createdAt
+        ? new Date(parseInt(pms.row.createdAt)).toLocaleString()
+        : '';
+    },
+  },
+
+  {
+    field: 'Actions',
+    headerName: 'Actions',
+    description: 'Customer Created',
+    sortable: false,
+    width: 160,
+    valueGetter: (pms) => {
+      return pms.row.createdAt
+        ? new Date(parseInt(pms.row.createdAt)).toLocaleString()
+        : '';
+    },
   },
 ];
 
 const Customer = () => {
-  const { loading, data } = useQuery(CUSTOMERS_QRY);
-
+  const qury = useQuery(ALL_CUSTOMERS);
+  const { loading, data } = qury;
+  // console.log(qury);
   return (
     <AdminLayout>
       {loading && (
@@ -74,10 +96,10 @@ const Customer = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         }}
       >
-        {!loading && data?.allUsers?.length && (
+        {!loading && data?.allCustomers?.length && (
           <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
-              rows={data.allUsers}
+              rows={data.allCustomers}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}

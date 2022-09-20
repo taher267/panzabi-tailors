@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import classes from './new-customer.module.css';
-import { NEW_CUSTOMER_QRY } from '../../graphql/Query/customer';
+import { NEW_CUSTOMER } from '../../graphql/Mutations/customerMut';
 import { errorConversion } from '../../utils/errorConv';
 
 const colourOptions = [
@@ -34,7 +34,7 @@ const NewCustomer = () => {
   const [validErrs, setValidErrs] = useState({});
   const [values, setValues] = useState({});
   const [createUser, { data: newRegisterData, loading, error }] = useMutation(
-    NEW_CUSTOMER_QRY,
+    NEW_CUSTOMER,
     {
       update(proxy, result) {
         //   console.log(result);
@@ -69,11 +69,8 @@ const NewCustomer = () => {
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
     setValues({ ...data });
-    // setTimeout(() => {
-    //   console.log(values);
-    // }, 1000);
     // console.log(data);
-    createUser();
+    // createUser();
   };
   const selectHandler = (e) => {
     // console.log(e);

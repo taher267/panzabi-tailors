@@ -1,8 +1,9 @@
 import Customer from '../models/User.js';
+import customerServices from '../services/userCustomerServices.js';
 import mg from 'mongoose';
-import { UserInputError } from 'apollo-server-core';
+import { UserInputError } from 'apollo-server';
 import customerValidation from '../validation/customerValidation.js';
-
+import errorHandler from '../utils/errorHandler.js';
 export default {
   /**
    * Create New Customer
@@ -11,15 +12,15 @@ export default {
     try {
       await customerValidation.newCustomerValidation(customer);
       const newCustomerData = customer;
-      if (!newCustomerData?.engage?.length) newCustomerData.engage = [];
+      if (!newCustomerData?.engage?.[0]?.length) newCustomerData.engage = [];
       const newCustomer = new Customer({
         ...newCustomerData,
         Customer: '63134fc4362a560e956dfc22',
       });
-      await newCustomer.save();
+      // await newCustomer.save();
       return newCustomer;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -27,8 +28,13 @@ export default {
    */
   allCustomers: async (_parent, { key, value }, { req, res }) => {
     try {
-      const filter = key && value ? { [key]: value } : {};
-      const all = await Customer.find(filter);
+      const filter =
+        key && value
+          ? { [key]: { $in: value.split('|') } }
+          : { roles: { $in: ['CUSTOMER'] } };
+      // console.log(filter);
+      const all = await customerServices.findUser(filter);
+      // roles: { $in: ['CUSTOMER'] },
       let modified = [];
       for (const single of all) {
         let { _id, ...rest } = single._doc;

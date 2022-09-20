@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
-import { NEW_MEASUREMENT } from '../../graphql/Mutations/measurement';
+import { NEW_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
 import { errorConversion } from '../../utils/errorConv';
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const NewMeasuremen = () => {
