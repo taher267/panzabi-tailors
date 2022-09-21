@@ -8,8 +8,9 @@ import db from './config/db.js';
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req, res }) => {
-    // console.log(req.path);
+  context: (ctx) => {
+    const { req, res } = ctx;
+    // console.log(ctx);
     return { ...contexts, req, res };
   },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
@@ -21,4 +22,7 @@ db.then(() =>
       `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
     );
   })
-).catch((e) => console.log(e));
+).catch((e) => {
+  console.log(e);
+  process.exit(1);
+});

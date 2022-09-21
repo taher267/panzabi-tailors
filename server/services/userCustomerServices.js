@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import errorHandler from '../utils/errorHandler.js';
 
 /**
  *
@@ -13,6 +14,18 @@ const findUser = (key, value, select = '') => {
   else if (key && value) return User.findOne({ [key]: value }).select(select);
   return User.find(key || {}).select(select);
 };
+
+const createUser = async ({ name, username, email, password, phone_no }) => {
+  try {
+    const newData = { name, username, email, password, phone_no };
+    const saved = new User(newData);
+    return saved;
+    return await saved.save();
+  } catch (e) {
+    errorHandler(e);
+  }
+};
 export default {
   findUser,
+  createUser,
 };

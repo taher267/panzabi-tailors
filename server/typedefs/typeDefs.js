@@ -1,8 +1,6 @@
 import { gql } from 'apollo-server-express';
 export default gql`
   type Query {
-    # auth
-    login(username: String!, password: String!): Login!
     designs(key: String, value: String): [Disign!]!
     getDesign(id: ID!): Disign!
     # Product
@@ -145,7 +143,16 @@ export default gql`
   }
   # Design Query End
 
+  input InputLogin {
+    username: String!
+    password: String!
+  }
+
   type Mutation {
+    # auth
+    userLogin(credentials: InputLogin): Login!
+    userSignup(register: InputSignUp): Login!
+
     # Design
     createDesign(design: InputDisign): Disign
     updateDesign(id: ID!, update: InputDisign): Disign
@@ -173,6 +180,15 @@ export default gql`
     updateOrder(id: ID!, update: InputOrder): Order
     deleteOrder(id: ID!): Boolean
   }
+  # Auth Mutation Start
+  input InputSignUp {
+    name: String!
+    phone_no: String!
+    email: String!
+    username: String!
+    password: String!
+  }
+  # Auth Mutation Start
   # Order Mutation Start
   input InputOrderMeasurement {
     msr_id: String!
@@ -227,7 +243,7 @@ export default gql`
     phone_no: String!
     email: String!
     username: String!
-    password: String
+    password: String!
   }
   # User mutation End
   # Customer mutation Start

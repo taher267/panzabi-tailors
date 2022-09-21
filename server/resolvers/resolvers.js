@@ -8,7 +8,6 @@ import authController from '../controllers/authController.js';
 
 export default {
   Query: {
-    login: authController.login,
     designs: designController.designs,
     getDesign: designController.getDesign,
     // Product
@@ -27,6 +26,8 @@ export default {
   },
 
   Mutation: {
+    userLogin: authController.login,
+    userSignup: authController.signup,
     //Design Functions
     createDesign: designController.createDesign,
     updateDesign: designController.updateDesign,

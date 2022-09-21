@@ -6,13 +6,15 @@ import bcrypt from 'bcrypt';
 
 import errorHandler from '../utils/errorHandler.js';
 import authValidation from '../validation/authValidation.js';
+import userValidation from '../validation/userValidation.js';
 import userServices from '../services/userCustomerServices.js';
 import { UserInputError } from 'apollo-server-core';
 import getJWT from '../utils/getJWT.js';
 export default {
-  login: async (parent, { username, password }, { req, res }) => {
+  login: async (parent, { credentials }, { req, res }) => {
     try {
-      await authValidation.loginValidation(username, password);
+      await authValidation.authValidation(credentials);
+      const { username, password } = credentials;
       const user = await userServices.findUser(
         'single',
         {
@@ -36,6 +38,19 @@ export default {
             message: `invalid credentials`,
           },
         });
+      return { token: getJWT(user.id) };
+    } catch (e) {
+      errorHandler(e);
+    }
+  },
+  signup: async (parent, { register }, { req, res }) => {
+    try {
+      await userValidation.newUserValidation({
+        ...register,
+        passwordCheck: true,
+      });
+      // const { username, password } = register;
+      const user = await userServices.createUser(register);
       return { token: getJWT(user.id) };
     } catch (e) {
       errorHandler(e);

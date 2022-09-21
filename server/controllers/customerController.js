@@ -20,7 +20,7 @@ export default {
       // await newCustomer.save();
       return newCustomer;
     } catch (e) {
-      errorHandler(e);
+      return errorHandler(e);
     }
   },
   /**

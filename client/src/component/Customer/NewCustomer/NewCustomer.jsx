@@ -16,7 +16,7 @@ import makeAnimated from 'react-select/animated';
 import classes from './new-customer.module.css';
 import { NEW_CUSTOMER } from '../../graphql/Mutations/customerMut';
 import { errorConversion } from '../../utils/errorConv';
-
+import useReactSession from '../../hooks/useReactSession';
 const colourOptions = [
   { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
   { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
@@ -31,8 +31,8 @@ const colourOptions = [
 ];
 const animatedComponents = makeAnimated();
 const NewCustomer = () => {
+  const check = useReactSession();
   const [validErrs, setValidErrs] = useState({});
-  const [values, setValues] = useState({});
   const [createCustomer, { data: newRegisterData, loading, error }] =
     useMutation(NEW_CUSTOMER, {
       update(proxy, result) {
@@ -43,7 +43,6 @@ const NewCustomer = () => {
 
         console.log(err.graphQLErrors[0]);
       },
-      variables: values,
     });
   const [deliveryFields, setDeliveryFields] = useState(false);
   const {
@@ -63,12 +62,10 @@ const NewCustomer = () => {
       engage: '',
     },
   });
-  //   console.dir(newRegisterData);
-  //   console.dir('validErrs', validErrs);
+  console.log(check);
   const onSubmit = (data) => {
-    setValues({ ...data });
     // console.log(data);
-    createCustomer();
+    createCustomer({ variables: data });
   };
   const selectHandler = (e) => {
     // console.log(e);
