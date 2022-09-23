@@ -19,7 +19,10 @@ export default {
       if (!decoted)
         throw new AuthenticationError(`Invalid/ expired credientials!`);
       const user = await userServices.findUser('id', decoted.id);
-      if (!user) throw AuthenticationError(`User not found!`);
+      console.log(user);
+      if (!user) throw new AuthenticationError(`User not found!`);
+
+      if (!isAdmin) throw new AuthenticationError(`User not found!`);
       req.user = user;
       return user;
     } catch (e) {
