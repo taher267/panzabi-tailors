@@ -15,7 +15,10 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import classes from './new-customer.module.css';
 import { NEW_CUSTOMER } from '../../graphql/Mutations/customerMut';
-import { errorConversion } from '../../utils/errorConv';
+import {
+  newCustomerFields,
+  newCustomerTransportFields,
+} from '../../arrayForms/customerForm';
 import useReactSession from '../../hooks/useReactSession';
 const colourOptions = [
   { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
@@ -29,22 +32,34 @@ const colourOptions = [
   { value: 'slate', label: 'Slate', color: '#253858' },
   { value: 'silver', label: 'Silver', color: '#666666' },
 ];
-const animatedComponents = makeAnimated();
-const NewCustomer = () => {
-  const check = useReactSession();
-  const [validErrs, setValidErrs] = useState({});
-  const [createCustomer, { data: newRegisterData, loading, error }] =
-    useMutation(NEW_CUSTOMER, {
-      update(proxy, result) {
-        console.log(result);
-      },
-      onError(err) {
-        // setValidErrs(errorConversion(err));
 
-        console.log(err.graphQLErrors[0]);
-      },
-    });
+// const animatedComponents = makeAnimated();
+const NewCustomer = () => {
+  const [gqlErr, setGqlErr] = useState({});
+  // controlling Mutation
+  const [createCustomer, { data, loading, error }] = useMutation(NEW_CUSTOMER, {
+    update(proxy, result) {
+      console.log(result);
+    },
+    onError(e) {
+      // const {
+      //   graphQLErrors: [{ extensions: exc }],
+      // } = e;
+      const exc = e?.graphQLErrors?.[0]?.extensions;
+      if (exc?.errors?.message) {
+        return setGqlErr({
+          username: exc?.errors?.message,
+          password: exc?.errors?.message,
+        });
+      } else if (exc) return setGqlErr(exc?.errors);
+      setGqlErr({ message: e?.message });
+      // console.log(exc?.errors);
+    },
+  });
+  console.log(error);
+
   const [deliveryFields, setDeliveryFields] = useState(false);
+  // use form hook
   const {
     register,
     handleSubmit,
@@ -62,68 +77,49 @@ const NewCustomer = () => {
       engage: '',
     },
   });
-  console.log(check);
+
+  const onFocus = ({ target: { name } }) => {
+    let newErr = { ...gqlErr };
+    delete newErr[name];
+    setGqlErr(newErr);
+  };
+  // console.log(check);
   const onSubmit = (data) => {
-    // console.log(data);
     createCustomer({ variables: data });
   };
-  const selectHandler = (e) => {
-    // console.log(e);
-  };
+
   return (
     <AdminLayout>
-      {/* {loading && (
+      {loading && (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
-      )} */}
+      )}
       <div>
-        {Object.entries(validErrs).map((item) => (
-          <p key={item[0]}>{item[1]}</p>
-        ))}
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-          <TextField
-            color="secondary"
-            variant="filled"
-            label="Customer Name"
-            className={classes.MuiFilledInputRoot}
-            fullWidth
-            {...register('name', { required: true })}
-            placeholder="Enter customer full name..."
-          />
-          {errors.name && <span>Name Mandatory</span>}
-
-          <TextField
-            variant="filled"
-            label="Customer Phone no"
-            className={classes.MuiFilledInputRoot}
-            fullWidth
-            {...register('phone_no', { required: true })}
-            placeholder="Enter customer phone number..."
-          />
-          {errors.phone_no && <span>Phone Number Mandatory</span>}
-
-          <TextField
-            variant="filled"
-            label="Customer Email"
-            className={classes.MuiFilledInputRoot}
-            fullWidth
-            {...register('email')}
-            placeholder="Enter customer email address..."
-          />
-          {errors.email && <span>{errors.email}</span>}
-
-          <TextField
-            variant="filled"
-            label="Customer Address"
-            className={classes.MuiFilledInputRoot}
-            fullWidth
-            {...register('address')}
-            placeholder="Enter customer address..."
-          />
-          {errors.address && <span>{errors.address}</span>}
+          {newCustomerFields?.map(
+            ({ name, validation, defaultError, ...field }) => (
+              <TextField
+                key={name}
+                onFocus={onFocus}
+                error={gqlErr?.[name] ? true : errors?.[name] ? true : false}
+                helperText={
+                  gqlErr?.[name]
+                    ? gqlErr?.[name]
+                    : errors?.[name]
+                    ? errors?.[name]?.message || defaultError
+                    : ''
+                }
+                {...register(name, { ...validation })}
+                {...field}
+                color="secondary"
+                variant="filled"
+                fullWidth
+              />
+            )
+          )}
           <h4>
-            Delivery information{' '}
+            Delivery information
             <Checkbox
               checked={deliveryFields}
               onClick={({ target: { checked } }) => setDeliveryFields(checked)}
@@ -131,64 +127,26 @@ const NewCustomer = () => {
           </h4>
           {deliveryFields && (
             <div className={classes.deliveryDetails}>
-              <div>
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  label="ডেলিভারি মাধ্যম"
-                  className={classes.MuiFilledInputRoot}
-                  {...register('delivery_by', { required: true })}
-                  placeholder="Enter customer delivery by..."
-                />
-                {/* {errors.delivery_by && <span>{errors.delivery_by?.message}</span>} */}
-                {errors.delivery_by && <span>Delivery By Mandatoty</span>}
-              </div>
-              <div>
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  label="Delivery charge"
-                  className={classes.MuiFilledInputRoot}
-                  {...register('delivery_charge', { required: true })}
-                  placeholder="Delivery Change"
-                />
-                {errors.delivery_charge && (
-                  <span>Delivery Change Mandatoty</span>
-                )}
-                {/* {errors.delivery_charge && (
-                <span>{errors.delivery_charge?.message}</span>
-              )} */}
-              </div>
-              <div>
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  label="Delivery address"
-                  className={classes.MuiFilledInputRoot}
-                  {...register('delivery_address', { required: true })}
-                  placeholder="Delivery deitals"
-                />
-                {errors.delivery_address && (
-                  <span>Delivery Address Mandatoty</span>
-                )}
-                {/* {errors.delivery_address && (
-                <span>{errors.delivery_address?.message}</span>
-              )} */}
-              </div>
-              <div>
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  label="Delivery phone"
-                  className={classes.MuiFilledInputRoot}
-                  {...register('delivery_phone', { required: true })}
-                  placeholder="Delivery Phone"
-                />
-                {errors.delivery_phone && <span>Delivery Phone Mandatoty</span>}
-                {/* {errors.delivery_phone && (
-                <span>{errors?.delivery_phone?.message}</span>
-              )} */}
-              </div>
+              {newCustomerTransportFields?.map(
+                ({ name, validation, defaultError, ...field }) => (
+                  <div key={name}>
+                    <TextField
+                      fullWidth
+                      onFocus={onFocus}
+                      variant="filled"
+                      {...register(name, { ...validation })}
+                      helperText={
+                        gqlErr?.[name]
+                          ? gqlErr?.[name]
+                          : errors?.[name]
+                          ? errors?.[name]?.message || defaultError
+                          : ''
+                      }
+                      {...field}
+                    />
+                  </div>
+                )
+              )}
             </div>
           )}
 
@@ -204,6 +162,7 @@ const NewCustomer = () => {
           <Button
             variant="contained"
             fullWidth
+            onFocus={onFocus}
             endIcon={<Save />}
             type="submit"
           >

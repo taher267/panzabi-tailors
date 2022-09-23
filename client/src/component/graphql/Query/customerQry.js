@@ -10,44 +10,44 @@ export const ALL_CUSTOMERS = gql`
       email
       address
       order_status
-      # delivery_detail {
-      #   delivery_by
+      # transportation {
+      #   transport_charge
       #   delivery_charge
-      #   delivery_address
-      #   delivery_phone
+      #   receiver_address
+      #   receiver_phone
       # }
       engage
-      user
+      user {
+        name
+        id
+      }
       orders
       createdAt
       updatedAt
     }
   }
 `;
-// export const CUSTOMER_QRY = gql`
-//   query singleUser($id: Int!) {
-//     getUser(id: $id) {
-//       name
-//       phone_no
-//       status
-//       roles
-//       username
-//       email
-//       address
-//       order_status
-//       delivery_detail
-//       engage
-//       user
-//       orders
-//       thirdPirty {
-//         via3rd
-//         name
-//         token
-//         token_secret
-//         client_id
-//       }
-//       createdAt
-//       updatedAt
-//     }
-//   }
-// `;
+export const SINGLE_CUSTOMER = gql`
+  query getCustomer($key: String!, $value: String!) {
+    getCustomer(key: $key, value: $value) {
+      id
+      name
+      phone_no
+      status
+      email
+      address
+      order_status
+      # transportation {
+      #   transport_charge
+      #   delivery_charge
+      #   receiver_address
+      #   receiver_phone
+      # }
+      engage
+      # user
+      orders
+      createdAt
+      updatedAt
+    }
+  }
+`;

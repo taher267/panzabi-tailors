@@ -1,23 +1,32 @@
 import Customer from '../models/User.js';
 import customerServices from '../services/userCustomerServices.js';
 import mg from 'mongoose';
-import { UserInputError } from 'apollo-server';
 import customerValidation from '../validation/customerValidation.js';
 import errorHandler from '../utils/errorHandler.js';
+// import auth from '../auth/auth.js';
+import { ApolloError, AuthenticationError } from 'apollo-server-core';
+
 export default {
   /**
    * Create New Customer
    */
-  createCustomer: async (_parent, { customer }, { req, res }) => {
+  createCustomer: async (_parent, { customer }, { req, res, isAuthorized }) => {
     try {
+      // console.log(isAuthorized);
+      if (!isAuthorized)
+        throw new AuthenticationError(`Unauthorized`, {
+          errors: { message: `Unauthorized user` },
+        });
+      if (!req?.user?.id) throw ApolloError(`Server Error Occered!`);
       await customerValidation.newCustomerValidation(customer);
       const newCustomerData = customer;
       if (!newCustomerData?.engage?.[0]?.length) newCustomerData.engage = [];
       const newCustomer = new Customer({
         ...newCustomerData,
-        Customer: '63134fc4362a560e956dfc22',
+        user: req?.user?._id || req?.user?.id,
       });
-      // await newCustomer.save();
+      const saved = await newCustomer.save();
+      // console.log(customData.user.name);
       return newCustomer;
     } catch (e) {
       return errorHandler(e);
@@ -26,8 +35,14 @@ export default {
   /**
    * All Customers
    */
-  allCustomers: async (_parent, { key, value }, { req, res }) => {
+  allCustomers: async (
+    _parent,
+    { key, value },
+    { req, res, currentUser, isAuthorized }
+  ) => {
     try {
+      // const user = await auth.userAuthorization(req);
+      if (!isAuthorized) throw new ApolloError(`Internal server error`);
       const filter =
         key && value
           ? { [key]: { $in: value.split('|') } }
@@ -51,26 +66,35 @@ export default {
   /**
    * Single Customer
    */
-  getCustomer: async (_parent, { id }, { req, res }) => {
+  getCustomer: async (_parent, { key, value }, { req, res }) => {
     try {
-      if (!mg.isValidObjectId(id))
-        throw new UserInputError(`Invalid delete id`);
-      return await Customer.findById(id);
+      if (!mg.isValidObjectId(value))
+        throw new UserInputError(`Invalid customer id`);
+      return await Customer.findById(value);
     } catch (e) {
       throw new UserInputError(e);
     }
   },
   /**
-   * Create New Customer
+   * Update Customer
    */
-  updateCustomer: async (_parent, { id, update }, { req, res }) => {
+  updateCustomer: async (
+    _parent,
+    { id, update },
+    { req, res, isAuthorized }
+  ) => {
     try {
+      if (!isAuthorized)
+        throw new AuthenticationError(`Unauthorized`, {
+          errors: { message: `Unauthorized user` },
+        });
+      await customerValidation.updateCustomerValidation({ id, ...update });
       const updated = await Customer.findByIdAndUpdate(id, update, {
         new: true,
       });
       return updated;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**

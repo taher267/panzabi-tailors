@@ -1,14 +1,16 @@
 import { useQuery } from '@apollo/client';
 import { ALL_CUSTOMERS } from '../graphql/Query/customerQry';
-import { LinearProgress, Box } from '@mui/material';
+import { LinearProgress, Box, Button } from '@mui/material';
 import AdminLayout from './../Layout/AdminLayout/index';
 import { DataGrid } from '@mui/x-data-grid';
+import { Visibility } from '@mui/icons-material';
 import {
   DataGridPremium,
   GridToolbar,
   useGridApiRef,
   useKeepGroupedColumnsHidden,
 } from '@mui/x-data-grid-premium';
+import { Link } from 'react-router-dom';
 const columns = [
   { field: 'id', headerName: 'ID', width: 90, hide: true },
   {
@@ -35,6 +37,7 @@ const columns = [
     headerName: 'Adderess',
     width: 150,
     editable: true,
+    hide: true,
   },
   {
     field: 'delivery_details',
@@ -65,9 +68,52 @@ const columns = [
   },
 
   {
-    field: 'Actions',
-    headerName: 'Actions',
+    field: 'orders',
+    headerName: 'Orders',
     description: 'Customer Created',
+    sortable: false,
+    width: 160,
+    valueGetter: ({ row }) => {
+      return row.orders.length;
+    },
+  },
+  {
+    field: 'user',
+    headerName: 'Entry By',
+    sortable: false,
+    width: 250,
+    hide: true,
+    renderCell: ({ row: { user } }) => {
+      return (
+        <>
+          <p>{user.name}</p>
+          <Link
+            to={`/user/${user.id}`}
+            style={{ display: 'flex', marginLeft: '5px' }}
+          >
+            <Visibility />
+          </Link>
+        </>
+      );
+    },
+  },
+  {
+    field: 'engage',
+    headerName: 'Reference',
+    description: 'Customer Created',
+    sortable: false,
+    width: 160,
+    valueGetter: ({ row }) => {
+      return row.engage.length;
+    },
+    hide: true,
+  },
+
+  {
+    hide: true,
+    field: 'updatedAt',
+    headerName: 'Last Update',
+    description: 'Last change info time of customer',
     sortable: false,
     width: 160,
     valueGetter: (pms) => {
@@ -76,12 +122,36 @@ const columns = [
         : '';
     },
   },
+  {
+    field: 'Actions',
+    headerName: 'Actions',
+    sortable: false,
+    width: 250,
+
+    renderCell: ({ id, row }) => {
+      return (
+        <>
+          <Button variant="outlined">
+            <Link to={`/customer/${id}`}>View</Link>
+          </Button>{' '}
+          |
+          <Button variant="outlined">
+            <Link to={`/customer/edit/${id}`}>Edit</Link>
+          </Button>{' '}
+          |
+          <Button variant="outlined">
+            <Link to={`/customer/delete/${id}`}>Delete</Link>
+          </Button>
+        </>
+      );
+    },
+  },
 ];
 
 const Customer = () => {
   const qury = useQuery(ALL_CUSTOMERS);
-  const { loading, data } = qury;
-  // console.log(qury);
+  const { error, loading, data } = qury;
+  console.log(error);
   return (
     <AdminLayout>
       {loading && (

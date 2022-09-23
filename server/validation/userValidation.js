@@ -17,9 +17,9 @@ const newUserValidation = async ({
     else if (name?.trim()?.length < 4)
       errors.name = `Name must be at least 4 chars!`;
     //phone
-    if (!phone_no?.trim()) errors.phone_no = `Phone no. is mandatory!`;
+    if (!phone_no?.trim()) errors.phone_no = `Phone number is mandatory!`;
     else if (phone_no?.length !== 11)
-      errors.phone_no = `Phone no. must be 11 chars!`;
+      errors.phone_no = `Phone number must be 11 chars!`;
     else if (phone_no?.length === 11) {
       const userbyPhone = await userServices.findUser('phone_no', phone_no);
       if (userbyPhone) errors.phone_no = `Phone no. already exists!`;
@@ -42,9 +42,9 @@ const newUserValidation = async ({
     if (passwordCheck) {
       if (!password) errors.password = `Password Mandatory`;
       else if (password?.length < 8)
-        errors.password = `password at least 8 chars, ${password}`;
+        errors.password = `password at least 8 chars`;
     } else if (password && password?.length < 8)
-      errors.password = `password at least 8 chars, ${password}`;
+      errors.password = `password at least 8 chars`;
     // error throw
     if (!Object.keys(errors).length) return true;
 

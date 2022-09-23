@@ -53,11 +53,11 @@ export default mg.model(
       },
       email: String,
       address: String,
-      delivery_detail: {
-        delivery_by: String,
-        delivery_charge: Number,
-        delivery_address: String,
-        delivery_phone: String,
+      transportation: {
+        transport_name: String,
+        transport_charge: Number,
+        receiver_address: String,
+        receiver_phone: String,
       },
       notes: String,
     },

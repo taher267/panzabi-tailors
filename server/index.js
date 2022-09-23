@@ -4,14 +4,24 @@ import resolvers from './resolvers/resolvers.js';
 import typeDefs from './typedefs/typeDefs.js';
 import contexts from './context/contexts.js';
 import db from './config/db.js';
-
+import auth from './auth/auth.js';
+const publicRoutes = ['userLogin', 'getCustomer'];
+// console.log(publicRoutes.indexOf('userLogin'));
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: (ctx) => {
+  context: async (ctx) => {
     const { req, res } = ctx;
-    // console.log(ctx);
-    return { ...contexts, req, res };
+    let cuttentUser = null,
+      isAuthorized = false;
+
+    if (publicRoutes.indexOf(req?.body?.operationName) === -1) {
+      const user = await auth.userAuthorization(req);
+      req.user = user;
+      cuttentUser = user;
+      isAuthorized = true;
+    }
+    return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });

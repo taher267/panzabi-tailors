@@ -4,6 +4,8 @@ import { useMutation } from '@apollo/client';
 import { SIGNUP } from '../../graphql/Mutations/signUpMut';
 import { useForm } from 'react-hook-form';
 import { ReactSession } from 'react-client-session';
+import { AuthContext } from '../../context/AuthContext';
+
 ReactSession.setStoreType('localStorage');
 
 const init = {
@@ -14,37 +16,41 @@ const init = {
   password: '',
 };
 const Signin = () => {
+  const context = React.useContext(AuthContext);
   const [gqlErr, setGqlErr] = React.useState({});
+  // User form
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({ defaultValues: { ...init } });
+  // Controlling Mutation
   const [userSignup, { loading, data, error }] = useMutation(SIGNUP, {
     update(proxy, result) {
       const token = result?.data?.userSignup?.token;
-      console.log(token);
+      // console.log(token);
       if (token) ReactSession.set('token', token);
+      context?.login(token);
     },
     onError(e) {
-      console.log(e);
-      // console.log(e?.graphQLErrors?.[0]?.extensions);
-      // const { graphQLErrors: [{ extensions: exc }] }=e
-      // if (exc?.errors?.message) {
-      //   return setGqlErr({
-      //     username: exc?.errors?.message,
-      //     password: exc?.errors?.message,
-      //   });
-      // }
-      // setGqlErr(exc?.errors || {});
+      // console.log(e);
+      const exc = e?.graphQLErrors?.[0]?.extensions;
+      if (exc?.errors?.message) {
+        return setGqlErr({
+          username: exc?.errors?.message,
+          password: exc?.errors?.message,
+        });
+      }
+      console.log(exc?.errors);
+      setGqlErr(exc?.errors || {});
     },
   });
-  // console.log(ReactSession.get('token'));
   const onSubmit = (data) => {
     delete data.confirmPassword;
     setGqlErr({});
     userSignup({ variables: data });
-    console.log(data);
+    // console.log(data);
   };
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErr };
@@ -59,11 +65,17 @@ const Signin = () => {
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
-          error={gqlErr.name ? true : errors.name ? true : false}
-          label="name"
+          error={gqlErr?.name ? true : errors.name ? true : false}
+          label={
+            errors.name ? errors.name.message || 'Name mandatory' : 'Full Name'
+          }
           placeholder="Enter full name.."
-          {...register('name', { required: true })}
-          helperText={errors.name ? 'Name mandatory' : ''}
+          {...register('name', {
+            required: true,
+          })}
+          helperText={
+            gqlErr.name ? gqlErr.name : errors.name ? 'Name mandatroy' : ''
+          }
           variant="standard"
           fullWidth
           style={{ marginBottom: '15px' }}
@@ -72,9 +84,18 @@ const Signin = () => {
         <TextField
           error={gqlErr.username ? true : errors.username ? true : false}
           label="Username"
-          placeholder="Enter phone no or email or username..."
-          {...register('username', { required: true })}
-          helperText={errors.username ? 'Username mandatory' : ''}
+          placeholder="Enter phone number..."
+          {...register('username', {
+            required: true,
+            pattern: /^[A-Za-z0-9]+$/i,
+          })}
+          helperText={
+            gqlErr.username
+              ? gqlErr.username
+              : errors.username
+              ? 'Username mandatroy'
+              : ''
+          }
           variant="standard"
           fullWidth
           style={{ marginBottom: '15px' }}
@@ -84,9 +105,15 @@ const Signin = () => {
         <TextField
           error={gqlErr.phone_no ? true : errors.phone_no ? true : false}
           label="Phone number"
-          placeholder="Enter phone no or email or phone_no..."
+          placeholder="Enter phone number..."
           {...register('phone_no', { required: true })}
-          helperText={errors.phone_no ? 'phone number mandatory' : ''}
+          helperText={
+            gqlErr.phone_no
+              ? gqlErr.phone_no
+              : errors.phone_no
+              ? 'Phone number mandatroy'
+              : ''
+          }
           variant="standard"
           fullWidth
           style={{ marginBottom: '15px' }}
@@ -99,7 +126,13 @@ const Signin = () => {
           type="email"
           placeholder="Enter valid email..."
           {...register('email', { required: true })}
-          helperText={errors.email ? 'Email mandatory' : ''}
+          helperText={
+            gqlErr.email
+              ? gqlErr.email
+              : errors.email
+              ? 'Email is mandatroy'
+              : ''
+          }
           variant="standard"
           fullWidth
           style={{ marginBottom: '15px' }}
@@ -117,7 +150,7 @@ const Signin = () => {
             gqlErr.password
               ? gqlErr.password
               : errors.password
-              ? 'Password mandatory'
+              ? 'Password is mandatory'
               : ''
           }
           {...register('password', { required: true })}
@@ -125,32 +158,29 @@ const Signin = () => {
           fullWidth
           style={{ marginBottom: '15px' }}
         />
-
         <TextField
-          error={
-            gqlErr.confirmPassword
-              ? true
-              : errors.confirmPassword
-              ? true
-              : false
-          }
+          error={errors?.confirmPassword ? true : false}
           id="standard-error-helper-text"
           label="Confirm Password"
           type="password"
           onFocus={onFocus}
-          //   gqlErr
           helperText={
-            gqlErr.confirmPassword
-              ? gqlErr.confirmPassword
-              : errors.confirmPassword
-              ? 'confirmPassword mandatory'
+            errors.confirmPassword
+              ? errors.confirmPassword.message || 'Confirm Password mandatory!'
               : ''
           }
-          {...register('confirmPassword', { required: true })}
+          {...register('confirmPassword', {
+            required: true,
+            validate: (val) => {
+              if (watch('password') && watch('password') !== val)
+                return 'Your passwords do no match';
+            },
+          })}
           variant="standard"
           fullWidth
           style={{ marginBottom: '15px' }}
         />
+
         <Button
           fullWidth
           disabled={

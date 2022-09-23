@@ -24,7 +24,12 @@ export default {
     allMeasurements: measurementController.allMeasurements,
     getMeasurement: measurementController.getMeasurement,
   },
-
+  Customer: {
+    user: async (p, a, c) => {
+      // console.log(p);
+      return await userController.getUser(p, { key: 'id', value: p.id }, c);
+    },
+  },
   Mutation: {
     userLogin: authController.login,
     userSignup: authController.signup,

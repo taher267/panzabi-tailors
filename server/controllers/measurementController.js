@@ -1,7 +1,10 @@
 import Measurement from '../models/Measurement.js';
 import mg from 'mongoose';
-import catchAsyncErrors from '../utils/catchAsyncErrors.js';
-import { UserInputError } from 'apollo-server-core';
+import { AuthenticationError, UserInputError } from 'apollo-server-core';
+import measureValidation from '../validation/measureValidation.js';
+import errorHandler from '../utils/errorHandler.js';
+import measurementServices from '../services/measurementServices.js';
+import { isConstValueNode } from 'graphql';
 
 export default {
   /**
@@ -9,11 +12,13 @@ export default {
    */
   createMeasurement: async (_parent, { measures }, _context) => {
     try {
+      // console.log(measures, '===create');
+      await measureValidation.measurementValidation(measures);
       const newMeasurement = new Measurement(measures);
       await newMeasurement.save();
       return newMeasurement;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -25,9 +30,9 @@ export default {
       const all = await Measurement.find(filter);
       let newArr = [];
       for (const iter of all) {
-        let { _id: id, ...rest } = iter.doc;
+        let { _id, ...rest } = iter._doc;
         newArr.push({
-          id,
+          id: _id,
           ...rest,
         });
       }
@@ -39,11 +44,12 @@ export default {
   /**
    * Single Measurement
    */
-  getMeasurement: async (_parent, { id }, _context) => {
+  getMeasurement: async (_parent, { key, value }, { isAuthorized }) => {
     try {
-      if (!mg.isValidObjectId(id))
-        throw new UserInputError(`Invalid delete id`);
-      return await Measurement.findById(id);
+      if (!isAuthorized) throw AuthenticationError(`Unauthorized user!`);
+      if (key === 'id' && !mg.isValidObjectId(value))
+        throw new UserInputError(`Invalid id, get ${value}`);
+      return await measurementServices.findMeasurement(key, value);
     } catch (e) {
       throw UserInputError(e);
     }
@@ -53,12 +59,21 @@ export default {
    */
   updateMeasurement: async (_parent, { id, update }, _context) => {
     try {
-      const updated = await Measurement.findByIdAndUpdate(id, update, {
-        new: true,
-      });
-      return updated;
+      await measureValidation.measurementUpdateValidation({ id, ...update });
+      const updated = await measurementServices.measurementUpdate(
+        { _id: id },
+        update,
+        {
+          new: true,
+        }
+      );
+      return {
+        ...update,
+        id,
+      };
     } catch (e) {
-      throw UserInputError(e);
+      console.log(e);
+      errorHandler(e);
     }
   },
   /**
@@ -72,7 +87,7 @@ export default {
       console.log(del);
       return del.deletedCount;
     } catch (e) {
-      throw UserInputError(e);
+      errorHandler(e);
     }
   },
 };

@@ -19,7 +19,6 @@ const createUser = async ({ name, username, email, password, phone_no }) => {
   try {
     const newData = { name, username, email, password, phone_no };
     const saved = new User(newData);
-    return saved;
     return await saved.save();
   } catch (e) {
     errorHandler(e);

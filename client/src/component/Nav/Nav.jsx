@@ -13,7 +13,10 @@ export default function Nav() {
         <NavLink to="/">Home</NavLink>
       </li>
       <li>
-        <NavLink to="/shop">Shop</NavLink>
+        <NavLink to="/login">Login</NavLink>
+      </li>
+      <li>
+        <NavLink to="/customer">Customer</NavLink>
       </li>
       <li>
         <NavLink to="/category-products">Category Products</NavLink>

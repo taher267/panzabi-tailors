@@ -4,42 +4,39 @@ import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { NEW_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
-import { errorConversion } from '../../utils/errorConv';
+import { errorFormat } from '../../utils/errorConv';
+import { measuementFields } from './../../arrayForms/measurementForm';
+import { useForm } from 'react-hook-form';
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const NewMeasuremen = () => {
-  const [errors, setErrors] = useState({});
-  const [values, setValues] = useState({ ...valuesInit });
+  const [gqlErrs, setGqlErrs] = useState({});
   const [createMeasurement, { data, loading, error }] = useMutation(
     NEW_MEASUREMENT,
     {
-      update(proxy, result) {
-        //   console.log(result);
-      },
-      onError(err) {
-        console.log(err);
+      update(proxy, result) {},
+      onError(e) {
+        setGqlErrs(errorFormat(e));
         // setErrors(errorConversion(err));
       },
-      onCompleted() {
-        setValues({ ...valuesInit });
-      },
-      variables: values,
     }
   );
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ defaultValues: { ...valuesInit } });
   //   console.dir(data);
   //   console.dir('validErrs', validErrs);
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setErrors({});
-    // setValues({ ...newData });
-    // console.log(data);
-    createMeasurement();
+  const onSubmit = (data) => {
+    setGqlErrs({});
+    createMeasurement({ variables: data });
   };
 
-  const onChange = ({ target: { name, value } }) => {
-    setValues((p) => ({ ...p, [name]: value }));
+  const onFocus = ({ target: { name } }) => {
+    let newErr = { ...gqlErrs };
+    delete newErr[name];
+    setGqlErrs(newErr);
   };
-
   return (
     <AdminLayout>
       {loading && (
@@ -48,34 +45,36 @@ const NewMeasuremen = () => {
         </Box>
       )}
       <div>
-        {Object.entries(errors).map((item) => (
-          <p key={item[0]}>{item[1]}</p>
-        ))}
-        <form onSubmit={onSubmit} autoComplete="off">
-          <TextField
-            type="number"
-            name="sl_id"
-            value={values.sl_id}
-            onChange={onChange}
-            color="secondary"
-            variant="filled"
-            label="Seriel id"
-            fullWidth
-            placeholder="Serial Id"
-          />
-          {errors?.sl_id && <span>Serial Id Mandatory</span>}
-          <TextField
-            onChange={onChange}
-            value={values.name}
-            variant="filled"
-            label="Name"
-            name="name"
-            fullWidth
-            placeholder="Measurement Name"
-          />
-          {errors?.name && <span>Name Mandatory</span>}
+        <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+          {measuementFields?.map(
+            ({ name, defaultError, validation, ...rest }) => (
+              <TextField
+                key={name}
+                {...register(name, { ...validation })}
+                name={name}
+                onFocus={onFocus}
+                color="secondary"
+                variant="filled"
+                label={name}
+                fullWidth
+                error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
+                helperText={
+                  gqlErrs?.[name]
+                    ? gqlErrs?.[name]
+                    : errors?.[name]
+                    ? errors?.[name]?.message || defaultError
+                    : ''
+                }
+                {...rest}
+              />
+            )
+          )}
           <Button
-            disabled={loading}
+            disabled={
+              loading ||
+              Object.keys(gqlErrs).length > 0 ||
+              Object.keys(errors).length > 0
+            }
             variant="contained"
             fullWidth
             endIcon={<Save />}

@@ -4,12 +4,14 @@ import { useMutation } from '@apollo/client';
 import { LOGIN } from '../../graphql/Mutations/loginMut';
 import { useForm } from 'react-hook-form';
 import { ReactSession } from 'react-client-session';
+import { AuthContext } from '../../context/AuthContext';
 ReactSession.setStoreType('localStorage');
 const init = {
-  username: '',
-  password: '',
+  username: '01765470147',
+  password: '12345678',
 };
 const Login = () => {
+  const context = React.useContext(AuthContext);
   const [gqlErr, setGqlErr] = React.useState({});
   const {
     register,
@@ -20,6 +22,7 @@ const Login = () => {
     update(proxy, result) {
       const token = result?.data?.userLogin?.token;
       if (token) ReactSession.set('token', token);
+      context?.login(token);
     },
     onError({ graphQLErrors: [{ extensions: exc }] }) {
       if (exc?.errors?.message) {
@@ -31,7 +34,6 @@ const Login = () => {
       setGqlErr(exc?.errors || {});
     },
   });
-  console.log(ReactSession.get('token'));
   const onSubmit = (data) => {
     setGqlErr({});
     userLogin({ variables: data });
@@ -53,7 +55,13 @@ const Login = () => {
           label="Username"
           placeholder="Enter phone no or email or username..."
           {...register('username', { required: true })}
-          helperText={errors.username ? 'Username mandatroy' : ''}
+          helperText={
+            gqlErr.username
+              ? gqlErr.username
+              : errors.username
+              ? 'Username mandatroy'
+              : ''
+          }
           variant="standard"
           fullWidth
           style={{ marginBottom: '15px' }}

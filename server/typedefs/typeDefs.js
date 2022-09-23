@@ -11,14 +11,17 @@ export default gql`
     getUser(key: String!, value: String!): User
     # Customer
     allCustomers(key: String, value: String): [Customer]
-    getCustomer(id: ID!): Customer
+    getCustomer(key: String, value: String): Customer
     # Measurement
     allMeasurements(key: String, value: String): [Measurement!]!
-    getMeasurement(id: ID!): Measurement!
+    getMeasurement(key: String!, value: String!): Measurement!
     # Order
     allOrders(key: String, value: String): [Order!]!
     getOrder(id: ID!): Order!
   }
+
+  # User():User
+
   # Auth Query Start
   type Login {
     token: String!
@@ -64,11 +67,11 @@ export default gql`
   }
   # Measurement Query End
   # User Query Start
-  type DeliveryDetails {
-    delivery_by: String
-    delivery_charge: Float
-    delivery_address: String
-    delivery_phone: String
+  type Transportation {
+    transport_name: String
+    transport_charge: Float
+    receiver_address: String
+    receiver_phone: String
   }
   type thirdPirtyDetails {
     via3rd: Boolean
@@ -93,6 +96,10 @@ export default gql`
   }
   # User Query End
   # Custoer Query start
+  input CustomerQry {
+    key: String!
+    value: String!
+  }
   type Customer {
     id: ID!
     name: String!
@@ -101,9 +108,9 @@ export default gql`
     email: String
     address: String
     order_status: String
-    delivery_detail: DeliveryDetails
+    transportation: Transportation
     engage: [String]
-    user: String!
+    user: User
     orders: [String]
     createdAt: String!
     updatedAt: String!
@@ -168,11 +175,11 @@ export default gql`
 
     # Csustomer
     createCustomer(customer: InputCustomer): Customer
-    updateCustomer(id: ID!, update: InputCustomer): Customer
+    updateCustomer(id: String!, update: InputCustomer): Customer
     deleteCustomer(id: ID!): Boolean
     # Measurement
     createMeasurement(measures: InputMeasurement): Measurement
-    updateMeasurement(id: ID!, update: InputMeasurement): Measurement
+    updateMeasurement(id: String!, update: InputMeasurement): Measurement
     deleteMeasurement(id: ID!): Boolean
 
     # Order
@@ -225,11 +232,11 @@ export default gql`
   # Measurement Mutation End
 
   # User mutation Start
-  input InputDelivery {
-    delivery_by: String
-    delivery_charge: Float
-    delivery_address: String
-    delivery_phone: String
+  input InputTransportation {
+    transport_name: String
+    transport_charge: Float
+    receiver_address: String
+    receiver_phone: String
   }
   input InputThirdPirty {
     via3rd: Boolean
@@ -247,11 +254,12 @@ export default gql`
   }
   # User mutation End
   # Customer mutation Start
-  input InputDeliveryDetails {
-    delivery_by: String
-    delivery_charge: Float
-    delivery_address: String
-    delivery_phone: String
+
+  input InputTransportationDetails {
+    transport_name: String
+    transport_charge: Float
+    receiver_address: String
+    receiver_phone: String
   }
   input InputCustomer {
     name: String!
@@ -259,7 +267,7 @@ export default gql`
     status: String
     email: String
     address: String
-    delivery_detail: InputDeliveryDetails
+    transportation: InputTransportationDetails
     engage: [String]
     orders: [String]
   }

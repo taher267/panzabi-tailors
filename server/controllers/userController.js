@@ -63,8 +63,9 @@ export default {
   /**
    * Single User
    */
-  getUser: async (_parent, { key, value }, { req, res }) => {
+  getUser: async (parent, { key, value }, { req, res }) => {
     try {
+      // console.log(parent);
       if (!key || !value)
         throw new UserInputError(`key and value must be provide!`);
       if (key === 'id' && !mg.isValidObjectId(value))
