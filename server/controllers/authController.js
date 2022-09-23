@@ -20,9 +20,9 @@ export default {
         {
           $or: [{ username }, { phone_no: username }, { email: username }],
         },
-        'password'
+        'password username'
       );
-
+      // console.log(user);
       if (!user)
         throw UserInputError(`Wrong credentials!`, {
           errors: {
@@ -49,7 +49,6 @@ export default {
         ...register,
         passwordCheck: true,
       });
-      // const { username, password } = register;
       const user = await userServices.createUser(register);
       return { token: getJWT(user.id) };
     } catch (e) {

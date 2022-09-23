@@ -1,12 +1,13 @@
-import { UserInputError } from 'apollo-server-core';
-import isEmail from 'validator/lib/isemail.js';
+import { UserInputError } from 'apollo-server';
+import validator from 'validator';
+
 import errorHandler from '../utils/errorHandler.js';
 const authValidation = async ({ username, password }) => {
   let errors = {};
   try {
     //username
     if (!username) errors.username = `Username is mandatory!`;
-    else if (username.includes('@') && !isEmail(username))
+    else if (username.includes('@') && !validator.isEmail(username))
       errors.username = `Invalid username`;
     else if (username.length < 5) errors.username = `Invalid username`;
     // Password
@@ -16,7 +17,7 @@ const authValidation = async ({ username, password }) => {
     if (!Object.keys(errors).length) return true;
     throw new UserInputError(
       `A number's of error cought ${Object.keys(errors).join(', ')}`,
-      { errors }
+      { errors: errors }
     );
   } catch (e) {
     errorHandler(e);

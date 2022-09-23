@@ -7,24 +7,31 @@ import { NEW_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
 import { errorFormat } from '../../utils/errorConv';
 import { measuementFields } from './../../arrayForms/measurementForm';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const NewMeasuremen = () => {
+  const navigate = useNavigate();
   const [gqlErrs, setGqlErrs] = useState({});
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ defaultValues: { ...valuesInit } });
   const [createMeasurement, { data, loading, error }] = useMutation(
     NEW_MEASUREMENT,
     {
       update(proxy, result) {},
       onError(e) {
         setGqlErrs(errorFormat(e));
-        // setErrors(errorConversion(err));
+      },
+      onCompleted() {
+        reset({ ...valuesInit });
+        navigate('/dashboard/measurement');
       },
     }
   );
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ defaultValues: { ...valuesInit } });
+
   //   console.dir(data);
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {

@@ -32,6 +32,7 @@ import EditMeasuremen from './Admin/Measurement/EditMeasurement';
 //   uri: 'http://localhost:4000',
 // });
 const httpLink = createHttpLink({
+  // uri: 'https://pz-front-end.herokuapp.com',
   uri: 'http://localhost:4000',
 });
 // const client = new ApolloClient({
@@ -66,7 +67,6 @@ const Main = () => {
 
             <Route element={<ProtectedRoutes />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              {/* <Route path="/customer" element={<Customer />} /> */}
               <Route path="/customer">
                 <Route path="" element={<Customer />} />
                 <Route path="new" element={<NewCustomer />} />
