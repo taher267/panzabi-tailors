@@ -1,3 +1,4 @@
 const JWT_SECRET = `fdjfksdj9430x483n9x483n948394c3n43848394839Z`;
-
-export default { JWT_SECRET };
+const ADMIN_ACCESS = ['ADMIN', 'SUPER_ADMIN'];
+const USER_ACCESS = ['USER'];
+export default { JWT_SECRET, ADMIN_ACCESS, USER_ACCESS };

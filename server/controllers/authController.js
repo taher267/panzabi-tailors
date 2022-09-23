@@ -8,8 +8,9 @@ import errorHandler from '../utils/errorHandler.js';
 import authValidation from '../validation/authValidation.js';
 import userValidation from '../validation/userValidation.js';
 import userServices from '../services/userCustomerServices.js';
-import { UserInputError } from 'apollo-server-core';
+import { UserInputError } from 'apollo-server';
 import getJWT from '../utils/getJWT.js';
+import { errorFormat } from '../../client/src/component/utils/errorConv.js';
 export default {
   login: async (parent, { credentials }, { req, res }) => {
     try {
@@ -20,16 +21,25 @@ export default {
         {
           $or: [{ username }, { phone_no: username }, { email: username }],
         },
-        'password username'
+        'password roles'
       );
       // console.log(user);
+
       if (!user)
-        throw UserInputError(`Wrong credentials!`, {
+        throw new UserInputError(
+          `Wrong credentials!`,
+          errorFormat(`invalid credentials`)
+        );
+
+      if (!user?.roles.includes('ADMIN')) {
+        throw new UserInputError(`Wrong credentials!`, {
           errors: {
             success: false,
             message: `invalid credentials`,
           },
         });
+      }
+
       const match = await bcrypt.compare(password, user.password);
       if (!match)
         throw new UserInputError(`Wrong credentials!`, {
