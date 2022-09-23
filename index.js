@@ -7,6 +7,7 @@ import db from './config/db.js';
 import auth from './auth/auth.js';
 const publicRoutes = ['userLogin', 'getCustomer'];
 // console.log(publicRoutes.indexOf('userLogin'));
+const PORT = process.env.PORT || 4000;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -27,7 +28,7 @@ const server = new ApolloServer({
 });
 
 db.then(() =>
-  server.listen(4000).then(({ url }) => {
+  server.listen(PORT).then(({ url }) => {
     console.log(
       `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
     );
