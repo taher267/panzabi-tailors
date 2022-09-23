@@ -46,16 +46,7 @@ export default {
         key && value
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['USER'] } };
-      const all = await userServices.findUser(filter);
-      let modified = [];
-      for (const single of all) {
-        let { _id, ...rest } = single._doc;
-        modified.push({
-          id: _id,
-          ...rest,
-        });
-      }
-      return modified;
+      return await userServices.findUser(filter);
     } catch (e) {
       throw new UserInputError(e);
     }

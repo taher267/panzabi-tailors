@@ -3,6 +3,8 @@ import errorHandler from '../utils/errorHandler.js';
 import jwt from 'jsonwebtoken';
 import userServices from '../services/userCustomerServices.js';
 import config from '../config/config.js';
+import { checkAdmin } from '../utils/checkRoles.js';
+import { errorFormat } from '../../client/src/component/utils/errorConv.js';
 
 export default {
   userAuthorization: async (req) => {
@@ -17,12 +19,22 @@ export default {
         throw new AuthenticationError(`Please login to access the resources!`);
       const decoted = jwt.verify(token, config.JWT_SECRET.trim());
       if (!decoted)
-        throw new AuthenticationError(`Invalid/ expired credientials!`);
+        throw new AuthenticationError(
+          `Invalid/ expired credientials!`,
+          errorFormat(`Provide valid credientils! `)
+        );
       const user = await userServices.findUser('id', decoted.id);
-      console.log(user);
-      if (!user) throw new AuthenticationError(`User not found!`);
+      if (!user)
+        throw new AuthenticationError(
+          `Something going worng!`,
+          errorFormat(`Could be internal issue! 😧`)
+        );
 
-      if (!isAdmin) throw new AuthenticationError(`User not found!`);
+      if (!checkAdmin(user.roles))
+        throw new AuthenticationError(
+          `Unauthorized!`,
+          errorFormat(`User should be proper authorization`)
+        );
       req.user = user;
       return user;
     } catch (e) {

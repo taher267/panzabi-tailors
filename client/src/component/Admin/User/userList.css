@@ -1,0 +1,7 @@
+#react-select-2-listbox {
+  background-color: rgba(128, 0, 128, 0.5);
+}
+
+.selectedRoles > div .css-1qfu80a-ValueContainer2 > div {
+  width: unset !important;
+}

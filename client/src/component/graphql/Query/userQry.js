@@ -28,9 +28,9 @@ import { gql } from '@apollo/client';
 // `;
 
 export const ALL_USERS = gql`
-  query allUsers {
-    allUsers {
-      id
+  query allUsers($key: String, $value: String) {
+    allUsers(key: $key, value: $value) {
+      _id
       name
       phone_no
       status

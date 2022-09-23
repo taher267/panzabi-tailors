@@ -5,6 +5,7 @@ import { SIGNUP } from '../../graphql/Mutations/signUpMut';
 import { useForm } from 'react-hook-form';
 import { ReactSession } from 'react-client-session';
 import { AuthContext } from '../../context/AuthContext';
+import { errorFormat } from '../../utils/errorConv';
 
 ReactSession.setStoreType('localStorage');
 
@@ -34,23 +35,14 @@ const Signin = () => {
       context?.login(token);
     },
     onError(e) {
-      // console.log(e);
-      const exc = e?.graphQLErrors?.[0]?.extensions;
-      if (exc?.errors?.message) {
-        return setGqlErr({
-          username: exc?.errors?.message,
-          password: exc?.errors?.message,
-        });
-      }
-      console.log(exc?.errors);
-      setGqlErr(exc?.errors || {});
+      return setGqlErr(errorFormat(e));
     },
   });
+  // console.log(error);
   const onSubmit = (data) => {
     delete data.confirmPassword;
     setGqlErr({});
     userSignup({ variables: data });
-    // console.log(data);
   };
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErr };

@@ -11,15 +11,14 @@ import {
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
 import classes from './new-customer.module.css';
 import { NEW_CUSTOMER } from '../../graphql/Mutations/customerMut';
 import {
   newCustomerFields,
   newCustomerTransportFields,
 } from '../../arrayForms/customerForm';
-import useReactSession from '../../hooks/useReactSession';
+// import Select from 'react-select';
+// import makeAnimated from 'react-select/animated';
 const colourOptions = [
   { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
   { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },

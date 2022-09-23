@@ -23,31 +23,26 @@ export default {
         },
         'password roles'
       );
-      // console.log(user);
-
       if (!user)
         throw new UserInputError(
           `Wrong credentials!`,
-          errorFormat(`invalid credentials`)
+          errorFormat(`invalid credentials 😈`)
         );
-
-      if (!user?.roles.includes('ADMIN')) {
-        throw new UserInputError(`Wrong credentials!`, {
-          errors: {
-            success: false,
-            message: `invalid credentials`,
-          },
-        });
-      }
-
+      // Password check
       const match = await bcrypt.compare(password, user.password);
       if (!match)
-        throw new UserInputError(`Wrong credentials!`, {
-          errors: {
-            success: false,
-            message: `invalid credentials`,
-          },
-        });
+        throw new UserInputError(
+          `Wrong credentials!`,
+          errorFormat(`invalid credentials 😈`)
+        );
+      // Authorization check
+      if (!user?.roles.includes('ADMIN')) {
+        throw new UserInputError(
+          `Unauthorized!`,
+          errorFormat(`Unauthorized to access this resource 😈`)
+        );
+      }
+      // return token with credientials
       return { token: getJWT(user.id) };
     } catch (e) {
       errorHandler(e);
@@ -60,7 +55,7 @@ export default {
         passwordCheck: true,
       });
       const user = await userServices.createUser(register);
-      return { token: getJWT(user.id) };
+      return { token: user?.getJWToken() };
     } catch (e) {
       errorHandler(e);
     }
