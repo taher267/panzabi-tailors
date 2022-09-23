@@ -1,4 +1,4 @@
-import { UserInputError } from 'apollo-server-core';
+import { UserInputError } from 'apollo-server';
 import isEmail from 'validator/lib/isemail.js';
 import errorHandler from '../utils/errorHandler.js';
 const authValidation = async ({ username, password }) => {
@@ -16,7 +16,7 @@ const authValidation = async ({ username, password }) => {
     if (!Object.keys(errors).length) return true;
     throw new UserInputError(
       `A number's of error cought ${Object.keys(errors).join(', ')}`,
-      { errors }
+      { errors: errors }
     );
   } catch (e) {
     errorHandler(e);
