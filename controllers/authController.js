@@ -8,8 +8,9 @@ import errorHandler from '../utils/errorHandler.js';
 import authValidation from '../validation/authValidation.js';
 import userValidation from '../validation/userValidation.js';
 import userServices from '../services/userCustomerServices.js';
-import { UserInputError } from 'apollo-server-core';
+import { UserInputError } from 'apollo-server';
 import getJWT from '../utils/getJWT.js';
+import { errorFormat } from '../../client/src/component/utils/errorConv.js';
 export default {
   login: async (parent, { credentials }, { req, res }) => {
     try {
@@ -20,24 +21,28 @@ export default {
         {
           $or: [{ username }, { phone_no: username }, { email: username }],
         },
-        'password'
+        'password roles'
       );
-
       if (!user)
-        throw UserInputError(`Wrong credentials!`, {
-          errors: {
-            success: false,
-            message: `invalid credentials`,
-          },
-        });
+        throw new UserInputError(
+          `Wrong credentials!`,
+          errorFormat(`invalid credentials 😈`)
+        );
+      // Password check
       const match = await bcrypt.compare(password, user.password);
       if (!match)
-        throw new UserInputError(`Wrong credentials!`, {
-          errors: {
-            success: false,
-            message: `invalid credentials`,
-          },
-        });
+        throw new UserInputError(
+          `Wrong credentials!`,
+          errorFormat(`invalid credentials 😈`)
+        );
+      // Authorization check
+      if (!user?.roles.includes('ADMIN')) {
+        throw new UserInputError(
+          `Unauthorized!`,
+          errorFormat(`Unauthorized to access this resource 😈`)
+        );
+      }
+      // return token with credientials
       return { token: getJWT(user.id) };
     } catch (e) {
       errorHandler(e);
@@ -49,9 +54,8 @@ export default {
         ...register,
         passwordCheck: true,
       });
-      // const { username, password } = register;
       const user = await userServices.createUser(register);
-      return { token: getJWT(user.id) };
+      return { token: user?.getJWToken() };
     } catch (e) {
       errorHandler(e);
     }
