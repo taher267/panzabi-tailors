@@ -1,5 +1,4 @@
 import { UserInputError } from 'apollo-server';
-import User from '../models/User.js';
 import check from 'validator';
 import customerServices from '../services/userCustomerServices.js';
 import errorHandler from '../utils/errorHandler.js';
