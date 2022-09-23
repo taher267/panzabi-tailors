@@ -24,7 +24,7 @@ const server = new ApolloServer({
     }
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
-  plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+  // plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 
 db.then(() =>
