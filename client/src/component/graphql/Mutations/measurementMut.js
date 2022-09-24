@@ -11,7 +11,7 @@ export const NEW_MEASUREMENT = gql`
     $name: String! # $icon: InpIcon
   ) {
     createMeasurement(measures: { sl_id: $sl_id, name: $name }) {
-      id
+      _id
       sl_id
       name
       icon {
@@ -30,12 +30,11 @@ export const EDIT_MEASUREMENT = gql`
 
   mutation updateMeasurement(
     $id: String!
-    $sl_id: String!
     $name: String!
-  ) # $icon: InpIcon
-  {
+    $sl_id: String! # $icon: InpIcon
+  ) {
     updateMeasurement(id: $id, update: { name: $name, sl_id: $sl_id }) {
-      id
+      _id
       sl_id
       name
       icon {

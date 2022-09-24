@@ -4,6 +4,7 @@ import errorHandler from '../utils/errorHandler.js';
 const measurementValidation = async ({ sl_id, name }) => {
   let errors = {};
   try {
+    // console.log(name);
     //name
     if (!name) errors.name = `Name is mandatory!`;
     else if (name.length < 2) errors.name = `Name at least 2 chars`;

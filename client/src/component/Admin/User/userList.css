@@ -5,3 +5,7 @@
 .selectedRoles > div .css-1qfu80a-ValueContainer2 > div {
   width: unset !important;
 }
+
+.MuiDataGrid-cell--withRenderer.MuiDataGrid-cell.MuiDataGrid-cell--textCenter {
+  outline: none;
+}

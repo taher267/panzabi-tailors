@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 export const ALL_MEASUREMENTS = gql`
   query allMeasurements {
     allMeasurements {
-      id
+      _id
       sl_id
       name
       icon {
@@ -17,7 +17,7 @@ export const ALL_MEASUREMENTS = gql`
 export const SINGLE_MEASUREMENT = gql`
   query getMeasurement($key: String!, $value: String!) {
     getMeasurement(key: $key, value: $value) {
-      id
+      _id
       sl_id
       name
       icon {

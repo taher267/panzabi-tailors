@@ -21,18 +21,22 @@ const server = new ApolloServer({
       cuttentUser = user;
       isAuthorized = true;
     }
+    // console.log(req.user);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
   // plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 
-db.then(() =>
-  server.listen(PORT).then(({ url }) => {
-    console.log(
-      `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
-    );
+db()
+  .then((d) => {
+    console.log(d.connection.host);
+    return server.listen(PORT).then(({ url }) => {
+      console.log(
+        `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
+      );
+    });
   })
-).catch((e) => {
-  console.log(e);
-  process.exit(1);
-});
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  });

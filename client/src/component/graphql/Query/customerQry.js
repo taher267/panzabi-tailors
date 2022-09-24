@@ -3,7 +3,7 @@ import { gql } from '@apollo/client ';
 export const ALL_CUSTOMERS = gql`
   query allCustomers {
     allCustomers {
-      id
+      _id
       name
       phone_no
       status
@@ -19,7 +19,7 @@ export const ALL_CUSTOMERS = gql`
       engage
       user {
         name
-        id
+        _id
       }
       orders
       createdAt
@@ -30,7 +30,7 @@ export const ALL_CUSTOMERS = gql`
 export const SINGLE_CUSTOMER = gql`
   query getCustomer($key: String!, $value: String!) {
     getCustomer(key: $key, value: $value) {
-      id
+      _id
       name
       phone_no
       status

@@ -36,7 +36,8 @@ const NewMeasuremen = () => {
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
     setGqlErrs({});
-    createMeasurement({ variables: data });
+    // console.log(data);
+    createMeasurement({ variables: { ...data } });
   };
 
   const onFocus = ({ target: { name } }) => {

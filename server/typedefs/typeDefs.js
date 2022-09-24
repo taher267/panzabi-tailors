@@ -60,7 +60,7 @@ export default gql`
 
   # Measurement Query Start
   type Measurement {
-    id: ID!
+    _id: ID!
     sl_id: String!
     name: String!
     icon: Icon
@@ -101,7 +101,7 @@ export default gql`
     value: String!
   }
   type Customer {
-    id: ID!
+    _id: ID!
     name: String!
     phone_no: String!
     status: String

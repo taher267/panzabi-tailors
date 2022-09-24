@@ -22,7 +22,7 @@ const EditMeasuremen = () => {
     {
       update(proxy, result) {},
       onError(e) {
-        console.log(e);
+        console.log(errorFormat(e));
         setGqlErrs(errorFormat(e));
       },
     }

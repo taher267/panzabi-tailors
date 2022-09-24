@@ -28,15 +28,7 @@ export default {
     try {
       const filter = key && value ? { [key]: value } : {};
       const all = await Measurement.find(filter);
-      let newArr = [];
-      for (const iter of all) {
-        let { _id, ...rest } = iter._doc;
-        newArr.push({
-          id: _id,
-          ...rest,
-        });
-      }
-      return newArr;
+      return all;
     } catch (e) {
       throw new UserInputError(e);
     }
@@ -69,7 +61,7 @@ export default {
       );
       return {
         ...update,
-        id,
+        _id: id,
       };
     } catch (e) {
       console.log(e);

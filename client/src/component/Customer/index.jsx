@@ -12,7 +12,7 @@ import {
 } from '@mui/x-data-grid-premium';
 import { Link } from 'react-router-dom';
 const columns = [
-  { field: 'id', headerName: 'ID', width: 90, hide: true },
+  { field: '_id', headerName: 'ID', width: 90, hide: true },
   {
     field: 'name',
     headerName: 'Full Name',
@@ -176,6 +176,7 @@ const Customer = () => {
               checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
+              getRowId={(row) => row._id}
             />
           </Box>
         )}

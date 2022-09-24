@@ -115,6 +115,7 @@ const UserList = () => {
       },
       {
         field: 'actions',
+        outline: false,
         type: 'actions',
         headerName: 'Actions',
         width: 200,
@@ -176,6 +177,7 @@ const UserList = () => {
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}
+              onCellEditCommit={(row) => setRowId(row._id)}
             />
           </Box>
         )}
