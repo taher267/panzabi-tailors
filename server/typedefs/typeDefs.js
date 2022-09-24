@@ -1,4 +1,5 @@
-import { gql } from 'apollo-server-express';
+import { gql } from 'apollo-server';
+
 export default gql`
   type Query {
     designs(key: String, value: String): [Disign!]!
@@ -155,6 +156,12 @@ export default gql`
     password: String!
   }
 
+  type TextMut {
+    id: String!
+    text: String!
+    icon: Icon
+  }
+
   type Mutation {
     # auth
     userLogin(credentials: InputLogin): Login!
@@ -184,8 +191,15 @@ export default gql`
 
     # Order
     createOrder(order: InputOrder): Order
-    updateOrder(id: ID!, update: InputOrder): Order
+    updateOrder(id: ID!, update: InputOrder): Order!
     deleteOrder(id: ID!): Boolean
+    createTest(data: CreateText): TextMut!
+  }
+
+  input CreateText {
+    id: String!
+    text: String!
+    icon: InpIcon
   }
   # Auth Mutation Start
   input InputSignUp {
@@ -227,7 +241,7 @@ export default gql`
   input InputMeasurement {
     sl_id: String!
     name: String!
-    icon: InpIcon
+    # icon: InpIcon
   }
   # Measurement Mutation End
 
