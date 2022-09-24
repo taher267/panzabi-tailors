@@ -4,7 +4,7 @@ import mg from 'mongoose';
 import customerValidation from '../validation/customerValidation.js';
 import errorHandler from '../utils/errorHandler.js';
 // import auth from '../auth/auth.js';
-import { ApolloError, AuthenticationError } from 'apollo-server-core';
+import { ApolloError, AuthenticationError, UserInputError } from 'apollo-server';
 
 export default {
   /**

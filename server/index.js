@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import resolvers from './resolvers/resolvers.js';
 import typeDefs from './typedefs/typeDefs.js';
@@ -24,7 +24,7 @@ const server = new ApolloServer({
     // console.log(req.user);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
-  // plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+  plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 
 db()

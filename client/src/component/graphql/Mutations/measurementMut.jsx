@@ -23,17 +23,12 @@ export const NEW_MEASUREMENT = gql`
 `;
 
 export const EDIT_MEASUREMENT = gql`
-  # input InpIcon {
-  #   id: String
-  #   src: String
-  # }
-
   mutation updateMeasurement(
     $id: String!
-    $name: String!
-    $sl_id: String! # $icon: InpIcon
+    $update: InputMeasurement # $name: String! # $sl_id: String! # $icon: InpIcon
   ) {
-    updateMeasurement(id: $id, update: { name: $name, sl_id: $sl_id }) {
+    updateMeasurement(id: $id, update: $update) {
+      #  { name: $name, sl_id: $sl_id }
       _id
       sl_id
       name

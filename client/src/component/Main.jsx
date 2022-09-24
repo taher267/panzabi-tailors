@@ -1,10 +1,3 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  createHttpLink,
-  ApolloProvider,
-} from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
 // import ApolloClient from 'apollo-boost';
 // import { InMemoryCache } from 'apollo-cache-inmemory';
 // import { createHttpLink } from 'apollo-link-http';
@@ -21,42 +14,17 @@ import DragableList from './dragableList';
 import UserList from './Admin/User/UserList';
 import Login from './Admin/Auth/Login';
 import Signup from './Admin/Auth/Signup';
-import { ReactSession } from 'react-client-session';
+
 import { AuthProvider } from './context/AuthContext';
 import AuthRoute from './route/AuthRoute';
 import ProtectedRoutes from './route/ProtectedRoutes';
 import useAuth from './hooks/useAuth';
 import EditCustomer from './Customer/NewCustomer/EditCustomer';
 import EditMeasuremen from './Admin/Measurement/EditMeasurement';
-// const httpLink = createHttpLink({
-//   uri: 'http://localhost:4000',
-// });
-const httpLink = createHttpLink({
-  // uri: 'https://pz-front-end.herokuapp.com',
-  uri: 'http://localhost:4000',
-});
-// const client = new ApolloClient({
-//   link: httpLink,
-//   cache: new InMemoryCache(),
-// });
-const authLink = setContext((_, { headers }) => {
-  let token = ReactSession.get('token');
-  console.log('token', token);
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
-    },
-  };
-});
-const client = new ApolloClient({
-  // uri: 'http://localhost:4000/',
-  link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
-});
+import client from './../apolloClient';
+
 const Main = () => {
   return (
-    <ApolloProvider client={client}>
       <AuthProvider>
         {/* <MainCard /> */}
         <BrowserRouter>
@@ -80,7 +48,6 @@ const Main = () => {
               </Route>
               <Route path="/user" element={<UserList />} />
             </Route>
-
             <Route element={<AuthRoute />}>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -88,7 +55,6 @@ const Main = () => {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
-    </ApolloProvider>
   );
 };
 export default Main;

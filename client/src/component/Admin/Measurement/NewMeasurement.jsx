@@ -27,7 +27,7 @@ const NewMeasuremen = () => {
       },
       onCompleted() {
         reset({ ...valuesInit });
-        navigate('/dashboard/measurement');
+        navigate('/dashboard/measurement', { state: 'reload' });
       },
     }
   );

@@ -4,11 +4,13 @@ import { useQuery } from '@apollo/client';
 import { ALL_MEASUREMENTS } from '../../graphql/Query/measurementQry';
 import { Box, LinearProgress } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-
 import { useEffect, useState, useMemo } from 'react';
 import MeasurementActions from './MeasurementActions';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const MeasurementList = () => {
+  const location = useLocation();
+  const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
   const { loading, data, error } = useQuery(ALL_MEASUREMENTS);
   useEffect(() => {
@@ -61,6 +63,12 @@ const MeasurementList = () => {
     ],
     [rowId]
   );
+  useEffect(() => {
+    if (location?.state) {
+      window.history.replaceState({}, document.title);
+      window.location.reload();
+    }
+  }, []);
   return (
     <AdminLayout>
       {loading && (
@@ -83,8 +91,9 @@ const MeasurementList = () => {
             <DataGrid
               rows={data.allMeasurements}
               columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
+              pageSize={pageSize}
+              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50]}
               checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}

@@ -58,5 +58,10 @@ export default {
     createOrder: orderController.createOrder,
     updateOrder: orderController.updateOrder,
     deleteOrder: orderController.deleteOrder,
+    // Test purpose
+    createTest: (p, a, c) => {
+      console.log(a);
+      return a.data;
+    },
   },
 };

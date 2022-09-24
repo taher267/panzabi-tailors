@@ -8,7 +8,7 @@ import {
   NoEncryption,
 } from '@mui/icons-material';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
-import csses from '../../styles/common.module.css';
+
 import { green, red } from '@mui/material/colors';
 import useMutMeasurement from './useMutMeasurement';
 export default function MeasurementActions({ params, rowId, setRowId }) {
@@ -27,9 +27,8 @@ export default function MeasurementActions({ params, rowId, setRowId }) {
     }
   }, [rowId, data, processing]);
   const updateHandle = () => {
-    // console.log({ id: rowId, name: row.name, sl_id: row?.sl_id?.toString() });
     updateMeasurement({
-      variables: { id: rowId, name: row.name, sl_id: row.sl_id },
+      variables: { id: rowId, update: { name: row.name, sl_id: row.sl_id } },
     });
   };
   return (

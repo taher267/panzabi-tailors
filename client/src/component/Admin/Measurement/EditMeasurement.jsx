@@ -1,74 +1,61 @@
-import { useMutation } from '@apollo/client';
+// import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
-import { EDIT_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
-import { errorFormat } from '../../utils/errorConv';
 import { measuementFields } from './../../arrayForms/measurementForm';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import useSingleMeasuement from './../../hooks/useSingleMeasurement';
+import useMutMeasurement from './useMutMeasurement';
+import removeGqlErrors from '../../utils/removeGqlErrors';
 import lodash from 'lodash';
-import { useEffect } from 'react';
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const EditMeasuremen = () => {
   const { id: ID } = useParams();
   const [gqlErrs, setGqlErrs] = useState({});
-  const { processing, measurement, bug } = useSingleMeasuement(ID);
+  const { processing, measurement, bug: error } = useSingleMeasuement(ID);
+  const {
+    processing: loading,
+    updateMeasurement,
+    bug,
+  } = useMutMeasurement(null, setGqlErrs);
 
-  const [updateMeasurement, { data, loading, error }] = useMutation(
-    EDIT_MEASUREMENT,
-    {
-      update(proxy, result) {},
-      onError(e) {
-        console.log(errorFormat(e));
-        setGqlErrs(errorFormat(e));
-      },
-    }
-  );
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({});
-  //   console.log(error);
   const onSubmit = (data) => {
-    // setGqlErrs({});
+    setGqlErrs({});
     if (Object.keys(gqlErrs).length > 0) return;
-    // let newObj = {};
-    // for (const i of Object.keys(data)) {
-    //   newObj[i] = data[i];
-    // }
-    // if (lodash.isEqual(newObj, data)) {
-    //   for (const i of Object.keys(data)) {
-    //     setGqlErrs((p) => ({ ...p, [i]: `Nothing to be changed` }));
-    //   }
-    //   return;
-    // }
-    // console.log({ id: ID, ...data });
-    updateMeasurement({ variables: { id: ID, ...data } });
-  };
-
-  const onFocus = ({ target: { name } }) => {
-    let newErr = { ...gqlErrs };
-    delete newErr[name];
-    setGqlErrs(newErr);
-  };
-  useEffect(() => {
-    if (error?.message) {
-      //   window.alert(error?.message);
-      //   setGqlErrs({});
+    let newObj = {};
+    for (const i of Object.keys(data)) {
+      newObj[i] = measurement[i];
     }
-  }, [error]);
+    if (lodash.isEqual(newObj, data)) {
+      for (const i of Object.keys(data)) {
+        setGqlErrs((p) => ({ ...p, [i]: `Nothing to be changed` }));
+      }
+      return;
+    }
+    // console.log({ id: ID, ...data });
+    updateMeasurement({
+      variables: {
+        id: ID,
+        update: data,
+      },
+    });
+    // updateMeasurement({ variables: { id: ID, ...data } });
+  };
+  console.log(bug);
   return (
     <AdminLayout>
-      {loading ||
-        (processing && (
-          <Box sx={{ width: '100%' }}>
-            <LinearProgress />
-          </Box>
-        ))}
+      {(loading || processing) && (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      )}
       {!loading && !processing && measurement && (
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -79,7 +66,9 @@ const EditMeasuremen = () => {
                   {...register(name, { ...validation })}
                   defaultValue={measurement?.[name] || ''}
                   name={name}
-                  onFocus={onFocus}
+                  onFocus={({ target: { name } }) =>
+                    removeGqlErrors(name, gqlErrs, setGqlErrs)
+                  }
                   color="secondary"
                   variant="filled"
                   label={name}
