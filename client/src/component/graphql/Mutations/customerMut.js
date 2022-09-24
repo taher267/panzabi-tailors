@@ -1,19 +1,12 @@
 import { gql } from '@apollo/client';
 
 export const NEW_CUSTOMER = gql`
-  # input InputTransportation {
-  #   transport_charge
-  #   delivery_charge
-  #   receiver_address
-  #   receiver_phone
-  # }
-
   mutation createCustomer(
     $name: String!
     $phone_no: String!
     $email: String
     $status: String
-    # $transportation: InputTransportation
+    $transportation: InputTransportation
     $address: String
     $engage: [String]
   ) {
@@ -25,7 +18,7 @@ export const NEW_CUSTOMER = gql`
         status: $status
         address: $address
         engage: $engage
-        # transportation: $transportation
+        transportation: $transportation
       }
     ) {
       name
@@ -33,11 +26,15 @@ export const NEW_CUSTOMER = gql`
       status
       email
       address
-      # delivery_detail
+      transportation {
+        transport_name
+        receiver_address
+        receiver_phone
+      }
       engage
       user {
         id
-        # name
+        name
         # phone_no
         # status
         # roles

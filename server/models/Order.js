@@ -16,6 +16,7 @@ export default mg.model(
       totalPrice: { type: Number, required: true },
       discunt: { type: Number, default: 0 },
       advanced: { type: Number, default: 0 },
+      transport_charge: { type: Number, default: 0 },
       user: {
         type: mg.Types.ObjectId,
         ref: 'User',

@@ -10,12 +10,11 @@ export const ALL_CUSTOMERS = gql`
       email
       address
       order_status
-      # transportation {
-      #   transport_charge
-      #   delivery_charge
-      #   receiver_address
-      #   receiver_phone
-      # }
+      transportation {
+        transport_name
+        receiver_address
+        receiver_phone
+      }
       engage
       user {
         name
