@@ -10,7 +10,10 @@ const Sidebar = () => {
         <Link to="/customer/new">New</Link>
       </li>
       <li>
-        <Link to="/product">Product</Link>
+        <Link to="/dashboard/product">Product</Link>
+      </li>
+      <li>
+        <Link to="/dashboard/product/new">New Product</Link>
       </li>
       <li>
         <Link to="/dashboard/measurement">Measurement</Link>

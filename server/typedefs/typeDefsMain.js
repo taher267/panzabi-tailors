@@ -165,8 +165,8 @@ export default gql`
     updateDesign(id: ID!, update: InputDisign): Disign
     deleteDesign(id: ID!): Boolean
     # Product
-    createProduct(product: Input_poduct): Product
-    updateProduct(id: ID!, update: Input_poduct): Product
+    createProduct(product: InputPoduct): Product
+    updateProduct(id: ID!, update: InputPoduct): Product
     deleteProduct(id: ID!): Boolean
     # User
     createUser(user: InputUser): User
@@ -294,7 +294,7 @@ export default gql`
     measures: String
   }
 
-  input Input_poduct {
+  input InputPoduct {
     name: String!
     description: String
     measurementItem: [InpMeasurementItem!]!

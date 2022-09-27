@@ -1,6 +1,6 @@
 export const Product = `
 type Product {
-    id: ID!
+    _id: ID!
     name: String!
     description: String
     measurementItem: [MeasurementItem!]!
@@ -15,7 +15,7 @@ input InpMeasurementItem {
 }`;
 
 export const InputPoduct = `
-input Input_poduct {
+input InputPoduct {
   name: String!
   description: String
   measurementItem: [InpMeasurementItem!]!
@@ -34,6 +34,6 @@ export const ProductQueries = `allProducts(key: String, value: String): [Product
 getProduct(id: ID!): Product`;
 
 export const ProductMutations = `
-createProduct(product: Input_poduct): Product
-updateProduct(id: ID!, update: Input_poduct): Product
+createProduct(product: InputPoduct): Product
+updateProduct(id: ID!, update: InputPoduct): Product
 deleteProduct(id: ID!): Boolean`;

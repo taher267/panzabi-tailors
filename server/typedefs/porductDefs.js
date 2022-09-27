@@ -21,7 +21,7 @@ export default gql`
 
   #Mutatin-------------------->
   type Mutation {
-    createProduct(product: Input_poduct): Product
+    createProduct(product: InputPoduct): Product
   }
 
   input InpMeasurementItem {
@@ -30,7 +30,7 @@ export default gql`
     measures: String
   }
 
-  input Input_poduct {
+  input InputPoduct {
     name: String!
     description: String
     measurementItem: [InpMeasurementItem!]!

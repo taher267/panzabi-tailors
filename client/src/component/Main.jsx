@@ -1,7 +1,6 @@
 // import ApolloClient from 'apollo-boost';
 // import { InMemoryCache } from 'apollo-cache-inmemory';
 // import { createHttpLink } from 'apollo-link-http';
-// import { ApolloProvider } from '@apollo/react-hooks';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Nav from './Nav/Nav';
 // import Products from './Product/index';
@@ -10,7 +9,6 @@ import Customer from './Customer';
 import NewCustomer from './Customer/NewCustomer/NewCustomer';
 import MeasurementList from './Admin/Measurement/MeasurementList';
 import NewMeasuremen from './Admin/Measurement/NewMeasurement';
-import DragableList from './dragableList';
 import UserList from './Admin/User/UserList';
 import Login from './Admin/Auth/Login';
 import Signup from './Admin/Auth/Signup';
@@ -22,9 +20,13 @@ import useAuth from './hooks/useAuth';
 import EditCustomer from './Customer/NewCustomer/EditCustomer';
 import EditMeasuremen from './Admin/Measurement/EditMeasurement';
 import client from './../apolloClient';
+import { ApolloProvider } from '@apollo/client';
+import ProductList from './Admin/Product/ProductList';
+import NewProduct from './Admin/Product/NewProduct';
 
 const Main = () => {
   return (
+    <ApolloProvider client={client}>
       <AuthProvider>
         {/* <MainCard /> */}
         <BrowserRouter>
@@ -41,6 +43,10 @@ const Main = () => {
                 <Route path="edit/:id" element={<EditCustomer />} />
               </Route>
 
+              <Route path="/dashboard/product">
+                <Route path="" element={<ProductList />} />
+                <Route path="new" element={<NewProduct />} />
+              </Route>
               <Route path="/dashboard/measurement">
                 <Route path="" element={<MeasurementList />} />
                 <Route path="new" element={<NewMeasuremen />} />
@@ -55,6 +61,7 @@ const Main = () => {
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+    </ApolloProvider>
   );
 };
 export default Main;
