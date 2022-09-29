@@ -24,7 +24,7 @@ export default {
     allMeasurements: measurementController.allMeasurements,
     getMeasurement: measurementController.getMeasurement,
   },
-  
+
   Mutation: {
     userLogin: authController.login,
     userSignup: authController.signup,

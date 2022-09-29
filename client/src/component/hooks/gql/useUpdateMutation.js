@@ -1,10 +1,9 @@
 import { useMutation } from '@apollo/client';
-import { EDIT_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
 import { errorFormat } from '../../utils/errorConv';
-
-export default function useMutMeasurement(setSuccess, setErrors) {
-  const [updateMeasurement, { data, loading, error }] = useMutation(
-    EDIT_MEASUREMENT,
+import Actions from '../../graphql/Actions';
+export default function useUpdateMutation(EDIT, setSuccess, setErrors) {
+  const [updateMutation, { data, loading, error }] = useMutation(
+    Actions[EDIT],
     {
       update(proxy, result) {},
       onError(e) {
@@ -13,14 +12,10 @@ export default function useMutMeasurement(setSuccess, setErrors) {
       onCompleted() {
         setSuccess && setSuccess(true);
       },
-      notifyOnNetworkStatusChange() {
-        console.log('notifyOnNetworkStatusChange');
-      },
     }
   );
-
   return {
-    updateMeasurement,
+    updateMutation,
     data,
     processing: loading,
     bug: error,

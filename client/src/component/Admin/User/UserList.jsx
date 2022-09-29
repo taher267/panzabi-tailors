@@ -1,6 +1,4 @@
-import { useQuery } from '@apollo/client';
 import './userList.css';
-import { ALL_USERS } from '../../graphql/Query/userQry';
 import { LinearProgress, Box } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout/index';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
@@ -13,10 +11,9 @@ import {
   // useGridApiRef,
   // useKeepGroupedColumnsHidden,
 } from '@mui/x-data-grid-premium';
-import { Edit } from '@mui/icons-material';
 import { useMemo } from 'react';
 import UserActions from './UserActions';
-
+import useGetQurey from '../../hooks/gql/useGetQurey';
 const animatedComponents = makeAnimated();
 const roleOptions = [
   { value: 'USER', label: 'USER', color: 'red' },
@@ -28,11 +25,9 @@ const roleOptions = [
 const UserList = () => {
   const [rowId, setRowId] = useState(null);
   const [filter, setFilter] = useState('ADMIN');
-  const { loading, data } = useQuery(ALL_USERS, {
-    variables: {
-      key: 'roles',
-      value: filter,
-    },
+  const { loading, data } = useGetQurey('ALL_USERS', {
+    key: 'roles',
+    value: filter,
   });
   const columns = useMemo(
     () => [

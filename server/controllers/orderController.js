@@ -9,7 +9,7 @@ export default {
   createOrder: async (_parent, { order }, _context) => {
     try {
       const newOrder = new Order(order);
-      await newOrder.save();
+      // await newOrder.save();
       return newOrder;
     } catch (e) {
       throw new UserInputError(e);

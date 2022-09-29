@@ -3,27 +3,18 @@ import { useState } from 'react';
 import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
-import { measuementFields } from './../../arrayForms/measurementForm';
+import { measuementFields } from '../../arrayForms/measurementForm';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
+import useSingleMeasuement from '../../hooks/useSingleMeasurement';
 import useMutMeasurement from './useMutMeasurement';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import lodash from 'lodash';
-import useGetQurey from '../../hooks/gql/useGetQurey';
-
 const valuesInit = { name: '', sl_id: '', icon: '' };
-const EditMeasuremen = () => {
+const EditProduct = () => {
   const { id: ID } = useParams();
   const [gqlErrs, setGqlErrs] = useState({});
-  const { loading: processing, data: measurement } = useGetQurey(
-    'SINGLE_MEASUREMENT',
-    {
-      key: 'id',
-      value: ID,
-    },
-    'getMeasurement'
-  );
-  // const { processing, measurement, bug: error } = useSingleMeasuement(ID);
+  const { processing, measurement, bug: error } = useSingleMeasuement(ID);
   const {
     processing: loading,
     updateMeasurement,
@@ -57,6 +48,7 @@ const EditMeasuremen = () => {
     });
     // updateMeasurement({ variables: { id: ID, ...data } });
   };
+  console.log(bug);
   return (
     <AdminLayout>
       {(loading || processing) && (
@@ -113,4 +105,4 @@ const EditMeasuremen = () => {
   );
 };
 
-export default EditMeasuremen;
+export default EditProduct;

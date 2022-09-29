@@ -1,57 +1,72 @@
 import AdminLayout from '../../Layout/AdminLayout/index';
-import './measurement.css';
+import './product.css';
 import { Box, LinearProgress } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
-import MeasurementActions from './MeasurementActions';
-import { useLocation } from 'react-router-dom';
-import useGetQurey from './../../hooks/gql/useGetQurey';
+import MeasurementActions from './OrderActions';
+import { useLocation, useNavigate } from 'react-router-dom';
+import useGetQurey from '../../hooks/gql/useGetQurey';
 
-const MeasurementList = () => {
+const OrdersList = () => {
   const location = useLocation();
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
   const { loading, data, error } = useGetQurey(
-    'ALL_MEASUREMENTS',
+    'ALL_PRODUCTS',
     null,
-    'allMeasurements'
+    'allProducts'
   );
   useEffect(() => {
     if (error) {
       console.log(error);
     }
   }, [error]);
+
   const columns = useMemo(
     () => [
-      { field: 'id', headerName: 'ID', width: 90, hide: true },
+      { field: '_id', headerName: 'ID', width: 210, hide: true },
       {
-        requreid: true,
         field: 'name',
         headerName: 'Measurement Name',
         width: 200,
         editable: true,
       },
       {
-        requreid: true,
-        field: 'sl_id',
-        headerName: 'Serial id',
-        type: 'number',
+        field: 'description',
+        headerName: 'Description',
         width: 110,
         editable: true,
       },
 
       {
-        field: 'icon',
-        headerName: 'Symbol/Icon',
+        field: 'measurementItem',
+        headerName: 'Measurement Item',
         sortable: false,
         width: 250,
+        hide: true,
         renderCell: ({ row }) => {
           return (
             <>
-              <p>{row?.icon?.src || row.name}</p>
+              <p>Measurementidte</p>
             </>
           );
         },
+      },
+
+      {
+        field: 'price',
+        type: 'number',
+        headerName: 'Price',
+        sortable: false,
+        editable: true,
+        width: 110,
+      },
+
+      {
+        field: 'category',
+        headerName: 'Category',
+        sortable: false,
+        width: 110,
       },
       {
         field: 'Actions',
@@ -97,7 +112,7 @@ const MeasurementList = () => {
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
               rowsPerPageOptions={[5, 10, 25, 50]}
-              checkboxSelection
+              // checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}
@@ -109,4 +124,4 @@ const MeasurementList = () => {
     </AdminLayout>
   );
 };
-export default MeasurementList;
+export default ProductList;

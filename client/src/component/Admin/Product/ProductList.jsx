@@ -1,26 +1,30 @@
 import AdminLayout from '../../Layout/AdminLayout/index';
 import './product.css';
-import { useQuery } from '@apollo/client';
-import { ALL_PRODUCTS } from '../../graphql/Query/productQry';
 import { Box, LinearProgress } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
-// import MeasurementActions from './ProductActions';
+import MeasurementActions from './ProductActions';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useGetQurey from './../../hooks/gql/useGetQurey';
 
 const ProductList = () => {
   const location = useLocation();
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
-  const { loading, data, error } = useQuery(ALL_PRODUCTS);
+  const { loading, data, error } = useGetQurey(
+    'ALL_PRODUCTS',
+    null,
+    'allProducts'
+  );
   useEffect(() => {
     if (error) {
       console.log(error);
     }
   }, [error]);
+
   const columns = useMemo(
     () => [
-      { field: 'id', headerName: 'ID', width: 90, hide: true },
+      { field: '_id', headerName: 'ID', width: 210, hide: true },
       {
         field: 'name',
         headerName: 'Measurement Name',
@@ -51,8 +55,10 @@ const ProductList = () => {
 
       {
         field: 'price',
+        type: 'number',
         headerName: 'Price',
         sortable: false,
+        editable: true,
         width: 110,
       },
 
@@ -69,8 +75,7 @@ const ProductList = () => {
         width: 250,
         type: 'actions',
         renderCell: (params) => (
-          <h1>Actions</h1>
-          // <MeasurementActions {...{ params, rowId, setRowId }} />
+          <MeasurementActions {...{ params, rowId, setRowId }} />
         ),
       },
     ],
@@ -96,18 +101,18 @@ const ProductList = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         }}
       >
-        {!loading && data?.allProducts?.length && (
+        {!loading && data?.length && (
           <Box
             sx={{ height: 400, width: '100%' }}
             className="measuementActions"
           >
             <DataGrid
-              rows={data.allProducts}
+              rows={data}
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
               rowsPerPageOptions={[5, 10, 25, 50]}
-              checkboxSelection
+              // checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}

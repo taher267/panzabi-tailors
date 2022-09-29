@@ -1,16 +1,16 @@
 export const Order = `type Order {
-    id: ID!
+    _id: ID!
     order_no: String!
-    quantity: Int!
-    totalPrice: Int!
-    discunt: Int
-    advanced: Int
+    quantity: Float!
+    totalPrice: Float!
+    discunt: Float
+    advanced: Float
     user: String!
     order_status: String
-    order_items: [OrderItemsOfOrder!]!
     createdAt: String!
     updatedAt: String!
   }`;
+// order_items: [OrderItemsOfOrder!]!
 export const OrderDesign = `type OrderDesign {
     dsn_id: String!
     desc: String!
@@ -21,9 +21,10 @@ export const OrderMeasurement = `type OrderMeasurement {
   }`;
 export const OrderItemsOfOrder = `type OrderItemsOfOrder {
     order: String!
-    price: Int!
+    price: Float!
     measurements: [OrderMeasurement!]!
     designs: [OrderDesign!]!
+    orderAt:String!
     sample: Icon
   }`;
 export const InputOrderMeasurement = `
@@ -35,11 +36,11 @@ input InputOrderMeasurement {
 export const InputOrderItemsOfOrder = `
 input InputOrderItemsOfOrder {
   order: String!
-  price: Int!
-  measurements: [InputOrderMeasurement!]!
+  price: Float!
   designs: [InputOrderDesign!]!
   sample: InpIcon
 }`;
+// measurements: [InputOrderMeasurement!]!
 export const InputOrderDesign = `input InputOrderDesign {
   dsn_id: String!
   desc: String!
@@ -47,14 +48,14 @@ export const InputOrderDesign = `input InputOrderDesign {
 export const InputOrder = `
 input InputOrder {
   order_no: String!
-  quantity: Int!
-  totalPrice: Int!
-  discunt: Int
-  advanced: Int
+  quantity: Float!
+  totalPrice: Float!
+  discunt: Float
+  advanced: Float
   user: String!
   order_status: String
-  order_items: [InputOrderItemsOfOrder!]!
 }`;
+// order_items: [InputOrderItemsOfOrder!]!
 
 export const OrderQueries = `
 allOrders(key: String, value: String): [Order!]!

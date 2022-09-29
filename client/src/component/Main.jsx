@@ -23,6 +23,7 @@ import client from './../apolloClient';
 import { ApolloProvider } from '@apollo/client';
 import ProductList from './Admin/Product/ProductList';
 import NewProduct from './Admin/Product/NewProduct';
+import NewOrder from './Admin/Order/NewOrder';
 
 const Main = () => {
   return (
@@ -34,7 +35,9 @@ const Main = () => {
           <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
+            {/* <Route path="/new-product" element={<NewProduct />} /> */}
 
+            {/* <Route path="/new-measurement" element={<NewMeasuremen />} /> */}
             <Route element={<ProtectedRoutes />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/customer">
@@ -46,6 +49,10 @@ const Main = () => {
               <Route path="/dashboard/product">
                 <Route path="" element={<ProductList />} />
                 <Route path="new" element={<NewProduct />} />
+              </Route>
+              <Route path="/dashboard/order">
+                {/* <Route path="" element={<ProductList />} /> */}
+                <Route path="new" element={<NewOrder />} />
               </Route>
               <Route path="/dashboard/measurement">
                 <Route path="" element={<MeasurementList />} />

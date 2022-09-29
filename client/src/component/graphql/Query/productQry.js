@@ -8,7 +8,7 @@ export const ALL_PRODUCTS = gql`
       description
       measurementItem {
         ms_id
-        name
+        item_name
         measures
       }
       price

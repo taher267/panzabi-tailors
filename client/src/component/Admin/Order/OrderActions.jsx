@@ -1,40 +1,48 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Visibility,
-  Save,
-  Delete,
-  Check,
-  NoEncryption,
-} from '@mui/icons-material';
+import { Visibility, Save, Delete, Check } from '@mui/icons-material';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
-
 import { green, red } from '@mui/material/colors';
-// import useMutMeasurement from './useMutMeasurement';
-import useUpdateMutation from './../../hooks/gql/useUpdateMutation';
-
-export default function MeasurementActions({ params, rowId, setRowId }) {
+import useUpdateMutation from '../../hooks/gql/useUpdateMutation';
+export default function OrderActions({ params, rowId, setRowId }) {
   //   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { processing, data, updateMutation, bug } = useUpdateMutation(
-    'EDIT_MEASUREMENT',
+  const { updateMutation, processing, data, bug } = useUpdateMutation(
+    'EDIT_PRODUCT',
     setSuccess
   );
-  // const { processing, data, updateMeasurement, bug } =useMutMeasurement(setSuccess);
   const { id, row } = params;
   useEffect(() => {
     if (rowId === id && success) {
       setSuccess(false);
       setRowId(false);
     }
-
-    if (bug) {
-    }
-  }, [rowId, data, processing]);
+  }, [rowId, data, processing]); //
   const updateHandle = () => {
+    const { name, category, price, description } = row;
+    // console.log({
+    //   variables: {
+    //     _id: rowId,
+    //     update: { name, category, price, description },
+    //   },
+    // });
+    // console.log(updateMutation);
+
     updateMutation({
-      variables: { id: rowId, update: { name: row.name, sl_id: row.sl_id } },
+      variables: {
+        _id: rowId,
+        name,
+        category,
+        price,
+        description,
+      },
     });
+    // updateMutation({
+    //   variables: {
+    //     _id: rowId,
+    //     update: { name, category, price, description },
+    //   },
+    // });
   };
   return (
     <Box
@@ -48,7 +56,7 @@ export default function MeasurementActions({ params, rowId, setRowId }) {
         alignItems: 'center',
       }}
     >
-      <Link to={`/dashboard/measurement/edit/${id}`}>
+      <Link to={`/dashboard/product/edit/${id}`}>
         <Visibility />
       </Link>
       {processing ? (

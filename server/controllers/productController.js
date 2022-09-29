@@ -1,18 +1,20 @@
 import Product from '../models/Product.js';
 import mg from 'mongoose';
-import { UserInputError } from 'apollo-server-core';
-
+import { UserInputError } from 'apollo-server';
+import productValidation from '../validation/productValidation.js';
+import productServices from '../services/productServices.js';
+import errorHandler from '../utils/errorHandler.js';
 export default {
   /**
    * Create New Product
    */
+
   createProduct: async (_parent, { product }, _context) => {
     try {
-      const newProduct = new Product(product);
-      await newProduct.save();
-      return newProduct;
+      await productValidation.newProductValidation(product);
+      return await productServices.createProduct(product);
     } catch (e) {
-      throw new UserInputError(e);
+      return errorHandler(e);
     }
   },
   /**
@@ -21,7 +23,7 @@ export default {
   allProducts: async (_parent, { key, value }, _context) => {
     try {
       const filter = key && value ? { [key]: value } : {};
-      return await Product.find(filter);
+      return await productServices.findProduct(filter);
     } catch (e) {
       throw new UserInputError(e);
     }
@@ -29,11 +31,11 @@ export default {
   /**
    * Single Product
    */
-  getProduct: async (_parent, { id }, _context) => {
+  getProduct: async (_parent, { _id }, _context) => {
     try {
-      if (!mg.isValidObjectId(id))
-        throw new UserInputError(`Invalid delete id`);
-      return await Product.findById(id);
+      if (!mg.isValidObjectId(_id))
+        throw new UserInputError(`Invalid delete _id`);
+      return await productServices.findProduct('_id', _id);
     } catch (e) {
       throw new UserInputError(e);
     }
@@ -41,11 +43,10 @@ export default {
   /**
    * Create New Product
    */
-  updateProduct: async (_parent, { id, update }, _context) => {
+  updateProduct: async (_parent, { _id, update }, _context) => {
     try {
-      const updated = await Product.findByIdAndUpdate(id, update, {
-        new: true,
-      });
+      await productValidation.updateProductValidation({ _id, ...update });
+      const updated = await productServices.updateProduct(_id, update);
       return updated;
     } catch (e) {
       throw new UserInputError(e);
