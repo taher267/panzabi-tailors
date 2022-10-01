@@ -1,0 +1,9 @@
+ul li {
+  transition: 0.3s all ease-in-out;
+  line-height: 2.5;
+  margin-bottom: 5px;
+}
+
+ul li:hover {
+  /* border-bottom: 1px solid #ddd; */
+}

@@ -1,0 +1,4 @@
+.measuementActions
+  .MuiDataGrid-cell--withRenderer.MuiDataGrid-cell.MuiDataGrid-cell--textCenter {
+  outline: none;
+}
