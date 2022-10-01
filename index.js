@@ -24,6 +24,7 @@ const server = new ApolloServer({
     // console.log(req.user);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
+  cors: { origin: ['http://localhost:3000', 'http://localhost:5173'] },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 
