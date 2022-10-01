@@ -14,22 +14,6 @@ export const NEW_ACCOUNT = gql`
     }
   }
 `;
-// {
-//   date: $date
-//   purpose: $purpose
-//   type: $type
-//   cash_in: $cash_in
-//   cash_out: $cash_out
-//   name: $name
-//   comment: $comment
-// }
-// $date: String!
-// $purpose: String!
-// $type: String!
-// $cash_in: Float
-// $cash_out: Float
-// $name: String!
-// $comment: String
 
 export const EDIT_ACCOUNT = gql`
   mutation updateDailyAccount($_id: ID!, $update: InputDailyAccount) {
@@ -43,5 +27,11 @@ export const EDIT_ACCOUNT = gql`
       name
       comment
     }
+  }
+`;
+
+export const DELETE_ACCOUNT = gql`
+  mutation deleteDailyAccount($_id: ID!) {
+    deleteDailyAccount(_id: $_id)
   }
 `;

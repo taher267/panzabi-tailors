@@ -36,13 +36,14 @@ const NewAccount = () => {
 
   const onSubmit = (formData) => {
     setGqlErrs({});
-    const newData = {
+    const account = {
       ...formData,
       cash_in: parseFloat(formData?.cash_in) || 0.0,
       cash_out: parseFloat(formData?.cash_out) || 0.0,
     };
+    // console.log(account);
     createDailyAccount({
-      variables: newData,
+      variables: { account },
     });
   };
 

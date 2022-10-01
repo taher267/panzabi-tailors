@@ -29,6 +29,7 @@ import DesignsLists from './Admin/Design/DesignsLists';
 import EditDesign from './Admin/Design/EditDesign';
 import AccountsList from './Admin/Account/AccountsList';
 import NewAccount from './Admin/Account/NewAccount';
+import EditAccount from './Admin/Account/EditAccount';
 
 const Main = () => {
   return (
@@ -60,6 +61,7 @@ const Main = () => {
                 <Route path="account">
                   <Route path="" element={<AccountsList />} />
                   <Route path="new" element={<NewAccount />} />
+                  <Route path="edit/:id" element={<EditAccount />} />
                 </Route>
 
                 <Route path="product">

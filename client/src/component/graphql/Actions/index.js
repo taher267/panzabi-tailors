@@ -12,7 +12,11 @@ import { ALL_PRODUCTS } from '../Query/productQry';
 import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
 import { ALL_DESIGNS, SINGLE_DESIGN } from './../Query/designQry';
 import { ALL_ACCOUNTS, DAILY_ACCOUNT } from './../Query/accountQry';
-import { NEW_ACCOUNT, EDIT_ACCOUNT } from './../Mutations/accountMut';
+import {
+  NEW_ACCOUNT,
+  EDIT_ACCOUNT,
+  DELETE_ACCOUNT,
+} from './../Mutations/accountMut';
 
 export default {
   //CUSTOMER
@@ -43,4 +47,5 @@ export default {
   DAILY_ACCOUNT,
   NEW_ACCOUNT,
   EDIT_ACCOUNT,
+  DELETE_ACCOUNT,
 };

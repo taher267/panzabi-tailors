@@ -6,7 +6,7 @@ import moment from 'moment';
 import { green, red } from '@mui/material/colors';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
 
-export default function DesignActions({ params, rowId, setRowId }) {
+export default function AccountActions({ params, rowId, setRowId }) {
   //   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const {
@@ -15,7 +15,11 @@ export default function DesignActions({ params, rowId, setRowId }) {
     mutation: updateMutation,
     bug,
   } = useMutationFunc('EDIT_ACCOUNT', setSuccess);
-  // const { processing, data, updateMeasurement, bug } =useMutMeasurement(setSuccess);
+
+  const { data: iSsuccess, mutation: del } = useMutationFunc(
+    'DELETE_ACCOUNT',
+    setSuccess
+  );
   const { id, row } = params;
   useEffect(() => {
     if (rowId === id && success) {
@@ -52,7 +56,7 @@ export default function DesignActions({ params, rowId, setRowId }) {
         alignItems: 'center',
       }}
     >
-      <Link to={`/dashboard/design/edit/${id}`}>
+      <Link to={`/dashboard/account/edit/${id}`}>
         <Visibility />
       </Link>
       {processing ? (
@@ -95,8 +99,9 @@ export default function DesignActions({ params, rowId, setRowId }) {
       )}
       <Button>
         <Delete
+          sx={{ color: '#d32f2f' }}
           onClick={() => {
-            window.alert(id);
+            del({ variables: { _id: id } });
           }}
         />
       </Button>
