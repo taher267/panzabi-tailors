@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import resolvers from './resolvers/resolvers.js';
 import typeDefs from './typedefs/typeDefs.js';
@@ -21,18 +21,22 @@ const server = new ApolloServer({
       cuttentUser = user;
       isAuthorized = true;
     }
+    // console.log(req.user);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
-  // plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+  plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 
-db.then(() =>
-  server.listen(PORT).then(({ url }) => {
-    console.log(
-      `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
-    );
+db()
+  .then((d) => {
+    console.log(d.connection.host);
+    return server.listen(PORT).then(({ url }) => {
+      console.log(
+        `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
+      );
+    });
   })
-).catch((e) => {
-  console.log(e);
-  process.exit(1);
-});
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  });

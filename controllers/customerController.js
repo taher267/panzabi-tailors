@@ -4,7 +4,7 @@ import mg from 'mongoose';
 import customerValidation from '../validation/customerValidation.js';
 import errorHandler from '../utils/errorHandler.js';
 // import auth from '../auth/auth.js';
-import { ApolloError, AuthenticationError } from 'apollo-server-core';
+import { ApolloError, AuthenticationError, UserInputError } from 'apollo-server';
 
 export default {
   /**
@@ -49,16 +49,7 @@ export default {
           : { roles: { $in: ['CUSTOMER'] } };
       // console.log(filter);
       const all = await customerServices.findUser(filter);
-      // roles: { $in: ['CUSTOMER'] },
-      let modified = [];
-      for (const single of all) {
-        let { _id, ...rest } = single._doc;
-        modified.push({
-          id: _id,
-          ...rest,
-        });
-      }
-      return modified;
+      return all;
     } catch (e) {
       throw new UserInputError(e);
     }

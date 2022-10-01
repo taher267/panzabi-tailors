@@ -10,12 +10,13 @@ export default mg.model(
         unique: [true, 'Please provide a unique Order no'],
       },
       previous_order: {
-        type: Number,
+        type: String,
       },
       quantity: { type: Number, required: true },
       totalPrice: { type: Number, required: true },
       discunt: { type: Number, default: 0 },
       advanced: { type: Number, default: 0 },
+      transport_charge: { type: Number, default: 0 },
       user: {
         type: mg.Types.ObjectId,
         ref: 'User',
@@ -53,6 +54,10 @@ export default mg.model(
             _id: false,
             id: String,
             src: String,
+          },
+          orderAt: {
+            type: Date,
+            default: Date.now(),
           },
         },
       ],

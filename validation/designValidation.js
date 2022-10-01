@@ -1,20 +1,21 @@
-import { UserInputError } from 'apollo-server-core';
-import measurementServices from '../services/measurementServices.js';
+import { UserInputError } from 'apollo-server';
+import designServices from '../services/designServices.js';
 import errorHandler from '../utils/errorHandler.js';
-const measurementValidation = async ({ sl_id, name }) => {
+const newDesignValidation = async ({ design_name, type, designs }) => {
   let errors = {};
   try {
-    // console.log(name);
-    //name
-    if (!name) errors.name = `Name is mandatory!`;
-    else if (name.length < 2) errors.name = `Name at least 2 chars`;
-    else if (await measurementServices.findMeasurement('name', name))
-      errors.name = `Name is already exists!`;
-    // Serial
-    if (!sl_id) errors.sl_id = `Serial id is mandatory!`;
-    else if (sl_id < 0) errors.sl_id = `Invalid serial id`;
-    else if (await measurementServices.findMeasurement('sl_id', sl_id))
-      errors.sl_id = `Serial id is already exists!`;
+    //design_name
+    if (!design_name) errors.design_name = `Design name is mandatory!`;
+    else if (await designServices.findDesign('design_name', design_name))
+      errors.design_name = `Design name is already exists!`;
+    //type
+    if (!type?.length) errors.type = `Type is mandatory!`;
+    // else if (!Array.isArray(type))errors.type = `Type should be an array!`;
+
+    //type
+    if (!designs?.length) errors.designs = `Designs are mandatory!`;
+    else if (!Array.isArray(designs))
+      errors.designs = `Design should be an array!`;
 
     // error throw
     if (!Object.keys(errors).length) return true;
@@ -27,21 +28,21 @@ const measurementValidation = async ({ sl_id, name }) => {
   }
 };
 
-const measurementUpdateValidation = async ({ id, sl_id, name }) => {
+const designUpdateValidation = async ({ id, sl_id, name }) => {
   let errors = {};
   try {
     //name
     if (!name) errors.name = `Name is mandatory!`;
     else if (name.length < 2) errors.name = `Name at least 2 chars`;
     else if (name) {
-      const check = await measurementServices.findMeasurement('name', name);
+      const check = await designServices.findMeasurement('name', name);
       if (check && check?.id !== id) errors.name = `Name is already exists!`;
     }
     // Password
     if (!sl_id) errors.sl_id = `Serial id is mandatory!`;
     else if (sl_id < 0) errors.sl_id = `Invalid serial id`;
     else if (sl_id) {
-      const check = await measurementServices.findMeasurement('sl_id', sl_id);
+      const check = await designServices.findMeasurement('sl_id', sl_id);
       if (check && check?.id !== id)
         errors.sl_id = `Serial id is already exists!`;
     }
@@ -56,4 +57,4 @@ const measurementUpdateValidation = async ({ id, sl_id, name }) => {
     errorHandler(e);
   }
 };
-export default { measurementValidation, measurementUpdateValidation };
+export default { newDesignValidation, designUpdateValidation };

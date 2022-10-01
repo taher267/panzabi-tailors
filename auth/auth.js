@@ -9,7 +9,6 @@ import { errorFormat } from '../../client/src/component/utils/errorConv.js';
 export default {
   userAuthorization: async (req) => {
     try {
-      // console.log(req?.headers?.authorization);
       if (!req?.headers?.authorization)
         throw new AuthenticationError(`Please login to access the resources!`);
       const token =

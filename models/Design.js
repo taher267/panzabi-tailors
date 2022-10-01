@@ -2,14 +2,14 @@ import mg from 'mongoose';
 export default mg.model(
   'Design',
   new mg.Schema({
-    name: {
+    design_name: {
+      unique: true,
       type: String,
       required: [true, 'Name is mandatory!'],
-      unique: true,
+      trim: true,
     },
     designs: [
       {
-        _id: false,
         item: {
           type: String,
           minLength: 4,
@@ -19,7 +19,7 @@ export default mg.model(
         ds_id: {
           type: Number,
           required: [true, 'Serial is mandatory'],
-          unique: true,
+          // unique: true,
         },
         icon: {
           _id: String,
@@ -27,6 +27,6 @@ export default mg.model(
         },
       },
     ],
-    type: { type: Number, required: [true, 'Type is mandatory!'] },
+    type: { type: [String], required: [true, 'Type is mandatory!'] },
   })
 );

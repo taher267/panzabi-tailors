@@ -1,6 +1,7 @@
 import Order from '../models/Order.js';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
+import errorHandler from '../utils/errorHandler.js';
 
 export default {
   /**
@@ -9,10 +10,10 @@ export default {
   createOrder: async (_parent, { order }, _context) => {
     try {
       const newOrder = new Order(order);
-      await newOrder.save();
+      // await newOrder.save();
       return newOrder;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -23,7 +24,7 @@ export default {
       const filter = key && value ? { [key]: value } : {};
       return await Order.find(filter);
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -35,7 +36,7 @@ export default {
         throw new UserInputError(`Invalid delete id`);
       return await Order.findById(id);
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -46,7 +47,7 @@ export default {
       const updated = await Order.findByIdAndUpdate(id, update, { new: true });
       return updated;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -60,7 +61,7 @@ export default {
       console.log(del);
       return del.deletedCount;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
 };

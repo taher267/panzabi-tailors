@@ -5,10 +5,14 @@ import productController from '../controllers/productController.js';
 import userController from '../controllers/userController.js';
 import customerController from '../controllers/customerController.js';
 import authController from '../controllers/authController.js';
+import dailyAccountController from '../controllers/dailyAccountController.js';
+import DateTimeResolver, {
+  dateResolver,
+} from '../utils/graphql/dateResolver.js';
 
 export default {
   Query: {
-    designs: designController.designs,
+    allDesigns: designController.allDesigns,
     getDesign: designController.getDesign,
     // Product
     allProducts: productController.allProducts,
@@ -23,13 +27,12 @@ export default {
     // Measurement functions
     allMeasurements: measurementController.allMeasurements,
     getMeasurement: measurementController.getMeasurement,
+    // Daily Account
+    allAccounts: dailyAccountController.allAccounts,
+    getDailyAccount: dailyAccountController.getDailyAccount,
   },
-  Customer: {
-    user: async (p, a, c) => {
-      // console.log(p);
-      return await userController.getUser(p, { key: 'id', value: p.id }, c);
-    },
-  },
+  Date: dateResolver,
+  DateTime: DateTimeResolver,
   Mutation: {
     userLogin: authController.login,
     userSignup: authController.signup,
@@ -58,5 +61,10 @@ export default {
     createOrder: orderController.createOrder,
     updateOrder: orderController.updateOrder,
     deleteOrder: orderController.deleteOrder,
+
+    //Daily Account functions
+    createDailyAccount: dailyAccountController.createDailyAccount,
+    updateDailyAccount: dailyAccountController.updateDailyAccount,
+    deleteDailyAccount: dailyAccountController.deleteDailyAccount,
   },
 };

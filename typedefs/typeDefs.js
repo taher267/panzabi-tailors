@@ -1,307 +1,188 @@
-import { gql } from 'apollo-server-express';
+import { gql } from 'apollo-server';
+
+import {
+  Design,
+  DesignItem,
+  DesignMutations,
+  DesignQueries,
+  Icon,
+  InpDesignItem,
+  InpIcon,
+  InputDisign,
+} from './../schema/designSchema.js';
+
+import {
+  MeasurementItem,
+  Product,
+  ProductQueries,
+  ProductMutations,
+  InpMeasurementItem,
+  InputPoduct,
+} from './../schema/productSchema.js';
+
+import {
+  CustomerQueries,
+  CustomerMutations,
+  Customer,
+  InputTransportation,
+  InputCustomer,
+  Transportation,
+} from '../schema/customerSchema.js';
+
+import {
+  InputThirdPirty,
+  InputUser,
+  thirdPirtyDetails,
+  User,
+  UserMutations,
+  UserQueries,
+} from './../schema/userSchema.js';
+
+import {
+  InputMeasurement,
+  Measurement,
+  MeasurementMutations,
+  MeasurementQueries,
+} from './../schema/measurementSchema.js';
+import {
+  InputOrder,
+  InputOrderDesign,
+  InputOrderItemsOfOrder,
+  InputOrderMeasurement,
+  Order,
+  OrderDesign,
+  OrderItemsOfOrder,
+  OrderMeasurement,
+  OrderMutations,
+  OrderQueries,
+} from './../schema/orderSchema.js';
+import {
+  Login,
+  InputLogin,
+  userLogin,
+  userSignup,
+  InputSignUp,
+} from '../schema/authSchema.js';
+
+import {
+  DailyAccount,
+  InputDailyAccount,
+  dailyAccountQueries,
+  dailyAccountMutations,
+} from '../schema/accountSchema.js';
+
 export default gql`
   type Query {
-    designs(key: String, value: String): [Disign!]!
-    getDesign(id: ID!): Disign!
+    ${DesignQueries}
     # Product
-    allProducts(key: String, value: String): [Product!]!
-    getProduct(id: ID!): Product
+    ${ProductQueries}
     # User
-    allUsers(key: String, value: String): [User]
-    getUser(key: String!, value: String!): User
+    ${UserQueries}
     # Customer
-    allCustomers(key: String, value: String): [Customer]
-    getCustomer(key: String, value: String): Customer
+    ${CustomerQueries}
     # Measurement
-    allMeasurements(key: String, value: String): [Measurement!]!
-    getMeasurement(key: String!, value: String!): Measurement!
+    ${MeasurementQueries}
     # Order
-    allOrders(key: String, value: String): [Order!]!
-    getOrder(id: ID!): Order!
-  }
+    ${OrderQueries}
 
-  # User():User
+    # Daily Account
+    ${dailyAccountQueries}
+  }
 
   # Auth Query Start
-  type Login {
-    token: String!
-  }
+  ${Login}
   # Auth Query end
   # Order Query Start
-  type OrderMeasurement {
-    msr_id: String!
-    size: String!
-  }
-  type OrderItemsOfOrder {
-    order: String!
-    price: Int!
-    measurements: [OrderMeasurement!]!
-    designs: [OrderDesign!]!
-    sample: Icon
-  }
-  type OrderDesign {
-    dsn_id: String!
-    desc: String!
-  }
-  type Order {
-    id: ID!
-    order_no: String!
-    quantity: Int!
-    totalPrice: Int!
-    discunt: Int
-    advanced: Int
-    user: String!
-    order_status: String
-    order_items: [OrderItemsOfOrder!]!
-    createdAt: String!
-    updatedAt: String!
-  }
+  ${OrderMeasurement}
+  ${OrderItemsOfOrder}
+  ${OrderDesign}
+  ${Order}  
   # Order Query End
-
   # Measurement Query Start
-  type Measurement {
-    id: ID!
-    sl_id: String!
-    name: String!
-    icon: Icon
-  }
+  ${Measurement}
   # Measurement Query End
   # User Query Start
-  type Transportation {
-    transport_name: String
-    transport_charge: Float
-    receiver_address: String
-    receiver_phone: String
-  }
-  type thirdPirtyDetails {
-    via3rd: Boolean
-    name: String
-    token: String
-    token_secret: String
-    client_id: String
-  }
-
-  type User {
-    _id: ID!
-    name: String!
-    phone_no: String!
-    status: String
-    roles: [String]
-    username: String!
-    email: String!
-    token: String
-    thirdPirty: [thirdPirtyDetails]
-    createdAt: String!
-    updatedAt: String!
-  }
+  
+  ${thirdPirtyDetails}
+  ${User}
   # User Query End
   # Custoer Query start
-  input CustomerQry {
-    key: String!
-    value: String!
-  }
-  type Customer {
-    id: ID!
-    name: String!
-    phone_no: String!
-    status: String
-    email: String
-    address: String
-    order_status: String
-    transportation: Transportation
-    engage: [String]
-    user: User
-    orders: [String]
-    createdAt: String!
-    updatedAt: String!
-  }
+  ${Customer}
+  ${Transportation}
   # Custoer Query End
   # Product Query Start
-  type MeasurementItem {
-    ms_id: Int!
-    name: String!
-    measures: String
-  }
-
-  type Product {
-    id: ID!
-    name: String!
-    description: String
-    measurementItem: [MeasurementItem!]!
-    price: Float
-    category: String
-  }
+  ${MeasurementItem}
+  ${Product}
   # Product Query End
   # Design Query Start
-  type Disign {
-    id: ID!
-    name: String!
-    designs: [DesignItem!]!
-    type: Int!
-    icon: Icon
-  }
-  type Icon {
-    id: String
-    src: String
-  }
-  type DesignItem {
-    item: String!
-    ds_id: Int!
-  }
+  ${Design}
+  ${Icon}  
+  ${DesignItem}
   # Design Query End
+  ${InputLogin}
+  # Daily Query Start
+  ${DailyAccount}
+  # Daily Query End
 
-  input InputLogin {
-    username: String!
-    password: String!
-  }
-
+scalar Date
+scalar DateTime
   type Mutation {
     # auth
-    userLogin(credentials: InputLogin): Login!
-    userSignup(register: InputSignUp): Login!
-
+    ${userLogin}
+    ${userSignup}
     # Design
-    createDesign(design: InputDisign): Disign
-    updateDesign(id: ID!, update: InputDisign): Disign
-    deleteDesign(id: ID!): Boolean
+    ${DesignMutations}
     # Product
-    createProduct(product: Input_poduct): Product
-    updateProduct(id: ID!, update: Input_poduct): Product
-    deleteProduct(id: ID!): Boolean
+    ${ProductMutations}
     # User
-    createUser(user: InputUser): User
-    updateUser(id: ID!, update: InputUser): User
-    deleteUser(id: ID!): Boolean
+    ${UserMutations}
 
     # Csustomer
-    createCustomer(customer: InputCustomer): Customer
-    updateCustomer(id: String!, update: InputCustomer): Customer
-    deleteCustomer(id: ID!): Boolean
+    ${CustomerMutations}
     # Measurement
-    createMeasurement(measures: InputMeasurement): Measurement
-    updateMeasurement(id: String!, update: InputMeasurement): Measurement
-    deleteMeasurement(id: ID!): Boolean
+    ${MeasurementMutations}
 
     # Order
-    createOrder(order: InputOrder): Order
-    updateOrder(id: ID!, update: InputOrder): Order
-    deleteOrder(id: ID!): Boolean
+    ${OrderMutations}
+
+    # Daily Account
+    ${dailyAccountMutations}
   }
   # Auth Mutation Start
-  input InputSignUp {
-    name: String!
-    phone_no: String!
-    email: String!
-    username: String!
-    password: String!
-  }
+  ${InputSignUp}
   # Auth Mutation Start
   # Order Mutation Start
-  input InputOrderMeasurement {
-    msr_id: String!
-    size: String!
-  }
-  input InputOrderItemsOfOrder {
-    order: String!
-    price: Int!
-    measurements: [InputOrderMeasurement!]!
-    designs: [InputOrderDesign!]!
-    sample: InpIcon
-  }
-  input InputOrderDesign {
-    dsn_id: String!
-    desc: String!
-  }
-  input InputOrder {
-    order_no: String!
-    quantity: Int!
-    totalPrice: Int!
-    discunt: Int
-    advanced: Int
-    user: String!
-    order_status: String
-    order_items: [InputOrderItemsOfOrder!]!
-  }
+  ${InputOrderMeasurement}
+  ${InputOrderItemsOfOrder}
+  ${InputOrderDesign}
+  ${InputOrder}
   # Order Mutation Start
   # Measurement Mutation Start
-  input InputMeasurement {
-    sl_id: String!
-    name: String!
-    icon: InpIcon
-  }
+  ${InputMeasurement}
   # Measurement Mutation End
 
   # User mutation Start
-  input InputTransportation {
-    transport_name: String
-    transport_charge: Float
-    receiver_address: String
-    receiver_phone: String
-  }
-  input InputThirdPirty {
-    via3rd: Boolean
-    name: String
-    token: String
-    token_secret: String
-    client_id: String
-  }
-  input InputUser {
-    name: String!
-    phone_no: String!
-    email: String!
-    username: String!
-    password: String!
-  }
+  ${InputThirdPirty}
+
+   ${InputUser}
   # User mutation End
   # Customer mutation Start
-
-  input InputTransportationDetails {
-    transport_name: String
-    transport_charge: Float
-    receiver_address: String
-    receiver_phone: String
-  }
-  input InputCustomer {
-    name: String!
-    phone_no: String!
-    status: String
-    email: String
-    address: String
-    transportation: InputTransportationDetails
-    engage: [String]
-    orders: [String]
-  }
+  ${InputCustomer}
+  ${InputTransportation}
   # Customer mutation End
 
   # Design mutation Start
-  input InpDesignItem {
-    item: String!
-    ds_id: Int!
-  }
-  input InpIcon {
-    id: String
-    src: String
-  }
-  input InputDisign {
-    name: String!
-    designs: [InpDesignItem!]!
-    type: Int!
-    icon: InpIcon
-  }
+  ${InpDesignItem}
+
+  ${InpIcon}
+  ${InputDisign}
   # Design mutation end
   # Product mutation Start
-  input InpMeasurementItem {
-    ms_id: Int!
-    name: String!
-    measures: String
-  }
+   ${InpMeasurementItem}
+   ${InputPoduct}
 
-  input Input_poduct {
-    name: String!
-    description: String
-    measurementItem: [InpMeasurementItem!]!
-    price: Float
-    category: String
-  }
   # Product mutation end
+  # Daily Account mutation Start
+   ${InputDailyAccount}
+  # Daily Account mutation end
 `;
