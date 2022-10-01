@@ -1,3 +1,17 @@
+export const orderBasicFields = [
+  {
+    label: 'Order number',
+    name: 'order_no',
+    validation: { required: true },
+    placeholder: 'Enter order number...',
+    defaultError: `Order number is mandartory!`,
+  },
+  {
+    label: 'Previouse Number',
+    name: 'previous_order',
+    placeholder: 'Enter previous number...',
+  },
+];
 export const orderFields = [
   {
     label: 'Order number',
@@ -60,7 +74,6 @@ export const orderMeasurementFields = [
     {
       label: 'Body',
       name: 'body',
-      min: 0,
       placeholder: 'Body...',
     },
     {
@@ -79,16 +92,17 @@ export const orderMeasurementFields = [
   {
     label: 'Sleeve',
     name: 'sleeve',
-    type: 'number',
-    min: 0,
     placeholder: 'Sleeve...',
     defaultError: `Sleeve`,
   },
   {
+    label: 'Coller/কলার',
+    name: 'coller',
+    placeholder: 'কলার...',
+  },
+  {
     label: 'Sleeve cuff',
     name: 'sleeve_cuff',
-    type: 'number',
-    min: 0,
     placeholder: 'Sleeve cuff...',
     defaultError: `Sleeve cuff`,
   },

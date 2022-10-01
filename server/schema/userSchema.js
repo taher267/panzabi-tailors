@@ -9,8 +9,8 @@ type User {
   email: String!
   token: String
   thirdPirty: [thirdPirtyDetails]
-  createdAt: String!
-  updatedAt: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }`;
 export const example = ``;
 export const thirdPirtyDetails = ` type thirdPirtyDetails {

@@ -37,6 +37,7 @@ import {
   UserMutations,
   UserQueries,
 } from './../schema/userSchema.js';
+
 import {
   InputMeasurement,
   Measurement,
@@ -63,6 +64,13 @@ import {
   InputSignUp,
 } from '../schema/authSchema.js';
 
+import {
+  DailyAccount,
+  InputDailyAccount,
+  dailyAccountQueries,
+  dailyAccountMutations,
+} from '../schema/accountSchema.js';
+
 export default gql`
   type Query {
     ${DesignQueries}
@@ -76,6 +84,9 @@ export default gql`
     ${MeasurementQueries}
     # Order
     ${OrderQueries}
+
+    # Daily Account
+    ${dailyAccountQueries}
   }
 
   # Auth Query Start
@@ -109,7 +120,12 @@ export default gql`
   ${DesignItem}
   # Design Query End
   ${InputLogin}
+  # Daily Query Start
+  ${DailyAccount}
+  # Daily Query End
 
+scalar Date
+scalar DateTime
   type Mutation {
     # auth
     ${userLogin}
@@ -128,6 +144,9 @@ export default gql`
 
     # Order
     ${OrderMutations}
+
+    # Daily Account
+    ${dailyAccountMutations}
   }
   # Auth Mutation Start
   ${InputSignUp}
@@ -160,8 +179,10 @@ export default gql`
   # Design mutation end
   # Product mutation Start
    ${InpMeasurementItem}
-
    ${InputPoduct}
 
   # Product mutation end
+  # Daily Account mutation Start
+   ${InputDailyAccount}
+  # Daily Account mutation end
 `;

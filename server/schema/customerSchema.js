@@ -11,8 +11,8 @@ type Customer {
   engage: [String]
   user: User
   orders: [String]
-  createdAt: String!
-  updatedAt: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }`;
 export const InputCustomer = `
 input InputCustomer {

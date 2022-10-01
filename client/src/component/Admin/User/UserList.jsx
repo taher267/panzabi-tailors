@@ -5,12 +5,7 @@ import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
-import {
-  // DataGridPremium,
-  GridToolbar,
-  // useGridApiRef,
-  // useKeepGroupedColumnsHidden,
-} from '@mui/x-data-grid-premium';
+import { GridToolbar } from '@mui/x-data-grid-premium';
 import { useMemo } from 'react';
 import UserActions from './UserActions';
 import useGetQurey from '../../hooks/gql/useGetQurey';
@@ -83,30 +78,21 @@ const UserList = () => {
         editable: true,
         hide: true,
       },
-      {
-        field: 'updatedAt',
-        headerName: 'Update Date',
-        description: 'User Updated',
-        hide: true,
-        width: 160,
-        valueGetter: (pms) => {
-          return pms.row.updatedAt
-            ? new Date(parseInt(pms.row.updatedAt)).toLocaleString()
-            : '';
-        },
-      },
+
       {
         hide: true,
         field: 'createdAt',
-        headerName: 'Created Date',
-        description: 'Customer Created',
+        headerName: 'Entry Date',
+        description: 'Customer Entry Time',
         sortable: false,
         width: 160,
-        valueGetter: (pms) => {
-          return pms.row.updatedAt
-            ? new Date(parseInt(pms.row.updatedAt)).toLocaleString()
-            : '';
-        },
+      },
+      {
+        field: 'updatedAt',
+        headerName: 'Update Entry',
+        description: 'User Updated date',
+        hide: true,
+        width: 160,
       },
       {
         field: 'actions',

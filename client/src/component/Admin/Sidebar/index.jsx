@@ -4,10 +4,23 @@ const Sidebar = () => {
   return (
     <ul>
       <li>
-        <Link to="/customer">Customer</Link>
+        <Link to="/dashboard/order">Order</Link>
+      </li>
+
+      <li>
+        <Link to="/dashboard/order/new">New Oreder</Link>
       </li>
       <li>
-        <Link to="/customer/new">New</Link>
+        <Link to="/dashboard/design">Design</Link>
+      </li>
+      <li>
+        <Link to="/dashboard/design/new">New Design</Link>
+      </li>
+      <li>
+        <Link to="/dashboard/customer">Customer</Link>
+      </li>
+      <li>
+        <Link to="/dashboard/customer/new">New</Link>
       </li>
       <li>
         <Link to="/dashboard/product">Product</Link>
@@ -21,6 +34,13 @@ const Sidebar = () => {
 
       <li>
         <Link to="/dashboard/measurement/new">New Measurement</Link>
+      </li>
+
+      <li>
+        <Link to="/dashboard/account">Account</Link>
+      </li>
+      <li>
+        <Link to="/dashboard/account/new">New Account</Link>
       </li>
     </ul>
   );

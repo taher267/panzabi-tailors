@@ -31,7 +31,7 @@ const measurementUpdate = async (qry, update, options) => {
 const createMeasurement = async ({ name, sl_id }) => {
   try {
     const newData = { name, sl_id };
-    const saved = new User(newData);
+    const saved = new Measurement(newData);
     return await saved.save();
   } catch (e) {
     errorHandler(e);

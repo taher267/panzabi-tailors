@@ -1,45 +1,46 @@
 export const Design = `
 type Disign {
-  id: ID!
-  name: String!
+  _id: ID!
+  design_name: String!
   designs: [DesignItem!]!
-  type: Int!
-  icon: Icon
+  type: [String!]!
 }`;
 export const DesignItem = `
 type DesignItem {
+  _id: String!
     item: String!
     ds_id: Int!
+    icon: Icon
   }`;
 export const InpDesignItem = `
 input InpDesignItem {
   item: String!
   ds_id: Int!
+  icon: InpIcon
 }`;
 export const InpIcon = `
 input InpIcon {
-  id: String
+  _id: String
   src: String
 }`;
 
 export const InputDisign = `
 input InputDisign {
-  name: String!
+  design_name: String!
   designs: [InpDesignItem!]!
-  type: Int!
-  icon: InpIcon
+  type: [String!]!
 }`;
 export const example = ``;
 export const Icon = `type Icon {
-  id: String
+  _id: String
   src: String
 }`;
 export const DesignQueries = `
-designs(key: String, value: String): [Disign!]!
+allDesigns(key: String, value: String): [Disign!]!
 getDesign(id: ID!): Disign!
 `;
 
 export const DesignMutations = `
 createDesign(design: InputDisign): Disign
-updateDesign(id: ID!, update: InputDisign): Disign
-deleteDesign(id: ID!): Boolean`;
+updateDesign(_id: ID!, update: InputDisign): Disign
+deleteDesign(_id: ID!): Boolean`;

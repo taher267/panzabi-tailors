@@ -9,6 +9,10 @@ import { ALL_USERS } from '../Query/userQry';
 import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
 import { ALL_MEASUREMENTS, SINGLE_MEASUREMENT } from '../Query/measurementQry';
 import { ALL_PRODUCTS } from '../Query/productQry';
+import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
+import { ALL_DESIGNS, SINGLE_DESIGN } from './../Query/designQry';
+import { ALL_ACCOUNTS, DAILY_ACCOUNT } from './../Query/accountQry';
+import { NEW_ACCOUNT, EDIT_ACCOUNT } from './../Mutations/accountMut';
 
 export default {
   //CUSTOMER
@@ -29,4 +33,14 @@ export default {
   ALL_USERS,
   // ORDER
   NEW_ORDER,
+  //DESIGN
+  ALL_DESIGNS,
+  SINGLE_DESIGN,
+  NEW_DESIGN,
+  EDIT_DESIGN,
+  // ACCOUNT
+  ALL_ACCOUNTS,
+  DAILY_ACCOUNT,
+  NEW_ACCOUNT,
+  EDIT_ACCOUNT,
 };

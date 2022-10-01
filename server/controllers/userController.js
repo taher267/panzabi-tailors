@@ -3,10 +3,10 @@ import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
 import userValidation from '../validation/userValidation.js';
 import { hash, genSalt } from 'bcrypt';
-
 import userServices from '../services/userCustomerServices.js';
 import getJWT from '../utils/getJWT.js';
 import errorHandler from '../utils/errorHandler.js';
+
 export default {
   /**
    * Create New User
@@ -48,7 +48,7 @@ export default {
           : { roles: { $in: ['USER'] } };
       return await userServices.findUser(filter);
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -67,7 +67,7 @@ export default {
         });
       return await userServices.findUser(key, value);
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -78,7 +78,7 @@ export default {
       const updated = await User.findByIdAndUpdate(id, update, { new: true });
       return updated;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -92,7 +92,7 @@ export default {
       console.log(del);
       return del.deletedCount;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
 };

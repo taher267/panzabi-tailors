@@ -46,25 +46,20 @@ const columns = [
     editable: true,
     hide: true,
   },
-
-  // {
-  //   field: 'createdAt',
-  //   headerName: 'Created Date',
-  //   type: 'dateTime',
-  //   width: 150,
-  //   editable: true,
-  // },
   {
     field: 'createdAt',
     headerName: 'Created Date',
     description: 'Customer Created',
     sortable: false,
     width: 160,
-    valueGetter: (pms) => {
-      return pms.row.createdAt
-        ? new Date(parseInt(pms.row.createdAt)).toLocaleString()
-        : '';
-    },
+  },
+  {
+    field: 'updatedAt',
+    headerName: 'Entry Update',
+    description: 'Customer update info time',
+    sortable: false,
+    hide: true,
+    width: 160,
   },
 
   {
@@ -107,20 +102,6 @@ const columns = [
       return row.engage.length;
     },
     hide: true,
-  },
-
-  {
-    hide: true,
-    field: 'updatedAt',
-    headerName: 'Last Update',
-    description: 'Last change info time of customer',
-    sortable: false,
-    width: 160,
-    valueGetter: (pms) => {
-      return pms.row.createdAt
-        ? new Date(parseInt(pms.row.createdAt)).toLocaleString()
-        : '';
-    },
   },
   {
     field: 'Actions',

@@ -1,6 +1,6 @@
 import Measurement from '../models/Measurement.js';
 import mg from 'mongoose';
-import { AuthenticationError, UserInputError } from 'apollo-server-core';
+import { AuthenticationError, UserInputError } from 'apollo-server';
 import measureValidation from '../validation/measureValidation.js';
 import errorHandler from '../utils/errorHandler.js';
 import measurementServices from '../services/measurementServices.js';
@@ -30,7 +30,7 @@ export default {
       const all = await Measurement.find(filter);
       return all;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -43,7 +43,7 @@ export default {
         throw new UserInputError(`Invalid id, get ${value}`);
       return await measurementServices.findMeasurement(key, value);
     } catch (e) {
-      throw UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -64,7 +64,6 @@ export default {
         _id: id,
       };
     } catch (e) {
-      console.log(e);
       errorHandler(e);
     }
   },

@@ -1,11 +1,6 @@
 import { gql } from '@apollo/client';
 
 export const NEW_MEASUREMENT = gql`
-  # input InpIcon {
-  #   id: String
-  #   src: String
-  # }
-
   mutation createMeasurement(
     $sl_id: String!
     $name: String! # $icon: InpIcon

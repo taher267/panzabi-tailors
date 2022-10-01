@@ -2,13 +2,13 @@ import { TextField } from '@mui/material';
 import csses from './order.module.css';
 import { orderMeasurementFields } from '../../arrayForms/orderForm';
 import { useForm } from 'react-hook-form';
-const OrderMeasuement = ({ gqlErrs, onFocus }) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+const OrderMeasuement = ({ register, errors, gqlErrs, onFocus }) => {
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   reset,
+  //   formState: { errors },
+  // } = useForm();
   return (
     <div className={csses.measuementFields}>
       {orderMeasurementFields?.map((field) => {

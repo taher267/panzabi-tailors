@@ -25,7 +25,7 @@ export default {
       const filter = key && value ? { [key]: value } : {};
       return await productServices.findProduct(filter);
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -37,7 +37,7 @@ export default {
         throw new UserInputError(`Invalid delete _id`);
       return await productServices.findProduct('_id', _id);
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -49,7 +49,7 @@ export default {
       const updated = await productServices.updateProduct(_id, update);
       return updated;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
   /**
@@ -62,7 +62,7 @@ export default {
       const del = await Product.deleteOne({ _id });
       return del.deletedCount;
     } catch (e) {
-      throw new UserInputError(e);
+      errorHandler(e);
     }
   },
 };

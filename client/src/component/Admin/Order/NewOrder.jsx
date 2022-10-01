@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import csses from './order.module.css';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
 import OrderMeasuement from './OrderMeasuement';
+import OrderBasic from './OrderBasic';
 const valuesInit = { name: '', description: '', price: '', category: '' };
 
 const NewOrder = () => {
@@ -70,41 +71,13 @@ const NewOrder = () => {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <div className={csses.orderRequired}>
-              {orderFields?.map((field) => {
-                let { name, defaultError, validation, ...rest } = field;
-                return (
-                  <TextField
-                    key={name}
-                    {...register(name, { ...validation })}
-                    name={name}
-                    onFocus={onFocus}
-                    color="secondary"
-                    variant="filled"
-                    label={name}
-                    // fullWidth
-                    error={
-                      gqlErrs?.[name] ? true : errors?.[name] ? true : false
-                    }
-                    helperText={
-                      gqlErrs?.[name]
-                        ? gqlErrs?.[name]
-                        : errors?.[name]
-                        ? errors?.[name]?.message || defaultError
-                        : ''
-                    }
-                    {...rest}
-                    sx={{ marginBottom: '5px' }}
-                  />
-                );
-              })}
+              <OrderBasic
+                errors={errors}
+                register={register}
+                gqlErrs={gqlErrs}
+                onFocus={onFocus}
+              />
             </div>
-            {/* <OrderMeasuement
-              fields={orderMeasurementFields}
-              onFocus={onFocus}
-              gqlErrs={gqlErrs}
-              register={register}
-              errors={errors}
-            /> */}
             <select
               {...register('category', { required: true })}
               defaultValue={1}
@@ -125,7 +98,12 @@ const NewOrder = () => {
                 </option>
               ))}
             </select>
-
+            <OrderMeasuement
+              onFocus={onFocus}
+              gqlErrs={gqlErrs}
+              register={register}
+              errors={errors}
+            />
             <Button
               disabled={
                 processing ||
@@ -137,10 +115,10 @@ const NewOrder = () => {
               endIcon={<Save />}
               type="submit"
             >
-              Add Measurement
+              Add Order
             </Button>
           </form>
-          <form onSubmit={handleSubmit(measuementSubmit)}>
+          {/* <form onSubmit={handleSubmit(measuementSubmit)}>
             <OrderMeasuement
               fields={orderMeasurementFields}
               onFocus={onFocus}
@@ -161,7 +139,7 @@ const NewOrder = () => {
             >
               Add Measurement
             </Button>
-          </form>
+          </form> */}
         </div>
       }
     </AdminLayout>
