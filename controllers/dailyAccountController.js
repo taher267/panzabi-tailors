@@ -71,14 +71,15 @@ export default {
   /**
    * Delete DailyAccount
    */
-  deleteDailyAccount: async (_parent, { id: _id }) => {
+  deleteDailyAccount: async (_parent, { _id }) => {
     try {
       if (!mg.isValidObjectId(_id))
         throw new UserInputError(`Invalid delete id`);
       const del = '';
       // await DailyAccount.deleteOne({ _id });
-      console.log(del);
-      return del.deletedCount;
+      console.log(_id);
+      // return del.deletedCount;
+      return true;
     } catch (e) {
       errorHandler(e);
     }

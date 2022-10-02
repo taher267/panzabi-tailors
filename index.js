@@ -24,7 +24,13 @@ const server = new ApolloServer({
     // console.log(req.user);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
-  cors: { origin: ['http://localhost:3000', 'http://localhost:5173'] },
+  cors: {
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://6339dccf0558fc1390238f4c--precious-daffodil-da626b.netlify.app',
+    ],
+  },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 
