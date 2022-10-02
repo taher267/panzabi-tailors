@@ -2,7 +2,8 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { ReactSession } from 'react-client-session';
 const httpLink = createHttpLink({
-  uri: 'https://pz-front-end.herokuapp.com',
+  // uri: 'https://pz-front-end.herokuapp.com',
+  uri: 'https://6339dccf0558fc1390238f4c--precious-daffodil-da626b.netlify.app',
   // uri: 'http://localhost:4000',
 });
 const authLink = setContext((_, { headers }) => {

@@ -43,3 +43,16 @@
   margin-bottom: 0;
   margin-left: 14px;
 }
+/*Account Summary */
+.summaryBox {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+  text-align: center;
+}
+
+.summaryBox > div {
+  border: 1px solid #ddd;
+  padding: 20px 0;
+  color: rgba(0, 0, 0, 0.87);
+}

@@ -16,7 +16,7 @@ export default function Nav() {
         <NavLink to="/login">Login</NavLink>
       </li>
       <li>
-        <NavLink to="/customer">Customer</NavLink>
+        <NavLink to="/dashboard/customer">Customer</NavLink>
       </li>
       <li>
         <NavLink to="/category-products">Category Products</NavLink>
