@@ -1,0 +1,58 @@
+.newAccountgridWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.lastColumn {
+  grid-column: 1/-1;
+}
+
+@media only screen and (max-width: 768px) {
+  .newAccountgridWrapper {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.textareaAutosize {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.87);
+  width: 100%;
+  border: 0;
+  font-size: 1rem;
+  font-weight: 400;
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+}
+
+.textareaAutosize:focus {
+  outline: none;
+}
+.error {
+  color: #d32f2f;
+  border-color: #d32f2f;
+}
+.errMsg {
+  font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  line-height: 1.66;
+  letter-spacing: 0.03333em;
+  text-align: left;
+  margin-top: 3px;
+  margin-right: 14px;
+  margin-bottom: 0;
+  margin-left: 14px;
+}
+/*Account Summary */
+.summaryBox {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 15px;
+  text-align: center;
+}
+
+.summaryBox > div {
+  border: 1px solid #ddd;
+  padding: 20px 0;
+  color: rgba(0, 0, 0, 0.87);
+}

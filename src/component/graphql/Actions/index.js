@@ -1,0 +1,51 @@
+import { NEW_CUSTOMER, EDIT_CUSTOMER } from './../Mutations/customerMut';
+import { NEW_PRODUCT, EDIT_PRODUCT } from './../Mutations/productMut';
+import { NEW_ORDER } from './../Mutations/orderMut';
+import {
+  NEW_MEASUREMENT,
+  EDIT_MEASUREMENT,
+} from './../Mutations/measurementMut';
+import { ALL_USERS } from '../Query/userQry';
+import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
+import { ALL_MEASUREMENTS, SINGLE_MEASUREMENT } from '../Query/measurementQry';
+import { ALL_PRODUCTS } from '../Query/productQry';
+import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
+import { ALL_DESIGNS, SINGLE_DESIGN } from './../Query/designQry';
+import { ALL_ACCOUNTS, DAILY_ACCOUNT } from './../Query/accountQry';
+import {
+  NEW_ACCOUNT,
+  EDIT_ACCOUNT,
+  DELETE_ACCOUNT,
+} from './../Mutations/accountMut';
+
+export default {
+  //CUSTOMER
+  ALL_CUSTOMERS,
+  SINGLE_CUSTOMER,
+  NEW_CUSTOMER,
+  EDIT_CUSTOMER,
+  //PRODUCT
+  ALL_PRODUCTS,
+  NEW_PRODUCT,
+  EDIT_PRODUCT,
+  //MEASUREMENT
+  ALL_MEASUREMENTS,
+  NEW_MEASUREMENT,
+  EDIT_MEASUREMENT,
+  SINGLE_MEASUREMENT,
+  //USER
+  ALL_USERS,
+  // ORDER
+  NEW_ORDER,
+  //DESIGN
+  ALL_DESIGNS,
+  SINGLE_DESIGN,
+  NEW_DESIGN,
+  EDIT_DESIGN,
+  // ACCOUNT
+  ALL_ACCOUNTS,
+  DAILY_ACCOUNT,
+  NEW_ACCOUNT,
+  EDIT_ACCOUNT,
+  DELETE_ACCOUNT,
+};
