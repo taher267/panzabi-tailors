@@ -14,6 +14,7 @@ import csses from './order.module.css';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
 import OrderMeasuement from './OrderMeasuement';
 import OrderBasic from './OrderBasic';
+import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
 const valuesInit = { name: '', description: '', price: '', category: '' };
 
 const NewOrder = () => {
@@ -67,6 +68,7 @@ const NewOrder = () => {
           <LinearProgress />
         </Box>
       )}
+      <SwipeableEdgeDrawer />
       {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">

@@ -5,10 +5,12 @@ export const Order = `type Order {
     totalPrice: Float!
     discunt: Float
     advanced: Float
+    due: Float
     user: String!
     order_status: String
-    createdAt: String!
-    updatedAt: String!
+    delivery_date: Date!
+    createdAt: DateTime!
+    updatedAt: DateTime!
   }`;
 // order_items: [OrderItemsOfOrder!]!
 export const OrderDesign = `type OrderDesign {
@@ -24,7 +26,7 @@ export const OrderItemsOfOrder = `type OrderItemsOfOrder {
     price: Float!
     measurements: [OrderMeasurement!]!
     designs: [OrderDesign!]!
-    orderAt:String!
+    order_date:Date!
     sample: Icon
   }`;
 export const InputOrderMeasurement = `
@@ -52,7 +54,6 @@ input InputOrder {
   totalPrice: Float!
   discunt: Float
   advanced: Float
-  user: String!
   order_status: String
 }`;
 // order_items: [InputOrderItemsOfOrder!]!

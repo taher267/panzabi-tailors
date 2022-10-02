@@ -16,6 +16,7 @@ export default mg.model(
       totalPrice: { type: Number, required: true },
       discunt: { type: Number, default: 0 },
       advanced: { type: Number, default: 0 },
+      due: { type: Number, default: 0 },
       transport_charge: { type: Number, default: 0 },
       user: {
         type: mg.Types.ObjectId,
@@ -55,12 +56,16 @@ export default mg.model(
             id: String,
             src: String,
           },
-          orderAt: {
+          order_date: {
             type: Date,
             default: Date.now(),
           },
         },
       ],
+      delivery_date: {
+        type: Date,
+        required: [true, 'Delivery date is mandatory!'],
+      },
     },
     { timestamps: true }
   )

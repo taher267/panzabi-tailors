@@ -1,4 +1,15 @@
+import moment from 'moment';
+import { DATE } from './../../utils/index';
+
 export const orderBasicFields = [
+  {
+    defaultValue: moment().format(DATE),
+    label: 'Order date',
+    type: 'date',
+    name: 'order_date',
+    validation: { required: true },
+    defaultError: `Order date is mandartory!`,
+  },
   {
     label: 'Order number',
     name: 'order_no',
@@ -10,6 +21,14 @@ export const orderBasicFields = [
     label: 'Previouse Number',
     name: 'previous_order',
     placeholder: 'Enter previous number...',
+  },
+  {
+    label: 'Delivery date',
+    name: 'delivery_date',
+    type: 'date',
+    validation: { required: true },
+    defaultValue: moment().add(10, 'd').format(DATE),
+    defaultError: `Delivery date is mandartory!`,
   },
 ];
 export const orderFields = [

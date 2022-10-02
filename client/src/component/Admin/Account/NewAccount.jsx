@@ -55,11 +55,15 @@ const NewAccount = () => {
   useEffect(() => {
     const ele = document.querySelector("input[type='date']");
     ele?.setAttribute('max', moment().format('YYYY-MM-DD'));
+    //Cashin min value set
+    document.querySelector("[name='cash_in']")?.setAttribute('min', 0);
+    //Cashout min value set
+    document.querySelector("[name='cash_out']")?.setAttribute('min', 0);
   });
 
   useEffect(() => {
     if (data) {
-      console.dir(data);
+      // console.dir(data);
       reset();
     }
   }, [data]);
