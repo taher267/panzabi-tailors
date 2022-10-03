@@ -100,6 +100,16 @@ export const orderMeasurementFields = [
       name: 'body_loose',
       placeholder: 'Body...',
     },
+    {
+      label: 'Belly',
+      name: 'belly',
+      placeholder: 'Belly...',
+    },
+    {
+      label: 'Belly Loose',
+      name: 'belly_loose',
+      placeholder: 'Belly...',
+    },
   ],
   {
     label: 'Sholder',

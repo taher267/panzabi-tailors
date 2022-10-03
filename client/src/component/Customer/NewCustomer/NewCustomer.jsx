@@ -1,6 +1,4 @@
-import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import parse from 'html-react-parser';
 import {
   LinearProgress,
   Checkbox,
@@ -12,13 +10,15 @@ import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import classes from './new-customer.module.css';
-import { NEW_CUSTOMER } from '../../graphql/Mutations/customerMut';
 import {
   newCustomerFields,
   newCustomerTransportFields,
 } from '../../arrayForms/customerForm';
+
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
+import useMutationFunc from './../../hooks/gql/useMutationFunc';
+
 const colourOptions = [
   { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
   { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
@@ -35,27 +35,13 @@ const colourOptions = [
 // const animatedComponents = makeAnimated();
 const NewCustomer = () => {
   const [gqlErr, setGqlErr] = useState({});
-  // controlling Mutation
-  const [createCustomer, { data, loading, error }] = useMutation(NEW_CUSTOMER, {
-    update(proxy, result) {
-      console.log(result);
-    },
-    onError(e) {
-      // const {
-      //   graphQLErrors: [{ extensions: exc }],
-      // } = e;
-      const exc = e?.graphQLErrors?.[0]?.extensions;
-      if (exc?.errors?.message) {
-        return setGqlErr({
-          username: exc?.errors?.message,
-          password: exc?.errors?.message,
-        });
-      } else if (exc) return setGqlErr(exc?.errors);
-      setGqlErr({ message: e?.message });
-      // console.log(exc?.errors);
-    },
-  });
-  console.log(error);
+
+  const {
+    mutation: createCustomer,
+    data,
+    processing,
+    bug,
+  } = useMutationFunc('NEW_CUSTOMER', null, setGqlErr);
 
   const [deliveryFields, setDeliveryFields] = useState(false);
   // use form hook
@@ -89,7 +75,7 @@ const NewCustomer = () => {
 
   return (
     <AdminLayout>
-      {loading && (
+      {processing && (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>

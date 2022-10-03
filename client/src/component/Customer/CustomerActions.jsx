@@ -11,10 +11,17 @@ export default function CustomerActions({ params, rowId, setRowId }) {
   const { id, row } = params;
 
   const updateHandle = () => {
-    console.log(row);
-    // updateMutation({
-    //   variables: { id: rowId, update: { name: row.name, sl_id: row.sl_id } },
-    // });
+    let { name, email, phone_no, address, status, transportation } = row;
+    let updateData = {
+      name,
+      email,
+      phone_no,
+      address,
+      status,
+      transportation,
+    };
+
+    updateMutation({ variables: { id, ...updateData } });
   };
 
   return (

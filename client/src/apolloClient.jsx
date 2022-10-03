@@ -9,7 +9,7 @@ const httpLink = createHttpLink({
 });
 const authLink = setContext((_, { headers }) => {
   let token = ReactSession.get('token');
-  console.log('token', headers);
+  console.log('token===', token);
   return {
     headers: {
       ...headers,

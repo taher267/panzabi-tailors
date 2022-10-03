@@ -1,11 +1,8 @@
-// import ApolloClient from 'apollo-boost';
-// import { InMemoryCache } from 'apollo-cache-inmemory';
-// import { createHttpLink } from 'apollo-link-http';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Nav from './Nav/Nav';
 // import Products from './Product/index';
 import Dashboard from './Admin/Dashboard';
-import Customer from './Customer';
+import Customer from './Customer/Customer';
 import NewCustomer from './Customer/NewCustomer/NewCustomer';
 import MeasurementList from './Admin/Measurement/MeasurementList';
 import NewMeasuremen from './Admin/Measurement/NewMeasurement';

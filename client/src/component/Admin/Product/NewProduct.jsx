@@ -124,8 +124,8 @@ const NewProduct = () => {
               }}
             >
               <option value="">Select</option>
-              <option value="1">One</option>
-              <option value="1">Two</option>
+              <option value="type-1">type-1</option>
+              <option value="type-2">type-2</option>
             </select>
             {/* {inputMeasuermentFields?.map((fields, idx) => {
               return (

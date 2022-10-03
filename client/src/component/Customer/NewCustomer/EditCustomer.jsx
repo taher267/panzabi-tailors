@@ -22,6 +22,7 @@ import {
 import { useParams } from 'react-router-dom';
 import useSingleCustomer from '../../hooks/useSingleCustomer';
 import { errorFormat } from '../../utils/errorConv';
+import useMutationFunc from './../../hooks/gql/useMutationFunc';
 const init = {
   name: '',
   phone_no: '',
@@ -37,21 +38,14 @@ const init = {
 const EditCustomer = () => {
   const { id: ID } = useParams();
   const { processing, customer, bug } = useSingleCustomer(ID);
-  const [gqlErr, setGqlErr] = useState({});
+  const [gqlErrs, setGqlErrs] = useState({});
 
   // controlling Mutation
-  const [updateCustomer, { data, loading, error }] = useMutation(
-    EDIT_CUSTOMER,
-    {
-      update(proxy, result) {
-        console.log(result);
-      },
-      onError(e) {
-        console.log(e.message);
-        setGqlErr(errorFormat(e));
-      },
-    }
-  );
+  const {
+    mutation: updateCustomer,
+    processing: loading,
+    data,
+  } = useMutationFunc('EDIT_CUSTOMER');
 
   const [deliveryFields, setDeliveryFields] = useState(false);
   // use form hook
@@ -62,24 +56,22 @@ const EditCustomer = () => {
   } = useForm({ defaultValue: { ...init } });
 
   const onFocus = ({ target: { name } }) => {
-    let newErr = { ...gqlErr };
+    let newErr = { ...gqlErrs };
     delete newErr[name];
-    setGqlErr(newErr);
+    setGqlErrs(newErr);
   };
-  const onSubmit = (data) => {
-    // console.log({ variables: { id: ID, ...data } });
-    updateCustomer({ variables: { id: ID, ...data } });
+  const onSubmit = (updateData) => {
+    updateCustomer({ variables: { id: ID, ...updateData } });
   };
   return (
     <AdminLayout>
-      {loading ||
-        (processing && (
-          <Box sx={{ width: '100%' }}>
-            <LinearProgress />
-          </Box>
-        ))}
+      {(loading || processing) && (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      )}
       <div>
-        {!loading && !processing && (
+        {!processing && (
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             {newCustomerFields?.map(
               ({ name, validation, defaultError, ...field }) => (
@@ -87,10 +79,10 @@ const EditCustomer = () => {
                   defaultValue={customer?.[name] || init?.[name]}
                   key={name}
                   onFocus={onFocus}
-                  error={gqlErr?.[name] ? true : errors?.[name] ? true : false}
+                  error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
                   helperText={
-                    gqlErr?.[name]
-                      ? gqlErr?.[name]
+                    gqlErrs?.[name]
+                      ? gqlErrs?.[name]
                       : errors?.[name]
                       ? errors?.[name]?.message || defaultError
                       : ''
@@ -123,8 +115,8 @@ const EditCustomer = () => {
                         variant="filled"
                         {...register(name, { ...validation })}
                         helperText={
-                          gqlErr?.[name]
-                            ? gqlErr?.[name]
+                          gqlErrs?.[name]
+                            ? gqlErrs?.[name]
                             : errors?.[name]
                             ? errors?.[name]?.message || defaultError
                             : ''

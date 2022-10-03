@@ -4,7 +4,11 @@ import mg from 'mongoose';
 import customerValidation from '../validation/customerValidation.js';
 import errorHandler from '../utils/errorHandler.js';
 // import auth from '../auth/auth.js';
-import { ApolloError, AuthenticationError, UserInputError } from 'apollo-server';
+import {
+  ApolloError,
+  AuthenticationError,
+  UserInputError,
+} from 'apollo-server';
 
 export default {
   /**
@@ -47,8 +51,8 @@ export default {
         key && value
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['CUSTOMER'] } };
-      // console.log(filter);
       const all = await customerServices.findUser(filter);
+
       return all;
     } catch (e) {
       throw new UserInputError(e);
@@ -59,9 +63,9 @@ export default {
    */
   getCustomer: async (_parent, { key, value }, { req, res }) => {
     try {
-      if (!mg.isValidObjectId(value))
+      if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid customer id`);
-      return await Customer.findById(value);
+      return await customerServices.findUser(key, value);
     } catch (e) {
       throw new UserInputError(e);
     }

@@ -12,6 +12,7 @@ import { ALL_PRODUCTS } from '../Query/productQry';
 import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
 import { ALL_DESIGNS, SINGLE_DESIGN } from './../Query/designQry';
 import { ALL_ACCOUNTS, DAILY_ACCOUNT } from './../Query/accountQry';
+import { LOGIN, SIGNUP } from './../Mutations/authMut';
 import {
   NEW_ACCOUNT,
   EDIT_ACCOUNT,
@@ -19,6 +20,9 @@ import {
 } from './../Mutations/accountMut';
 
 export default {
+  // AUTH
+  SIGNUP,
+  LOGIN,
   //CUSTOMER
   ALL_CUSTOMERS,
   SINGLE_CUSTOMER,
