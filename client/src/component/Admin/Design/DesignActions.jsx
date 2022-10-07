@@ -20,12 +20,11 @@ export default function DesignActions({ params, rowId, setRowId }) {
       setSuccess(false);
       setRowId(false);
     }
-
     if (bug) {
     }
   }, [rowId, data, processing]);
   const updateHandle = () => {
-    console.log(type);
+    // console.log(row);
     // updateMutation({
     //   variables: { id: rowId, update: { name: row.name, sl_id: row.sl_id } },
     // });

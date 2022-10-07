@@ -19,6 +19,7 @@ const statusesOptions = [
   { value: 'REJECT', label: 'REJECT' },
 ];
 const Customer = () => {
+  const [val, setVal] = useState(null);
   const [rowId, setRowId] = useState(null);
   const columns = useMemo(
     () => [
@@ -163,6 +164,9 @@ const Customer = () => {
               components={{ Toolbar: GridToolbar }}
               getRowId={({ _id }) => _id}
               onCellEditCommit={({ id }) => setRowId(id)}
+              setEditCellValue={(d) => {
+                console.log(d);
+              }}
             />
           </Box>
         )}

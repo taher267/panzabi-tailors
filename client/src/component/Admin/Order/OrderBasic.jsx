@@ -1,6 +1,6 @@
 import { Checkbox, TextField, Typography } from '@mui/material';
 import csses from './order.module.css';
-import { orderBasicFields } from '../../arrayForms/orderForm';
+import { orderBasicFields } from '../../arrayForms/orderFields';
 // import { useForm } from 'react-hook-form';
 import { Fragment, useEffect, useState } from 'react';
 import moment from 'moment';

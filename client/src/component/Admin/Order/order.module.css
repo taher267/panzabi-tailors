@@ -3,12 +3,49 @@
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 5px;
 }
-.measuementFields {
+.orderMeasuementFields {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 5px;
+  /* width: 100%; */
 }
 
 .gridFullLast {
   grid-column: -2;
+}
+.orderStatus {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  color: #000;
+  margin-bottom: 5px;
+  border: none;
+  border-bottom: 1px solid #000;
+  outline: none;
+}
+@media only screen and (max-width: 1000px) {
+  .orderMeasuementFields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 5px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .orderMeasuementFields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); */
+    grid-auto-rows: 1fr;
+    gap: 5px;
+  }
+}
+
+@media only screen and (max-width: 567px) {
+  .orderMeasuementFields {
+    display: block;
+    /* grid-template-columns: repeat(1, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 5px; */
+  }
 }

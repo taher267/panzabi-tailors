@@ -48,7 +48,7 @@ export default mg.model(
             {
               _id: false,
               dsn_id: { type: mg.Types.ObjectId, required: true },
-              desc: { type: String, required: true },
+              desc: { type: String },
             },
           ],
           sample: {

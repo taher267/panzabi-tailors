@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { DATE } from './../../utils/index';
+import { DATE } from '../../utils/index';
 
 export const orderBasicFields = [
   {
@@ -8,14 +8,14 @@ export const orderBasicFields = [
     type: 'date',
     name: 'order_date',
     validation: { required: true },
-    defaultError: `Order date is mandartory!`,
+    defaultError: `Order date is mandatory!`,
   },
   {
     label: 'Order number',
     name: 'order_no',
     validation: { required: true },
     placeholder: 'Enter order number...',
-    defaultError: `Order number is mandartory!`,
+    defaultError: `Order number is mandatory!`,
   },
   {
     label: 'Previouse Number',
@@ -28,7 +28,7 @@ export const orderBasicFields = [
     type: 'date',
     validation: { required: true },
     defaultValue: moment().add(10, 'd').format(DATE),
-    defaultError: `Delivery date is mandartory!`,
+    defaultError: `Delivery date is mandatory!`,
   },
 ];
 export const orderFields = [
@@ -37,7 +37,7 @@ export const orderFields = [
     name: 'order_no',
     validation: { required: true },
     placeholder: 'Enter order number...',
-    defaultError: `Order number is mandartory!`,
+    defaultError: `Order number is mandatory!`,
   },
   {
     label: 'Previouse Number',
@@ -81,13 +81,13 @@ export const orderFields = [
   },
 ];
 
-export const orderMeasurementFields = [
+export const orderUpMeasurementFields = [
   {
     label: 'Long',
     name: 'long',
     validation: { required: true },
     placeholder: 'Enter order number...',
-    defaultError: `Order number is mandartory!`,
+    defaultError: `Order number is mandatory!`,
   },
   [
     {
@@ -116,7 +116,7 @@ export const orderMeasurementFields = [
     name: 'sholder',
     validation: { required: true },
     placeholder: 'Sholder...',
-    defaultError: `Sholder is required`,
+    defaultError: `Sholder is mandatory`,
   },
   {
     label: 'Sleeve',
@@ -137,11 +137,55 @@ export const orderMeasurementFields = [
   },
 ];
 
+export const orderDownMeasurementFields = [
+  {
+    label: 'Length',
+    name: 'length',
+    validation: { required: true },
+    placeholder: 'Enter order number...',
+    defaultError: `Order number is mandatory!`,
+  },
+
+  {
+    label: 'Anklet cuff',
+    name: 'anklet_cuff',
+    placeholder: 'Anklet cuff...',
+    defaultError: `Anklet cuff`,
+  },
+  {
+    label: 'হাই/Waist to Crotch',
+    name: 'waist_to_crotch',
+    validation: { required: true },
+    placeholder: 'Waist to crotch/হাই...',
+    defaultError: `Waist to Crotch is mandatory`,
+  },
+  {
+    label: 'Waist/কোমর',
+    name: 'waist',
+    validation: { required: true },
+    placeholder: 'Waist...',
+    defaultError: `Waist is mandatory`,
+  },
+  {
+    label: 'Thigh/উরু/রান',
+    name: 'thigh',
+    validation: { required: true },
+    placeholder: 'thigh/উরু/রান...',
+    defaultError: `Thigh is mandatory`,
+  },
+
+  {
+    label: 'Hips',
+    name: 'hips',
+    placeholder: 'hips/উরু/রান...',
+  },
+];
+
 export const OrderStatusField = {
   label: 'Order Status',
-  name: 'transport_charge',
+  name: 'order_status',
   type: 'number',
   options: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
-  placeholder: 'Order Status...',
-  defaultError: `Order Status (0-9)!`,
+  validation: { required: true },
+  defaultError: `Order status is mandatory`,
 };

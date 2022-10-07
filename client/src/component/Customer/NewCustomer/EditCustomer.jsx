@@ -13,7 +13,6 @@ import { useForm } from 'react-hook-form';
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
 import classes from './new-customer.module.css';
-import { EDIT_CUSTOMER } from '../../graphql/Mutations/customerMut';
 
 import {
   newCustomerFields,

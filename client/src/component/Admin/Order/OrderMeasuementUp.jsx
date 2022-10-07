@@ -1,8 +1,8 @@
 import { TextField } from '@mui/material';
 import csses from './order.module.css';
-import { orderMeasurementFields } from '../../arrayForms/orderForm';
-import { useForm } from 'react-hook-form';
-const OrderMeasuement = ({ register, errors, gqlErrs, onFocus }) => {
+import { orderUpMeasurementFields } from '../../arrayForms/orderFields';
+// import { useForm } from 'react-hook-form';
+const OrderMeasuementUp = ({ register, errors, gqlErrs, onFocus }) => {
   // const {
   //   register,
   //   handleSubmit,
@@ -10,8 +10,8 @@ const OrderMeasuement = ({ register, errors, gqlErrs, onFocus }) => {
   //   formState: { errors },
   // } = useForm();
   return (
-    <div className={csses.measuementFields}>
-      {orderMeasurementFields?.map((field) => {
+    <div className={csses.orderMeasuementFields}>
+      {orderUpMeasurementFields?.map((field) => {
         if (Array.isArray(field)) {
           return (
             <div key={field[0].name}>
@@ -55,7 +55,7 @@ const OrderMeasuement = ({ register, errors, gqlErrs, onFocus }) => {
               color="secondary"
               variant="filled"
               label={name}
-              // fullWidth
+              fullWidth
               error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
               helperText={
                 gqlErrs?.[name]
@@ -74,4 +74,4 @@ const OrderMeasuement = ({ register, errors, gqlErrs, onFocus }) => {
   );
 };
 
-export default OrderMeasuement;
+export default OrderMeasuementUp;

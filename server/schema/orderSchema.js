@@ -15,7 +15,7 @@ export const Order = `type Order {
 // order_items: [OrderItemsOfOrder!]!
 export const OrderDesign = `type OrderDesign {
     dsn_id: String!
-    desc: String!
+    desc: String
   }`;
 export const OrderMeasurement = `type OrderMeasurement {
     msr_id: String!
@@ -45,7 +45,7 @@ input InputOrderItemsOfOrder {
 // measurements: [InputOrderMeasurement!]!
 export const InputOrderDesign = `input InputOrderDesign {
   dsn_id: String!
-  desc: String!
+  desc: String
 }`;
 export const InputOrder = `
 input InputOrder {

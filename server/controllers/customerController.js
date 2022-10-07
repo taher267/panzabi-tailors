@@ -52,7 +52,6 @@ export default {
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['CUSTOMER'] } };
       const all = await customerServices.findUser(filter);
-
       return all;
     } catch (e) {
       throw new UserInputError(e);
