@@ -22,7 +22,7 @@ export default {
           `Invalid/ expired credientials!`,
           errorFormat(`Provide valid credientils! `)
         );
-      const user = await userServices.findUser('id', decoted.id);
+      const user = await userServices.findUser('_id', decoted.id);
       if (!user)
         throw new AuthenticationError(
           `Something going worng!`,

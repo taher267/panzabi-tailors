@@ -5,15 +5,17 @@ export const Order = `type Order {
     totalPrice: Float!
     discunt: Float
     advanced: Float
+    due: Float
     user: String!
     order_status: String
-    createdAt: String!
-    updatedAt: String!
+    delivery_date: Date!
+    createdAt: DateTime!
+    updatedAt: DateTime!
   }`;
 // order_items: [OrderItemsOfOrder!]!
 export const OrderDesign = `type OrderDesign {
     dsn_id: String!
-    desc: String!
+    desc: String
   }`;
 export const OrderMeasurement = `type OrderMeasurement {
     msr_id: String!
@@ -24,7 +26,7 @@ export const OrderItemsOfOrder = `type OrderItemsOfOrder {
     price: Float!
     measurements: [OrderMeasurement!]!
     designs: [OrderDesign!]!
-    orderAt:String!
+    order_date:Date!
     sample: Icon
   }`;
 export const InputOrderMeasurement = `
@@ -43,7 +45,7 @@ input InputOrderItemsOfOrder {
 // measurements: [InputOrderMeasurement!]!
 export const InputOrderDesign = `input InputOrderDesign {
   dsn_id: String!
-  desc: String!
+  desc: String
 }`;
 export const InputOrder = `
 input InputOrder {
@@ -52,7 +54,6 @@ input InputOrder {
   totalPrice: Float!
   discunt: Float
   advanced: Float
-  user: String!
   order_status: String
 }`;
 // order_items: [InputOrderItemsOfOrder!]!

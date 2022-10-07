@@ -59,7 +59,7 @@ export default {
       // console.log(parent);
       if (!key || !value)
         throw new UserInputError(`key and value must be provide!`);
-      if (key === 'id' && !mg.isValidObjectId(value))
+      if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`valid id`, {
           errors: {
             id: `Please provide a valid id!`,

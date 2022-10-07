@@ -24,6 +24,7 @@ const server = new ApolloServer({
     // console.log(req.user);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
+  csrfPrevention: true,
   cors: {
     origin: '*',
   },

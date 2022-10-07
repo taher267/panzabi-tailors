@@ -6,9 +6,7 @@ import userController from '../controllers/userController.js';
 import customerController from '../controllers/customerController.js';
 import authController from '../controllers/authController.js';
 import dailyAccountController from '../controllers/dailyAccountController.js';
-import DateTimeResolver, {
-  dateResolver,
-} from '../utils/graphql/dateResolver.js';
+import others from './others.js';
 
 export default {
   Query: {
@@ -31,8 +29,7 @@ export default {
     allAccounts: dailyAccountController.allAccounts,
     getDailyAccount: dailyAccountController.getDailyAccount,
   },
-  Date: dateResolver,
-  DateTime: DateTimeResolver,
+  ...others,
   Mutation: {
     userLogin: authController.login,
     userSignup: authController.signup,
