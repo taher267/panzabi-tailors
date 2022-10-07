@@ -1,10 +1,9 @@
+import React, { useEffect } from 'react';
 import { Button, TextField } from '@mui/material';
-import React from 'react';
-import { useMutation } from '@apollo/client';
-import { LOGIN } from '../../graphql/Mutations/loginMut';
 import { useForm } from 'react-hook-form';
 import { ReactSession } from 'react-client-session';
 import { AuthContext } from '../../context/AuthContext';
+import useMutationFunc from './../../hooks/gql/useMutationFunc';
 ReactSession.setStoreType('localStorage');
 const init = {
   username: '01765470147',
@@ -12,52 +11,56 @@ const init = {
 };
 const Login = () => {
   const context = React.useContext(AuthContext);
-  const [gqlErr, setGqlErr] = React.useState({});
+  const [gqlErrs, setGqlErrs] = React.useState({});
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues: { ...init } });
-  const [userLogin, { loading, data, error }] = useMutation(LOGIN, {
-    update(proxy, result) {
-      const token = result?.data?.userLogin?.token;
-      if (token) ReactSession.set('token', token);
-      context?.login(token);
-    },
-    onError({ graphQLErrors: [{ extensions: exc }] }) {
-      if (exc?.errors?.message) {
-        return setGqlErr({
-          username: exc?.errors?.message,
-          password: exc?.errors?.message,
-        });
+  const {
+    mutation: muteLogin,
+    processing,
+    data,
+  } = useMutationFunc(
+    'LOGIN',
+    null,
+    setGqlErrs,
+    'userLogin'
+    //func
+  );
+  useEffect(() => {
+    if (data) {
+      const token = data?.token;
+      if (token) {
+        ReactSession.set('token', token);
+        context?.login(token);
       }
-      setGqlErr(exc?.errors || {});
-    },
-  });
-  const onSubmit = (data) => {
-    setGqlErr({});
-    userLogin({ variables: data });
+    }
+  }, [data]);
+
+  const onSubmit = (newData) => {
+    setGqlErrs({});
+    muteLogin({ variables: newData });
   };
   const onFocus = ({ target: { name } }) => {
-    let newErr = { ...gqlErr };
+    let newErr = { ...gqlErrs };
     delete newErr[name];
-    setGqlErr(newErr);
+    setGqlErrs(newErr);
   };
   return (
     <>
       <div>
         <h3>Login</h3>
       </div>
-
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
-          error={gqlErr.username ? true : errors.username ? true : false}
+          error={gqlErrs?.username ? true : errors.username ? true : false}
           label="Username"
           placeholder="Enter phone no or email or username..."
           {...register('username', { required: true })}
           helperText={
-            gqlErr.username
-              ? gqlErr.username
+            gqlErrs?.username
+              ? gqlErrs?.username
               : errors.username
               ? 'Username mandatroy'
               : ''
@@ -69,15 +72,15 @@ const Login = () => {
         />
 
         <TextField
-          error={gqlErr.password ? true : errors.password ? true : false}
+          error={gqlErrs?.password ? true : errors?.password ? true : false}
           id="standard-error-helper-text"
           label="Password"
           type="password"
           onFocus={onFocus}
           //   gqlErr
           helperText={
-            gqlErr.password
-              ? gqlErr.password
+            gqlErrs?.password
+              ? gqlErrs.password
               : errors.password
               ? 'Password mandatroy'
               : ''
@@ -90,8 +93,8 @@ const Login = () => {
         <Button
           fullWidth
           disabled={
-            loading ||
-            Object.keys(gqlErr).length > 0 ||
+            processing ||
+            Object.keys(gqlErrs).length > 0 ||
             Object.keys(errors).length > 0
           }
           variant="outlined"

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
-import { measuementFields } from './../../arrayForms/measurementForm';
+import { measuementFields } from './../../arrayForms/measurementFields';
 import { useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import useMutMeasurement from './useMutMeasurement';

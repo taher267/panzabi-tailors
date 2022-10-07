@@ -54,13 +54,17 @@ const DesignsLists = () => {
       {
         field: 'designs',
         headerName: 'Designs',
+        type: 'textarea',
         sortable: false,
-        width: 250,
-        renderCell: ({ row }) => {
+        // editable: true,
+        width: 500,
+        renderCell: ({ row: { designs } }) => {
           return (
-            <>
-              <p>fdkfjdf</p>
-            </>
+            <div style={{ display: 'block' }}>
+              {designs.reduce((acc, cur) => {
+                return (acc += cur.item + ', ');
+              }, '')}
+            </div>
           );
         },
       },

@@ -5,7 +5,7 @@ import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { NEW_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
 import { errorFormat } from '../../utils/errorConv';
-import { measuementFields } from './../../arrayForms/measurementForm';
+import { measuementFields } from './../../arrayForms/measurementFields';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 const valuesInit = { name: '', sl_id: '', icon: '' };

@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "https://6339dccf0558fc1390238f4c--precious-daffodil-da626b.netlify.app",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

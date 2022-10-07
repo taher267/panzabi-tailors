@@ -1,18 +1,43 @@
-import { TextField } from '@mui/material';
-// import csses from './order.module.css';
-import { orderBasicFields } from '../../arrayForms/orderForm';
+import { Checkbox, TextField, Typography } from '@mui/material';
+import csses from './order.module.css';
+import { orderBasicFields } from '../../arrayForms/orderFields';
 // import { useForm } from 'react-hook-form';
-import { Fragment } from 'react';
-
+import { Fragment, useEffect, useState } from 'react';
+import moment from 'moment';
+import { DATE } from '../../../utils';
 const OrderBasic = ({ register, errors, gqlErrs, onFocus }) => {
+  const [urgent, setUngent] = useState(false);
   // const {
   //   register,
   //   handleSubmit,
   //   reset,
   //   formState: { errors },
   // } = useForm();
+
+  useEffect(() => {
+    document
+      .querySelector("[name='order_date']")
+      ?.setAttribute('max', moment().format(DATE));
+    if (urgent) {
+      document
+        .querySelector("[name='delivery_date']")
+        ?.setAttribute('min', moment().format(DATE));
+    } else {
+      document
+        .querySelector("[name='delivery_date']")
+        ?.setAttribute('min', moment().add(10, 'd').format(DATE));
+    }
+  });
   return (
     <Fragment>
+      <Typography component="div" className={csses.gridFullLast}>
+        <Checkbox
+          onChange={() => {
+            setUngent((p) => !p);
+          }}
+        />{' '}
+        Urgent
+      </Typography>
       {orderBasicFields?.map((field) => {
         let { name, defaultError, validation, ...rest } = field;
         return (

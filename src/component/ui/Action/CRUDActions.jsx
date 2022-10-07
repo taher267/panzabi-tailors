@@ -1,34 +1,30 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Visibility, Save, Delete, Check } from '@mui/icons-material';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
-
 import { green, red } from '@mui/material/colors';
-import useMutationFunc from '../../hooks/gql/useMutationFunc';
-
-export default function DesignActions({ params, rowId, setRowId }) {
-  //   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const { processing, data, updateMutation, bug } = useMutationFunc(
-    'EDIT_DESIGN',
-    setSuccess
-  );
-  // const { processing, data, updateMeasurement, bug } =useMutMeasurement(setSuccess);
-  const { id, row, type } = params;
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+export default function CRUDActions({
+  rowId,
+  id,
+  success,
+  setSuccess,
+  setRowId,
+  bug,
+  data,
+  processing,
+  updateHandle,
+  delFunc,
+  editUrl,
+}) {
   useEffect(() => {
     if (rowId === id && success) {
       setSuccess(false);
       setRowId(false);
     }
+
     if (bug) {
     }
   }, [rowId, data, processing]);
-  const updateHandle = () => {
-    // console.log(row);
-    // updateMutation({
-    //   variables: { id: rowId, update: { name: row.name, sl_id: row.sl_id } },
-    // });
-  };
   return (
     <Box
       className="measuementActions"
@@ -41,7 +37,7 @@ export default function DesignActions({ params, rowId, setRowId }) {
         alignItems: 'center',
       }}
     >
-      <Link to={`/dashboard/design/edit/${id}`}>
+      <Link to={`${editUrl}/edit/${id}`}>
         <Visibility />
       </Link>
       {processing ? (
@@ -83,11 +79,7 @@ export default function DesignActions({ params, rowId, setRowId }) {
         />
       )}
       <Button>
-        <Delete
-          onClick={() => {
-            window.alert(id);
-          }}
-        />
+        <Delete onClick={delFunc} />
       </Button>
     </Box>
   );
