@@ -33,7 +33,8 @@ const server = new ApolloServer({
 
 db()
   .then((d) => {
-    console.log(d.connection.host);
+    // console.log(d.connect);
+    // console.log(d.connection.host);
     return server.listen(PORT).then(({ url }) => {
       console.log(
         `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`

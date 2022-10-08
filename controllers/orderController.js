@@ -9,6 +9,7 @@ export default {
    */
   createOrder: async (_parent, { order }, _context) => {
     try {
+      console.log(order);
       const newOrder = new Order(order);
       // await newOrder.save();
       return newOrder;

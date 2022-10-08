@@ -55,6 +55,7 @@ import {
   OrderMeasurement,
   OrderMutations,
   OrderQueries,
+  InputOrderDesignItems,
 } from './../schema/orderSchema.js';
 import {
   Login,
@@ -155,6 +156,7 @@ scalar DateTime
   ${InputOrderMeasurement}
   ${InputOrderItemsOfOrder}
   ${InputOrderDesign}
+  ${InputOrderDesignItems}
   ${InputOrder}
   # Order Mutation Start
   # Measurement Mutation Start
