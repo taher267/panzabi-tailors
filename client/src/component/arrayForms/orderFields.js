@@ -31,54 +31,50 @@ export const orderBasicFields = [
     defaultError: `Delivery date is mandatory!`,
   },
 ];
-export const orderFields = [
-  {
-    label: 'Order number',
-    name: 'order_no',
-    validation: { required: true },
-    placeholder: 'Enter order number...',
-    defaultError: `Order number is mandatory!`,
-  },
-  {
-    label: 'Previouse Number',
-    name: 'previous_order',
-    placeholder: 'Enter previous number...',
-  },
+export const orderPricingFields = [
   {
     label: 'Quantity',
     name: 'quantity',
     type: 'number',
     min: 0,
-    validation: { pattern: /[0-9]+$/, min: 1 },
+    validation: { required: true, pattern: /[0-9]+$/, min: 1 },
     placeholder: 'Quantity...',
     defaultError: `Quantity (0-9)!`,
   },
   {
-    label: 'Discunt',
-    name: 'discunt',
+    label: 'Price',
+    name: 'price',
     type: 'number',
     min: 0,
-    validation: { pattern: /[0-9]+$/, min: 0 },
-    placeholder: 'Discunt...',
-    defaultError: `Discunt (0-9)!`,
+    validation: { required: true, pattern: /[0-9]+$/, min: 1 },
+    placeholder: 'Price...',
+    defaultError: `Price (0-9)!`,
   },
-  {
-    label: 'Advanced',
-    name: 'advanced',
-    type: 'number',
-    min: 0,
-    validation: { pattern: /[0-9]+$/, min: 0 },
-    placeholder: 'Advanced...',
-    defaultError: `Advanced (0-9)!`,
-  },
-  {
-    label: 'Transport Charge',
-    name: 'transport_charge',
-    type: 'number',
-    validation: { pattern: /[0-9]+$/, min: 0 },
-    placeholder: 'Transport Charge...',
-    defaultError: `Transport Charge (0-9)!`,
-  },
+  // {
+  //   label: 'Discunt',
+  //   name: 'discunt',
+  //   type: 'number',
+  //   min: 0,
+  //   validation: { pattern: /[0-9]+$/, min: 0 },
+  //   placeholder: 'Discunt...',
+  //   defaultError: `Discunt (0-9)!`,
+  // },
+  // {
+  //   label: 'Advanced',
+  //   name: 'advanced',
+  //   type: 'number',
+  //   validation: { pattern: /[0-9]+$/, min: 0 },
+  //   placeholder: 'Advanced...',
+  //   defaultError: `Advanced (0-9)!`,
+  // },
+  // {
+  //   label: 'Transport Charge',
+  //   name: 'transport_charge',
+  //   type: 'number',
+  //   validation: { pattern: /[0-9]+$/, min: 0 },
+  //   placeholder: 'Transport Charge...',
+  //   defaultError: `Transport Charge (0-9)!`,
+  // },
 ];
 
 export const orderUpMeasurementFields = [
@@ -189,3 +185,13 @@ export const OrderStatusField = {
   validation: { required: true },
   defaultError: `Order status is mandatory`,
 };
+export const OrderPricingField = [
+  {
+    label: 'Transport Charge',
+    name: 'transport_charge',
+    type: 'number',
+    validation: { pattern: /[0-9]+$/, min: 0 },
+    placeholder: 'Transport Charge...',
+    defaultError: `Transport Charge (0-9)!`,
+  },
+];

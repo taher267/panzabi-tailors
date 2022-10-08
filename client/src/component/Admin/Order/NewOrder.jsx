@@ -20,6 +20,7 @@ import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
 import OrderMeasuementDown from './OrderMeasuementDown';
 import useGetQurey from './../../hooks/gql/useGetQurey';
 import DesignView from './DesignView2';
+import OrderPricing from './OrderPriceing';
 
 const InitFields = {
   type_one: [
@@ -66,12 +67,67 @@ const NewOrder = () => {
   //   console.dir(data);
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
-    setGqlErrs({});
-    let addItemDetails = {};
-    // console.log(data);
+    const {
+      order_status,
+      order_date,
+      order_no,
+      previous_order,
+      delivery_date, //
+      // long,
+      // body,
+      // body_loose,
+      // belly,
+      // belly_loose,
+      // sholder,
+      // sleeve,
+      // coller,
+      // sleeve_cuff,
+      ...measure1
+    } = data;
+
+    const type_one = InitFields.type_one;
+    const type_one_vals = type?.type_one
+      ? fetchMeasurement(data, InitFields.type_one)
+      : {};
+    const type_two = InitFields.type_two;
+    const type_two_vals = type?.type_two
+      ? fetchMeasurement(data, InitFields.type_two)
+      : {};
+    const basic = {
+      order_no, //
+      previous_order, //
+      // quantity,
+      // totalPrice,
+      // discunt,
+      // advanced,
+      // due,
+      // transport_charge,
+      // user,
+      order_status, //
+      // order_items,
+      delivery_date, //
+    };
+    const order_items = [];
+    // order_items:[
+    //   {
+    //     measurements:type_one_vals
+    //   }
+    // ]
+    if (Object.keys(type_one_vals).length) {
+      order_items.push(type_one_vals);
+    }
+    if (Object.keys(type_two_vals).length) {
+      order_items.push(type_two_vals);
+    }
+    const newOrderDates = {
+      ...basic,
+      order_items,
+    };
+    // setGqlErrs({});
+    console.log(newOrderDates);
     // console.log(designWithValue);
 
-    checkValuesAndErrors(designWithValue);
+    // checkValuesAndErrors(designWithValue);
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
@@ -83,7 +139,7 @@ const NewOrder = () => {
       const modifyAllDesignsUpItems = all_designs?.reduce((a, c) => {
         const copy = { ...c };
         delete copy.__typename;
-        console.log(copy?.type?.includes('1'));
+        // console.log(copy?.type?.includes('1'));
         if (copy?.type?.includes('1')) {
           a = DesingDivide(a, copy);
         }
@@ -213,7 +269,16 @@ const NewOrder = () => {
                 )}
               </>
             )}
-
+            <OrderPricing
+              {...{
+                errors,
+                gqlErrs,
+                register,
+                prefix: 'up',
+                onFocus,
+                className: csses?.basicGrid,
+              }}
+            />
             <Typography variant="h4">
               Measurement 02
               <Checkbox
@@ -250,7 +315,6 @@ const NewOrder = () => {
     </AdminLayout>
   );
 };
-
 export default NewOrder;
 export function DesingDivide(prev, newData, where = 'up') {
   let data = {
@@ -291,6 +355,16 @@ export function checkValuesAndErrors(data) {
       }
     }
   }
-  console.log(errors, values);
+  // console.log(errors, values);
   return [errors, values];
+}
+
+export function fetchMeasurement(data, kyes = []) {
+  const filtered = {};
+  for (const v of kyes) {
+    if (data?.[v]?.length) {
+      filtered[v] = data[v];
+    }
+  }
+  return filtered;
 }

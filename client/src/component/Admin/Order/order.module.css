@@ -9,7 +9,11 @@
   gap: 5px;
   /* width: 100%; */
 }
-
+.basicGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 5px;
+}
 .gridFullLast {
   grid-column: -2;
 }

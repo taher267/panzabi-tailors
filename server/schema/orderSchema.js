@@ -6,8 +6,8 @@ export const Order = `type Order {
     discunt: Float
     advanced: Float
     due: Float
-    user: String!
     order_status: String
+    user: String!
     delivery_date: Date!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -39,24 +39,36 @@ export const InputOrderItemsOfOrder = `
 input InputOrderItemsOfOrder {
   order: String!
   price: Float!
+  measurements: [InputOrderMeasurement!]!
   designs: [InputOrderDesign!]!
   sample: InpIcon
+  order_date:Date!
 }`;
-// measurements: [InputOrderMeasurement!]!
+
 export const InputOrderDesign = `input InputOrderDesign {
+  group: ID!
+  items: [InputOrderDesignItems]
+}`;
+
+export const InputOrderDesignItems = `input InputOrderDesignItems {
   dsn_id: String!
   desc: String
 }`;
 export const InputOrder = `
 input InputOrder {
   order_no: String!
+  previous_order: String
   quantity: Float!
   totalPrice: Float!
   discunt: Float
   advanced: Float
+  due: Float
+  transport_charge: Float
+  user: String
   order_status: String
+  order_items: [InputOrderItemsOfOrder!]!
+  delivery_date:Date!
 }`;
-// order_items: [InputOrderItemsOfOrder!]!
 
 export const OrderQueries = `
 allOrders(key: String, value: String): [Order!]!
