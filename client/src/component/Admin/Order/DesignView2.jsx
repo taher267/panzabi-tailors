@@ -16,7 +16,7 @@ export default function DesignView2({
           return (
             <Box key={items_id}>
               <Typography variant="h5">{design_name}</Typography>
-              <Box>
+              <Box height={'400px'} sx={{ overflowX: 'scroll' }}>
                 {/* {console.log(designs)} */}
                 {designs?.map((dsn) => {
                   let { _id, item, isChecked, desc } = dsn;
@@ -26,16 +26,21 @@ export default function DesignView2({
                       sx={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(3, 1fr)',
+                        alignItems: 'center',
+                        rowGap: '25px',
                       }}
                     >
                       <Checkbox
+                        sx={{ maxWidth: '20px' }}
                         onChange={(e) => designsHandler(e, items_id, true)}
                         name={_id}
                         checked={
                           designWithValue?.[items_id]?.[_id]?.isChecked || false
                         }
                       />
-                      {item}
+                      <Typography sx={{ marginLeft: '-135px' }}>
+                        {item}
+                      </Typography>
                       <TextField
                         name={_id}
                         value={designWithValue?.[items_id]?.[_id]?.desc || ''}

@@ -45,7 +45,7 @@ const InitFields = {
 
 const NewOrder = () => {
   const navigate = useNavigate();
-  const [designState, setDesignState] = useState({});
+  const [designUpState, setDesignUpState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [type, setType] = useState({ type_one: true, type_two: false });
   const [gqlErrs, setGqlErrs] = useState({});
@@ -67,33 +67,32 @@ const NewOrder = () => {
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
     setGqlErrs({});
+    let addItemDetails = {};
     // console.log(data);
-    console.log(designWithValue);
+    // console.log(designWithValue);
+
+    checkValuesAndErrors(designWithValue);
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
     // createMeasurement({ variables: { ...data } });
   };
   useEffect(() => {
-    if (!designState?.length && all_designs) {
-      setDesignState({});
-      const modifyAllDesignsItems = all_designs?.reduce((a, c) => {
+    if (!designUpState?.length && all_designs) {
+      setDesignUpState({});
+      const modifyAllDesignsUpItems = all_designs?.reduce((a, c) => {
         const copy = { ...c };
         delete copy.__typename;
-        a = {
-          ...a,
-          [copy._id]: {
-            ...copy,
-            designs: copy?.designs?.map((des) => ({
-              ...des,
-              desc: '',
-              isChecked: false,
-            })),
-          },
-        };
+        console.log(copy?.type?.includes('1'));
+        if (copy?.type?.includes('1')) {
+          a = DesingDivide(a, copy);
+        }
+        // if (copy?.type?.includes('2')) {
+        //   a = DesingDivide(a, copy, 'down');
+        // }
         return a;
       }, {});
-      setDesignState({ ...modifyAllDesignsItems });
+      setDesignUpState({ ...modifyAllDesignsUpItems.up });
     }
     // console.log(all_designs);
   }, [all_designs]);
@@ -199,19 +198,22 @@ const NewOrder = () => {
               />
             </Typography>
             {type?.type_one && (
-              <OrderMeasuementUp
-                onFocus={onFocus}
-                gqlErrs={gqlErrs}
-                register={register}
-                errors={errors}
-              />
+              <>
+                <OrderMeasuementUp
+                  onFocus={onFocus}
+                  gqlErrs={gqlErrs}
+                  register={register}
+                  errors={errors}
+                />
+                {Object.keys(designUpState)?.length && (
+                  <DesignView
+                    alldesigns={designUpState}
+                    {...{ designWithValue, setDesignWithValue, designsHandler }}
+                  />
+                )}
+              </>
             )}
-            {Object.keys(designState)?.length && (
-              <DesignView
-                alldesigns={designState}
-                {...{ designWithValue, setDesignWithValue, designsHandler }}
-              />
-            )}
+
             <Typography variant="h4">
               Measurement 02
               <Checkbox
@@ -250,27 +252,45 @@ const NewOrder = () => {
 };
 
 export default NewOrder;
+export function DesingDivide(prev, newData, where = 'up') {
+  let data = {
+    ...prev,
+    [where]: {
+      ...prev?.[where],
+      [newData._id]: {
+        ...newData,
+        designs: newData?.designs?.map((des) => ({
+          ...des,
+          desc: '',
+          isChecked: false,
+        })),
+      },
+    },
+  };
+  return data;
+}
+export function checkValuesAndErrors(data) {
+  let errors = {};
+  let values = {};
 
-// useEffect(() => {
-//   if (!designState?.length && all_designs) {
-//     setDesignState({});
-//     const modifyAllDesignsItems = all_designs?.reduce((a, c) => {
-//       const copy = { ...c };
-//       delete copy.__typename;
-//       a = [
-//         ...a,
-//         {
-//           ...copy,
-//           designs: copy?.designs?.map((des) => ({
-//             ...des,
-//             desc: '',
-//             isChecked: false,
-//           })),
-//         },
-//       ];
-//       return a;
-//     }, []);
-//     setDesignState([...modifyAllDesignsItems]);
-//   }
-//   // console.log(all_designs);
-// }, [all_designs]);
+  for (const i of Object.keys(data)) {
+    let items = data[i] || {};
+    let itemsArr = Object.keys(items);
+    for (const j of itemsArr) {
+      let { desc, isChecked } = items[j];
+      if (desc && isChecked) {
+        values = {
+          ...values,
+          [i]: { ...values[i], [j]: { ...items?.[j] } },
+        };
+      } else if (desc && !isChecked) {
+        errors = {
+          ...errors,
+          [i]: { ...errors[i], [j]: `please Checked` },
+        };
+      }
+    }
+  }
+  console.log(errors, values);
+  return [errors, values];
+}
