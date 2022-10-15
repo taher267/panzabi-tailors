@@ -1,4 +1,4 @@
-import { Box, TextField } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import { orderPricingFields } from '../../arrayForms/orderFields';
 export default function OrderPricing({
   register,
@@ -7,6 +7,7 @@ export default function OrderPricing({
   onFocus,
   prefix = '',
   className,
+  watch,
 }) {
   return (
     <Box className={className}>
@@ -40,6 +41,13 @@ export default function OrderPricing({
           />
         );
       })}
+
+      <Button size="small" disabled>
+        {orderPricingFields
+          ? (watch(orderPricingFields[0].name + '_' + prefix) || 0) *
+            (watch(orderPricingFields[1].name + '_' + prefix) || 0)
+          : ''}
+      </Button>
     </Box>
   );
 }

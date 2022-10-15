@@ -6,7 +6,6 @@ import { hash, genSalt } from 'bcrypt';
 import userServices from '../services/userCustomerServices.js';
 import getJWT from '../utils/getJWT.js';
 import errorHandler from '../utils/errorHandler.js';
-
 export default {
   /**
    * Create New User

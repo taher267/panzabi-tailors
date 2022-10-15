@@ -25,6 +25,7 @@ const NewDesign = () => {
   // console.dir(bug);
   const onSubmit = ({ design_name, type, ...newDesign }) => {
     setGqlErrs({});
+    // console.log(newDesign);
     const newData = {
       design_name,
       type,
@@ -35,17 +36,16 @@ const NewDesign = () => {
             {
               item: newDesign[cur],
               ds_id: acc.length + 1,
+              status: newDesign['status_' + cur],
             },
           ],
         []
       ),
     };
-    // console.log({
+    // console.log(newData);
+    // createDesign({
     //   variables: { ...newData },
     // });
-    createDesign({
-      variables: { ...newData },
-    });
   };
 
   const onFocus = ({ target: { name } }) => {
@@ -127,6 +127,10 @@ const NewDesign = () => {
                 fullWidth
                 error={errors[id] ? true : false}
               />
+              <select name="status" {...register('status_' + id)}>
+                <option value={1}>Active</option>
+                <option value={0}>Deactive</option>
+              </select>
               <Button
                 onClick={() => {
                   if (designs?.length < 2) return;

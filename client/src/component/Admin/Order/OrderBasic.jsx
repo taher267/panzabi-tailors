@@ -25,7 +25,7 @@ const OrderBasic = ({ register, errors, gqlErrs, onFocus }) => {
     } else {
       document
         .querySelector("[name='delivery_date']")
-        ?.setAttribute('min', moment().add(10, 'd').format(DATE));
+        ?.setAttribute('min', moment().add(11, 'd').format(DATE));
     }
   });
   return (

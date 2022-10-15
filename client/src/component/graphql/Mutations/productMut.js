@@ -63,3 +63,18 @@ export const EDIT_PRODUCT = gql`
     }
   }
 `;
+
+// export const ProductOutput = gql`
+//   {
+//     _id
+//     name
+//     description
+//     price
+//     category
+//     measurementItem {
+//       ms_id
+//       item_name
+//       measures
+//     }
+//   }
+// `;

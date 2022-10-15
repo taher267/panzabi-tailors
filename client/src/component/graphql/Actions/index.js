@@ -12,6 +12,7 @@ import { ALL_PRODUCTS } from '../Query/productQry';
 import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
 import { ALL_DESIGNS, SINGLE_DESIGN } from './../Query/designQry';
 import { ALL_ACCOUNTS, DAILY_ACCOUNT } from './../Query/accountQry';
+import { PRODUCTS_NAME_ID_CAT } from './../Query/productQry';
 import { LOGIN, SIGNUP } from './../Mutations/authMut';
 import {
   NEW_ACCOUNT,
@@ -32,6 +33,7 @@ export default {
   ALL_PRODUCTS,
   NEW_PRODUCT,
   EDIT_PRODUCT,
+  PRODUCTS_NAME_ID_CAT,
   //MEASUREMENT
   ALL_MEASUREMENTS,
   NEW_MEASUREMENT,
