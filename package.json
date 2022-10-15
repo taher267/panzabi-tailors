@@ -17,6 +17,7 @@
     "@mui/material": "^5.10.4",
     "@mui/x-data-grid": "^5.17.3",
     "@mui/x-data-grid-premium": "^5.17.3",
+    "@mui/x-date-pickers": "^5.0.4",
     "graphql": "^16.6.0",
     "html-react-parser": "^3.0.4",
     "jwt-decode": "^3.1.2",

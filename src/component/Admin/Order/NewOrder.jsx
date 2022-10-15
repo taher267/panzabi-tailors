@@ -21,6 +21,8 @@ import OrderMeasuementDown from './OrderMeasuementDown';
 import useGetQurey from './../../hooks/gql/useGetQurey';
 import DesignView from './DesignView2';
 import OrderPricing from './OrderPriceing';
+import OrderDate from './OrderDate';
+import OrderProduct from './OrderProduct';
 
 const InitFields = {
   type_one: [
@@ -33,6 +35,7 @@ const InitFields = {
     'sleeve',
     'coller',
     'sleeve_cuff',
+    'aditional',
   ],
   type_two: [
     'length',
@@ -48,6 +51,8 @@ const NewOrder = () => {
   const navigate = useNavigate();
   const [designUpState, setDesignUpState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
+  const [orderProduct, setOrderProduct] = useState({});
+
   const [type, setType] = useState({ type_one: true, type_two: false });
   const [gqlErrs, setGqlErrs] = useState({});
   const {
@@ -55,16 +60,24 @@ const NewOrder = () => {
     handleSubmit,
     reset,
     resetField,
+    watch,
     formState: { errors },
   } = useForm();
-
+  // New product add
   const {
     mutation: createOrder,
     processing,
     bug,
-  } = useMutationFunc('NEW_ORDER');
+    data,
+  } = useMutationFunc('NEW_ORDER', null, null, 'createOrder');
   const { data: all_designs } = useGetQurey('ALL_DESIGNS', null, 'allDesigns');
-  //   console.dir(data);
+  const { data: all_products } = useGetQurey(
+    'PRODUCTS_NAME_ID_CAT',
+    null,
+    'allProducts'
+  );
+
+  console.dir(data, bug);
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
     const {
@@ -73,6 +86,7 @@ const NewOrder = () => {
       order_no,
       previous_order,
       delivery_date, //
+      // discount,
       // long,
       // body,
       // body_loose,
@@ -85,54 +99,79 @@ const NewOrder = () => {
       ...measure1
     } = data;
 
+    const advanced = parseInt(data?.advanced) || 0;
+    const quantity_up = parseInt(data?.quantity_up) || 0;
+    const price_up = parseInt(data?.price_up) || 0;
+    const quantity_down = parseInt(data?.quantity_down) || 0;
+    const price_down = parseInt(data?.price_down) || 0;
+    const transport_charge = parseInt(data?.transport_charge) || 0;
+    const discount = parseInt(data?.discount) || 0;
+
     const type_one = InitFields.type_one;
-    const type_one_vals = type?.type_one
+    const type_one_check = type?.type_one
       ? fetchMeasurement(data, InitFields.type_one)
       : {};
     const type_two = InitFields.type_two;
-    const type_two_vals = type?.type_two
+    const type_two_check = type?.type_two
       ? fetchMeasurement(data, InitFields.type_two)
       : {};
     const basic = {
       order_no, //
-      previous_order, //
-      // quantity,
-      // totalPrice,
-      // discunt,
-      // advanced,
-      // due,
-      // transport_charge,
+      previous_order,
+      discount,
       // user,
       order_status, //
       // order_items,
       delivery_date, //
     };
     const order_items = [];
-    // order_items:[
-    //   {
-    //     measurements:type_one_vals
-    //   }
-    // ]
-    if (Object.keys(type_one_vals).length) {
-      order_items.push(type_one_vals);
+    let total_up = 0;
+    let total_down = 0;
+
+    if (Object.keys(type_one_check).length) {
+      let up_item = {};
+      total_up = quantity_up * price_up;
+      up_item.order = orderProduct?.up || [];
+      up_item.quantity = quantity_up;
+      up_item.price = price_up;
+      // up_item.designs = checkValuesAndErrors(designWithValue).values;
+      up_item.measurements = type_one_check;
+      // up_item.order_date = order_date;
+      order_items.push(up_item);
     }
-    if (Object.keys(type_two_vals).length) {
-      order_items.push(type_two_vals);
+    if (Object.keys(type_two_check).length) {
+      let down_item = {};
+      total_down = quantity_down * price_down;
+      down_item.quantity = quantity_down;
+      total_down.price = price_down;
+      total_down.measurement = type_two_check;
+      total_down.order_date = order_date;
+      order_items.push(total_down);
     }
+    const totalPrice = total_up + total_down + transport_charge;
+    let due = totalPrice - advanced;
     const newOrderDates = {
       ...basic,
+      due,
+      totalQty: quantity_up + quantity_down,
+      totalPrice,
+      advanced,
       order_items,
+      transport_charge,
     };
     // setGqlErrs({});
-    console.log(newOrderDates);
-    // console.log(designWithValue);
+    // console.log(newOrderDates);
 
-    // checkValuesAndErrors(designWithValue);
+    // console.log(checkValuesAndErrors(designWithValue)?.values);
+
+    // ;
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    // createMeasurement({ variables: { ...data } });
+    createOrder({ variables: { order: newOrderDates } });
+    // console.log(order_items);
   };
+  const orderProductHandle = (v, type) => {};
   useEffect(() => {
     if (!designUpState?.length && all_designs) {
       setDesignUpState({});
@@ -202,6 +241,8 @@ const NewOrder = () => {
         </Box>
       )}
       {/* <SwipeableEdgeDrawer data={watch} /> */}
+      {/* <OrderDate /> */}
+
       {
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
@@ -255,6 +296,28 @@ const NewOrder = () => {
             </Typography>
             {type?.type_one && (
               <>
+                <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
+                {all_products && (
+                  <OrderProduct
+                    selectedProducts={(_, v) => {
+                      // orderProductHandle(v, 'up')
+                      setOrderProduct((p) => {
+                        return {
+                          ...p,
+                          up: v?.reduce((a, c) => {
+                            return [...a, c?._id];
+                          }, []),
+                        };
+
+                        // let down;
+                      });
+                    }}
+                    products={all_products?.filter(
+                      (p) => p.category === 'type-1'
+                    )}
+                  />
+                )}
+                <Typography sx={{ margin: '10px 0' }}>পরিমাপ</Typography>
                 <OrderMeasuementUp
                   onFocus={onFocus}
                   gqlErrs={gqlErrs}
@@ -267,18 +330,20 @@ const NewOrder = () => {
                     {...{ designWithValue, setDesignWithValue, designsHandler }}
                   />
                 )}
+                <OrderPricing
+                  {...{
+                    watch,
+                    errors,
+                    gqlErrs,
+                    register,
+                    prefix: 'up',
+                    onFocus,
+                    className: csses?.basicGrid,
+                  }}
+                />
               </>
             )}
-            <OrderPricing
-              {...{
-                errors,
-                gqlErrs,
-                register,
-                prefix: 'up',
-                onFocus,
-                className: csses?.basicGrid,
-              }}
-            />
+
             <Typography variant="h4">
               Measurement 02
               <Checkbox
@@ -288,12 +353,23 @@ const NewOrder = () => {
               />
             </Typography>
             {type?.type_two && (
-              <OrderMeasuementDown
-                onFocus={onFocus}
-                gqlErrs={gqlErrs}
-                register={register}
-                errors={errors}
-              />
+              <>
+                <OrderMeasuementDown
+                  onFocus={onFocus}
+                  gqlErrs={gqlErrs}
+                  register={register}
+                  errors={errors}
+                />
+
+                {all_products && (
+                  <OrderProduct
+                    selectedProducts={(_, v) => orderProductHandle(v, 'down')}
+                    products={all_products?.filter(
+                      (p) => p.category === 'type-2'
+                    )}
+                  />
+                )}
+              </>
             )}
 
             <Button
@@ -336,13 +412,20 @@ export function DesingDivide(prev, newData, where = 'up') {
 export function checkValuesAndErrors(data) {
   let errors = {};
   let values = {};
-
   for (const i of Object.keys(data)) {
     let items = data[i] || {};
     let itemsArr = Object.keys(items);
     for (const j of itemsArr) {
       let { desc, isChecked } = items[j];
-      if (desc && isChecked) {
+      if (isChecked) {
+        //////////////////////////////
+        // let prevObj = {
+        //   group: j,
+        //   items: { ...values[i], [items?.[i]?.[j]]: items?.[j]?.desc },
+        // };
+        // console.log(values.includes());
+        // values = [...values, prevObj];
+        //////////////////////////////
         values = {
           ...values,
           [i]: { ...values[i], [j]: { ...items?.[j] } },
@@ -355,16 +438,36 @@ export function checkValuesAndErrors(data) {
       }
     }
   }
+
   // console.log(errors, values);
-  return [errors, values];
+  // object to array
+  const newArr = [];
+  const obj = Object.keys(values);
+  if (obj?.length) {
+    for (const key of obj) {
+      let group = key;
+      let items = [];
+      let designs = values?.[key] || {};
+      for (const k of Object.keys(designs)) {
+        items.push({ dsn_id: k, desc: designs?.[k]?.desc });
+      }
+      newArr.push({ group, items });
+    }
+    // console.log(newArr, 'newArr');
+  }
+  return { errors, values: newArr };
 }
 
 export function fetchMeasurement(data, kyes = []) {
-  const filtered = {};
-  for (const v of kyes) {
-    if (data?.[v]?.length) {
-      filtered[v] = data[v];
+  const filtered = [];
+  for (const key of kyes) {
+    if (data?.[key]?.length) {
+      filtered.push({ msr_id: key, size: data[key] });
     }
   }
   return filtered;
 }
+
+export const priceSummary = () => {
+  const totalPrice = 0;
+};

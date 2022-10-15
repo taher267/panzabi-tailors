@@ -17,6 +17,16 @@ export const ALL_PRODUCTS = gql`
   }
 `;
 
+export const PRODUCTS_NAME_ID_CAT = gql`
+  query allProducts {
+    allProducts {
+      _id
+      name
+      category
+    }
+  }
+`;
+
 export const SINGLE_PRODUCT = gql`
   query getProduct($key: String!, $value: String!) {
     getProduct(key: $key, value: $value) {

@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client';
 import { Fragment, useState, useEffect } from 'react';
 import {
   LinearProgress,
@@ -10,14 +9,14 @@ import {
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
-import { NEW_PRODUCT } from '../../graphql/Mutations/productMut';
-import { errorFormat } from '../../utils/errorConv';
+
 import {
   productFields,
   measuementItemsFields,
 } from '../../arrayForms/productForm';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import useMutationFunc from '../../hooks/gql/useMutationFunc';
 const valuesInit = { name: '', description: '', price: '', category: '' };
 
 const NewProduct = () => {
@@ -32,29 +31,20 @@ const NewProduct = () => {
     reset,
     formState: { errors },
   } = useForm({ defaultValues: { ...valuesInit } });
-
-  const [createProduct, { data, loading, error }] = useMutation(NEW_PRODUCT, {
-    update(proxy, { data: { createProduct } }) {
-      console.log(createProduct);
-    },
-    onError(e) {
-      setGqlErrs(errorFormat(e));
-    },
-    onCompleted() {
-      reset({ ...valuesInit });
-      // navigate('/dashboard/measurement', { state: 'reload' });
-    },
-  });
-
+  const {
+    mutation: createProduct,
+    processing,
+    bug,
+    data,
+  } = useMutationFunc('NEW_PRODUCT', null, setGqlErrs);
   //   console.dir(data);
   //   console.dir('validErrs', validErrs);
-  const onSubmit = (data) => {
+  const onSubmit = (newData) => {
     setGqlErrs({});
-    console.log(data);
-    // createProduct({
-    //   variables: { ...data, price: parseInt(data?.price) || 0 },
-    // });
-    // createMeasurement({ variables: { ...data } });
+    createProduct({
+      variables: { ...newData, price: parseInt(newData?.price) || 0 },
+    });
+    // createMeasurement({ variables: { ...newData } });
   };
 
   const onFocus = ({ target: { name } }) => {
@@ -80,7 +70,7 @@ const NewProduct = () => {
   }, []);
   return (
     <AdminLayout>
-      {loading && (
+      {processing && (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
@@ -183,7 +173,7 @@ const NewProduct = () => {
 
             <Button
               disabled={
-                loading ||
+                processing ||
                 Object.keys(gqlErrs).length > 0 ||
                 Object.keys(errors).length > 0
               }

@@ -50,31 +50,6 @@ export const orderPricingFields = [
     placeholder: 'Price...',
     defaultError: `Price (0-9)!`,
   },
-  // {
-  //   label: 'Discunt',
-  //   name: 'discunt',
-  //   type: 'number',
-  //   min: 0,
-  //   validation: { pattern: /[0-9]+$/, min: 0 },
-  //   placeholder: 'Discunt...',
-  //   defaultError: `Discunt (0-9)!`,
-  // },
-  // {
-  //   label: 'Advanced',
-  //   name: 'advanced',
-  //   type: 'number',
-  //   validation: { pattern: /[0-9]+$/, min: 0 },
-  //   placeholder: 'Advanced...',
-  //   defaultError: `Advanced (0-9)!`,
-  // },
-  // {
-  //   label: 'Transport Charge',
-  //   name: 'transport_charge',
-  //   type: 'number',
-  //   validation: { pattern: /[0-9]+$/, min: 0 },
-  //   placeholder: 'Transport Charge...',
-  //   defaultError: `Transport Charge (0-9)!`,
-  // },
 ];
 
 export const orderUpMeasurementFields = [
@@ -130,6 +105,11 @@ export const orderUpMeasurementFields = [
     name: 'sleeve_cuff',
     placeholder: 'Sleeve cuff...',
     defaultError: `Sleeve cuff`,
+  },
+  {
+    label: 'Aditional',
+    name: 'aditional',
+    placeholder: 'Aditional',
   },
 ];
 
