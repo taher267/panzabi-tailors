@@ -12,7 +12,8 @@ export default {
   createProduct: async (_parent, { product }, _context) => {
     try {
       await productValidation.newProductValidation(product);
-      return await productServices.createProduct(product);
+      const created = await productServices.createProduct(product);
+      return created;
     } catch (e) {
       return errorHandler(e);
     }

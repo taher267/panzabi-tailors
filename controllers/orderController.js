@@ -1,16 +1,17 @@
-import Order from '../models/Order.js';
+import ord from '../models/Order.js';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
 import errorHandler from '../utils/errorHandler.js';
-
+let Order;
+ord.then((d) => (Order = d)).catch((e) => console.log(e));
 export default {
   /**
    * Create New Order
    */
   createOrder: async (_parent, { order }, _context) => {
     try {
-      console.log(order);
       const newOrder = new Order(order);
+      // console.log(newOrder.order_items);
       // await newOrder.save();
       return newOrder;
     } catch (e) {

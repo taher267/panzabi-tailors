@@ -10,12 +10,14 @@ type DesignItem {
   _id: String!
     item: String!
     ds_id: Int!
+    status:Int
     icon: Icon
   }`;
 export const InpDesignItem = `
 input InpDesignItem {
   item: String!
   ds_id: Int!
+  status:Int
   icon: InpIcon
 }`;
 export const InpIcon = `

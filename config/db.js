@@ -8,18 +8,19 @@ const uris = {
   local: `mongodb://localhost:27017/panzabiDotComTailors`,
   local2: `mongodb://localhost:27017/panzabiDotComTailorsOrders`,
 };
+
 export default () => {
   //   return mg.connect(uris['local']);
   return new Promise((resolve) => {
     lookup('panzabi.com', (e) => {
       if (e) {
-        mg.connect(uris['local']);
+        const con = mg.connect(uris['local']);
         mg.orders = mg.createConnection(uris['local2']);
-        return resolve(mg);
+        return resolve(con);
       }
-      mg.connect(uris['cpPri']);
+      const con = mg.connect(uris['cpPri']);
       mg.orders = mg.createConnection(uris['cpPri2']);
-      return resolve(mg);
+      return resolve(con);
     });
   });
 };

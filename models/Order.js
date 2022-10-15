@@ -1,9 +1,9 @@
 import mg from 'mongoose';
 import con from '../config/db.js';
 let orderModel = {};
-con()
+export default con()
   .then((d) => {
-    orderModel = d.orders.model(
+    return d.orders.model(
       'Order',
       new mg.Schema(
         {
@@ -15,9 +15,9 @@ con()
           previous_order: {
             type: String,
           },
-          quantity: { type: Number, required: true },
+          totalQty: { type: Number, required: true },
           totalPrice: { type: Number, required: true },
-          discunt: { type: Number, default: 0 },
+          discount: { type: Number, default: 0 },
           advanced: { type: Number, default: 0 },
           due: { type: Number, default: 0 },
           transport_charge: { type: Number, default: 0 },
@@ -40,6 +40,7 @@ con()
                 required: true,
               },
               price: { type: Number, required: true },
+              quantity: { type: Number, required: true },
               measurements: [
                 {
                   _id: false,
@@ -86,4 +87,4 @@ con()
     );
   })
   .catch((e) => {});
-export default orderModel;
+// export default orderModel;
