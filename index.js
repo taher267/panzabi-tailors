@@ -45,3 +45,16 @@ db()
     console.log(e);
     process.exit(1);
   });
+
+// console.log(/[^\∂]$/.test('ফদজকজফকদজফদ9434384←∂'));
+
+// +
+// let rex = 'pattern→/[A-Z]/←Invalid chars A-Z!';
+// let newarr = rex.split(/→|←/);
+// let validation = {
+//   required: 'true',
+//   pattern: /[A-Z]/,
+// };
+// const reg = new RegExp(`[^∂]$`);
+// let s = `required→true←Label is mandartory!∂`;
+// console.log('jfdjfdksj∂'.match(reg));

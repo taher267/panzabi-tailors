@@ -6,6 +6,7 @@ export const dateResolver = new GraphQLScalarType({
   //   Mutation
   parseValue(value) {
     return value;
+    // return moment(value).format('YYYY-MM-DD');
   },
   //   value send to the client
   //   queries

@@ -7,11 +7,21 @@ import errorHandler from '../utils/errorHandler.js';
  * @param {string||object} value
  * @returns
  */
-const findMeasurement = (key, value, select = '') => {
-  if (key === 'id') return Measurement.findById(value).select(select);
+const findMeasurement = (key, value, select = '', agg) => {
+  if (key === '_id') return Measurement.findById(value).select(select);
   else if (key && value)
     return Measurement.findOne({ [key]: value }).select(select);
-  return Measurement.find(key || {}).select(select);
+  // else if (agg)
+  //   return Measurement.aggregate([
+  //     {
+  //       $group: {
+  //         _id: 'randomID',
+  //         templates: { $template: '$template' },
+  //       },
+  //     },
+  //   ]);
+  return Measurement.find(key || {});
+  // .select(select);
 };
 
 /**
@@ -28,9 +38,29 @@ const measurementUpdate = async (qry, update, options) => {
   }
 };
 
-const createMeasurement = async ({ name, sl_id }) => {
+const createMeasurement = async ({
+  label,
+  name,
+  sl_id,
+  template,
+  status,
+  options,
+  validation,
+  placeholder,
+  icon,
+}) => {
   try {
-    const newData = { name, sl_id };
+    const newData = {
+      label,
+      name,
+      sl_id,
+      template,
+      status,
+      options,
+      validation,
+      placeholder,
+      icon,
+    };
     const saved = new Measurement(newData);
     return await saved.save();
   } catch (e) {

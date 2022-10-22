@@ -56,6 +56,7 @@ import {
   OrderMutations,
   OrderQueries,
   InputOrderDesignItems,
+  OrderDesignItems,
 } from './../schema/orderSchema.js';
 import {
   Login,
@@ -97,6 +98,7 @@ export default gql`
   ${OrderMeasurement}
   ${OrderItemsOfOrder}
   ${OrderDesign}
+  ${OrderDesignItems}
   ${Order}  
   # Order Query End
   # Measurement Query Start

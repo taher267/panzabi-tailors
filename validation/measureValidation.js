@@ -1,10 +1,24 @@
 import { UserInputError } from 'apollo-server-core';
 import measurementServices from '../services/measurementServices.js';
 import errorHandler from '../utils/errorHandler.js';
-const measurementValidation = async ({ sl_id, name }) => {
+const measurementValidation = async ({
+  label,
+  name,
+  sl_id,
+  template,
+  status,
+  type,
+  options,
+  icon,
+}) => {
   let errors = {};
   try {
     // console.log(name);
+    //name
+    if (!label) errors.label = `Label is mandatory!`;
+    else if (label.length < 2) errors.label = `Label at least 2 chars`;
+    else if (await measurementServices.findMeasurement('label', label))
+      errors.label = `Label is already exists!`;
     //name
     if (!name) errors.name = `Name is mandatory!`;
     else if (name.length < 2) errors.name = `Name at least 2 chars`;
@@ -16,6 +30,15 @@ const measurementValidation = async ({ sl_id, name }) => {
     else if (await measurementServices.findMeasurement('sl_id', sl_id))
       errors.sl_id = `Serial id is already exists!`;
 
+    // Type
+    if (type === 'select' && !options?.length)
+      errors.type = `Options is mandatory!`;
+    // Template
+    if (!template) errors.template = `Template id is mandatory!`;
+    else if (!/^[A-Za-z_]+$/.test(template))
+      errors.template = `Template name alphanumeric with underscore and without space`;
+    // status
+    if (!status?.length) errors.status = `Status id is mandatory!`;
     // error throw
     if (!Object.keys(errors).length) return true;
     throw new UserInputError(
@@ -57,3 +80,7 @@ const measurementUpdateValidation = async ({ id, sl_id, name }) => {
   }
 };
 export default { measurementValidation, measurementUpdateValidation };
+
+// console.log(/\d[∂^]+$/.test('vkfjdf∂'));
+// console.log('required→true←Label is mandartory!∂'.split(/∂|←/));
+// [^∂]

@@ -1,15 +1,28 @@
 export const Measurement = `
 type Measurement {
     _id: ID!
-    sl_id: String!
+    label: String!
     name: String!
+    type:String
+    sl_id: String!
+    template: String!
+    status: String!
+    options: String
+    validation:String
+    placeholder:String
     icon: Icon
   }`;
-export const example = ``;
 export const InputMeasurement = `
 input InputMeasurement {
-  sl_id: String!
+  label: String!
   name: String!
+  sl_id: String!
+  type:String
+  template: String!
+  status: String!
+  validation:String
+  placeholder:String
+  options: String
   icon: InpIcon
 }`;
 

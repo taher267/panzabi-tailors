@@ -4,7 +4,12 @@ import { AuthenticationError, UserInputError } from 'apollo-server';
 import measureValidation from '../validation/measureValidation.js';
 import errorHandler from '../utils/errorHandler.js';
 import measurementServices from '../services/measurementServices.js';
-import { isConstValueNode } from 'graphql';
+import stringToQryString from '../utils/stringToQryString.js';
+
+// measurementServices
+//   .findMeasurement(null, null, null, true)
+//   .then((d) => console.log(d))
+//   .catch((e) => console.log(e));
 
 export default {
   /**
@@ -26,8 +31,12 @@ export default {
    */
   allMeasurements: async (_parent, { key, value }, _context) => {
     try {
-      const filter = key && value ? { [key]: value } : {};
+      let filter = key && value ? { [key]: value } : {};
+      if (key && !value) {
+        filter = stringToQryString(key);
+      }
       const all = await Measurement.find(filter);
+      // console.log(all);
       return all;
     } catch (e) {
       errorHandler(e);
@@ -39,7 +48,7 @@ export default {
   getMeasurement: async (_parent, { key, value }, { isAuthorized }) => {
     try {
       if (!isAuthorized) throw AuthenticationError(`Unauthorized user!`);
-      if (key === 'id' && !mg.isValidObjectId(value))
+      if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid id, get ${value}`);
       return await measurementServices.findMeasurement(key, value);
     } catch (e) {
