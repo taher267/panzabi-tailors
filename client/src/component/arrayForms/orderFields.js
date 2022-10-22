@@ -3,19 +3,17 @@ import { DATE } from '../../utils/index';
 
 export const orderBasicFields = [
   {
-    defaultValue: moment().format(DATE),
     label: 'Order date',
     type: 'date',
     name: 'order_date',
-    validation: { required: true },
-    defaultError: `Order date is mandatory!`,
+    defaultValue: moment().format(DATE),
+    validation: `∂required→Order date is mandatory!`,
   },
   {
     label: 'Order number',
     name: 'order_no',
-    validation: { required: true },
+    validation: `required→Order number is mandatory!`,
     placeholder: 'Enter order number...',
-    defaultError: `Order number is mandatory!`,
   },
   {
     label: 'Previouse Number',
@@ -24,11 +22,10 @@ export const orderBasicFields = [
   },
   {
     label: 'Delivery date',
-    name: 'delivery_date',
     type: 'date',
-    validation: { required: true },
+    name: 'delivery_date',
     defaultValue: moment().add(10, 'd').format(DATE),
-    defaultError: `Delivery date is mandatory!`,
+    validation: `required→Delivery date is mandatory!`,
   },
 ];
 export const orderPricingFields = [
@@ -153,7 +150,7 @@ export const orderDownMeasurementFields = [
   {
     label: 'Hips',
     name: 'hips',
-    placeholder: 'hips/উরু/রান...',
+    placeholder: 'hips...',
   },
 ];
 
@@ -170,7 +167,10 @@ export const OrderPricingField = [
     label: 'Transport Charge',
     name: 'transport_charge',
     type: 'number',
-    validation: { pattern: /[0-9]+$/, min: 0 },
+    validation: {
+      pattern: { value: /[0-9]+$/, message: 'Should be a number' },
+      min: 0,
+    },
     placeholder: 'Transport Charge...',
     defaultError: `Transport Charge (0-9)!`,
   },

@@ -1,4 +1,5 @@
 import mg from 'mongoose';
+import moment from 'moment';
 import con from '../config/db.js';
 let orderModel = {};
 export default con()
@@ -34,17 +35,21 @@ export default con()
           },
           order_items: [
             {
-              order: {
-                type: mg.Types.ObjectId,
-                ref: 'Product',
-                required: true,
-              },
+              products: [
+                {
+                  _id: false,
+                  type: mg.Types.ObjectId,
+                  ref: 'Product',
+                  required: true,
+                },
+              ],
               price: { type: Number, required: true },
               quantity: { type: Number, required: true },
               measurements: [
                 {
                   _id: false,
-                  msr_id: { type: mg.Types.ObjectId, required: true },
+                  msr_id: { type: String, required: true },
+                  // msr_id: { type: mg.Types.ObjectId, required: true },
                   size: { type: String, required: true },
                 },
               ],
@@ -72,7 +77,7 @@ export default con()
               },
               order_date: {
                 type: Date,
-                default: Date.now(),
+                default: moment().format('YYYY-MM-DD'),
               },
             },
           ],
@@ -88,3 +93,5 @@ export default con()
   })
   .catch((e) => {});
 // export default orderModel;
+
+// console.log();

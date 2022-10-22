@@ -10,8 +10,10 @@ export default {
    */
   createOrder: async (_parent, { order }, _context) => {
     try {
-      const newOrder = new Order(order);
-      // console.log(newOrder.order_items);
+      // console.log(order.order_items[0]?.measurements);
+      let user = _context?.req?.user?._id;
+      const newOrder = new Order({ ...order, user });
+      console.log(newOrder);
       // await newOrder.save();
       return newOrder;
     } catch (e) {

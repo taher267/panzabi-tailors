@@ -9,13 +9,18 @@ export const Order = `type Order {
     order_status: String
     user: String!
     delivery_date: Date!
-    order_items: [OrderItemsOfOrder!]!
     createdAt: DateTime!
     updatedAt: DateTime!
+    order_items: [OrderItemsOfOrder!]!
   }`;
+export const OrderDesignItems = `type OrderDesignItems {
+  dsn_id: String!
+  desc: String
+  }`;
+
 export const OrderDesign = `type OrderDesign {
-    dsn_id: String!
-    desc: String
+   group:ID!
+   items:[OrderDesignItems!]!
   }`;
 export const OrderMeasurement = `type OrderMeasurement {
     msr_id: String!
@@ -23,7 +28,7 @@ export const OrderMeasurement = `type OrderMeasurement {
   }`;
 
 export const OrderItemsOfOrder = `type OrderItemsOfOrder {
-    order: [String!]!
+    products: [String!]!
     price: Float!
     quantity: Int!
     measurements: [OrderMeasurement!]!
@@ -39,24 +44,25 @@ input InputOrderMeasurement {
 
 export const InputOrderItemsOfOrder = `
 input InputOrderItemsOfOrder {
-  order: [String!]!
+  products: [String!]!
   quantity: Int!
   price: Float!
   measurements: [InputOrderMeasurement!]!
+  designs: [InputOrderDesign!]!
+  sample: InpIcon
+  order_date:Date!
 }`;
-// sample: InpIcon
-// order_date:Date!
-// designs: [InputOrderDesign!]!
-
-export const InputOrderDesign = `input InputOrderDesign {
-  group: ID!
-  items: [InputOrderDesignItems]
-}`;
-
+// measurements: [InputOrderMeasurement!]!
+// designs: [!]!
 export const InputOrderDesignItems = `input InputOrderDesignItems {
   dsn_id: String!
   desc: String
 }`;
+export const InputOrderDesign = `input InputOrderDesign {
+  group: ID!
+  items: [InputOrderDesignItems!]!
+}`;
+
 export const InputOrder = `
 input InputOrder {
   order_no: String
@@ -68,8 +74,8 @@ input InputOrder {
   due: Float!
   transport_charge: Float
   order_status: String
-  order_items: [InputOrderItemsOfOrder!]!
   delivery_date:Date!
+  order_items: [InputOrderItemsOfOrder!]!
 }`;
 
 export const OrderQueries = `

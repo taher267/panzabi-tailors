@@ -1,29 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Component } from 'react';
 import {
   LinearProgress,
   Box,
   Button,
   Typography,
   Checkbox,
+  TextField,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { OrderStatusField } from '../../arrayForms/orderFields';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import csses from './order.module.css';
 import commonCsses from '../../styles/common.module.css';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
-import OrderMeasuementUp from './OrderMeasuementUp';
+import OrderMeasuementField from './OrderMeasuementFields';
 import OrderBasic from './OrderBasic';
 import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
-import OrderMeasuementDown from './OrderMeasuementDown';
 import useGetQurey from './../../hooks/gql/useGetQurey';
 import DesignView from './DesignView2';
 import OrderPricing from './OrderPriceing';
 import OrderDate from './OrderDate';
 import OrderProduct from './OrderProduct';
-
+import removeGqlErrors from '../../utils/removeGqlErrors';
+import clonning from '../../utils/clonning';
 const InitFields = {
   type_one: [
     'long',
@@ -51,18 +52,22 @@ const NewOrder = () => {
   const navigate = useNavigate();
   const [designUpState, setDesignUpState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
-  const [orderProduct, setOrderProduct] = useState({});
+  const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
+  const [devideMeasurement, setDevideMeasurement] = useState({});
 
   const [type, setType] = useState({ type_one: true, type_two: false });
   const [gqlErrs, setGqlErrs] = useState({});
   const {
+    control,
     register,
     handleSubmit,
     reset,
     resetField,
     watch,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    mode: 'all',
+  });
   // New product add
   const {
     mutation: createOrder,
@@ -77,7 +82,38 @@ const NewOrder = () => {
     'allProducts'
   );
 
-  console.dir(data, bug);
+  const { data: all_measurements } = useGetQurey(
+    'ALL_MEASUREMENTS',
+    // { key: 'status:ACTIVE,template:template-01' },
+    { key: 'status', value: 'ACTIVE' },
+    'allMeasurements'
+  );
+  useEffect(() => {
+    if (
+      all_measurements &&
+      all_measurements?.length &&
+      !Object.keys(devideMeasurement).length
+    ) {
+      const datas = all_measurements?.reduce((a, c) => {
+        if (c.template === 'template-01') {
+          let up = clonning(a?.up || []);
+          up.push(c);
+          a = { ...a, up };
+        } else {
+          a = { ...a, down: [...(a?.down || []), c] };
+        }
+        return a;
+      }, {});
+      // console.log(datas);
+      setDevideMeasurement(datas);
+    }
+  }, [all_measurements]);
+  const Priceing = () =>
+    useWatch({
+      control,
+      name: 'pricing',
+    });
+  // console.dir(data);
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
     const {
@@ -106,7 +142,6 @@ const NewOrder = () => {
     const price_down = parseInt(data?.price_down) || 0;
     const transport_charge = parseInt(data?.transport_charge) || 0;
     const discount = parseInt(data?.discount) || 0;
-
     const type_one = InitFields.type_one;
     const type_one_check = type?.type_one
       ? fetchMeasurement(data, InitFields.type_one)
@@ -128,25 +163,27 @@ const NewOrder = () => {
     let total_up = 0;
     let total_down = 0;
 
-    if (Object.keys(type_one_check).length) {
+    // console.log(type);
+    if (type?.type_one) {
       let up_item = {};
       total_up = quantity_up * price_up;
-      up_item.order = orderProduct?.up || [];
+      up_item.products = orderProduct?.up || [];
       up_item.quantity = quantity_up;
       up_item.price = price_up;
-      // up_item.designs = checkValuesAndErrors(designWithValue).values;
-      up_item.measurements = type_one_check;
-      // up_item.order_date = order_date;
+      up_item.designs = checkValuesAndErrors(designWithValue).values;
+      up_item.measurements = data?.measurements_up;
+      up_item.order_date = order_date;
       order_items.push(up_item);
     }
-    if (Object.keys(type_two_check).length) {
+    // Object.keys(type_two_check).length
+    if (type?.type_two) {
       let down_item = {};
       total_down = quantity_down * price_down;
       down_item.quantity = quantity_down;
-      total_down.price = price_down;
-      total_down.measurement = type_two_check;
-      total_down.order_date = order_date;
-      order_items.push(total_down);
+      down_item.price = price_down;
+      down_item.measurements = data?.measurements_down;
+      down_item.order_date = order_date;
+      order_items.push(down_item);
     }
     const totalPrice = total_up + total_down + transport_charge;
     let due = totalPrice - advanced;
@@ -159,17 +196,15 @@ const NewOrder = () => {
       order_items,
       transport_charge,
     };
-    // setGqlErrs({});
-    // console.log(newOrderDates);
-
-    // console.log(checkValuesAndErrors(designWithValue)?.values);
+    setGqlErrs({});
 
     // ;
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    createOrder({ variables: { order: newOrderDates } });
-    // console.log(order_items);
+    // createOrder({ variables: { order: newOrderDates } });
+    console.log(newOrderDates);
+    // console.log(JSON.stringify(newOrderDates));
   };
   const orderProductHandle = (v, type) => {};
   useEffect(() => {
@@ -232,7 +267,6 @@ const NewOrder = () => {
       },
     }));
   };
-
   return (
     <AdminLayout>
       {processing && (
@@ -248,10 +282,14 @@ const NewOrder = () => {
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             <div className={csses.orderRequired}>
               <OrderBasic
-                errors={errors}
-                register={register}
-                gqlErrs={gqlErrs}
-                onFocus={onFocus}
+                {...{
+                  errors,
+                  register,
+                  gqlErrs,
+                  onFocus,
+                  setGqlErrs,
+                  removeGqlErrors,
+                }}
               />
             </div>
             <fieldset
@@ -318,19 +356,27 @@ const NewOrder = () => {
                   />
                 )}
                 <Typography sx={{ margin: '10px 0' }}>পরিমাপ</Typography>
-                <OrderMeasuementUp
-                  onFocus={onFocus}
-                  gqlErrs={gqlErrs}
-                  register={register}
-                  errors={errors}
-                />
+                {devideMeasurement?.up?.length && (
+                  <OrderMeasuementField
+                    {...{
+                      onFocus,
+                      gqlErrs,
+                      register,
+                      errors,
+                      setGqlErrs,
+                      prefix: '_up',
+                      removeGqlErrors,
+                      fields: devideMeasurement.up,
+                    }}
+                  />
+                )}
                 {Object.keys(designUpState)?.length && (
                   <DesignView
                     alldesigns={designUpState}
                     {...{ designWithValue, setDesignWithValue, designsHandler }}
                   />
                 )}
-                <OrderPricing
+                {/* <OrderPricing
                   {...{
                     watch,
                     errors,
@@ -340,10 +386,9 @@ const NewOrder = () => {
                     onFocus,
                     className: csses?.basicGrid,
                   }}
-                />
+                /> */}
               </>
             )}
-
             <Typography variant="h4">
               Measurement 02
               <Checkbox
@@ -354,12 +399,20 @@ const NewOrder = () => {
             </Typography>
             {type?.type_two && (
               <>
-                <OrderMeasuementDown
-                  onFocus={onFocus}
-                  gqlErrs={gqlErrs}
-                  register={register}
-                  errors={errors}
-                />
+                {devideMeasurement?.down?.length && (
+                  <OrderMeasuementField
+                    {...{
+                      onFocus,
+                      gqlErrs,
+                      register,
+                      errors,
+                      setGqlErrs,
+                      prefix: '_down',
+                      removeGqlErrors,
+                      fields: devideMeasurement.down,
+                    }}
+                  />
+                )}
 
                 {all_products && (
                   <OrderProduct
@@ -371,7 +424,45 @@ const NewOrder = () => {
                 )}
               </>
             )}
+            <div style={{ display: 'flex' }}>
+              <TextField
+                label="Quantity"
+                type="number"
+                {...register(`pricing.${0}.quantity`, {
+                  valueAsNumber: true,
+                  required: true,
+                })}
+              />
+              <TextField
+                label="Quantity"
+                type="number"
+                {...register(`pricing.${0}.price`, {
+                  valueAsNumber: true,
+                  required: true,
+                })}
+              />
+            </div>
+            <div style={{ display: 'flex' }}>
+              <TextField
+                label="Quantiry"
+                type="number"
+                {...register(`pricing.${1}.quantity`, {
+                  valueAsNumber: true,
+                  required: true,
+                })}
+              />
 
+              <TextField
+                label="Price"
+                type="number"
+                {...register(`pricing.${1}.price`, {
+                  valueAsNumber: true,
+                  required: true,
+                })}
+              />
+              {console.log(PriceCard({ control, select: 'prices' }))}
+              {/* <PriceCard {...{ control, select: 'prices' }} /> */}
+            </div>
             <Button
               disabled={
                 processing ||
@@ -409,6 +500,7 @@ export function DesingDivide(prev, newData, where = 'up') {
   };
   return data;
 }
+
 export function checkValuesAndErrors(data) {
   let errors = {};
   let values = {};
@@ -470,4 +562,32 @@ export function fetchMeasurement(data, kyes = []) {
 
 export const priceSummary = () => {
   const totalPrice = 0;
+};
+
+const PriceCard = ({ control, select = 'total', component, select2 }) => {
+  const cartValue = useWatch({
+    control,
+    name: 'pricing',
+  });
+
+  return getTotal(cartValue)?.[select];
+  // return <p>{JSON.stringify(getTotal(cartValue)?.[select])}</p>;
+};
+
+const getTotal = (payload) => {
+  let total = 0;
+  let prices = [];
+  for (const item of payload || []) {
+    const { quantity, price } = item;
+    const sum = (quantity || 0) * (price || 0);
+    prices.push(sum);
+    total += sum;
+  }
+  const newPrices = {};
+  for (const iter in prices) {
+    // const {}
+    newPrices[iter] = prices[iter];
+  }
+  // console.log();
+  return { total, prices: newPrices };
 };

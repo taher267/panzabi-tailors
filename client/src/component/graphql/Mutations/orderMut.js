@@ -1,17 +1,4 @@
 import { gql } from '@apollo/client';
-// # $order_no: String!
-// # $quantity: Float!
-// # $totalPrice: Float!
-// # $discunt: Float
-// # $advanced: Float
-// # $order_status: String
-// # order_items: [OrderItemsOfOrder!]!
-
-// #   totalPrice: $totalPrice
-// #   discunt: $discunt
-// #   advanced: $advanced
-// #   order_status: $order_status
-// # }
 export const NEW_ORDER = gql`
   mutation createOrder($order: InputOrder) {
     createOrder(
@@ -23,21 +10,27 @@ export const NEW_ORDER = gql`
       totalPrice
       discount
       advanced
-      # user
+      user
       order_status
       order_items {
-        # order
+        products
         price
         measurements {
           msr_id
           size
         }
-        #   designs {
-        #     dsn_id
-        #     desc
-        #   }
+        designs {
+          group
+          items {
+            dsn_id
+            desc
+          }
+        }
         order_date
-        #   sample
+        sample {
+          _id
+          src
+        }
       }
       # createdAt
       # updatedAt

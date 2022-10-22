@@ -4,11 +4,11 @@ const Sidebar = () => {
   return (
     <ul>
       <li>
-        <Link to="/dashboard/order">Order</Link>
+        <Link to="/dashboard/order">অর্ডার সমুহঃ</Link>
       </li>
 
       <li>
-        <Link to="/dashboard/order/new">New Oreder</Link>
+        <Link to="/dashboard/order/new">নতুন অর্ডারঃ</Link>
       </li>
       <li>
         <Link to="/dashboard/design">Design</Link>

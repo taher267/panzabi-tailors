@@ -10,6 +10,8 @@ import useMutMeasurement from './useMutMeasurement';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import lodash from 'lodash';
 import useGetQurey from '../../hooks/gql/useGetQurey';
+import Field from '../../ui/Action/Field';
+import compareTwoObj from '../../utils/compareTwoObj';
 
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const EditMeasuremen = () => {
@@ -18,45 +20,39 @@ const EditMeasuremen = () => {
   const { loading: processing, data: measurement } = useGetQurey(
     'SINGLE_MEASUREMENT',
     {
-      key: 'id',
+      key: '_id',
       value: ID,
     },
     'getMeasurement'
   );
-  // const { processing, measurement, bug: error } = useSingleMeasuement(ID);
   const {
     processing: loading,
     updateMeasurement,
     bug,
   } = useMutMeasurement(null, setGqlErrs);
-
+  // console.log(measurement, 'measurement');
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm({ mode: 'all' });
+
   const onSubmit = (data) => {
     setGqlErrs({});
     if (Object.keys(gqlErrs).length > 0) return;
-    let newObj = {};
-    for (const i of Object.keys(data)) {
-      newObj[i] = measurement[i];
-    }
-    if (lodash.isEqual(newObj, data)) {
-      for (const i of Object.keys(data)) {
-        setGqlErrs((p) => ({ ...p, [i]: `Nothing to be changed` }));
-      }
-      return;
-    }
-    // console.log({ id: ID, ...data });
+    const isChange = compareTwoObj(measurement, data);
+    if (isChange.noChange) return setGqlErrs(isChange.bugs);
+    console.log(data);
     updateMeasurement({
       variables: {
         id: ID,
         update: data,
       },
     });
-    // updateMeasurement({ variables: { id: ID, ...data } });
   };
+  // if (measurement) {
+  //   console.log(measurement);
+  // }
   return (
     <AdminLayout>
       {(loading || processing) && (
@@ -67,32 +63,21 @@ const EditMeasuremen = () => {
       {!loading && !processing && measurement && (
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            {measuementFields?.map(
-              ({ name, defaultError, validation, ...rest }) => (
-                <TextField
-                  key={name}
-                  {...register(name, { ...validation })}
-                  defaultValue={measurement?.[name] || ''}
-                  name={name}
-                  onFocus={({ target: { name } }) =>
-                    removeGqlErrors(name, gqlErrs, setGqlErrs)
-                  }
-                  color="secondary"
-                  variant="filled"
-                  label={name}
-                  fullWidth
-                  error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
-                  helperText={
-                    gqlErrs?.[name]
-                      ? gqlErrs?.[name]
-                      : errors?.[name]
-                      ? errors?.[name]?.message || defaultError
-                      : ''
-                  }
-                  {...rest}
-                />
-              )
-            )}
+            {measuementFields?.map((field) => (
+              <Field
+                key={field?.name}
+                // {...register('fjkdjf')}
+                {...{
+                  ...field,
+                  register,
+                  errors,
+                  gqlErrs,
+                  setGqlErrs,
+                  predefined: measurement,
+                  removeGqlErrors,
+                }}
+              />
+            ))}
             <Button
               disabled={
                 loading ||
@@ -104,7 +89,7 @@ const EditMeasuremen = () => {
               endIcon={<Save />}
               type="submit"
             >
-              Update Measurement
+              Update
             </Button>
           </form>
         </div>
@@ -114,3 +99,26 @@ const EditMeasuremen = () => {
 };
 
 export default EditMeasuremen;
+
+// <TextField
+// key={name}
+// {...register(name, { ...validation })}
+// defaultValue={measurement?.[name] || ''}
+// name={name}
+// onFocus={({ target: { name } }) =>
+//   removeGqlErrors(name, gqlErrs, setGqlErrs)
+// }
+// color="secondary"
+// variant="filled"
+// label={name}
+// fullWidth
+// error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
+// helperText={
+//   gqlErrs?.[name]
+//     ? gqlErrs?.[name]
+//     : errors?.[name]
+//     ? errors?.[name]?.message || defaultError
+//     : ''
+// }
+// {...rest}
+// />
