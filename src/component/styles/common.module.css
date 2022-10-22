@@ -7,6 +7,8 @@
 .error {
   color: #d32f2f;
   border-color: #d32f2f;
+  font-size: 0.75rem;
+  margin: 0 0 0 15px;
 }
 .errMsg {
   font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
@@ -19,4 +21,24 @@
   margin-right: 14px;
   margin-bottom: 0;
   margin-left: 14px;
+}
+
+.selectFieldSet {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #746c6c;
+  color: #746c6c;
+}
+.selectField {
+  background: transparent;
+  font-size: 1rem;
+  padding: 0;
+  margin: 0;
+}
+
+.selectField option {
+  background: #ddd;
+  color: #000;
+  color: #746c6c;
 }

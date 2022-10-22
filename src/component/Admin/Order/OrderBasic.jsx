@@ -5,7 +5,8 @@ import { orderBasicFields } from '../../arrayForms/orderFields';
 import { Fragment, useEffect, useState } from 'react';
 import moment from 'moment';
 import { DATE } from '../../../utils';
-const OrderBasic = ({ register, errors, gqlErrs, onFocus }) => {
+import Field from '../../ui/Action/Field';
+const OrderBasic = (params) => {
   const [urgent, setUngent] = useState(false);
   // const {
   //   register,
@@ -25,7 +26,7 @@ const OrderBasic = ({ register, errors, gqlErrs, onFocus }) => {
     } else {
       document
         .querySelector("[name='delivery_date']")
-        ?.setAttribute('min', moment().add(11, 'd').format(DATE));
+        ?.setAttribute('min', moment().add(10, 'd').format(DATE));
     }
   });
   return (
@@ -39,28 +40,29 @@ const OrderBasic = ({ register, errors, gqlErrs, onFocus }) => {
         Urgent
       </Typography>
       {orderBasicFields?.map((field) => {
-        let { name, defaultError, validation, ...rest } = field;
+        // let { name, defaultError, validation, ...rest } = field;
         return (
-          <TextField
-            key={name}
-            {...register(name, { ...validation })}
-            name={name}
-            onFocus={onFocus}
-            color="secondary"
-            variant="filled"
-            label={name}
-            // fullWidth
-            error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
-            helperText={
-              gqlErrs?.[name]
-                ? gqlErrs?.[name]
-                : errors?.[name]
-                ? errors?.[name]?.message || defaultError
-                : ''
-            }
-            {...rest}
-            sx={{ marginBottom: '5px' }}
-          />
+          <Field key={field.name} {...{ ...field, ...params }} />
+          // <TextField
+          //   key={name}
+          //   {...register(name, { ...validation })}
+          //   name={name}
+          //   onFocus={onFocus}
+          //   color="secondary"
+          //   variant="filled"
+          //   label={name}
+          //   // fullWidth
+          //   error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
+          //   helperText={
+          //     gqlErrs?.[name]
+          //       ? gqlErrs?.[name]
+          //       : errors?.[name]
+          //       ? errors?.[name]?.message || defaultError
+          //       : ''
+          //   }
+          //   {...rest}
+          //   sx={{ marginBottom: '5px' }}
+          // />
         );
       })}
     </Fragment>

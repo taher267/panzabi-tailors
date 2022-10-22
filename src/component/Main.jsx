@@ -27,6 +27,7 @@ import EditDesign from './Admin/Design/EditDesign';
 import AccountsList from './Admin/Account/AccountsList';
 import NewAccount from './Admin/Account/NewAccount';
 import EditAccount from './Admin/Account/EditAccount';
+import StaticNewOrder from './Admin/NewOrder';
 
 const Main = () => {
   return (
@@ -38,6 +39,7 @@ const Main = () => {
           <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/NEW_ORDER" element={<StaticNewOrder />} />
             {/* <Route path="/new-product" element={<NewProduct />} /> */}
 
             {/* <Route path="/new-measurement" element={<NewMeasuremen />} /> */}

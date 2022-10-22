@@ -25,10 +25,17 @@ export const EDIT_MEASUREMENT = gql`
     updateMeasurement(id: $id, update: $update) {
       #  { name: $name, sl_id: $sl_id }
       _id
-      sl_id
+      label
       name
+      sl_id
+      type
+      template
+      status
+      options
+      validation
+      placeholder
       icon {
-        id
+        _id
         src
       }
     }

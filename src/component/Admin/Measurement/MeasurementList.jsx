@@ -9,13 +9,14 @@ import useGetQurey from './../../hooks/gql/useGetQurey';
 
 const MeasurementList = () => {
   const location = useLocation();
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
   const { loading, data, error } = useGetQurey(
     'ALL_MEASUREMENTS',
     null,
     'allMeasurements'
   );
+  // console.log(data);
   useEffect(() => {
     if (error) {
       console.log(error);
@@ -23,20 +24,54 @@ const MeasurementList = () => {
   }, [error]);
   const columns = useMemo(
     () => [
-      { field: 'id', headerName: 'ID', width: 90, hide: true },
+      { field: '_id', headerName: 'ID', width: 220, hide: true },
       {
-        requreid: true,
+        field: 'label',
+        headerName: 'Measurement Label',
+        width: 200,
+        editable: true,
+      },
+      {
         field: 'name',
         headerName: 'Measurement Name',
         width: 200,
         editable: true,
       },
       {
-        requreid: true,
         field: 'sl_id',
         headerName: 'Serial id',
         type: 'number',
-        width: 110,
+        width: 70,
+        editable: true,
+      },
+      {
+        field: 'options',
+        headerName: 'Options',
+        width: 150,
+        editable: true,
+      },
+      {
+        field: 'placeholder',
+        headerName: 'Placeholder',
+        width: 150,
+        editable: true,
+        hide: true,
+      },
+      {
+        field: 'validation',
+        headerName: 'Validation Rules',
+        width: 150,
+        editable: true,
+      },
+      {
+        field: 'status',
+        headerName: 'Status',
+        type: 'singleSelect',
+        sortable: false,
+        valueOptions: [{ value: 'ACTIVE' }, { value: 'DEACTIVE' }].map(
+          (s) => s.value
+        ),
+        width: 150,
         editable: true,
       },
 
@@ -44,7 +79,8 @@ const MeasurementList = () => {
         field: 'icon',
         headerName: 'Symbol/Icon',
         sortable: false,
-        width: 250,
+        hide: true,
+        width: 120,
         renderCell: ({ row }) => {
           return (
             <>
@@ -59,9 +95,9 @@ const MeasurementList = () => {
         sortable: false,
         width: 250,
         type: 'actions',
-        renderCell: (params) => (
-          <MeasurementActions {...{ params, rowId, setRowId }} />
-        ),
+        renderCell: (params) => {
+          return <MeasurementActions {...{ params, rowId, setRowId }} />;
+        },
       },
     ],
     [rowId]
@@ -88,7 +124,7 @@ const MeasurementList = () => {
       >
         {!loading && data?.length && (
           <Box
-            sx={{ height: 400, width: '100%' }}
+            sx={{ height: 600, width: '100%' }}
             className="measuementActions"
           >
             <DataGrid
@@ -96,8 +132,8 @@ const MeasurementList = () => {
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 25, 50]}
-              checkboxSelection
+              rowsPerPageOptions={[10, 25, 50]}
+              // checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}

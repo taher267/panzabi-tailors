@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
@@ -8,6 +8,10 @@ import { errorFormat } from '../../utils/errorConv';
 import { measuementFields } from './../../arrayForms/measurementFields';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import stringToObject from '../../utils/stringToObject';
+import Field from '../../ui/Action/Field';
+import removeGqlErrors from '../../utils/removeGqlErrors';
+
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const NewMeasuremen = () => {
   const navigate = useNavigate();
@@ -17,7 +21,7 @@ const NewMeasuremen = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({ defaultValues: { ...valuesInit } });
+  } = useForm({ mode: 'all', defaultValues: { ...valuesInit } });
   const [createMeasurement, { data, loading, error }] = useMutation(
     NEW_MEASUREMENT,
     {
@@ -36,8 +40,8 @@ const NewMeasuremen = () => {
   //   console.dir('validErrs', validErrs);
   const onSubmit = (data) => {
     setGqlErrs({});
-    // console.log(data);
-    createMeasurement({ variables: { ...data } });
+    console.log(data);
+    // createMeasurement({ variables: { ...data } });
   };
 
   const onFocus = ({ target: { name } }) => {
@@ -55,26 +59,22 @@ const NewMeasuremen = () => {
       <div>
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
           {measuementFields?.map(
-            ({ name, defaultError, validation, ...rest }) => (
-              <TextField
-                key={name}
-                {...register(name, { ...validation })}
-                name={name}
-                onFocus={onFocus}
-                color="secondary"
-                variant="filled"
-                label={name}
-                fullWidth
-                error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
-                helperText={
-                  gqlErrs?.[name]
-                    ? gqlErrs?.[name]
-                    : errors?.[name]
-                    ? errors?.[name]?.message || defaultError
-                    : ''
-                }
-                {...rest}
-              />
+            (
+              field //{ name, defaultError, validation, ...rest }
+            ) => (
+              <Fragment key={field.name}>
+                <Field
+                  {...{
+                    ...field,
+                    register,
+                    errors,
+                    gqlErrs,
+                    setGqlErrs,
+                    // predefined: measurement,
+                    removeGqlErrors,
+                  }}
+                />
+              </Fragment>
             )
           )}
           <Button
