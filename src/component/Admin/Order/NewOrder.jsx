@@ -51,6 +51,7 @@ const InitFields = {
 const NewOrder = () => {
   const navigate = useNavigate();
   const [designUpState, setDesignUpState] = useState({});
+  const [priceSummary, setPriceSummary] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
   const [devideMeasurement, setDevideMeasurement] = useState({});
@@ -64,9 +65,14 @@ const NewOrder = () => {
     reset,
     resetField,
     watch,
+    unregister,
     formState: { errors },
   } = useForm({
     mode: 'all',
+    defaultValues: {
+      checkboxUp: false,
+      checkboxDown: false,
+    },
   });
   // New product add
   const {
@@ -203,9 +209,10 @@ const NewOrder = () => {
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
     // createOrder({ variables: { order: newOrderDates } });
-    console.log(newOrderDates);
+    console.log(data);
     // console.log(JSON.stringify(newOrderDates));
   };
+
   const orderProductHandle = (v, type) => {};
   useEffect(() => {
     if (!designUpState?.length && all_designs) {
@@ -226,7 +233,31 @@ const NewOrder = () => {
     }
     // console.log(all_designs);
   }, [all_designs]);
+  const checkboxUp = watch('checkboxUp');
 
+  useEffect(() => {
+    if (!checkboxUp) {
+      unregister([`pricing.0.quantity`, `pricing.0.price`, 'measurements_up']);
+    }
+  }, [unregister, checkboxUp]);
+
+  const checkboxDown = watch('checkboxDown');
+
+  useEffect(() => {
+    if (!checkboxDown) {
+      unregister([
+        `pricing.1.quantity`,
+        `pricing.1.price`,
+        'measurements_down',
+      ]);
+    }
+  }, [unregister, checkboxDown]);
+
+  useEffect(() => {
+    // (async () => {
+    //   console.log(await PriceCard({ control }));
+    // })();
+  }, []);
   const typeHandler = ({ target: { name, checked } }) => {
     setType((p) => ({ ...p, [name]: checked }));
     if (!checked) {
@@ -326,13 +357,9 @@ const NewOrder = () => {
             </fieldset>
             <Typography variant="h4">
               Measurement 01
-              <Checkbox
-                name="type_one"
-                onChange={typeHandler}
-                checked={type?.type_one}
-              />
+              <Checkbox {...register('checkboxUp')} />
             </Typography>
-            {type?.type_one && (
+            {checkboxUp && (
               <>
                 <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
                 {all_products && (
@@ -376,28 +403,33 @@ const NewOrder = () => {
                     {...{ designWithValue, setDesignWithValue, designsHandler }}
                   />
                 )}
-                {/* <OrderPricing
-                  {...{
-                    watch,
-                    errors,
-                    gqlErrs,
-                    register,
-                    prefix: 'up',
-                    onFocus,
-                    className: csses?.basicGrid,
-                  }}
-                /> */}
+                <Typography>PRICE:</Typography>
+                <div style={{ display: 'flex' }}>
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    {...register(`pricing.${0}.quantity`, {
+                      valueAsNumber: true,
+                      required: true,
+                    })}
+                  />
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    {...register(`pricing.${0}.price`, {
+                      valueAsNumber: true,
+                      required: true,
+                    })}
+                  />
+                  {<Box>One</Box>}
+                </div>
               </>
             )}
             <Typography variant="h4">
               Measurement 02
-              <Checkbox
-                name="type_two"
-                onChange={typeHandler}
-                checked={type.type_two}
-              />
+              <Checkbox {...register('checkboxDown')} />
             </Typography>
-            {type?.type_two && (
+            {checkboxDown && (
               <>
                 {devideMeasurement?.down?.length && (
                   <OrderMeasuementField
@@ -413,7 +445,6 @@ const NewOrder = () => {
                     }}
                   />
                 )}
-
                 {all_products && (
                   <OrderProduct
                     selectedProducts={(_, v) => orderProductHandle(v, 'down')}
@@ -422,47 +453,29 @@ const NewOrder = () => {
                     )}
                   />
                 )}
+                <Typography>PRICE:</Typography>
+                <div style={{ display: 'flex' }}>
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    {...register(`pricing.${1}.quantity`, {
+                      valueAsNumber: true,
+                      required: true,
+                    })}
+                  />
+                  <TextField
+                    label="Quantity"
+                    type="number"
+                    {...register(`pricing.${1}.price`, {
+                      valueAsNumber: true,
+                      required: true,
+                    })}
+                  />
+                  {/* <Box>{PriceCard({ control, select: 'prices' })?.[1]}</Box> */}
+                </div>
               </>
             )}
-            <div style={{ display: 'flex' }}>
-              <TextField
-                label="Quantity"
-                type="number"
-                {...register(`pricing.${0}.quantity`, {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-              <TextField
-                label="Quantity"
-                type="number"
-                {...register(`pricing.${0}.price`, {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-            </div>
-            <div style={{ display: 'flex' }}>
-              <TextField
-                label="Quantiry"
-                type="number"
-                {...register(`pricing.${1}.quantity`, {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
 
-              <TextField
-                label="Price"
-                type="number"
-                {...register(`pricing.${1}.price`, {
-                  valueAsNumber: true,
-                  required: true,
-                })}
-              />
-              {console.log(PriceCard({ control, select: 'prices' }))}
-              {/* <PriceCard {...{ control, select: 'prices' }} /> */}
-            </div>
             <Button
               disabled={
                 processing ||
@@ -560,18 +573,13 @@ export function fetchMeasurement(data, kyes = []) {
   return filtered;
 }
 
-export const priceSummary = () => {
-  const totalPrice = 0;
-};
-
-const PriceCard = ({ control, select = 'total', component, select2 }) => {
+const PriceCard = ({ control, select }) => {
   const cartValue = useWatch({
     control,
     name: 'pricing',
   });
-
-  return getTotal(cartValue)?.[select];
-  // return <p>{JSON.stringify(getTotal(cartValue)?.[select])}</p>;
+  if (select) return getTotal(cartValue)?.[select];
+  return getTotal(cartValue);
 };
 
 const getTotal = (payload) => {
