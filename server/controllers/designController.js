@@ -12,7 +12,9 @@ export default {
   createDesign: async (_parent, { design }, context) => {
     try {
       await designValidation.newDesignValidation({ ...design });
-      return await designServices.createDesign(design);
+      const data = await designServices.createDesign(design);
+      // console.log(data);
+      return data;
     } catch (e) {
       errorHandler(e);
     }

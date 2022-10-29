@@ -6,6 +6,7 @@ export const Order = `type Order {
     discount: Float
     advanced: Float
     due: Float
+    transport_charge: Float
     order_status: String
     user: String!
     delivery_date: Date!
@@ -52,8 +53,6 @@ input InputOrderItemsOfOrder {
   sample: InpIcon
   order_date:Date!
 }`;
-// measurements: [InputOrderMeasurement!]!
-// designs: [!]!
 export const InputOrderDesignItems = `input InputOrderDesignItems {
   dsn_id: String!
   desc: String
@@ -79,7 +78,7 @@ input InputOrder {
 }`;
 
 export const OrderQueries = `
-allOrders(key: String, value: String): [Order!]!
+allOrders(key: String, value: String): [Order!]! 
 getOrder(id: ID!): Order!`;
 
 export const OrderMutations = `

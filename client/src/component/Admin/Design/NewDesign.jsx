@@ -16,6 +16,7 @@ const NewDesign = () => {
     processing,
     bug,
   } = useMutationFunc('NEW_DESIGN', null, setGqlErrs);
+
   const {
     register,
     handleSubmit,
@@ -36,16 +37,16 @@ const NewDesign = () => {
             {
               item: newDesign[cur],
               ds_id: acc.length + 1,
-              status: newDesign['status_' + cur],
+              status: newDesign['status_' + cur] === 'true' ? true : false,
             },
           ],
         []
       ),
     };
     // console.log(newData);
-    // createDesign({
-    //   variables: { ...newData },
-    // });
+    createDesign({
+      variables: { ...newData },
+    });
   };
 
   const onFocus = ({ target: { name } }) => {
@@ -128,8 +129,8 @@ const NewDesign = () => {
                 error={errors[id] ? true : false}
               />
               <select name="status" {...register('status_' + id)}>
-                <option value={1}>Active</option>
-                <option value={0}>Deactive</option>
+                <option value={true}>Active</option>
+                <option value={false}>Deactive</option>
               </select>
               <Button
                 onClick={() => {

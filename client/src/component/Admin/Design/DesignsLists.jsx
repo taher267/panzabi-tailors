@@ -54,7 +54,6 @@ const DesignsLists = () => {
       {
         field: 'designs',
         headerName: 'Designs',
-        type: 'textarea',
         sortable: false,
         // editable: true,
         width: 500,

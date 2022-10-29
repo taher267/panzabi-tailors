@@ -1,9 +1,13 @@
-import ord from '../models/Order.js';
+// import ord from '../models/Order.js';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
 import errorHandler from '../utils/errorHandler.js';
-let Order;
-ord.then((d) => (Order = d)).catch((e) => console.log(e));
+import orderServices from '../services/orderServices.js';
+// let Order;
+// ord.then((d) => (Order = d)).catch((e) => console.log(e));
+// orderServices.findOrder();
+//   .then((d) => console.log(d))
+//   .catch((d) => console.log(d));
 export default {
   /**
    * Create New Order
@@ -12,8 +16,9 @@ export default {
     try {
       // console.log(order.order_items[0]?.measurements);
       let user = _context?.req?.user?._id;
-      const newOrder = new Order({ ...order, user });
-      console.log(newOrder);
+      const newOrder = orderServices.newOrder({ ...order, user });
+      // const newOrder = new Order({ ...order, user });
+      // console.log(newOrder);
       // await newOrder.save();
       return newOrder;
     } catch (e) {
@@ -24,9 +29,12 @@ export default {
    * All Orders
    */
   allOrders: async (_parent, { key, value }, _context) => {
+    //
     try {
       const filter = key && value ? { [key]: value } : {};
-      return await Order.find(filter);
+      const all = await orderServices.findOrder(filter);
+      // console.log(all);
+      return all;
     } catch (e) {
       errorHandler(e);
     }

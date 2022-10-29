@@ -1,7 +1,6 @@
 import mg from 'mongoose';
 import moment from 'moment';
 import con from '../config/db.js';
-let orderModel = {};
 export default con()
   .then((d) => {
     return d.orders.model(

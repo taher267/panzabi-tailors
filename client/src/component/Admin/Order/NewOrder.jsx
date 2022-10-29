@@ -1,4 +1,4 @@
-import { useState, useEffect, Component } from 'react';
+import { useState, useEffect } from 'react';
 import {
   LinearProgress,
   Box,
@@ -51,7 +51,7 @@ const InitFields = {
 const NewOrder = () => {
   const navigate = useNavigate();
   const [designUpState, setDesignUpState] = useState({});
-  const [priceSummary, setPriceSummary] = useState({});
+  const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
   const [devideMeasurement, setDevideMeasurement] = useState({});
@@ -62,10 +62,11 @@ const NewOrder = () => {
     control,
     register,
     handleSubmit,
-    reset,
+    setError,
     resetField,
     watch,
     unregister,
+    clearErrors,
     formState: { errors },
   } = useForm({
     mode: 'all',
@@ -94,6 +95,7 @@ const NewOrder = () => {
     { key: 'status', value: 'ACTIVE' },
     'allMeasurements'
   );
+  console.log(data);
   useEffect(() => {
     if (
       all_measurements &&
@@ -119,8 +121,11 @@ const NewOrder = () => {
       control,
       name: 'pricing',
     });
+
   // console.dir(data);
   //   console.dir('validErrs', validErrs);
+
+  //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
     const {
       order_status,
@@ -168,26 +173,32 @@ const NewOrder = () => {
     const order_items = [];
     let total_up = 0;
     let total_down = 0;
-
+    const [up, down] = data?.pricing;
     // console.log(type);
-    if (type?.type_one) {
+    if (data?.checkboxUp) {
       let up_item = {};
-      total_up = quantity_up * price_up;
+      total_up = up.price * up.quantity;
       up_item.products = orderProduct?.up || [];
-      up_item.quantity = quantity_up;
-      up_item.price = price_up;
+      up_item.quantity = up.quantity;
+      up_item.price = up.price;
       up_item.designs = checkValuesAndErrors(designWithValue).values;
-      up_item.measurements = data?.measurements_up;
+      up_item.measurements = mapKeyValueToValues(
+        clonning(data?.measurements_up)
+      );
+
       up_item.order_date = order_date;
       order_items.push(up_item);
     }
     // Object.keys(type_two_check).length
-    if (type?.type_two) {
+    if (data?.checkboxDown) {
       let down_item = {};
-      total_down = quantity_down * price_down;
-      down_item.quantity = quantity_down;
-      down_item.price = price_down;
-      down_item.measurements = data?.measurements_down;
+      total_down = down.price * down.quantity;
+      down_item.products = orderProduct?.down || [];
+      down_item.quantity = down.quantity;
+      down_item.price = down.price;
+      down_item.measurements = mapKeyValueToValues(
+        clonning(data?.measurements_down)
+      );
       down_item.order_date = order_date;
       order_items.push(down_item);
     }
@@ -208,30 +219,36 @@ const NewOrder = () => {
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    // createOrder({ variables: { order: newOrderDates } });
-    console.log(data);
+    createOrder({ variables: { order: newOrderDates } });
+    // console.log(newOrderDates);
     // console.log(JSON.stringify(newOrderDates));
   };
 
-  const orderProductHandle = (v, type) => {};
   useEffect(() => {
-    if (!designUpState?.length && all_designs) {
+    //     designUpState
+    // designDownState
+    if (
+      !designUpState?.length &&
+      all_designs &&
+      !Object.keys(designUpState).length &&
+      !Object.keys(designDownState).length
+    ) {
       setDesignUpState({});
+      setDesignDownState({});
       const modifyAllDesignsUpItems = all_designs?.reduce((a, c) => {
         const copy = { ...c };
         delete copy.__typename;
-        // console.log(copy?.type?.includes('1'));
         if (copy?.type?.includes('1')) {
           a = DesingDivide(a, copy);
         }
-        // if (copy?.type?.includes('2')) {
-        //   a = DesingDivide(a, copy, 'down');
-        // }
+        if (copy?.type?.includes('2')) {
+          a = DesingDivide(a, copy, 'down');
+        }
         return a;
       }, {});
       setDesignUpState({ ...modifyAllDesignsUpItems.up });
+      setDesignDownState({ ...modifyAllDesignsUpItems.down });
     }
-    // console.log(all_designs);
   }, [all_designs]);
   const checkboxUp = watch('checkboxUp');
 
@@ -258,29 +275,27 @@ const NewOrder = () => {
     //   console.log(await PriceCard({ control }));
     // })();
   }, []);
-  const typeHandler = ({ target: { name, checked } }) => {
-    setType((p) => ({ ...p, [name]: checked }));
-    if (!checked) {
-      for (const im of InitFields[name]) {
-        resetField(im);
-      }
-    }
-  };
-  const measuementSubmit = (data) => {
-    setGqlErrs({});
-    console.log(data);
-    // createOrder({
-    //   variables: { ...data, price: parseInt(data?.price) || 0 },
-    // });
-    // createMeasurement({ variables: { ...data } });
-  };
 
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
     delete newErr[name];
     setGqlErrs(newErr);
   };
-
+  // if there is no open two measurement between one  set Error
+  useEffect(() => {
+    if (!checkboxUp && !checkboxDown) {
+      setError('checkboxUp', {
+        type: 'custom',
+        message: 'Please check ☑️ at least one of the two measurement',
+      });
+      setError('checkboxDown', {
+        type: 'custom',
+        message: 'Please check ☑️ at least one of the two measurement',
+      });
+    } else {
+      clearErrors(['checkboxUp', 'checkboxDown']);
+    }
+  }, [checkboxUp, checkboxDown]);
   const designsHandler = (
     { target: { name, value, checked } },
     items_id,
@@ -355,9 +370,19 @@ const NewOrder = () => {
                   : ''}
               </p>
             </fieldset>
-            <Typography variant="h4">
+            <Typography variant="h5" color={errors?.checkboxUp ? 'error' : ''}>
               Measurement 01
-              <Checkbox {...register('checkboxUp')} />
+              <span
+                style={{ fontSize: 14, position: 'absolute', width: '100%' }}
+              >
+                {errors?.checkboxUp?.message}
+              </span>
+              <span style={{ position: 'relative' }}>
+                <Checkbox
+                  className={errors?.checkboxUp ? csses.CheckBox : ''}
+                  {...register('checkboxUp')}
+                />
+              </span>
             </Typography>
             {checkboxUp && (
               <>
@@ -367,11 +392,11 @@ const NewOrder = () => {
                     selectedProducts={(_, v) => {
                       // orderProductHandle(v, 'up')
                       setOrderProduct((p) => {
+                        let up = v?.reduce((a, c) => [...a, c?._id], []);
+                        // console.log(up);
                         return {
                           ...p,
-                          up: v?.reduce((a, c) => {
-                            return [...a, c?._id];
-                          }, []),
+                          up,
                         };
 
                         // let down;
@@ -403,9 +428,11 @@ const NewOrder = () => {
                     {...{ designWithValue, setDesignWithValue, designsHandler }}
                   />
                 )}
+
                 <Typography>PRICE:</Typography>
                 <div style={{ display: 'flex' }}>
                   <TextField
+                    error={errors?.pricing?.[0]?.quantity ? true : false}
                     label="Quantity"
                     type="number"
                     {...register(`pricing.${0}.quantity`, {
@@ -414,6 +441,7 @@ const NewOrder = () => {
                     })}
                   />
                   <TextField
+                    error={errors?.pricing?.[0]?.price ? true : false}
                     label="Quantity"
                     type="number"
                     {...register(`pricing.${0}.price`, {
@@ -425,9 +453,22 @@ const NewOrder = () => {
                 </div>
               </>
             )}
-            <Typography variant="h4">
+            <Typography
+              variant="h5"
+              color={errors?.checkboxDown ? 'error' : ''}
+            >
               Measurement 02
-              <Checkbox {...register('checkboxDown')} />
+              <span
+                style={{ fontSize: 14, position: 'absolute', width: '100%' }}
+              >
+                {errors?.checkboxDown?.message}
+              </span>
+              <span style={{ position: 'relative' }}>
+                <Checkbox
+                  className={errors?.checkboxDown ? csses.CheckBox : ''}
+                  {...register('checkboxDown')}
+                />
+              </span>
             </Typography>
             {checkboxDown && (
               <>
@@ -447,15 +488,33 @@ const NewOrder = () => {
                 )}
                 {all_products && (
                   <OrderProduct
-                    selectedProducts={(_, v) => orderProductHandle(v, 'down')}
+                    // selectedProducts={(_, v) => orderProductHandle(v, 'down')}
+                    selectedProducts={(_, v) => {
+                      setOrderProduct((p) => {
+                        return {
+                          ...p,
+                          down: v?.reduce((a, c) => [...a, c?._id], []),
+                        };
+
+                        // let down;
+                      });
+                    }}
                     products={all_products?.filter(
                       (p) => p.category === 'type-2'
                     )}
                   />
                 )}
+
+                {Object.keys(designDownState)?.length && (
+                  <DesignView
+                    alldesigns={designDownState}
+                    {...{ designWithValue, setDesignWithValue, designsHandler }}
+                  />
+                )}
                 <Typography>PRICE:</Typography>
                 <div style={{ display: 'flex' }}>
                   <TextField
+                    error={errors?.pricing?.[1]?.quantity ? true : false}
                     label="Quantity"
                     type="number"
                     {...register(`pricing.${1}.quantity`, {
@@ -464,6 +523,7 @@ const NewOrder = () => {
                     })}
                   />
                   <TextField
+                    error={errors?.pricing?.[1]?.price ? true : false}
                     label="Quantity"
                     type="number"
                     {...register(`pricing.${1}.price`, {
@@ -598,4 +658,12 @@ const getTotal = (payload) => {
   }
   // console.log();
   return { total, prices: newPrices };
+};
+
+const mapKeyValueToValues = (data) => {
+  const newObj = [];
+  for (const key of Object.keys(data)) {
+    newObj.push({ msr_id: key, size: data[key] });
+  }
+  return newObj;
 };
