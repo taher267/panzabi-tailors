@@ -28,6 +28,7 @@ import AccountsList from './Admin/Account/AccountsList';
 import NewAccount from './Admin/Account/NewAccount';
 import EditAccount from './Admin/Account/EditAccount';
 import StaticNewOrder from './Admin/NewOrder';
+import OrdersList from './Admin/Order/OrdersList';
 
 const Main = () => {
   return (
@@ -68,7 +69,7 @@ const Main = () => {
                   <Route path="new" element={<NewProduct />} />
                 </Route>
                 <Route path="order">
-                  {/* <Route path="" element={<ProductList />} /> */}
+                  <Route path="" element={<OrdersList />} />
                   <Route path="new" element={<NewOrder />} />
                 </Route>
                 <Route path="measurement">

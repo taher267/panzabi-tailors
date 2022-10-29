@@ -5,33 +5,33 @@ export const NEW_ORDER = gql`
       order: $order # order: { #   order_no: $order_no #   quantity: $quantity
     ) {
       _id
-      order_no
-      totalQty
-      totalPrice
-      discount
-      advanced
-      user
-      order_status
-      order_items {
-        products
-        price
-        measurements {
-          msr_id
-          size
-        }
-        designs {
-          group
-          items {
-            dsn_id
-            desc
-          }
-        }
-        order_date
-        sample {
-          _id
-          src
-        }
-      }
+      # order_no
+      # totalQty
+      # totalPrice
+      # discount
+      # advanced
+      # user
+      # order_status
+      # order_items {
+      #   products
+      #   price
+      #   measurements {
+      #     msr_id
+      #     size
+      #   }
+      #   designs {
+      #     group
+      #     items {
+      #       dsn_id
+      #       desc
+      #     }
+      #   }
+      #   order_date
+      #   sample {
+      #     _id
+      #     src
+      #   }
+      # }
       # createdAt
       # updatedAt
     }

@@ -1,6 +1,7 @@
 import { NEW_CUSTOMER, EDIT_CUSTOMER } from './../Mutations/customerMut';
 import { NEW_PRODUCT, EDIT_PRODUCT } from './../Mutations/productMut';
 import { NEW_ORDER } from './../Mutations/orderMut';
+import { ALL_ORDERS, SINGLE_ORDER } from './../Query/orderQry';
 import {
   NEW_MEASUREMENT,
   EDIT_MEASUREMENT,
@@ -43,6 +44,8 @@ export default {
   ALL_USERS,
   // ORDER
   NEW_ORDER,
+  ALL_ORDERS,
+  SINGLE_ORDER,
   //DESIGN
   ALL_DESIGNS,
   SINGLE_DESIGN,
