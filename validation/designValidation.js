@@ -38,7 +38,7 @@ const designUpdateValidation = async ({ id, sl_id, name }) => {
       const check = await designServices.findMeasurement('name', name);
       if (check && check?.id !== id) errors.name = `Name is already exists!`;
     }
-    // Password
+    // Serial id
     if (!sl_id) errors.sl_id = `Serial id is mandatory!`;
     else if (sl_id < 0) errors.sl_id = `Invalid serial id`;
     else if (sl_id) {
