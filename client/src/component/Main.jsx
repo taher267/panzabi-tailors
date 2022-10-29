@@ -29,6 +29,7 @@ import NewAccount from './Admin/Account/NewAccount';
 import EditAccount from './Admin/Account/EditAccount';
 import StaticNewOrder from './Admin/NewOrder';
 import OrdersList from './Admin/Order/OrdersList';
+import FORM from '../component/FORM-PRACTICE';
 
 const Main = () => {
   return (
@@ -40,6 +41,7 @@ const Main = () => {
           <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/form" element={<FORM />} />
             <Route path="/NEW_ORDER" element={<StaticNewOrder />} />
             {/* <Route path="/new-product" element={<NewProduct />} /> */}
 
