@@ -11,7 +11,11 @@ import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
 import { ALL_MEASUREMENTS, SINGLE_MEASUREMENT } from '../Query/measurementQry';
 import { ALL_PRODUCTS } from '../Query/productQry';
 import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
-import { ALL_DESIGNS, SINGLE_DESIGN } from './../Query/designQry';
+import {
+  ALL_DESIGNS,
+  SPECIFIC_ALL_DESIGNS,
+  SINGLE_DESIGN,
+} from './../Query/designQry';
 import { ALL_ACCOUNTS, DAILY_ACCOUNT } from './../Query/accountQry';
 import { PRODUCTS_NAME_ID_CAT } from './../Query/productQry';
 import { LOGIN, SIGNUP } from './../Mutations/authMut';
@@ -48,6 +52,7 @@ export default {
   SINGLE_ORDER,
   //DESIGN
   ALL_DESIGNS,
+  SPECIFIC_ALL_DESIGNS,
   SINGLE_DESIGN,
   NEW_DESIGN,
   EDIT_DESIGN,

@@ -7,7 +7,7 @@ import db from './config/db.js';
 import auth from './auth/auth.js';
 const publicRoutes = ['userLogin', 'userSignup'];
 // console.log(publicRoutes.indexOf('userLogin'));
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 9999;
 const server = new ApolloServer({
   typeDefs,
   resolvers,

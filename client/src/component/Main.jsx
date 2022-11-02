@@ -41,7 +41,7 @@ const Main = () => {
           <Nav />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/form" element={<FORM />} />
+            {/* <Route path="/form" element={<FORM />} /> */}
             <Route path="/NEW_ORDER" element={<StaticNewOrder />} />
             {/* <Route path="/new-product" element={<NewProduct />} /> */}
 
