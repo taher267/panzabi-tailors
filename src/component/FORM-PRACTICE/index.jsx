@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Checkbox } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -13,10 +13,18 @@ const index = () => {
     handleSubmit,
     register,
     control,
-    setError,
-    clearErrors,
+    unregister,
+    watch,
+    // setError,
+    // clearErrors,
     formState: { errors },
-  } = useForm({ mode: 'all' });
+  } = useForm({
+    mode: 'all',
+    defaultValues: {
+      checkboxUp: false,
+      checkboxDown: false,
+    },
+  });
   // console.log(errors);
   const [desings, setDesigns] = useState({
     // up: {}, down: {}
@@ -30,7 +38,8 @@ const index = () => {
     name: 'down',
     control,
   });
-  // console.log(up, down);
+  const checkboxUp = watch('checkboxUp');
+  const checkboxDown = watch('checkboxDown');
   useEffect(() => {
     if (!Object.keys(desings)?.length) {
       setDesigns(designDevider(designsArrs));
@@ -39,25 +48,39 @@ const index = () => {
 
   return (
     <div>
-      {desings?.up?.length ? (
-        <Box>
-          <form
-            onSubmit={handleSubmit((d) => {
-              console.log(d);
-            })}
-          >
+      <Box>
+        <form
+          onSubmit={handleSubmit((d) => {
+            console.log(d);
+          })}
+        >
+          <Checkbox
+            onClick={(e) => e.target?.checked === false && unregister('up')}
+            sx={{ color: errors?.checkboxUp ? 'red' : '' }}
+            {...register('checkboxUp')}
+          />
+          {desings?.up?.length && checkboxUp && (
             <VerticalTabs
               allDesigns={desings?.up}
-              {...{ register, errors, up, setError, clearErrors }}
+              {...{ register, errors, up }}
             />
-            <Button type="submit" fullWidth color="primary" variant="contained">
-              Submit
-            </Button>
-          </form>
-        </Box>
-      ) : (
-        ''
-      )}
+          )}
+          <Checkbox
+            onClick={(e) => e.target?.checked === false && unregister('down')}
+            sx={{ color: errors?.checkboxDown ? 'red' : '' }}
+            {...register('checkboxDown')}
+          />
+          {/* {desings?.down?.length && (
+            <VerticalTabs
+              allDesigns={desings?.down}
+              {...{ register, errors, down }}
+            />
+          )} */}
+          <Button type="submit" fullWidth color="primary" variant="contained">
+            Submit
+          </Button>
+        </form>
+      </Box>
     </div>
   );
 };

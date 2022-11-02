@@ -6,14 +6,11 @@ import {
   Typography,
   Checkbox,
   TextField,
-  FormControlLabel,
-  FormLabel,
-  FormHelperText,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { OrderStatusField } from '../../arrayForms/orderFields';
-import { useForm, useWatch, useFieldArray } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import csses from './order.module.css';
 import commonCsses from '../../styles/common.module.css';
@@ -21,15 +18,13 @@ import useMutationFunc from '../../hooks/gql/useMutationFunc';
 import OrderMeasuementField from './OrderMeasuementFields';
 import OrderBasic from './OrderBasic';
 import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
-import useGetQurey from './../../hooks/gql/useGetQurey';
+import useGetQurey from '../../hooks/gql/useGetQurey';
 import DesignView from './DesignView2';
 import OrderPricing from './OrderPriceing';
 import OrderDate from './OrderDate';
 import OrderProduct from './OrderProduct';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
-import designDevider from '../../utils/designDevider';
-import VerticalTabs from '../../FORM-PRACTICE/VerticalTabs';
 const InitFields = {
   type_one: [
     'long',
@@ -52,12 +47,9 @@ const InitFields = {
     'hips',
   ],
 };
-const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
+
 const NewOrder = () => {
   const navigate = useNavigate();
-  const [desings, setDesigns] = useState({
-    // up: {}, down: {}
-  });
   const [designUpState, setDesignUpState] = useState({});
   const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
@@ -71,7 +63,7 @@ const NewOrder = () => {
     register,
     handleSubmit,
     setError,
-    // resetField,
+    resetField,
     watch,
     unregister,
     clearErrors,
@@ -90,11 +82,7 @@ const NewOrder = () => {
     bug,
     data,
   } = useMutationFunc('NEW_ORDER', null, null, 'createOrder');
-  const { data: all_designs } = useGetQurey(
-    'SPECIFIC_ALL_DESIGNS',
-    null,
-    'allDesigns'
-  );
+  const { data: all_designs } = useGetQurey('ALL_DESIGNS', null, 'allDesigns');
   const { data: all_products } = useGetQurey(
     'PRODUCTS_NAME_ID_CAT',
     null,
@@ -107,7 +95,7 @@ const NewOrder = () => {
     { key: 'status', value: 'ACTIVE' },
     'allMeasurements'
   );
-  // console.log(data);
+  console.log(data);
   useEffect(() => {
     if (
       all_measurements &&
@@ -128,26 +116,14 @@ const NewOrder = () => {
       setDevideMeasurement(datas);
     }
   }, [all_measurements]);
-  // const Priceing = () =>
-  //   useWatch({
-  //     control,
-  //     name: 'pricing',
-  //   });
-  useFieldArray({ control, name: 'up', name: 'dwon' });
-  const up = useWatch({
-    name: 'up',
-    control,
-  });
-  const down = useWatch({
-    name: 'down',
-    control,
-  });
-  useEffect(() => {
-    if (!Object.keys(desings)?.length && all_designs?.length) {
-      setDesigns(designDevider(all_designs));
-    }
-  }, [all_designs]);
-  // console.log('validErrs', desings);
+  const Priceing = () =>
+    useWatch({
+      control,
+      name: 'pricing',
+    });
+
+  // console.dir(data);
+  //   console.dir('validErrs', validErrs);
 
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
@@ -243,8 +219,8 @@ const NewOrder = () => {
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    // createOrder({ variables: { order: newOrderDates } });
-    console.log(designFiltering(data?.up));
+    createOrder({ variables: { order: newOrderDates } });
+    // console.log(newOrderDates);
     // console.log(JSON.stringify(newOrderDates));
   };
 
@@ -275,25 +251,30 @@ const NewOrder = () => {
     }
   }, [all_designs]);
   const checkboxUp = watch('checkboxUp');
+
+  useEffect(() => {
+    if (!checkboxUp) {
+      unregister([`pricing.0.quantity`, `pricing.0.price`, 'measurements_up']);
+    }
+  }, [unregister, checkboxUp]);
+
   const checkboxDown = watch('checkboxDown');
 
-  const upUnregiser = () => {
-    unregister([
-      `up`,
-      `pricing.0.quantity`,
-      `pricing.0.price`,
-      'measurements_up',
-    ]);
-  };
+  useEffect(() => {
+    if (!checkboxDown) {
+      unregister([
+        `pricing.1.quantity`,
+        `pricing.1.price`,
+        'measurements_down',
+      ]);
+    }
+  }, [unregister, checkboxDown]);
 
-  const downUnregiser = () => {
-    unregister([
-      `up`,
-      `pricing.1.quantity`,
-      `pricing.1.price`,
-      'measurements_down',
-    ]);
-  };
+  useEffect(() => {
+    // (async () => {
+    //   console.log(await PriceCard({ control }));
+    // })();
+  }, []);
 
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
@@ -301,9 +282,20 @@ const NewOrder = () => {
     setGqlErrs(newErr);
   };
   // if there is no open two measurement between one  set Error
-  // useEffect(() => {
-
-  // }, [checkboxUp, checkboxDown]);
+  useEffect(() => {
+    if (!checkboxUp && !checkboxDown) {
+      setError('checkboxUp', {
+        type: 'custom',
+        message: 'Please check ☑️ at least one of the two measurement',
+      });
+      setError('checkboxDown', {
+        type: 'custom',
+        message: 'Please check ☑️ at least one of the two measurement',
+      });
+    } else {
+      clearErrors(['checkboxUp', 'checkboxDown']);
+    }
+  }, [checkboxUp, checkboxDown]);
   const designsHandler = (
     { target: { name, value, checked } },
     items_id,
@@ -378,25 +370,17 @@ const NewOrder = () => {
                   : ''}
               </p>
             </fieldset>
-            <Typography variant="h5">
-              <span>
-                {!checkboxUp && !checkboxDown ? (
-                  <FormHelperText sx={{ color: 'red' }}>
-                    {NOT_ANY_MEASUREMENT_CHECK}
-                  </FormHelperText>
-                ) : (
-                  ''
-                )}
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onClick={(e) => !e.target?.checked && upUnregiser()}
-                      className={errors?.checkboxUp ? csses.CheckBox : ''}
-                      {...register('checkboxUp')}
-                    />
-                  }
-                  label="Measuremnt 01"
+            <Typography variant="h5" color={errors?.checkboxUp ? 'error' : ''}>
+              Measurement 01
+              <span
+                style={{ fontSize: 14, position: 'absolute', width: '100%' }}
+              >
+                {errors?.checkboxUp?.message}
+              </span>
+              <span style={{ position: 'relative' }}>
+                <Checkbox
+                  className={errors?.checkboxUp ? csses.CheckBox : ''}
+                  {...register('checkboxUp')}
                 />
               </span>
             </Typography>
@@ -438,20 +422,10 @@ const NewOrder = () => {
                     }}
                   />
                 )}
-                <Typography
-                  sx={{
-                    display: 'block',
-                    marginY: 3,
-                    borderBottom: '1px solid rgba(245, 245, 245, .4)',
-                  }}
-                >
-                  ডিজাইন
-                </Typography>
-
-                {desings?.up?.length && (
-                  <VerticalTabs
-                    allDesigns={desings?.up}
-                    {...{ register, errors, up }}
+                {Object.keys(designUpState)?.length && (
+                  <DesignView
+                    alldesigns={designUpState}
+                    {...{ designWithValue, setDesignWithValue, designsHandler }}
                   />
                 )}
 
@@ -481,13 +455,13 @@ const NewOrder = () => {
             )}
             <Typography
               variant="h5"
-              color={!checkboxUp && !checkboxDown ? 'error' : ''}
+              color={errors?.checkboxDown ? 'error' : ''}
             >
               Measurement 02
               <span
                 style={{ fontSize: 14, position: 'absolute', width: '100%' }}
               >
-                {!checkboxUp && !checkboxDown ? NOT_ANY_MEASUREMENT_CHECK : ''}
+                {errors?.checkboxDown?.message}
               </span>
               <span style={{ position: 'relative' }}>
                 <Checkbox
@@ -659,14 +633,14 @@ export function fetchMeasurement(data, kyes = []) {
   return filtered;
 }
 
-// const PriceCard = ({ control, select }) => {
-//   const cartValue = useWatch({
-//     control,
-//     name: 'pricing',
-//   });
-//   if (select) return getTotal(cartValue)?.[select];
-//   return getTotal(cartValue);
-// };
+const PriceCard = ({ control, select }) => {
+  const cartValue = useWatch({
+    control,
+    name: 'pricing',
+  });
+  if (select) return getTotal(cartValue)?.[select];
+  return getTotal(cartValue);
+};
 
 const getTotal = (payload) => {
   let total = 0;
@@ -692,27 +666,4 @@ const mapKeyValueToValues = (data) => {
     newObj.push({ msr_id: key, size: data[key] });
   }
   return newObj;
-};
-
-const designFiltering = (data) =>
-  data.reduce((a, c) => {
-    const obj = objToArray(c);
-    if (obj) a.push(obj);
-    return a;
-  }, []);
-
-const objToArray = (data) => {
-  let result;
-  const group = data?.group;
-  if (group) {
-    const cloneData = clonning(data);
-    const slicing = Object.keys(cloneData)?.slice?.(0, -1);
-    const items = [];
-    for (const item of slicing) {
-      const { isCheck, ...rest } = cloneData[item];
-      if (isCheck) items.push(rest);
-    }
-    if (items?.length) result = { group, items };
-  }
-  return result;
 };

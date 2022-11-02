@@ -41,13 +41,14 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
               color: errors?.up?.[i] ? 'red !important' : '',
               borderColor: 'red',
             }}
-            key={item?._id?.$oid}
+            key={item?._id}
+            // key={item?._id?.$oid }
             label={item?.design_name}
             {...a11yProps(i)}
           />
         ))}
       </Tabs>
-      {allDesigns?.map(({ design_name, designs }, i) => (
+      {allDesigns?.map(({ design_name, designs, _id: parent }, i) => (
         <TabPanel key={i} value={value} index={i}>
           <Typography>{design_name}</Typography>
           <Box
@@ -57,7 +58,14 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
               // gridTemplateColumns: 'repeat(auto-fit, minmax(700px, 1fr))',
             }}
           >
-            {designs?.map(({ item }, k) => {
+            {/* {console.log(parent)} */}
+            <input
+              type="hidden"
+              defaultValue={parent} //|| _id
+              // defaultValue={parent.$oid}
+              {...register(`up.${i}.group`)}
+            />
+            {designs?.map(({ item, _id }, k) => {
               let error = errors?.up?.[i]?.[k];
               return (
                 <Box
@@ -103,6 +111,13 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
                         />
                       }
                       label={item}
+                    />
+                    {/* {console.log(_id.$oid)} */}
+                    <input
+                      type="hidden"
+                      defaultValue={_id} //|| _id
+                      // defaultValue={_id.$oid}
+                      {...register(`up.${i}.${k}.id`)}
                     />
                   </Typography>
                   <TextField
