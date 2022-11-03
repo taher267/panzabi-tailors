@@ -117,7 +117,7 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
                       type="hidden"
                       defaultValue={_id} //|| _id
                       // defaultValue={_id.$oid}
-                      {...register(`up.${i}.${k}.id`)}
+                      {...register(`up.${i}.${k}.dsn_id`)}
                     />
                   </Typography>
                   <TextField

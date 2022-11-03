@@ -1,11 +1,11 @@
-import AdminLayout from '../../Layout/AdminLayout/index';
+import AdminLayout from '../../../Layout/AdminLayout/index';
 // import './product.css';
 import { Box, LinearProgress } from '@mui/material';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
-import OrderActions from './OrderActions';
+import OrderActions from '../OrderActions';
 import { useLocation, useNavigate } from 'react-router-dom';
-import useGetQurey from '../../hooks/gql/useGetQurey';
+import useGetQurey from '../../../hooks/gql/useGetQurey';
 
 const OrdersList = () => {
   const location = useLocation();
@@ -121,6 +121,7 @@ const OrdersList = () => {
       window.location.reload();
     }
   }, []);
+  // console.log(data);
   return (
     <AdminLayout>
       {loading && (

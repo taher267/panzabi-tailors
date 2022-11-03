@@ -3,6 +3,7 @@ import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
 import errorHandler from '../utils/errorHandler.js';
 import orderServices from '../services/orderServices.js';
+import userCustomerServices from '../services/userCustomerServices.js';
 // let Order;
 // ord.then((d) => (Order = d)).catch((e) => console.log(e));
 // orderServices.findOrder();
@@ -16,10 +17,16 @@ export default {
     try {
       // console.log(order.order_items[0]?.measurements);
       let user = _context?.req?.user?._id;
-      const newOrder = orderServices.newOrder({ ...order, user });
+      const newOrder = await orderServices.newOrder({ ...order, user });
       // const newOrder = new Order({ ...order, user });
-      // console.log(newOrder);
-      // await newOrder.save();
+      const customer = await userCustomerServices.findUser(
+        'id',
+        '632b164b19691c583c1d6c0f'
+      );
+      await userCustomerServices.customerOrderIDUpdate(
+        order.customer,
+        newOrder.id
+      );
       return newOrder;
     } catch (e) {
       errorHandler(e);
@@ -46,7 +53,7 @@ export default {
     try {
       if (!mg.isValidObjectId(id))
         throw new UserInputError(`Invalid delete id`);
-      return await Order.findById(id);
+      return await orderServices.findOrder('id', id);
     } catch (e) {
       errorHandler(e);
     }

@@ -33,7 +33,21 @@ const createUser = async ({ name, username, email, password, phone_no }) => {
     errorHandler(e);
   }
 };
+
+const customerOrderIDUpdate = async (customer, id) => {
+  try {
+    const updated = await User.findByIdAndUpdate(
+      customer,
+      { $push: { orders: id } },
+      { upsert: true }
+    );
+    return updated;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
 export default {
+  customerOrderIDUpdate,
   findUser,
   createUser,
 };

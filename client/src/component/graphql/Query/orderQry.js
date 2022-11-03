@@ -40,7 +40,7 @@ export const ALL_ORDERS = gql`
 `;
 
 export const SINGLE_ORDER = gql`
-  mutation getOrder($id: ID!) {
+  query getOrder($id: ID!) {
     getOrder(id: $id) {
       _id
       order_no

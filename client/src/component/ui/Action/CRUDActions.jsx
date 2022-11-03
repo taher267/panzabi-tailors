@@ -1,4 +1,4 @@
-import { Visibility, Save, Delete, Check } from '@mui/icons-material';
+import { Visibility, Save, Delete, Check, Add } from '@mui/icons-material';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import { useEffect } from 'react';
@@ -78,6 +78,9 @@ export default function CRUDActions({
           }}
         />
       )}
+      <Link to={`/dashboard/order/new/${id}`}>
+        <Add /> নতুন অর্ডারঃ
+      </Link>
       <Button>
         <Delete onClick={delFunc} />
       </Button>
