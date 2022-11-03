@@ -14,7 +14,7 @@ import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { OrderStatusField } from '../../arrayForms/orderFields';
 import { useForm, useWatch, useFieldArray } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import csses from './order.module.css';
 import commonCsses from '../../styles/common.module.css';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
@@ -30,6 +30,8 @@ import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
 import VerticalTabs from '../../FORM-PRACTICE/VerticalTabs';
+import CustomerInfoForOrder from './View/CustomerInfoForOrder';
+
 const InitFields = {
   type_one: [
     'long',
@@ -53,16 +55,25 @@ const InitFields = {
   ],
 };
 const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
+const initPrice = { quantity: 0, price: 0, total: 0 };
 const NewOrder = () => {
+  const { customerID } = useParams();
   const navigate = useNavigate();
   const [desings, setDesigns] = useState({
     // up: {}, down: {}
   });
   const [designUpState, setDesignUpState] = useState({});
+  const [customerLoading, setCustomerLoading] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState({});
   const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
   const [devideMeasurement, setDevideMeasurement] = useState({});
+  const [pricingDetail, setPricingDetail] = useState({
+    up: { ...initPrice },
+    down: { ...initPrice },
+    totalPrice: 0,
+  });
 
   const [type, setType] = useState({ type_one: true, type_two: false });
   const [gqlErrs, setGqlErrs] = useState({});
@@ -100,7 +111,7 @@ const NewOrder = () => {
     null,
     'allProducts'
   );
-
+  console.log(data);
   const { data: all_measurements } = useGetQurey(
     'ALL_MEASUREMENTS',
     // { key: 'status:ACTIVE,template:template-01' },
@@ -128,16 +139,14 @@ const NewOrder = () => {
       setDevideMeasurement(datas);
     }
   }, [all_measurements]);
-  // const Priceing = () =>
-  //   useWatch({
-  //     control,
-  //     name: 'pricing',
-  //   });
+
   useFieldArray({ control, name: 'up', name: 'dwon' });
+  //Measurement 0ne /up
   const up = useWatch({
     name: 'up',
     control,
   });
+  //Measurement 2 /down
   const down = useWatch({
     name: 'down',
     control,
@@ -147,6 +156,7 @@ const NewOrder = () => {
       setDesigns(designDevider(all_designs));
     }
   }, [all_designs]);
+
   // console.log('validErrs', desings);
 
   //////////////////////////////////////////////////////SUBMIT DATA
@@ -167,28 +177,33 @@ const NewOrder = () => {
       // sleeve,
       // coller,
       // sleeve_cuff,
+      pricing,
       ...measure1
     } = data;
 
+    // console.log(pricing);
     const advanced = parseInt(data?.advanced) || 0;
-    const quantity_up = parseInt(data?.quantity_up) || 0;
-    const price_up = parseInt(data?.price_up) || 0;
-    const quantity_down = parseInt(data?.quantity_down) || 0;
-    const price_down = parseInt(data?.price_down) || 0;
+    const quantity_up = parseInt(pricing?.[0]?.quantity) || 0;
+    // const quantity_up = parseInt(data?.quantity_up) || 0;
+    // const price_up = parseInt(data?.price_up) || 0;
+    // const quantity_down = parseInt(pricing?.[1]?.quantity) || 0;
+    // const quantity_down = parseInt(data?.quantity_down) || 0;
+    // const price_down = parseInt(data?.price_down) || 0;
     const transport_charge = parseInt(data?.transport_charge) || 0;
     const discount = parseInt(data?.discount) || 0;
     const type_one = InitFields.type_one;
-    const type_one_check = type?.type_one
-      ? fetchMeasurement(data, InitFields.type_one)
-      : {};
-    const type_two = InitFields.type_two;
-    const type_two_check = type?.type_two
-      ? fetchMeasurement(data, InitFields.type_two)
-      : {};
+    // const type_one_check = type?.type_one
+    //   ? fetchMeasurement(data, InitFields.type_one)
+    //   : {};
+    // const type_two = InitFields.type_two;
+    // const type_two_check = type?.type_two
+    //   ? fetchMeasurement(data, InitFields.type_two)
+    //   : {};
     const basic = {
       order_no, //
       previous_order,
       discount,
+      customer: customerID,
       // user,
       order_status, //
       // order_items,
@@ -205,11 +220,11 @@ const NewOrder = () => {
       up_item.products = orderProduct?.up || [];
       up_item.quantity = up.quantity;
       up_item.price = up.price;
-      up_item.designs = checkValuesAndErrors(designWithValue).values;
+      up_item.designs = designFiltering(data?.up);
+      // up_item.designs = checkValuesAndErrors(designWithValue).values;
       up_item.measurements = mapKeyValueToValues(
         clonning(data?.measurements_up)
       );
-
       up_item.order_date = order_date;
       order_items.push(up_item);
     }
@@ -220,19 +235,24 @@ const NewOrder = () => {
       down_item.products = orderProduct?.down || [];
       down_item.quantity = down.quantity;
       down_item.price = down.price;
-      down_item.measurements = mapKeyValueToValues(
-        clonning(data?.measurements_down)
-      );
+      down_item.measurements = designFiltering(data?.down);
+
+      // down_item.measurements = mapKeyValueToValues(
+      //   clonning(data?.measurements_down)
+      // );
       down_item.order_date = order_date;
       order_items.push(down_item);
     }
-    const totalPrice = total_up + total_down + transport_charge;
-    let due = totalPrice - advanced;
+    const { totalPrice, up: _up, down: _down } = pricingDetail;
+
+    const GrandTotal = pricingDetail.totalPrice + transport_charge;
+
+    let due = GrandTotal - advanced;
     const newOrderDates = {
       ...basic,
       due,
-      totalQty: quantity_up + quantity_down,
-      totalPrice,
+      totalQty: (parseInt(_up.quantity) || 0) + (parseInt(_down.quantity) || 0),
+      totalPrice: GrandTotal,
       advanced,
       order_items,
       transport_charge,
@@ -243,8 +263,9 @@ const NewOrder = () => {
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    // createOrder({ variables: { order: newOrderDates } });
-    console.log(designFiltering(data?.up));
+    createOrder({ variables: { order: newOrderDates } });
+    // console.log(newOrderDates);
+    // designFiltering(data?.up)
     // console.log(JSON.stringify(newOrderDates));
   };
 
@@ -295,6 +316,35 @@ const NewOrder = () => {
     ]);
   };
 
+  const priceing = useWatch({
+    control,
+    name: 'pricing',
+  });
+
+  // console.log(pricingDetail);
+  //Pricing Details
+  useEffect(() => {
+    if (priceing) {
+      const [up, down] = priceing;
+      let totalPrice = 0;
+      let upDetail = {};
+      let downDetail = {};
+      setPricingDetail({});
+      if (checkboxUp && up) {
+        const res = calculation(up);
+        upDetail = res;
+        totalPrice = res.total;
+      }
+
+      if (checkboxDown && down) {
+        const res = calculation(down);
+        downDetail = res;
+        totalPrice += res.total;
+      }
+      setPricingDetail({ up: upDetail, down: downDetail, totalPrice });
+    }
+  }, [priceing]);
+
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
     delete newErr[name];
@@ -327,6 +377,20 @@ const NewOrder = () => {
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
+      )}
+
+      {customerLoading && (
+        <Box sx={{ width: '100%' }}>
+          <LinearProgress />
+        </Box>
+      )}
+
+      {customerID ? (
+        <CustomerInfoForOrder
+          {...{ customerID, setCustomerLoading, setCustomerInfo }}
+        />
+      ) : (
+        ''
       )}
       {/* <SwipeableEdgeDrawer data={watch} /> */}
       {/* <OrderDate /> */}
@@ -464,6 +528,12 @@ const NewOrder = () => {
                     {...register(`pricing.${0}.quantity`, {
                       valueAsNumber: true,
                       required: true,
+                      validate: (v) => {
+                        const len = orderProduct?.up?.length || 0;
+                        if (v > -1 && len > v) {
+                          return `Product quantity minimum ${len}`; //2
+                        }
+                      },
                     })}
                   />
                   <TextField
@@ -475,7 +545,7 @@ const NewOrder = () => {
                       required: true,
                     })}
                   />
-                  {<Box>One</Box>}
+                  {<Box>{pricingDetail?.up?.total}</Box>}
                 </div>
               </>
             )}
@@ -546,6 +616,12 @@ const NewOrder = () => {
                     {...register(`pricing.${1}.quantity`, {
                       valueAsNumber: true,
                       required: true,
+                      validate: (v) => {
+                        const len = orderProduct?.down?.length || 0;
+                        if (v > -1 && len > v) {
+                          return `Product quantity minimum ${len}`; //2
+                        }
+                      },
                     })}
                   />
                   <TextField
@@ -557,7 +633,7 @@ const NewOrder = () => {
                       required: true,
                     })}
                   />
-                  {/* <Box>{PriceCard({ control, select: 'prices' })?.[1]}</Box> */}
+                  {<Box>{pricingDetail?.down?.total}</Box>}
                 </div>
               </>
             )}
@@ -689,7 +765,7 @@ const getTotal = (payload) => {
 const mapKeyValueToValues = (data) => {
   const newObj = [];
   for (const key of Object.keys(data)) {
-    newObj.push({ msr_id: key, size: data[key] });
+    if (data[key]?.trim()) newObj.push({ msr_id: key, size: data[key] });
   }
   return newObj;
 };
@@ -715,4 +791,15 @@ const objToArray = (data) => {
     if (items?.length) result = { group, items };
   }
   return result;
+};
+
+const calculation = (data) => {
+  const { price, quantity } = data;
+  let res = {};
+  const qty = quantity.toString() === 'NaN' ? 0 : quantity;
+  const pice = price.toString() === 'NaN' ? 0 : price;
+  res.price = pice;
+  res.quantity = qty;
+  res.total = qty * pice;
+  return res;
 };

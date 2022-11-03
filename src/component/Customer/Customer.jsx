@@ -71,6 +71,7 @@ const Customer = () => {
         headerName: 'Created Date',
         description: 'Customer Created',
         width: 160,
+        hide: true,
       },
       {
         field: 'updatedAt',
@@ -118,7 +119,7 @@ const Customer = () => {
         valueGetter: ({ row }) => {
           return row?.engage?.length;
         },
-        hide: false,
+        hide: true,
       },
       {
         field: 'Actions',
