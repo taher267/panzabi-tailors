@@ -1,3 +1,4 @@
+// customer:ID
 export const Order = `type Order {
     _id: ID!
     order_no: String!
@@ -64,6 +65,7 @@ export const InputOrderDesign = `input InputOrderDesign {
 
 export const InputOrder = `
 input InputOrder {
+  customer:ID!
   order_no: String
   previous_order: String
   totalQty: Int!

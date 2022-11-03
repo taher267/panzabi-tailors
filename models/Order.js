@@ -26,6 +26,11 @@ export default con()
             ref: 'User',
             required: true,
           },
+          customer: {
+            type: mg.Types.ObjectId,
+            ref: 'User',
+            required: true,
+          },
 
           order_status: {
             type: String,

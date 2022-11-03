@@ -29,6 +29,7 @@ export default {
     getDailyAccount: dailyAccountController.getDailyAccount,
     //Order
     allOrders: orderController.allOrders,
+    getOrder: orderController.getOrder,
   },
   ...others,
   Mutation: {

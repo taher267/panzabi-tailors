@@ -10,7 +10,7 @@ order.then((d) => (Order = d)).catch((e) => console.log(e));
  * @returns
  */
 const findOrder = (key, value, select = '') => {
-  if (key === '_id') return Order.findById(value).select(select);
+  if (key === 'id') return Order.findById(value).select(select);
   else if (key && value) return Order.findOne({ [key]: value }).select(select);
   return Order.find(key || {}).select(select);
 };
@@ -33,7 +33,8 @@ const newOrder = async (data) => {
   try {
     const newData = { ...data };
     const saved = new Order(newData);
-    return await saved.save();
+    return saved;
+    // await saved.save();
   } catch (e) {
     errorHandler(e);
   }
