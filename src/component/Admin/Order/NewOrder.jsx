@@ -31,6 +31,7 @@ import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
 import VerticalTabs from '../../FORM-PRACTICE/VerticalTabs';
 import CustomerInfoForOrder from './View/CustomerInfoForOrder';
+import PriceFields from './PriceFields';
 
 const InitFields = {
   type_one: [
@@ -111,7 +112,7 @@ const NewOrder = () => {
     null,
     'allProducts'
   );
-  console.log(data);
+  // console.log(data);
   const { data: all_measurements } = useGetQurey(
     'ALL_MEASUREMENTS',
     // { key: 'status:ACTIVE,template:template-01' },
@@ -141,23 +142,38 @@ const NewOrder = () => {
   }, [all_measurements]);
 
   useFieldArray({ control, name: 'up', name: 'dwon' });
-  //Measurement 0ne /up
+  //Design 0ne /up
   const up = useWatch({
     name: 'up',
     control,
   });
-  //Measurement 2 /down
+  // console.log(up);
+  //Design 2 /down
   const down = useWatch({
     name: 'down',
     control,
   });
+
+  //Measuement 0ne /up
+  const up_muesurement = useWatch({
+    name: 'measurements_up',
+    control,
+  });
+  useEffect(() => {
+    if (up_muesurement && !orderProduct?.up?.length) {
+      return setError('up_products', {
+        type: 'custom',
+        message: `Product is Mandatory!`,
+      });
+    }
+    clearErrors('up_products');
+  }, [up_muesurement, orderProduct]);
+
   useEffect(() => {
     if (!Object.keys(desings)?.length && all_designs?.length) {
       setDesigns(designDevider(all_designs));
     }
   }, [all_designs]);
-
-  // console.log('validErrs', desings);
 
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
@@ -263,7 +279,7 @@ const NewOrder = () => {
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    createOrder({ variables: { order: newOrderDates } });
+    // createOrder({ variables: { order: newOrderDates } });
     // console.log(newOrderDates);
     // designFiltering(data?.up)
     // console.log(JSON.stringify(newOrderDates));
@@ -470,10 +486,8 @@ const NewOrder = () => {
                 {all_products && (
                   <OrderProduct
                     selectedProducts={(_, v) => {
-                      // orderProductHandle(v, 'up')
                       setOrderProduct((p) => {
                         let up = v?.reduce((a, c) => [...a, c?._id], []);
-                        // console.log(up);
                         return {
                           ...p,
                           up,
@@ -485,6 +499,7 @@ const NewOrder = () => {
                     products={all_products?.filter(
                       (p) => p.category === 'type-1'
                     )}
+                    error={errors?.up_products}
                   />
                 )}
                 <Typography sx={{ margin: '10px 0' }}>পরিমাপ</Typography>
@@ -519,8 +534,19 @@ const NewOrder = () => {
                   />
                 )}
 
-                <Typography>PRICE:</Typography>
-                <div style={{ display: 'flex' }}>
+                <Typography variant="h5" sx={{ marginY: 2 }}>
+                  মূল্য
+                </Typography>
+                <PriceFields
+                  {...{
+                    arrKey: 0,
+                    errors,
+                    register,
+                    productLen: orderProduct?.up?.length || 0,
+                    total: pricingDetail?.up?.total,
+                  }}
+                />
+                {/* <div style={{ display: 'flex' }}>
                   <TextField
                     error={errors?.pricing?.[0]?.quantity ? true : false}
                     label="Quantity"
@@ -528,6 +554,7 @@ const NewOrder = () => {
                     {...register(`pricing.${0}.quantity`, {
                       valueAsNumber: true,
                       required: true,
+                      min: 0,
                       validate: (v) => {
                         const len = orderProduct?.up?.length || 0;
                         if (v > -1 && len > v) {
@@ -543,10 +570,11 @@ const NewOrder = () => {
                     {...register(`pricing.${0}.price`, {
                       valueAsNumber: true,
                       required: true,
+                      min: 0,
                     })}
                   />
                   {<Box>{pricingDetail?.up?.total}</Box>}
-                </div>
+                </div> */}
               </>
             )}
             <Typography
@@ -607,7 +635,7 @@ const NewOrder = () => {
                     {...{ designWithValue, setDesignWithValue, designsHandler }}
                   />
                 )}
-                <Typography>PRICE:</Typography>
+                <Typography>মূল্য</Typography>
                 <div style={{ display: 'flex' }}>
                   <TextField
                     error={errors?.pricing?.[1]?.quantity ? true : false}
@@ -616,6 +644,7 @@ const NewOrder = () => {
                     {...register(`pricing.${1}.quantity`, {
                       valueAsNumber: true,
                       required: true,
+                      min: 0,
                       validate: (v) => {
                         const len = orderProduct?.down?.length || 0;
                         if (v > -1 && len > v) {
@@ -631,6 +660,7 @@ const NewOrder = () => {
                     {...register(`pricing.${1}.price`, {
                       valueAsNumber: true,
                       required: true,
+                      min: 0,
                     })}
                   />
                   {<Box>{pricingDetail?.down?.total}</Box>}

@@ -1,7 +1,11 @@
 import { TextareaAutosize, TextField } from '@mui/material';
+import moment from 'moment';
 import React from 'react';
 import csses from '../../../component/styles/common.module.css';
 import stringToObject from '../../utils/stringToObject';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DATE } from '../../../utils';
+
 const Field = (params) => {
   const {
     register,
@@ -35,16 +39,35 @@ const Field = (params) => {
       errors?.[name]?.message ||
       errors[objErrs[0]]?.[objErrs[1]]?.message;
   }
-  switch (params?.type || 'text') {
+  const type = params?.type;
+
+  switch (type || 'text') {
     case 'text':
     case 'number':
     case 'date':
       const val = predefined?.[name]?.length ? predefined?.[name] : '';
       const value = Array.isArray(val) ? val.join('|') : val;
+      const validate = stringToObject(validation);
+      // console.log(validate?.max);
+      React.useEffect(() => {
+        if (type === 'date' && validate.max) {
+          document
+            .querySelector(`[name='${name}']`)
+            ?.setAttribute('max', moment().format(DATE));
+        }
+      }, [validate.max, type]);
+
+      React.useEffect(() => {
+        if (type === 'date' && validate.min) {
+          document
+            .querySelector(`[name='${name}']`)
+            ?.setAttribute('min', moment().format(DATE));
+        }
+      }, [validate.min, type]);
       return (
         <>
           <TextField
-            {...register(name, { ...stringToObject(validation) })}
+            {...register(name, { ...validate })}
             defaultValue={value}
             name={name}
             onFocus={({ target: { name } }) =>
@@ -134,3 +157,21 @@ const Field = (params) => {
 };
 
 export default Field;
+
+// case 'date':
+//       return (
+//         <LocalizationProvider dateAdapter={moment}>
+//           <DatePicker
+//             label="Basic example"
+//             value={new Date('2022-11-12')}
+//             minDate={new Date('2022-11-12')}
+//             onChange={(newValue) => {
+//               // setValue(newValue);
+//             }}
+//             renderInput={(params) => {
+//               console.log(params);
+//               // <TextField {...params} />
+//             }}
+//           />
+//         </LocalizationProvider>
+//       );
