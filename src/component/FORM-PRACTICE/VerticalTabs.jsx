@@ -10,7 +10,13 @@ import {
   FormControlLabel,
 } from '@mui/material';
 
-export default function VerticalTabs({ allDesigns, register, errors, up }) {
+export default function VerticalTabs({
+  allDesigns,
+  register,
+  errors,
+  watching,
+  design_type = 'up',
+}) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -38,7 +44,7 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
         {allDesigns?.map((item, i) => (
           <Tab
             sx={{
-              color: errors?.up?.[i] ? 'red !important' : '',
+              color: errors?.[design_type]?.[i] ? 'red !important' : '',
               borderColor: 'red',
             }}
             key={item?._id}
@@ -63,10 +69,10 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
               type="hidden"
               defaultValue={parent} //|| _id
               // defaultValue={parent.$oid}
-              {...register(`up.${i}.group`)}
+              {...register(`${[design_type]}.${i}.group`)}
             />
             {designs?.map(({ item, _id }, k) => {
-              let error = errors?.up?.[i]?.[k];
+              let error = errors?.[design_type]?.[i]?.[k];
               return (
                 <Box
                   key={k}
@@ -104,9 +110,11 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
                       }}
                       control={
                         <Checkbox
-                          {...register(`up.${i}.${k}.isCheck`)}
+                          {...register(`${[design_type]}.${i}.${k}.isCheck`)}
                           sx={{
-                            color: errors?.up?.[i]?.[k] ? '#dd1334' : '',
+                            color: errors?.[design_type]?.[i]?.[k]
+                              ? '#dd1334'
+                              : '',
                           }}
                         />
                       }
@@ -117,15 +125,15 @@ export default function VerticalTabs({ allDesigns, register, errors, up }) {
                       type="hidden"
                       defaultValue={_id} //|| _id
                       // defaultValue={_id.$oid}
-                      {...register(`up.${i}.${k}.dsn_id`)}
+                      {...register(`${[design_type]}.${i}.${k}.dsn_id`)}
                     />
                   </Typography>
                   <TextField
-                    error={errors?.up?.[i]?.[k] ? true : false}
+                    error={errors?.[design_type]?.[i]?.[k] ? true : false}
                     fullWidth
-                    {...register(`up.${i}.${k}.desc`, {
+                    {...register(`${[design_type]}.${i}.${k}.desc`, {
                       validate: (val) => {
-                        if (val?.trim() && !up?.[i]?.[k]?.isCheck)
+                        if (val?.trim() && !watching?.[i]?.[k]?.isCheck)
                           return `✅ Please check it!`;
                       },
                     })}

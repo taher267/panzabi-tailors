@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Autocomplete, TextField } from '@mui/material';
-export default function Products({ products, selectedProducts, error }) {
+
+export default function OrderProduct({ products, selectedProducts, error }) {
   // const options = [{ name: 'The Shawshank Redemption', y: 1994 }];
   // console.log(error);
   return (
