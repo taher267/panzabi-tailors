@@ -7,7 +7,9 @@ export const orderBasicFields = [
     type: 'date',
     name: 'order_date',
     defaultValue: moment().format(DATE),
-    validation: `∂required→Order date is mandatory!`,
+    validation: `required→Order date is mandatory!∂max→${moment().format(
+      DATE
+    )}←Order date max today`, //∂
   },
   {
     label: 'Order number',
@@ -25,7 +27,9 @@ export const orderBasicFields = [
     type: 'date',
     name: 'delivery_date',
     defaultValue: moment().add(10, 'd').format(DATE),
-    validation: `required→Delivery date is mandatory!`,
+    validation: `required→Delivery date is mandatory!∂min→${moment().format(
+      DATE
+    )}←Order date max today`,
   },
 ];
 export const orderPricingFields = [

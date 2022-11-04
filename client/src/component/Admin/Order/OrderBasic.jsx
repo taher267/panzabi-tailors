@@ -16,18 +16,18 @@ const OrderBasic = (params) => {
   // } = useForm();
 
   useEffect(() => {
-    document
-      .querySelector("[name='order_date']")
-      ?.setAttribute('max', moment().format(DATE));
-    if (urgent) {
-      document
-        .querySelector("[name='delivery_date']")
-        ?.setAttribute('min', moment().format(DATE));
-    } else {
-      document
-        .querySelector("[name='delivery_date']")
-        ?.setAttribute('min', moment().add(10, 'd').format(DATE));
-    }
+    // document
+    //   .querySelector("[name='order_date']")
+    //   ?.setAttribute('max', moment().format(DATE));
+    // if (urgent) {
+    //   document
+    //     .querySelector("[name='delivery_date']")
+    //     ?.setAttribute('min', moment().format(DATE));
+    // } else {
+    //   document
+    //     .querySelector("[name='delivery_date']")
+    //     ?.setAttribute('min', moment().add(10, 'd').format(DATE));
+    // }
   });
   return (
     <Fragment>
