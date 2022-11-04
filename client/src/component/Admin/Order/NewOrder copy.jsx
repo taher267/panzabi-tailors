@@ -18,11 +18,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import csses from './order.module.css';
 import commonCsses from '../../styles/common.module.css';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
-import OrderMeasuementFields from './OrderMeasuementFields';
+import OrderMeasuementField from './OrderMeasuementFields';
 import OrderBasic from './OrderBasic';
 import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
 import useGetQurey from './../../hooks/gql/useGetQurey';
 import DesignView from './DesignView2';
+import OrderPricing from './OrderPriceing';
+import OrderDate from './OrderDate';
 import OrderProduct from './OrderProduct';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
@@ -30,7 +32,6 @@ import designDevider from '../../utils/designDevider';
 import VerticalTabs from '../../FORM-PRACTICE/VerticalTabs';
 import CustomerInfoForOrder from './View/CustomerInfoForOrder';
 import PriceFields from './PriceFields';
-import OrderItemCard from './OrderItemCard';
 
 const InitFields = {
   type_one: [
@@ -480,31 +481,101 @@ const NewOrder = () => {
               </span>
             </Typography>
             {checkboxUp && (
-              <OrderItemCard
-                {...{
-                  //Common
-                  all_products,
-                  errors,
-                  register,
-                  gqlErrs,
-                  setGqlErrs,
-                  onFocus,
-                  removeGqlErrors,
-                  //product
-                  setOrderProduct,
-                  productType: 'type-1',
-                  fieldName: 'up_products',
-                  //Measurement
-                  measurementPrefix: '_up',
-                  measurementFields: devideMeasurement?.up || [],
-                  desings: desings?.up || [],
-                  type: 'up',
-                  watching: up,
-                  //Pricing
-                  productLen: orderProduct?.up?.length || 0,
-                  total: pricingDetail?.up?.total || 0,
-                }}
-              />
+              <>
+                <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
+                {all_products && (
+                  <OrderProduct
+                    selectedProducts={(_, v) => {
+                      setOrderProduct((p) => {
+                        let up = v?.reduce((a, c) => [...a, c?._id], []);
+                        return {
+                          ...p,
+                          up,
+                        };
+
+                        // let down;
+                      });
+                    }}
+                    products={all_products?.filter(
+                      (p) => p.category === 'type-1'
+                    )}
+                    error={errors?.up_products}
+                  />
+                )}
+                <Typography sx={{ margin: '10px 0' }}>পরিমাপ</Typography>
+                {devideMeasurement?.up?.length && (
+                  <OrderMeasuementField
+                    {...{
+                      onFocus,
+                      gqlErrs,
+                      register,
+                      errors,
+                      setGqlErrs,
+                      prefix: '_up',
+                      removeGqlErrors,
+                      fields: devideMeasurement.up,
+                    }}
+                  />
+                )}
+                <Typography
+                  sx={{
+                    display: 'block',
+                    marginY: 3,
+                    borderBottom: '1px solid rgba(245, 245, 245, .4)',
+                  }}
+                >
+                  ডিজাইন
+                </Typography>
+
+                {desings?.up?.length && (
+                  <VerticalTabs
+                    allDesigns={desings?.up}
+                    {...{ register, errors, up }}
+                  />
+                )}
+
+                <Typography variant="h5" sx={{ marginY: 2 }}>
+                  মূল্য
+                </Typography>
+                <PriceFields
+                  {...{
+                    arrKey: 0,
+                    errors,
+                    register,
+                    productLen: orderProduct?.up?.length || 0,
+                    total: pricingDetail?.up?.total,
+                  }}
+                />
+                {/* <div style={{ display: 'flex' }}>
+                  <TextField
+                    error={errors?.pricing?.[0]?.quantity ? true : false}
+                    label="Quantity"
+                    type="number"
+                    {...register(`pricing.${0}.quantity`, {
+                      valueAsNumber: true,
+                      required: true,
+                      min: 0,
+                      validate: (v) => {
+                        const len = orderProduct?.up?.length || 0;
+                        if (v > -1 && len > v) {
+                          return `Product quantity minimum ${len}`; //2
+                        }
+                      },
+                    })}
+                  />
+                  <TextField
+                    error={errors?.pricing?.[0]?.price ? true : false}
+                    label="Quantity"
+                    type="number"
+                    {...register(`pricing.${0}.price`, {
+                      valueAsNumber: true,
+                      required: true,
+                      min: 0,
+                    })}
+                  />
+                  {<Box>{pricingDetail?.up?.total}</Box>}
+                </div> */}
+              </>
             )}
             <Typography
               variant="h5"
@@ -526,7 +597,7 @@ const NewOrder = () => {
             {checkboxDown && (
               <>
                 {devideMeasurement?.down?.length && (
-                  <OrderMeasuementFields
+                  <OrderMeasuementField
                     {...{
                       onFocus,
                       gqlErrs,

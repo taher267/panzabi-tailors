@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 
 const PriceFields = ({ errors, register, arrKey, productLen, total }) => {
   return (
@@ -15,8 +15,6 @@ const PriceFields = ({ errors, register, arrKey, productLen, total }) => {
           required: `Quantiry Mandatory`,
           min: 0,
           validate: (v) => {
-            // const len = productLen?.length || 0;
-            // const len = orderProduct?.up?.length || 0;
             if (v > -1 && productLen > v) {
               return `Product quantity minimum ${productLen}`; //2
             }
