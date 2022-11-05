@@ -23,13 +23,10 @@ import OrderBasic from './OrderBasic';
 import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
 import useGetQurey from './../../hooks/gql/useGetQurey';
 import DesignView from './DesignView2';
-import OrderProduct from './OrderProduct';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
-import VerticalTabs from '../../FORM-PRACTICE/VerticalTabs';
 import CustomerInfoForOrder from './View/CustomerInfoForOrder';
-import PriceFields from './PriceFields';
 import OrderItemCard from './OrderItemCard';
 
 const InitFields = {
@@ -140,7 +137,7 @@ const NewOrder = () => {
     }
   }, [all_measurements]);
 
-  useFieldArray({ control, name: 'up', name: 'dwon' });
+  useFieldArray({ control, name: 'up', name: 'down' });
   //Design 0ne /up
   const up = useWatch({
     name: 'up',
@@ -176,6 +173,8 @@ const NewOrder = () => {
 
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
+    console.log(data);
+    return true;
     const {
       order_status,
       order_date,
@@ -344,7 +343,7 @@ const NewOrder = () => {
       let totalPrice = 0;
       let upDetail = {};
       let downDetail = {};
-      setPricingDetail({});
+      // setPricingDetail({});
       if (checkboxUp && up) {
         const res = calculation(up);
         upDetail = res;
@@ -386,6 +385,7 @@ const NewOrder = () => {
       },
     }));
   };
+  console.log(errors);
   return (
     <AdminLayout>
       {processing && (
@@ -425,38 +425,33 @@ const NewOrder = () => {
                 }}
               />
             </div>
-            <fieldset
-              style={{ border: 0 }}
-              className={
+
+            <select
+              {...register('order_status', { required: true })}
+              defaultValue=""
+              className={`${csses.orderStatus} ${
                 gqlErrs?.order_status
                   ? commonCsses?.error
                   : errors?.order_status
                   ? commonCsses?.error
                   : ''
-              }
+              }`}
             >
-              <legend>{OrderStatusField?.label}</legend>
-              <select
-                {...register('order_status', { required: true })}
-                defaultValue={1}
-                className={csses.orderStatus}
-              >
-                <option value="">Select Status</option>
-                {OrderStatusField?.options?.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <p className={commonCsses?.errMsg}>
+              <option value="">Select Status</option>
+              {OrderStatusField?.options?.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            {/* <p className={commonCsses?.errMsg}>
                 {gqlErrs?.order_status
                   ? gqlErrs?.order_status
                   : errors?.order_status
                   ? errors?.order_status?.message ||
                     OrderStatusField?.defaultError
                   : ''}
-              </p>
-            </fieldset>
+              </p> */}
             <Typography variant="h5">
               <span>
                 {!checkboxUp && !checkboxDown ? (
@@ -503,97 +498,61 @@ const NewOrder = () => {
                   //Pricing
                   productLen: orderProduct?.up?.length || 0,
                   total: pricingDetail?.up?.total || 0,
+                  pricingKey: 0,
                 }}
               />
             )}
-            <Typography
-              variant="h5"
-              color={!checkboxUp && !checkboxDown ? 'error' : ''}
-            >
-              Measurement 02
-              <span
-                style={{ fontSize: 14, position: 'absolute', width: '100%' }}
-              >
-                {!checkboxUp && !checkboxDown ? NOT_ANY_MEASUREMENT_CHECK : ''}
-              </span>
-              <span style={{ position: 'relative' }}>
-                <Checkbox
-                  className={errors?.checkboxDown ? csses.CheckBox : ''}
-                  {...register('checkboxDown')}
+
+            <Typography variant="h5">
+              <span>
+                {!checkboxUp && !checkboxDown ? (
+                  <FormHelperText sx={{ color: 'red' }}>
+                    {NOT_ANY_MEASUREMENT_CHECK}
+                  </FormHelperText>
+                ) : (
+                  ''
+                )}
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      onClick={(e) => !e.target?.checked && downUnregiser()}
+                      className={errors?.checkboxDown ? csses.CheckBox : ''}
+                      {...register('checkboxDown')}
+                    />
+                  }
+                  label="Measuremnt 02"
                 />
               </span>
             </Typography>
             {checkboxDown && (
               <>
-                {devideMeasurement?.down?.length && (
-                  <OrderMeasuementFields
-                    {...{
-                      onFocus,
-                      gqlErrs,
-                      register,
-                      errors,
-                      setGqlErrs,
-                      prefix: '_down',
-                      removeGqlErrors,
-                      fields: devideMeasurement.down,
-                    }}
-                  />
-                )}
-                {all_products && (
-                  <OrderProduct
-                    // selectedProducts={(_, v) => orderProductHandle(v, 'down')}
-                    selectedProducts={(_, v) => {
-                      setOrderProduct((p) => {
-                        return {
-                          ...p,
-                          down: v?.reduce((a, c) => [...a, c?._id], []),
-                        };
-
-                        // let down;
-                      });
-                    }}
-                    products={all_products?.filter(
-                      (p) => p.category === 'type-2'
-                    )}
-                  />
-                )}
-
-                {Object.keys(designDownState)?.length && (
-                  <DesignView
-                    alldesigns={designDownState}
-                    {...{ designWithValue, setDesignWithValue, designsHandler }}
-                  />
-                )}
-                <Typography>মূল্য</Typography>
-                <div style={{ display: 'flex' }}>
-                  <TextField
-                    error={errors?.pricing?.[1]?.quantity ? true : false}
-                    label="Quantity"
-                    type="number"
-                    {...register(`pricing.${1}.quantity`, {
-                      valueAsNumber: true,
-                      required: true,
-                      min: 0,
-                      validate: (v) => {
-                        const len = orderProduct?.down?.length || 0;
-                        if (v > -1 && len > v) {
-                          return `Product quantity minimum ${len}`; //2
-                        }
-                      },
-                    })}
-                  />
-                  <TextField
-                    error={errors?.pricing?.[1]?.price ? true : false}
-                    label="Quantity"
-                    type="number"
-                    {...register(`pricing.${1}.price`, {
-                      valueAsNumber: true,
-                      required: true,
-                      min: 0,
-                    })}
-                  />
-                  {<Box>{pricingDetail?.down?.total}</Box>}
-                </div>
+                <OrderItemCard
+                  {...{
+                    //Common
+                    all_products,
+                    errors,
+                    register,
+                    gqlErrs,
+                    setGqlErrs,
+                    onFocus,
+                    removeGqlErrors,
+                    //product
+                    setOrderProduct,
+                    productType: 'type-2',
+                    fieldName: 'down_products',
+                    //Measurement
+                    measurementPrefix: '_down',
+                    measurementFields: devideMeasurement?.down || [],
+                    desings: desings?.down || [],
+                    type: 'down',
+                    watching: down,
+                    //Pricing
+                    productLen: orderProduct?.down?.length || 0,
+                    total: pricingDetail?.down?.total || 0,
+                    pricingKey: 1,
+                  }}
+                />
               </>
             )}
 
@@ -693,33 +652,6 @@ export function fetchMeasurement(data, kyes = []) {
   }
   return filtered;
 }
-
-// const PriceCard = ({ control, select }) => {
-//   const cartValue = useWatch({
-//     control,
-//     name: 'pricing',
-//   });
-//   if (select) return getTotal(cartValue)?.[select];
-//   return getTotal(cartValue);
-// };
-
-const getTotal = (payload) => {
-  let total = 0;
-  let prices = [];
-  for (const item of payload || []) {
-    const { quantity, price } = item;
-    const sum = (quantity || 0) * (price || 0);
-    prices.push(sum);
-    total += sum;
-  }
-  const newPrices = {};
-  for (const iter in prices) {
-    // const {}
-    newPrices[iter] = prices[iter];
-  }
-  // console.log();
-  return { total, prices: newPrices };
-};
 
 const mapKeyValueToValues = (data) => {
   const newObj = [];

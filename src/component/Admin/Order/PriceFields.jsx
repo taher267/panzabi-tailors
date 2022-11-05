@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 
-const PriceFields = ({ errors, register, arrKey, productLen, total }) => {
+const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
   return (
     <div
       style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 5 }}
@@ -10,7 +10,7 @@ const PriceFields = ({ errors, register, arrKey, productLen, total }) => {
       <TextField
         label="Quantity"
         type="number"
-        {...register(`pricing.${arrKey}.quantity`, {
+        {...register(`pricing.${pricingKey}.quantity`, {
           valueAsNumber: true,
           required: `Quantiry Mandatory`,
           min: 0,
@@ -20,19 +20,19 @@ const PriceFields = ({ errors, register, arrKey, productLen, total }) => {
             }
           },
         })}
-        error={errors?.pricing?.[arrKey]?.quantity ? true : false}
-        helperText={errors?.pricing?.[arrKey]?.quantity?.message || ''}
+        error={errors?.pricing?.[pricingKey]?.quantity ? true : false}
+        helperText={errors?.pricing?.[pricingKey]?.quantity?.message || ''}
       />
       <TextField
         label="Price"
         type="number"
-        {...register(`pricing.${arrKey}.price`, {
+        {...register(`pricing.${pricingKey}.price`, {
           valueAsNumber: true,
           required: `Price Mandatory`,
           min: 0,
         })}
-        error={errors?.pricing?.[arrKey]?.price ? true : false}
-        helperText={errors?.pricing?.[arrKey]?.price?.message || ''}
+        error={errors?.pricing?.[pricingKey]?.price ? true : false}
+        helperText={errors?.pricing?.[pricingKey]?.price?.message || ''}
       />
       <TextField label="Total" value={total} inputProps={{ readOnly: true }} />
     </div>
@@ -41,7 +41,7 @@ const PriceFields = ({ errors, register, arrKey, productLen, total }) => {
 PriceFields.prototype = {
   errors: PropTypes.object.isRequired,
   register: PropTypes.func.isRequired,
-  arrKey: PropTypes.string.isRequired,
+  pricingKey: PropTypes.string.isRequired,
   productLen: PropTypes.array.isRequired,
 };
 export default PriceFields;

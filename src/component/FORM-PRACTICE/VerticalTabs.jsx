@@ -133,8 +133,12 @@ export default function VerticalTabs({
                     fullWidth
                     {...register(`${[design_type]}.${i}.${k}.desc`, {
                       validate: (val) => {
-                        if (val?.trim() && !watching?.[i]?.[k]?.isCheck)
-                          return `✅ Please check it!`;
+                        console.log(
+                          '!watching?.[i]?.[k]?.isCheck',
+                          watching?.[i]?.[k]
+                        );
+                        // if (val?.trim() && !watching?.[i]?.[k]?.isCheck)
+                        //   return `✅ Please check it!`;
                       },
                     })}
                   />

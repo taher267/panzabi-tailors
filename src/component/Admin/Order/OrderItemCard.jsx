@@ -28,6 +28,7 @@ const OrderItemCard = ({
   //pricing
   total,
   productLen,
+  pricingKey,
 }) => {
   return (
     <>
@@ -99,7 +100,7 @@ const OrderItemCard = ({
       </Typography>
       <PriceFields
         {...{
-          arrKey: 0,
+          pricingKey,
           errors,
           register,
           productLen,

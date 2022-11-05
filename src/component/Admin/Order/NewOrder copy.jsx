@@ -141,7 +141,7 @@ const NewOrder = () => {
     }
   }, [all_measurements]);
 
-  useFieldArray({ control, name: 'up', name: 'dwon' });
+  useFieldArray({ control, name: 'up', name: 'down' });
   //Design 0ne /up
   const up = useWatch({
     name: 'up',
