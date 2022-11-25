@@ -18,11 +18,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import csses from './order.module.css';
 import commonCsses from '../../styles/common.module.css';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
-import OrderMeasuementFields from './OrderMeasuementFields';
+// import OrderMeasuementFields from './OrderMeasuementFields';
 import OrderBasic from './OrderBasic';
-import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
+// import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
 import useGetQurey from './../../hooks/gql/useGetQurey';
-import DesignView from './DesignView2';
+// import DesignView from './DesignView2';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
@@ -445,13 +445,13 @@ const NewOrder = () => {
               ))}
             </select>
             {/* <p className={commonCsses?.errMsg}>
-                {gqlErrs?.order_status
-                  ? gqlErrs?.order_status
-                  : errors?.order_status
-                  ? errors?.order_status?.message ||
-                    OrderStatusField?.defaultError
-                  : ''}
-              </p> */}
+              {gqlErrs?.order_status
+                ? gqlErrs?.order_status
+                : errors?.order_status
+                ? errors?.order_status?.message ||
+                  OrderStatusField?.defaultError
+                : ''}
+            </p> */}
             <Typography variant="h5">
               <span>
                 {!checkboxUp && !checkboxDown ? (

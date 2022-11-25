@@ -112,7 +112,7 @@ export default function VerticalTabs({
                         <Checkbox
                           {...register(`${[design_type]}.${i}.${k}.isCheck`)}
                           sx={{
-                            color: errors?.[design_type]?.[i]?.[k]
+                            color: errors?.[design_type]?.[i]?.[k]?.isCheck
                               ? '#dd1334'
                               : '',
                           }}
@@ -133,12 +133,8 @@ export default function VerticalTabs({
                     fullWidth
                     {...register(`${[design_type]}.${i}.${k}.desc`, {
                       validate: (val) => {
-                        console.log(
-                          '!watching?.[i]?.[k]?.isCheck',
-                          watching?.[i]?.[k]
-                        );
-                        // if (val?.trim() && !watching?.[i]?.[k]?.isCheck)
-                        //   return `✅ Please check it!`;
+                        if (val?.trim() && !watching?.[i]?.[k]?.isCheck)
+                          return `✅ Please check it!`;
                       },
                     })}
                   />
