@@ -7,9 +7,9 @@ const Sidebar = () => {
         <Link to="/dashboard/order">অর্ডার সমুহঃ</Link>
       </li>
 
-      <li>
+      {/* <li>
         <Link to="/dashboard/order/new">নতুন অর্ডারঃ</Link>
-      </li>
+      </li> */}
       <li>
         <Link to="/dashboard/design">Design</Link>
       </li>

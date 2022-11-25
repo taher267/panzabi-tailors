@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
 export const NEW_ORDER = gql`
-  mutation createOrder($order: InputOrder) {
+  mutation createOrder($order: InputOrder!) {
     createOrder(
       order: $order # order: { #   order_no: $order_no #   quantity: $quantity
     ) {
-      _id
-      # order_no
+      # _id
+      order_no
       # totalQty
       # totalPrice
       # discount

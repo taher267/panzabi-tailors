@@ -28,6 +28,7 @@ import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
 import CustomerInfoForOrder from './View/CustomerInfoForOrder';
 import OrderItemCard from './OrderItemCard';
+import PriceSummery from './PriceSummery';
 
 const InitFields = {
   type_one: [
@@ -62,6 +63,7 @@ const NewOrder = () => {
   const [designUpState, setDesignUpState] = useState({});
   const [customerLoading, setCustomerLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({});
+  const [advanced, setAdvanced] = useState(0);
   const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
@@ -115,7 +117,6 @@ const NewOrder = () => {
     { key: 'status', value: 'ACTIVE' },
     'allMeasurements'
   );
-  // console.log(data);
   useEffect(() => {
     if (
       all_measurements &&
@@ -137,7 +138,7 @@ const NewOrder = () => {
     }
   }, [all_measurements]);
 
-  useFieldArray({ control, name: 'up', name: 'down' });
+  useFieldArray({ control, name: 'down' });
   //Design 0ne /up
   const up = useWatch({
     name: 'up',
@@ -180,23 +181,13 @@ const NewOrder = () => {
       order_date,
       order_no,
       previous_order,
-      delivery_date, //
-      // discount,
-      // long,
-      // body,
-      // body_loose,
-      // belly,
-      // belly_loose,
-      // sholder,
-      // sleeve,
-      // coller,
-      // sleeve_cuff,
+      delivery_date,
       pricing,
       ...measure1
     } = data;
 
     // console.log(pricing);
-    const advanced = parseInt(data?.advanced) || 0;
+
     const quantity_up = parseInt(pricing?.[0]?.quantity) || 0;
     // const quantity_up = parseInt(data?.quantity_up) || 0;
     // const price_up = parseInt(data?.price_up) || 0;
@@ -223,9 +214,11 @@ const NewOrder = () => {
       // order_items,
       delivery_date, //
     };
+
     const order_items = [];
     let total_up = 0;
     let total_down = 0;
+    if (!data?.pricing) return;
     const [up, down] = data?.pricing;
     // console.log(type);
     if (data?.checkboxUp) {
@@ -242,14 +235,16 @@ const NewOrder = () => {
       up_item.order_date = order_date;
       order_items.push(up_item);
     }
+
     // Object.keys(type_two_check).length
     if (data?.checkboxDown) {
       let down_item = {};
       total_down = down.price * down.quantity;
       down_item.products = orderProduct?.down || [];
-      down_item.quantity = down.quantity;
-      down_item.price = down.price;
-      down_item.measurements = designFiltering(data?.down);
+      down_item.quantity = down?.quantity || 0;
+      down_item.price = down?.price || 0;
+      // down_item.designs = designFiltering(data?.up);
+      down_item.measurements = mapKeyValueToValues(data?.measurements_down);
 
       // down_item.measurements = mapKeyValueToValues(
       //   clonning(data?.measurements_down)
@@ -257,9 +252,10 @@ const NewOrder = () => {
       down_item.order_date = order_date;
       order_items.push(down_item);
     }
+
     const { totalPrice, up: _up, down: _down } = pricingDetail;
 
-    const GrandTotal = pricingDetail.totalPrice + transport_charge;
+    const GrandTotal = pricingDetail?.totalPrice + transport_charge;
 
     let due = GrandTotal - advanced;
     const newOrderDates = {
@@ -277,8 +273,8 @@ const NewOrder = () => {
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    // createOrder({ variables: { order: newOrderDates } });
-    // console.log(newOrderDates);
+    console.log(newOrderDates);
+    createOrder({ variables: { order: newOrderDates } });
     // designFiltering(data?.up)
     // console.log(JSON.stringify(newOrderDates));
   };
@@ -323,7 +319,7 @@ const NewOrder = () => {
 
   const downUnregiser = () => {
     unregister([
-      `up`,
+      `down`,
       `pricing.1.quantity`,
       `pricing.1.price`,
       'measurements_down',
@@ -364,10 +360,11 @@ const NewOrder = () => {
     delete newErr[name];
     setGqlErrs(newErr);
   };
-  // if there is no open two measurement between one  set Error
+  // const order_number = watch('order_no');
+  // const prev_order_number = watch('previous_order');
   // useEffect(() => {
-
-  // }, [checkboxUp, checkboxDown]);
+  //   if (order_number){};
+  // }, [order_number, prev_order_number]);
   const designsHandler = (
     { target: { name, value, checked } },
     items_id,
@@ -416,6 +413,7 @@ const NewOrder = () => {
             <div className={csses.orderRequired}>
               <OrderBasic
                 {...{
+                  watch,
                   errors,
                   register,
                   gqlErrs,
@@ -425,10 +423,8 @@ const NewOrder = () => {
                 }}
               />
             </div>
-
             <select
               {...register('order_status', { required: true })}
-              defaultValue=""
               className={`${csses.orderStatus} ${
                 gqlErrs?.order_status
                   ? commonCsses?.error
@@ -438,7 +434,7 @@ const NewOrder = () => {
               }`}
             >
               <option value="">Select Status</option>
-              {OrderStatusField?.options?.map((option) => (
+              {OrderStatusField?.options?.map?.((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
@@ -555,7 +551,7 @@ const NewOrder = () => {
                 />
               </>
             )}
-
+            <PriceSummery {...{ pricingDetail, advanced, setAdvanced }} />
             <Button
               disabled={
                 processing ||

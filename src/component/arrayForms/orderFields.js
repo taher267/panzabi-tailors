@@ -18,7 +18,7 @@ export const orderBasicFields = [
     placeholder: 'Enter order number...',
   },
   {
-    label: 'Previouse Number',
+    label: 'Previous Order Number',
     name: 'previous_order',
     placeholder: 'Enter previous number...',
   },
@@ -162,7 +162,7 @@ export const OrderStatusField = {
   label: 'Order Status',
   name: 'order_status',
   type: 'number',
-  options: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
+  options: ['ALTER', 'PROCESSING', 'NEW'],
   validation: { required: true },
   defaultError: `Order status is mandatory`,
 };
