@@ -1,20 +1,21 @@
-// customer:ID
 export const Order = `type Order {
-    _id: ID!
-    order_no: String!
-    totalQty: Int!
-    totalPrice: Float!
-    discount: Float
-    advanced: Float
-    due: Float
-    transport_charge: Float
-    order_status: String
-    user: String!
-    delivery_date: Date!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    order_items: [OrderItemsOfOrder!]!
+  customer:ID
+  _id: ID!
+  order_no: String!
+  totalQty: Int!
+  totalPrice: Float!
+  discount: Float
+  advanced: Float
+  due: Float
+  transport_charge: Float
+  order_status: String
+  user: String!
+  delivery_date: Date!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  order_items: [OrderItemsOfOrder!]!
   }`;
+
 export const OrderDesignItems = `type OrderDesignItems {
   dsn_id: String!
   desc: String
@@ -50,23 +51,23 @@ input InputOrderItemsOfOrder {
   quantity: Int!
   price: Float!
   measurements: [InputOrderMeasurement!]!
-  designs: [InputOrderDesign!]!
   sample: InpIcon
   order_date:Date!
+  designs: [InputOrderDesign!]!
 }`;
 export const InputOrderDesignItems = `input InputOrderDesignItems {
   dsn_id: String!
   desc: String
 }`;
 export const InputOrderDesign = `input InputOrderDesign {
-  group: ID!
+  group: String!
   items: [InputOrderDesignItems!]!
 }`;
 
 export const InputOrder = `
 input InputOrder {
   customer:ID!
-  order_no: String
+  order_no: String!
   previous_order: String
   totalQty: Int!
   totalPrice: Float!
@@ -84,6 +85,6 @@ allOrders(key: String, value: String): [Order!]!
 getOrder(id: ID!): Order!`;
 
 export const OrderMutations = `
-createOrder(order: InputOrder): Order
-updateOrder(id: ID!, update: InputOrder): Order!
+createOrder(order: InputOrder!): Order!
+updateOrder(id: ID!, update: InputOrder!): Order!
 deleteOrder(id: ID!): Boolean`;

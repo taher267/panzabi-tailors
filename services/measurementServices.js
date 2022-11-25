@@ -45,6 +45,7 @@ const createMeasurement = async ({
   template,
   status,
   options,
+  params,
   validation,
   placeholder,
   icon,
@@ -57,6 +58,7 @@ const createMeasurement = async ({
       template,
       status,
       options,
+      params, //multiline→true∂rows→5
       validation,
       placeholder,
       icon,
