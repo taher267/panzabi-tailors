@@ -34,6 +34,7 @@ export default mg.model(
     },
     validation: String,
     options: String,
+    params: String,
     placeholder: String,
     icon: {
       _id: false,

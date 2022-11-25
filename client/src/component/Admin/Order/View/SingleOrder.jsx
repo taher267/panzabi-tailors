@@ -9,7 +9,7 @@ const SingleOrder = () => {
     { id },
     'getOrder'
   );
-  console.log(data);
+  console.log(data?.order_items);
 
   return <div>SingleOrder</div>;
 };

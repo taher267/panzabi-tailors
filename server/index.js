@@ -1,7 +1,7 @@
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import resolvers from './resolvers/resolvers.js';
-import typeDefs from './typedefs/typeDefs.js';
+import typeDefs from './typedefs/typeDefs2.js';
 import contexts from './context/contexts.js';
 import db from './config/db.js';
 import auth from './auth/auth.js';
@@ -21,13 +21,13 @@ const server = new ApolloServer({
       cuttentUser = user;
       isAuthorized = true;
     }
-    // console.log(req.user);
+    // console.log(req.body);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
   },
-  csrfPrevention: true,
-  cors: {
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
-  },
+  // csrfPrevention: true,
+  // cors: {
+  //   origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  // },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 

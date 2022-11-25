@@ -6,7 +6,7 @@ import { Fragment, useEffect, useState } from 'react';
 import moment from 'moment';
 import { DATE } from '../../../utils';
 import Field from '../../ui/Action/Field';
-const OrderBasic = (params) => {
+const OrderBasic = ({ watch, ...params }) => {
   const [urgent, setUngent] = useState(false);
   // const {
   //   register,
@@ -36,34 +36,12 @@ const OrderBasic = (params) => {
           onChange={() => {
             setUngent((p) => !p);
           }}
-        />{' '}
+        />
         Urgent
       </Typography>
-      {orderBasicFields?.map((field) => {
+      {orderBasicFields?.map?.((field) => {
         // let { name, defaultError, validation, ...rest } = field;
-        return (
-          <Field key={field.name} {...{ ...field, ...params }} />
-          // <TextField
-          //   key={name}
-          //   {...register(name, { ...validation })}
-          //   name={name}
-          //   onFocus={onFocus}
-          //   color="secondary"
-          //   variant="filled"
-          //   label={name}
-          //   // fullWidth
-          //   error={gqlErrs?.[name] ? true : errors?.[name] ? true : false}
-          //   helperText={
-          //     gqlErrs?.[name]
-          //       ? gqlErrs?.[name]
-          //       : errors?.[name]
-          //       ? errors?.[name]?.message || defaultError
-          //       : ''
-          //   }
-          //   {...rest}
-          //   sx={{ marginBottom: '5px' }}
-          // />
-        );
+        return <Field key={field.name} {...{ ...field, ...params }} />;
       })}
     </Fragment>
   );

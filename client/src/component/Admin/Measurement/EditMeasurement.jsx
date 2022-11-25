@@ -63,21 +63,23 @@ const EditMeasuremen = () => {
       {!loading && !processing && measurement && (
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            {measuementFields?.map((field) => (
-              <Field
-                key={field?.name}
-                // {...register('fjkdjf')}
-                {...{
-                  ...field,
-                  register,
-                  errors,
-                  gqlErrs,
-                  setGqlErrs,
-                  predefined: measurement,
-                  removeGqlErrors,
-                }}
-              />
-            ))}
+            {measuementFields?.map((field) => {
+              return (
+                <Field
+                  key={field?.name}
+                  // {...register('fjkdjf')}
+                  {...{
+                    ...field,
+                    register,
+                    errors,
+                    gqlErrs,
+                    setGqlErrs,
+                    predefined: measurement,
+                    removeGqlErrors,
+                  }}
+                />
+              );
+            })}
             <Button
               disabled={
                 loading ||

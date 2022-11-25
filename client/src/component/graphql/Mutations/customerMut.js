@@ -33,7 +33,7 @@ export const NEW_CUSTOMER = gql`
       }
       engage
       user {
-        id
+        _id
         name
         # phone_no
         # status

@@ -11,6 +11,7 @@ export const ALL_MEASUREMENTS = gql`
       template
       status
       options
+      params
       validation
       placeholder
       icon {
@@ -34,6 +35,7 @@ export const SINGLE_MEASUREMENT = gql`
       options
       validation
       placeholder
+      params
       icon {
         _id
         src

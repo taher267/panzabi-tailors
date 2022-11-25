@@ -73,26 +73,30 @@ const OrderItemCard = ({
       ) : (
         ''
       )}
-      <Typography
-        sx={{
-          display: 'block',
-          marginY: 3,
-          borderBottom: '1px solid rgba(245, 245, 245, .4)',
-        }}
-      >
-        ডিজাইন
-      </Typography>
 
-      {desings?.length && (
-        <VerticalTabs
-          {...{
-            register,
-            errors,
-            allDesigns: desings,
-            watching,
-            design_type: type,
-          }}
-        />
+      {desings?.length ? (
+        <>
+          <Typography
+            sx={{
+              display: 'block',
+              marginY: 3,
+              borderBottom: '1px solid rgba(245, 245, 245, .4)',
+            }}
+          >
+            ডিজাইন
+          </Typography>
+          <VerticalTabs
+            {...{
+              register,
+              errors,
+              allDesigns: desings,
+              watching,
+              design_type: type,
+            }}
+          />
+        </>
+      ) : (
+        ''
       )}
 
       <Typography variant="h5" sx={{ marginY: 2 }}>

@@ -5,8 +5,25 @@ import csses from '../../../component/styles/common.module.css';
 import stringToObject from '../../utils/stringToObject';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DATE } from '../../../utils';
-
-const Field = (params) => {
+// multiline→true∂rows→5
+const stringToParamsObj = (params) => {
+  const newObj = {};
+  for (const item of params?.split('∂')) {
+    const item2 = item?.split('→');
+    if (item2.length === 2) {
+      let parse = parseInt(item2[1]);
+      let val = isNaN(parse) ? item2[1] : parse;
+      if (val === 'true') val = true;
+      else if (val === 'false') val = false;
+      newObj[item2[0]] = val;
+    } else {
+      newObj[item2[0]] = true;
+    }
+  }
+  return newObj;
+};
+// console.log(isNaN(parseInt({ some: '4' }.some)));
+const Field = (props) => {
   const {
     register,
     validation,
@@ -18,12 +35,14 @@ const Field = (params) => {
     onFocus,
     setGqlErrs,
     removeGqlErrors,
+    validate,
+    params,
     errors,
     style,
     ...rest
-  } = params;
+  } = props;
 
-  let label = params?.label || '';
+  let label = props?.label || '';
   let helperText = '';
   let err = false;
   let objErrs = name.split('.');
@@ -39,40 +58,45 @@ const Field = (params) => {
       errors?.[name]?.message ||
       errors[objErrs[0]]?.[objErrs[1]]?.message;
   }
-  const type = params?.type;
-
+  const type = props?.type;
+  // multiline→true∂rows→5
+  const parameters = params ? stringToParamsObj(params) : {};
+  // console.log(params);
   switch (type || 'text') {
     case 'text':
     case 'number':
     case 'date':
       const val = predefined?.[name]?.length ? predefined?.[name] : '';
       const value = Array.isArray(val) ? val.join('|') : val;
-      const validate = stringToObject(validation);
-      // console.log(validate?.max);
+      const validate2 = stringToObject(validation);
+      // console.log(validate2?.max);
       React.useEffect(() => {
-        if (type === 'date' && validate.max) {
+        if (type === 'date' && validate2.max) {
           document
             .querySelector(`[name='${name}']`)
             ?.setAttribute('max', moment().format(DATE));
         }
-      }, [validate.max, type]);
+      }, [validate2.max, type]);
 
       React.useEffect(() => {
-        if (type === 'date' && validate.min) {
+        if (type === 'date' && validate2.min) {
           document
             .querySelector(`[name='${name}']`)
             ?.setAttribute('min', moment().format(DATE));
         }
-      }, [validate.min, type]);
+      }, [validate2.min, type]);
+
       return (
         <>
           <TextField
-            {...register(name, { ...validate })}
+            {...register(name, { ...validate2, validate })}
             defaultValue={value}
             name={name}
             onFocus={({ target: { name } }) =>
               removeGqlErrors(name, gqlErrs, setGqlErrs)
             }
+            {...parameters}
+            maxRows={10}
             color="secondary"
             variant="filled"
             label={name}
@@ -98,7 +122,7 @@ const Field = (params) => {
               name={name}
               defaultValue={predefined?.[name] || ''}
               {...rest}
-              {...register(name, { ...validation })}
+              {...register(name, { ...validation, validate })}
               style={{
                 width: '100%',
                 minHeight: '40px',
@@ -120,37 +144,6 @@ const Field = (params) => {
           {err && <p className={csses.error}>{helperText}</p>}
         </>
       );
-    case 'textarea':
-      return (
-        <>
-          {params?.label && (
-            <label className={err ? csses.error : ''}>{label}</label>
-          )}
-          <TextareaAutosize
-            {...register(name, { ...validation })}
-            defaultValue={predefined?.[name] || ''}
-            name={name}
-            onFocus={({ target: { name } }) =>
-              removeGqlErrors(name, gqlErrs, setGqlErrs)
-            }
-            minRows="3"
-            color="secondary"
-            variant="filled"
-            label={name}
-            className={err ? csses.error : ''}
-            {...rest}
-            style={{ width: 'calc(100% - 05px)', maxWidth: '100%', ...style }}
-          />
-          {err && (
-            <p
-              style={{ margin: 0, padding: 0 }}
-              className={err ? csses.error : ''}
-            >
-              {helperText ? helperText : ''}
-            </p>
-          )}
-        </>
-      );
     default:
       return <div />;
   }
@@ -168,9 +161,9 @@ export default Field;
 //             onChange={(newValue) => {
 //               // setValue(newValue);
 //             }}
-//             renderInput={(params) => {
-//               console.log(params);
-//               // <TextField {...params} />
+//             renderInput={(props) => {
+//               console.log(props);
+//               // <TextField {...props} />
 //             }}
 //           />
 //         </LocalizationProvider>

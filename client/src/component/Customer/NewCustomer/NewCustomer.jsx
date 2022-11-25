@@ -42,7 +42,7 @@ const NewCustomer = () => {
     processing,
     bug,
   } = useMutationFunc('NEW_CUSTOMER', null, setGqlErr);
-
+  console.log(bug);
   const [deliveryFields, setDeliveryFields] = useState(false);
   // use form hook
   const {

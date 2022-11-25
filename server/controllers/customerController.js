@@ -16,7 +16,7 @@ export default {
    */
   createCustomer: async (_parent, { customer }, { req, res, isAuthorized }) => {
     try {
-      // console.log(isAuthorized);
+      console.log(isAuthorized);
       if (!isAuthorized)
         throw new AuthenticationError(`Unauthorized`, {
           errors: { message: `Unauthorized user` },
@@ -30,7 +30,7 @@ export default {
         user: req?.user?._id || req?.user?.id,
       });
       const saved = await newCustomer.save();
-      // console.log(customData.user.name);
+      // console.log(newCustomer);
       return newCustomer;
     } catch (e) {
       return errorHandler(e);

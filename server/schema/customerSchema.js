@@ -42,6 +42,7 @@ export const CustomerQueries = `
   allCustomers(key: String, value: String): [Customer]
   getCustomer(key: String, value: String): Customer`;
 
-export const CustomerMutations = ` createCustomer(customer: InputCustomer): Customer
+export const CustomerMutations = `
+  createCustomer(customer: InputCustomer!): Customer!
   updateCustomer(id: String!, update: InputCustomer): Customer
   deleteCustomer(id: ID!): Boolean`;

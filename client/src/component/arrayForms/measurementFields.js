@@ -80,4 +80,9 @@ export const measuementFields = [
     name: 'options',
     placeholder: 'a|b|c',
   },
+  {
+    label: 'Params →∂←',
+    name: 'params',
+    placeholder: 'params',
+  },
 ];

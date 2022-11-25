@@ -19,10 +19,11 @@ export default {
       let user = _context?.req?.user?._id;
       const newOrder = await orderServices.newOrder({ ...order, user });
       // const newOrder = new Order({ ...order, user });
-      const customer = await userCustomerServices.findUser(
-        'id',
-        '632b164b19691c583c1d6c0f'
-      );
+      // const customer = await userCustomerServices.findUser(
+      //   'id',
+      //   '632b164b19691c583c1d6c0f'
+      // );
+      console.log(newOrder);
       await userCustomerServices.customerOrderIDUpdate(
         order.customer,
         newOrder.id

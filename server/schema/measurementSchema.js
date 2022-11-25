@@ -8,6 +8,7 @@ type Measurement {
     template: String!
     status: String!
     options: String
+    params: String
     validation:String
     placeholder:String
     icon: Icon
@@ -23,6 +24,7 @@ input InputMeasurement {
   validation:String
   placeholder:String
   options: String
+  params: String
   icon: InpIcon
 }`;
 

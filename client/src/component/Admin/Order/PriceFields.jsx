@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TextField } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 
 const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
   return (
-    <div
-      style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 5 }}
+    <Box
+      sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}
+      // style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 5 }}
     >
       <TextField
+        fullWidth
         label="Quantity"
         type="number"
         {...register(`pricing.${pricingKey}.quantity`, {
@@ -31,11 +33,17 @@ const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
           required: `Price Mandatory`,
           min: 0,
         })}
+        fullWidth
         error={errors?.pricing?.[pricingKey]?.price ? true : false}
         helperText={errors?.pricing?.[pricingKey]?.price?.message || ''}
       />
-      <TextField label="Total" value={total} inputProps={{ readOnly: true }} />
-    </div>
+      <TextField
+        fullWidth
+        label="Total"
+        value={total}
+        inputProps={{ readOnly: true }}
+      />
+    </Box>
   );
 };
 PriceFields.prototype = {
