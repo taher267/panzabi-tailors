@@ -29,7 +29,7 @@ import NewAccount from './Admin/Account/NewAccount';
 import EditAccount from './Admin/Account/EditAccount';
 import StaticNewOrder from './Admin/NewOrder';
 import OrdersList from './Admin/Order/View/OrdersList';
-import FORM from '../component/FORM-PRACTICE';
+// import FORM from '../component/FORM-PRACTICE';
 import SingleOrder from './Admin/Order/View/SingleOrder';
 
 const Main = () => {
@@ -69,12 +69,14 @@ const Main = () => {
 
                 <Route path="product">
                   <Route path="" element={<ProductList />} />
-                  <Route path=":id" element={<SingleOrder />} />
+
                   <Route path="new" element={<NewProduct />} />
                 </Route>
                 <Route path="order">
                   <Route path="" element={<OrdersList />} />
                   <Route path="new/:customerID" element={<NewOrder />} />
+                  {/* <Route path=":customerID/:orderId" element={<NewOrder />} /> */}
+                  <Route path=":id" element={<SingleOrder />} />
                 </Route>
                 <Route path="measurement">
                   <Route path="" element={<MeasurementList />} />

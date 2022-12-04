@@ -21,7 +21,7 @@ const PriceSummery = ({ pricingDetail, advanced, setAdvanced }) => {
           label="Advanced"
           type="number"
           value={advanced}
-          onChange={(e) => setAdvanced(e.target.value)}
+          onChange={(e) => setAdvanced(parseInt(e.target.value) || 0)}
           fullWidth
         />
         <TextField

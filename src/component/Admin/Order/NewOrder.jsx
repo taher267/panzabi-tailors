@@ -29,6 +29,7 @@ import designDevider from '../../utils/designDevider';
 import CustomerInfoForOrder from './View/CustomerInfoForOrder';
 import OrderItemCard from './OrderItemCard';
 import PriceSummery from './PriceSummery';
+import useAuth from '../../hooks/useAuth';
 
 const InitFields = {
   type_one: [
@@ -55,6 +56,7 @@ const InitFields = {
 const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
 const initPrice = { quantity: 0, price: 0, total: 0 };
 const NewOrder = () => {
+  const { user } = useAuth();
   const { customerID } = useParams();
   const navigate = useNavigate();
   const [desings, setDesigns] = useState({
@@ -85,6 +87,7 @@ const NewOrder = () => {
     watch,
     unregister,
     clearErrors,
+    reset,
     formState: { errors },
   } = useForm({
     mode: 'all',
@@ -117,6 +120,7 @@ const NewOrder = () => {
     { key: 'status', value: 'ACTIVE' },
     'allMeasurements'
   );
+
   useEffect(() => {
     if (
       all_measurements &&
@@ -144,11 +148,12 @@ const NewOrder = () => {
     name: 'up',
     control,
   });
-  // console.log(up);
+  console.log(bug);
+
   //Design 2 /down
   const down = useWatch({
-    name: 'down',
     control,
+    name: 'down',
   });
 
   //Measuement 0ne /up
@@ -174,8 +179,8 @@ const NewOrder = () => {
 
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
-    console.log(data);
-    return true;
+    // console.log(data);
+    // return true;
     const {
       order_status,
       order_date,
@@ -189,21 +194,11 @@ const NewOrder = () => {
     // console.log(pricing);
 
     const quantity_up = parseInt(pricing?.[0]?.quantity) || 0;
-    // const quantity_up = parseInt(data?.quantity_up) || 0;
-    // const price_up = parseInt(data?.price_up) || 0;
-    // const quantity_down = parseInt(pricing?.[1]?.quantity) || 0;
-    // const quantity_down = parseInt(data?.quantity_down) || 0;
-    // const price_down = parseInt(data?.price_down) || 0;
+
     const transport_charge = parseInt(data?.transport_charge) || 0;
     const discount = parseInt(data?.discount) || 0;
     const type_one = InitFields.type_one;
-    // const type_one_check = type?.type_one
-    //   ? fetchMeasurement(data, InitFields.type_one)
-    //   : {};
-    // const type_two = InitFields.type_two;
-    // const type_two_check = type?.type_two
-    //   ? fetchMeasurement(data, InitFields.type_two)
-    //   : {};
+
     const basic = {
       order_no, //
       previous_order,
@@ -228,11 +223,11 @@ const NewOrder = () => {
       up_item.quantity = up.quantity;
       up_item.price = up.price;
       up_item.designs = designFiltering(data?.up);
-      // up_item.designs = checkValuesAndErrors(designWithValue).values;
       up_item.measurements = mapKeyValueToValues(
         clonning(data?.measurements_up)
       );
       up_item.order_date = order_date;
+      up_item.user = user.id;
       order_items.push(up_item);
     }
 
@@ -241,16 +236,28 @@ const NewOrder = () => {
       let down_item = {};
       total_down = down.price * down.quantity;
       down_item.products = orderProduct?.down || [];
-      down_item.quantity = down?.quantity || 0;
-      down_item.price = down?.price || 0;
-      // down_item.designs = designFiltering(data?.up);
-      down_item.measurements = mapKeyValueToValues(data?.measurements_down);
-
-      // down_item.measurements = mapKeyValueToValues(
-      //   clonning(data?.measurements_down)
-      // );
+      down_item.quantity = down.quantity;
+      down_item.price = down.price;
+      down_item.designs = designFiltering(data?.down);
+      down_item.measurements = mapKeyValueToValues(
+        clonning(data?.measurements_down)
+      );
       down_item.order_date = order_date;
+      down_item.user = user.id;
       order_items.push(down_item);
+      // let down_item = {};
+      // total_down = down.price * down.quantity;
+      // down_item.products = orderProduct?.down || [];
+      // down_item.quantity = down?.quantity || 0;
+      // down_item.price = down?.price || 0;
+      // // down_item.designs = designFiltering(data?.up);
+      // down_item.measurements = mapKeyValueToValues(data?.measurements_down);
+      // // down_item.measurements = mapKeyValueToValues(
+      // //   clonning(data?.measurements_down)
+      // // );
+      // down_item.order_date = order_date;
+      // // down_item.user = user.id;
+      // order_items.push(down_item);
     }
 
     const { totalPrice, up: _up, down: _down } = pricingDetail;
@@ -273,12 +280,17 @@ const NewOrder = () => {
     // createOrder({
     //   variables: { ...data, price: parseInt(data?.price) || 0 },
     // });
-    console.log(newOrderDates);
+    // console.log(newOrderDates);
     createOrder({ variables: { order: newOrderDates } });
     // designFiltering(data?.up)
     // console.log(JSON.stringify(newOrderDates));
   };
-
+  //Reset form
+  useEffect(() => {
+    if (data) {
+      reset();
+    }
+  }, [data]);
   useEffect(() => {
     //     designUpState
     // designDownState
@@ -652,7 +664,8 @@ export function fetchMeasurement(data, kyes = []) {
 const mapKeyValueToValues = (data) => {
   const newObj = [];
   for (const key of Object.keys(data)) {
-    if (data[key]?.trim()) newObj.push({ msr_id: key, size: data[key] });
+    const { size, label } = data[key];
+    if (size?.trim?.()) newObj.push({ msr_id: key, size, label });
   }
   return newObj;
 };

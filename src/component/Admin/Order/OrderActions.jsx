@@ -56,7 +56,7 @@ export default function OrderActions({ params, rowId, setRowId }) {
         alignItems: 'center',
       }}
     >
-      <Link to={`/dashboard/product/${id}`}>
+      <Link to={`/dashboard/order/${id}`}>
         <Visibility />
       </Link>
       {processing ? (

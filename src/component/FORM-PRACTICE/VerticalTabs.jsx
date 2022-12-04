@@ -127,6 +127,12 @@ export default function VerticalTabs({
                       // defaultValue={_id.$oid}
                       {...register(`${[design_type]}.${i}.${k}.dsn_id`)}
                     />
+                    <input
+                      type="hidden"
+                      defaultValue={item} //|| _id
+                      // defaultValue={_id.$oid}
+                      {...register(`${[design_type]}.${i}.${k}.label`)}
+                    />
                   </Typography>
                   <TextField
                     error={errors?.[design_type]?.[i]?.[k] ? true : false}

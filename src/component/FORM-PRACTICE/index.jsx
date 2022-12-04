@@ -29,7 +29,8 @@ const index = () => {
   const [desings, setDesigns] = useState({
     // up: {}, down: {}
   });
-  useFieldArray({ control, name: 'up', name: 'down' });
+  useFieldArray({ control, name: 'up' });
+  useFieldArray({ control, name: 'down' });
   const up = useWatch({
     name: 'up',
     control,

@@ -42,10 +42,17 @@ const OrderItemCard = ({
                   'type-1': 'up',
                   'type-2': 'down',
                 };
-                const reduce = v?.reduce((a, c) => [...a, c?._id], []);
+                // const reduce = v?.reduce((a, c) => {
+                //   // return [...a, c];
+                //   // return [...a, c?._id];
+                // }, []);
+                // const reduce = v?.reduce((a, c) => [...a, c?._id], []);
                 return {
                   ...p,
-                  [types[productType]]: reduce,
+                  [types[productType]]: v?.map(({ _id, name }) => ({
+                    _id,
+                    name,
+                  })),
                 };
               });
             }}
