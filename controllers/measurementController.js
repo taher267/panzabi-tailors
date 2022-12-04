@@ -5,12 +5,32 @@ import measureValidation from '../validation/measureValidation.js';
 import errorHandler from '../utils/errorHandler.js';
 import measurementServices from '../services/measurementServices.js';
 import stringToQryString from '../utils/stringToQryString.js';
-
+// template: { $exists: false }
 // measurementServices
-//   .findMeasurement(null, null, null, true)
+//   .findMeasurement(
+//     {
+//       _id: [
+//         '632ede627d322d06d626b8e6',
+//         '632edb3d7d322d06d626b8cb',
+//         '632f44991125f00a064d19ab',
+//       ],
+//     },
+//     null,
+//     'label',
+//     true
+//   )
+// .then((d) => console.log(d))
+// .catch((e) => console.log(e));
+
+// Measurement.aggregate([
+//   {
+//     $group: {
+//       _id: { type: '$type' },
+//     },
+//   },
+// ])
 //   .then((d) => console.log(d))
 //   .catch((e) => console.log(e));
-
 export default {
   /**
    * Create New Measurement

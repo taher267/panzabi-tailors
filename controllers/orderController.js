@@ -15,15 +15,7 @@ export default {
    */
   createOrder: async (_parent, { order }, _context) => {
     try {
-      // console.log(order.order_items[0]?.measurements);
-      let user = _context?.req?.user?._id;
-      const newOrder = await orderServices.newOrder({ ...order, user });
-      // const newOrder = new Order({ ...order, user });
-      // const customer = await userCustomerServices.findUser(
-      //   'id',
-      //   '632b164b19691c583c1d6c0f'
-      // );
-      console.log(newOrder);
+      const newOrder = await orderServices.newOrder({ ...order });
       await userCustomerServices.customerOrderIDUpdate(
         order.customer,
         newOrder.id
@@ -54,7 +46,9 @@ export default {
     try {
       if (!mg.isValidObjectId(id))
         throw new UserInputError(`Invalid delete id`);
-      return await orderServices.findOrder('id', id);
+      const order = await orderServices.findOrder('id', id);
+      // console.log(order);
+      return order;
     } catch (e) {
       errorHandler(e);
     }

@@ -2,8 +2,8 @@ import { gql } from 'apollo-server';
 
 export default gql`
   type Order {
-    customer: ID!
     _id: ID!
+    customer: Customer!
     order_no: String!
     totalQty: Int!
     totalPrice: Float!
@@ -12,7 +12,6 @@ export default gql`
     due: Float
     transport_charge: Float
     order_status: String
-    user: String!
     delivery_date: Date!
     createdAt: DateTime!
     updatedAt: DateTime!
@@ -31,24 +30,34 @@ export default gql`
   type OrderMeasurement {
     msr_id: String!
     size: String!
+    label: String!
   }
-
+  type orderProduct {
+    _id: ID!
+    name: String!
+  }
   type OrderItemsOfOrder {
-    products: [String!]!
+    products: [orderProduct!]!
     price: Float!
     quantity: Int!
     measurements: [OrderMeasurement!]!
     designs: [OrderDesign!]!
     order_date: Date!
     sample: Icon
+    # user:User
   }
   input InputOrderMeasurement {
     msr_id: String!
     size: String!
+    label: String!
   }
-
+  input inputOrderProduct {
+    _id: ID!
+    name: String!
+  }
   input InputOrderItemsOfOrder {
-    products: [String!]!
+    products: [inputOrderProduct!]!
+    user: String!
     quantity: Int!
     price: Float!
     measurements: [InputOrderMeasurement!]!
@@ -58,7 +67,8 @@ export default gql`
   }
 
   input InputOrderDesignItems {
-    dsn_id: String!
+    dsn_id: ID!
+    label: String!
     desc: String
   }
   input InputOrderDesign {
@@ -69,7 +79,7 @@ export default gql`
   input InputOrder {
     customer: ID!
     order_no: String
-    previous_order: [String!]!
+    previous_order: String
     totalQty: Int!
     totalPrice: Float!
     discount: Float

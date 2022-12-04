@@ -20,7 +20,7 @@ const findMeasurement = (key, value, select = '', agg) => {
   //       },
   //     },
   //   ]);
-  return Measurement.find(key || {});
+  return Measurement.find(key || {}).select(select);
   // .select(select);
 };
 

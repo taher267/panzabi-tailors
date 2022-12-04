@@ -12,26 +12,18 @@ export default con()
             required: [true, 'Order Number is mandatory!'],
             unique: [true, 'Please provide a unique Order no'],
           },
-          previous_order: {
-            type: String,
-          },
+          previous_order: [String],
           totalQty: { type: Number, required: true },
           totalPrice: { type: Number, required: true },
           discount: { type: Number, default: 0 },
           advanced: { type: Number, default: 0 },
           due: { type: Number, default: 0 },
           transport_charge: { type: Number, default: 0 },
-          user: {
-            type: mg.Types.ObjectId,
-            ref: 'User',
-            required: true,
-          },
           customer: {
             type: mg.Types.ObjectId,
             ref: 'User',
             required: true,
           },
-
           order_status: {
             type: String,
             enum: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
@@ -41,10 +33,15 @@ export default con()
             {
               products: [
                 {
-                  _id: false,
-                  type: mg.Types.ObjectId,
-                  ref: 'Product',
-                  required: true,
+                  _id: {
+                    type: mg.Types.ObjectId,
+                    ref: 'Product',
+                    required: true,
+                  },
+                  name: {
+                    type: String,
+                    required: true,
+                  },
                 },
               ],
               price: { type: Number, required: true },
@@ -55,6 +52,7 @@ export default con()
                   msr_id: { type: String, required: true },
                   // msr_id: { type: mg.Types.ObjectId, required: true },
                   size: { type: String, required: true },
+                  label: { type: String, required: true },
                 },
               ],
               designs: [
@@ -69,9 +67,18 @@ export default con()
                     {
                       _id: false,
                       dsn_id: { type: mg.Types.ObjectId, required: true },
-                      desc: { type: String },
+                      // ref: 'Design',
+                      desc: String,
                     },
                   ],
+                },
+              ],
+              user: [
+                {
+                  _id: false,
+                  type: mg.Types.ObjectId,
+                  ref: 'User',
+                  required: true,
                 },
               ],
               sample: {
