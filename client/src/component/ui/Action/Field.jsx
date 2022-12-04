@@ -42,7 +42,6 @@ const Field = (props) => {
     ...rest
   } = props;
 
-  let label = props?.label || '';
   let helperText = '';
   let err = false;
   let objErrs = name.split('.');

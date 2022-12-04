@@ -20,6 +20,7 @@ export default function OrderProduct({ products, selectedProducts, error }) {
             {...p}
             error={error ? true : false}
             label="Products"
+            variant="filled"
             placeholder="Favorites"
           />
         );

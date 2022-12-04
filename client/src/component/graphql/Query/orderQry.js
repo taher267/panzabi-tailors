@@ -8,7 +8,7 @@ export const ALL_ORDERS = gql`
       totalPrice
       discount
       advanced
-      user
+      # user
       order_status
       due
       transport_charge
@@ -48,9 +48,17 @@ export const SINGLE_ORDER = gql`
       totalPrice
       discount
       advanced
+      customer {
+        name
+        phone_no
+        email
+        # transportation {
+        #   transport_name
+        # }
+      }
       due
       transport_charge
-      user
+      # user
       order_status
       order_items {
         products

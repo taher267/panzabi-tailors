@@ -1,8 +1,12 @@
+// import Order from '../models/Order2.js';
 import order from '../models/Order.js';
 import errorHandler from '../utils/errorHandler.js';
 let Order;
-order.then((d) => (Order = d)).catch((e) => console.log(e));
-
+order
+  .then((d) => {
+    Order = d;
+  })
+  .catch((e) => console.log(e));
 /**
  *
  * @param {string||object} key
@@ -33,8 +37,8 @@ const newOrder = async (data) => {
   try {
     const newData = { ...data };
     const saved = new Order(newData);
-    return saved;
-    // await saved.save();
+    // return saved;
+    return await saved.save();
   } catch (e) {
     errorHandler(e);
   }
