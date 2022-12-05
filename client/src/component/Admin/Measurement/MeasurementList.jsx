@@ -123,11 +123,9 @@ const MeasurementList = () => {
         }}
       >
         {!loading && data?.length && (
-          <Box
-            sx={{ height: 600, width: '100%' }}
-            className="measuementActions"
-          >
+          <Box sx={{ width: '100%' }} className="measuementActions">
             <DataGrid
+              autoHeight
               rows={data}
               columns={columns}
               pageSize={pageSize}

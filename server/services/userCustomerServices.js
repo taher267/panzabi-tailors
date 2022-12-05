@@ -23,6 +23,7 @@ const findUser = (key, value, select = '') => {
   else if (key && value) return User.findOne({ [key]: value }).select(select);
   return User.find(key || {}).select(select);
 };
+
 const createUser = async ({ name, username, email, password, phone_no }) => {
   try {
     const newData = { name, username, password, email, phone_no };
