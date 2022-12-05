@@ -191,14 +191,8 @@ const NewOrder = () => {
       ...measure1
     } = data;
 
-    // console.log(pricing);
-
-    const quantity_up = parseInt(pricing?.[0]?.quantity) || 0;
-
     const transport_charge = parseInt(data?.transport_charge) || 0;
     const discount = parseInt(data?.discount) || 0;
-    const type_one = InitFields.type_one;
-
     const basic = {
       order_no, //
       previous_order,
@@ -215,13 +209,13 @@ const NewOrder = () => {
     let total_down = 0;
     if (!data?.pricing) return;
     const [up, down] = data?.pricing;
-    // console.log(type);
     if (data?.checkboxUp) {
       let up_item = {};
       total_up = up.price * up.quantity;
       up_item.products = orderProduct?.up || [];
       up_item.quantity = up.quantity;
       up_item.price = up.price;
+      up_item.connection = 'up';
       up_item.designs = designFiltering(data?.up);
       up_item.measurements = mapKeyValueToValues(
         clonning(data?.measurements_up)
@@ -230,14 +224,13 @@ const NewOrder = () => {
       up_item.user = user.id;
       order_items.push(up_item);
     }
-
-    // Object.keys(type_two_check).length
     if (data?.checkboxDown) {
       let down_item = {};
       total_down = down.price * down.quantity;
       down_item.products = orderProduct?.down || [];
       down_item.quantity = down.quantity;
       down_item.price = down.price;
+      down_item.connection = 'down';
       down_item.designs = designFiltering(data?.down);
       down_item.measurements = mapKeyValueToValues(
         clonning(data?.measurements_down)
@@ -245,24 +238,11 @@ const NewOrder = () => {
       down_item.order_date = order_date;
       down_item.user = user.id;
       order_items.push(down_item);
-      // let down_item = {};
-      // total_down = down.price * down.quantity;
-      // down_item.products = orderProduct?.down || [];
-      // down_item.quantity = down?.quantity || 0;
-      // down_item.price = down?.price || 0;
-      // // down_item.designs = designFiltering(data?.up);
-      // down_item.measurements = mapKeyValueToValues(data?.measurements_down);
-      // // down_item.measurements = mapKeyValueToValues(
-      // //   clonning(data?.measurements_down)
-      // // );
-      // down_item.order_date = order_date;
-      // // down_item.user = user.id;
-      // order_items.push(down_item);
     }
 
     const { totalPrice, up: _up, down: _down } = pricingDetail;
 
-    const GrandTotal = pricingDetail?.totalPrice + transport_charge;
+    const GrandTotal = totalPrice + transport_charge;
 
     let due = GrandTotal - advanced;
     const newOrderDates = {

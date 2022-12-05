@@ -70,3 +70,11 @@ export const EDIT_ORDER = gql`
     }
   }
 `;
+
+export const DELETE_ORDER_ITEM = gql`
+  mutation deleteOrder($_id: ID!, $customer: ID!) {
+    deleteOrder(_id: $_id, customer: $customer) {
+      success
+    }
+  }
+`;

@@ -1,6 +1,21 @@
 import { gql } from 'apollo-server';
 
 export default gql`
+  type AllOrder {
+    _id: ID!
+    customer: String!
+    order_no: String!
+    totalQty: Int!
+    totalPrice: Float!
+    discount: Float
+    advanced: Float
+    due: Float
+    transport_charge: Float
+    order_status: String
+    delivery_date: Date!
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
   type Order {
     _id: ID!
     customer: Customer!
@@ -20,6 +35,7 @@ export default gql`
 
   type OrderDesignItems {
     dsn_id: String!
+    label: String!
     desc: String
   }
   type OrderDesign {
@@ -37,6 +53,7 @@ export default gql`
     name: String!
   }
   type OrderItemsOfOrder {
+    _id: ID!
     products: [orderProduct!]!
     price: Float!
     quantity: Int!
@@ -56,6 +73,7 @@ export default gql`
     name: String!
   }
   input InputOrderItemsOfOrder {
+    connection: String!
     products: [inputOrderProduct!]!
     user: String!
     quantity: Int!
@@ -65,7 +83,6 @@ export default gql`
     order_date: Date!
     designs: [InputOrderDesign!]!
   }
-
   input InputOrderDesignItems {
     dsn_id: ID!
     label: String!
@@ -75,7 +92,6 @@ export default gql`
     group: String!
     items: [InputOrderDesignItems!]!
   }
-
   input InputOrder {
     customer: ID!
     order_no: String
@@ -90,13 +106,16 @@ export default gql`
     delivery_date: Date!
     order_items: [InputOrderItemsOfOrder!]!
   }
+  type Del {
+    success: Boolean
+  }
   type Query {
-    allOrders(key: String, value: String): [Order!]!
+    allOrders(key: String, value: String): [AllOrder!]!
     getOrder(id: ID!): Order!
   }
   type Mutation {
     createOrder(order: InputOrder!): Order!
     updateOrder(id: ID!, update: InputOrder!): Order!
-    deleteOrder(id: ID!): Boolean
+    deleteOrder(_id: ID!, customer: ID!): Del!
   }
 `;

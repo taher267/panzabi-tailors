@@ -9,8 +9,9 @@ import useGetQurey from '../../../hooks/gql/useGetQurey';
 
 const OrdersList = () => {
   const location = useLocation();
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
+  const [delt, setDelt] = useState(null);
   const { loading, data, error } = useGetQurey('ALL_ORDERS', null, 'allOrders');
 
   useEffect(() => {
@@ -34,6 +35,7 @@ const OrdersList = () => {
         headerName: 'Previous Order',
         width: 200,
         editable: true,
+        hide: true,
       },
       {
         field: 'delivery_date',
@@ -67,6 +69,7 @@ const OrdersList = () => {
         field: 'discount',
         headerName: 'Discount',
         width: 100,
+        hide: true,
         // editable: true,
       },
       {
@@ -78,12 +81,13 @@ const OrdersList = () => {
       {
         field: 'due',
         headerName: 'Due',
-        width: 50,
+        width: 70,
       },
       {
         field: 'transport_charge',
         headerName: 'Transport Charge',
         width: 130,
+        hide: true,
       },
 
       {
@@ -108,7 +112,7 @@ const OrdersList = () => {
         width: 250,
         type: 'actions',
         renderCell: (params) => {
-          // return <div>Actions</div>;
+          // console.log(params);
           return <OrderActions {...{ params, rowId, setRowId }} />;
         },
       },
@@ -124,38 +128,38 @@ const OrdersList = () => {
   // console.log(data);
   return (
     <AdminLayout>
-      {loading && (
+      {loading ? (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
-      )}
-      <div
-        style={{
-          display: 'grid',
-          gap: '5px',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        }}
-      >
-        {!loading && data?.length && (
+      ) : (
+        <Box
+          style={{
+            display: 'grid',
+            gap: '5px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+          }}
+        >
           <Box
-            sx={{ height: 400, width: '100%' }}
+            sx={{ height: 600, width: '100%' }}
             className="measuementActions"
           >
             <DataGrid
-              rows={data}
+              rows={data || []}
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
               rowsPerPageOptions={[5, 10, 25, 50]}
               // checkboxSelection
+              autoHeight
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}
               onCellEditCommit={(row) => setRowId(row.id)}
             />
           </Box>
-        )}
-      </div>
+        </Box>
+      )}
     </AdminLayout>
   );
 };

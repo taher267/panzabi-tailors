@@ -1,9 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Visibility, Save, Delete, Check } from '@mui/icons-material';
+import {
+  Visibility,
+  Save,
+  Delete,
+  Check,
+  ConstructionOutlined,
+} from '@mui/icons-material';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import useUpdateMutation from '../../hooks/gql/useUpdateMutation';
+import useMutationFunc from '../../hooks/gql/useMutationFunc';
+
 export default function OrderActions({ params, rowId, setRowId }) {
   //   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -11,13 +19,26 @@ export default function OrderActions({ params, rowId, setRowId }) {
     'EDIT_PRODUCT',
     setSuccess
   );
+  const {
+    mutation: delOrderItem,
+    bug: err,
+    data: del,
+  } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder');
+
   const { id, row } = params;
   useEffect(() => {
     if (rowId === id && success) {
       setSuccess(false);
       setRowId(false);
     }
-  }, [rowId, data, processing]); //
+  }, [rowId, data, processing]);
+
+  useEffect(() => {
+    if (del?.success) {
+      window.location.reload();
+    }
+  }, [del]); //
+
   const updateHandle = () => {
     const { name, category, price, description } = row;
     // console.log({
@@ -37,6 +58,7 @@ export default function OrderActions({ params, rowId, setRowId }) {
         description,
       },
     });
+    console.log(err);
     // updateMutation({
     //   variables: {
     //     _id: rowId,
@@ -100,7 +122,9 @@ export default function OrderActions({ params, rowId, setRowId }) {
       <Button>
         <Delete
           onClick={() => {
-            window.alert(id);
+            if (confirm(`Are you sure to delete: !${id}`)) {
+              delOrderItem({ variables: { _id: id, customer: row.customer } });
+            }
           }}
         />
       </Button>

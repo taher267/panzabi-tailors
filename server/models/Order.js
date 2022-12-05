@@ -31,6 +31,7 @@ export default con()
           },
           order_items: [
             {
+              connection: { type: String, required: true },
               products: [
                 {
                   _id: {
@@ -67,7 +68,7 @@ export default con()
                     {
                       _id: false,
                       dsn_id: { type: mg.Types.ObjectId, required: true },
-                      // ref: 'Design',
+                      label: { type: String, required: true },
                       desc: String,
                     },
                   ],
@@ -102,7 +103,9 @@ export default con()
       )
     );
   })
-  .catch((e) => {});
+  .catch((e) => {
+    console.log(e);
+  });
 // export default orderModel;
 
 // console.log();
