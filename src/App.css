@@ -1,3 +1,9 @@
+:root {
+  --blue: #1e90ff;
+  --white: #ffffff;
+  --black: #0f0f0f;
+  --blackLight: rgba(15, 15, 15, 0.7);
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;

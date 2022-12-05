@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import AdminLayout from '../../../../Layout/AdminLayout';
 import CustomerDetailsSingleOrder from './CustomerDetailsSingleOrder';
+import OrderItemView from './OrderItemView';
 import SingleOrderSummary from './SingleOrderSummary';
 
 const SingleOrder = () => {
@@ -13,7 +14,7 @@ const SingleOrder = () => {
     { id },
     'getOrder'
   );
-  console.log(data);
+  // console.log(data);
 
   return (
     <AdminLayout>
@@ -27,6 +28,11 @@ const SingleOrder = () => {
           <>
             <CustomerDetailsSingleOrder {...{ ...data?.customer }} />
             <SingleOrderSummary {...{ ...data }} />
+            {data?.order_items?.length
+              ? data?.order_items?.map?.((item, i) => (
+                  <OrderItemView {...{ ...item }} key={i} />
+                ))
+              : ''}
           </>
         ) : (
           ''
