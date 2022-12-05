@@ -33,6 +33,6 @@ allMeasurements(key: String, value: String): [Measurement!]!
 getMeasurement(key: String!, value: String!): Measurement!`;
 
 export const MeasurementMutations = `
-createMeasurement(measures: InputMeasurement): Measurement
+createMeasurement(measures: InputMeasurement!): Measurement!
 updateMeasurement(id: String!, update: InputMeasurement): Measurement
 deleteMeasurement(id: ID!): Boolean`;

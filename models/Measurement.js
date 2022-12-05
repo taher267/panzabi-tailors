@@ -1,4 +1,5 @@
 import mg from 'mongoose';
+import config from '../config/config.js';
 
 export default mg.model(
   'Measurement',
@@ -29,7 +30,7 @@ export default mg.model(
     },
     status: {
       type: String,
-      enum: ['ACTIVE', 'DEACTIVE'],
+      enum: config.MEASUREMENT_STATUS,
       default: 'ACTIVE',
     },
     validation: String,

@@ -63,7 +63,8 @@ export default {
     try {
       if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid customer id`);
-      return await customerServices.findUser(key, value);
+      const customer = await customerServices.findUser(key, value);
+      return customer;
     } catch (e) {
       throw new UserInputError(e);
     }

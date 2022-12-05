@@ -1,7 +1,6 @@
 import DateTimeResolver, {
   dateResolver,
 } from '../utils/graphql/dateResolver.js';
-import userController from '../controllers/userController.js';
 import userCustomerServices from '../services/userCustomerServices.js';
 import errorHandler from '../utils/errorHandler.js';
 
@@ -9,15 +8,13 @@ export default {
   Date: dateResolver,
   DateTime: DateTimeResolver,
   Customer: {
-    user: async ({ user: id }, args, c) =>
-      await userController.getUser(
-        null,
-        {
-          key: '_id',
-          value: id,
-        },
-        c
-      ),
+    user: async ({ user }, args, c) => {
+      try {
+        return await userCustomerServices.findUser('_id', user);
+      } catch (e) {
+        errorHandler(e);
+      }
+    },
   },
   Order: {
     // customer: async ({ user: id }, args, c) => {

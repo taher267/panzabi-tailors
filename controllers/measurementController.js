@@ -37,7 +37,6 @@ export default {
    */
   createMeasurement: async (_parent, { measures }, _context) => {
     try {
-      // console.log(measures, '===create');
       await measureValidation.measurementValidation(measures);
       const newMeasurement = new Measurement(measures);
       await newMeasurement.save();
@@ -57,7 +56,7 @@ export default {
       }
       const all = await Measurement.find(filter);
       // console.log(all);
-      return all;
+      return all?.reverse();
     } catch (e) {
       errorHandler(e);
     }
