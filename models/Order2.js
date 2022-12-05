@@ -66,6 +66,7 @@ export default mg.model(
                 {
                   _id: false,
                   dsn_id: { type: mg.Types.ObjectId, required: true },
+                  label: { type: String, required: true },
                   // ref: 'Design',
                   desc: String,
                 },

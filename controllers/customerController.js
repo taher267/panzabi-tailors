@@ -16,7 +16,6 @@ export default {
    */
   createCustomer: async (_parent, { customer }, { req, res, isAuthorized }) => {
     try {
-      console.log(isAuthorized);
       if (!isAuthorized)
         throw new AuthenticationError(`Unauthorized`, {
           errors: { message: `Unauthorized user` },
@@ -52,7 +51,7 @@ export default {
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['CUSTOMER'] } };
       const all = await customerServices.findUser(filter);
-      return all;
+      return all?.reverse();
     } catch (e) {
       throw new UserInputError(e);
     }

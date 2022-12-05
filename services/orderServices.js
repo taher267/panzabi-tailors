@@ -1,4 +1,5 @@
 // import Order from '../models/Order2.js';
+import { UserInputError } from 'apollo-server';
 import order from '../models/Order.js';
 import errorHandler from '../utils/errorHandler.js';
 let Order;
@@ -43,8 +44,23 @@ const newOrder = async (data) => {
     errorHandler(e);
   }
 };
+
+const orderDelete = async (key, value) => {
+  try {
+    if (!key || !value) {
+      throw new UserInputError(`Invalid data!`, {
+        errors: { message: `Doesn't able to delete this!` },
+      });
+    }
+    if (key === '_id') return await Order.findByIdAndDelete(value);
+    return await User.deleteOne({ [key]: value });
+  } catch (e) {
+    errorHandler(e);
+  }
+};
 export default {
   newOrder,
   findOrder,
   orderUpdate,
+  orderDelete,
 };

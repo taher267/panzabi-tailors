@@ -34,7 +34,18 @@ const createUser = async ({ name, username, email, password, phone_no }) => {
   }
 };
 
-const customerOrderIDUpdate = async (customer, id) => {
+const customerOrderIDUpdate = async (customer, updateData) => {
+  try {
+    const updated = await User.findByIdAndUpdate(customer, updateData, {
+      upsert: true,
+    });
+    return updated;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
+const customerUpdate = async (customer, id) => {
   try {
     const updated = await User.findByIdAndUpdate(
       customer,

@@ -16,10 +16,9 @@ export default {
   createOrder: async (_parent, { order }, _context) => {
     try {
       const newOrder = await orderServices.newOrder({ ...order });
-      await userCustomerServices.customerOrderIDUpdate(
-        order.customer,
-        newOrder.id
-      );
+      await userCustomerServices.customerOrderIDUpdate(order.customer, {
+        $push: { orders: newOrder.id },
+      });
       return newOrder;
     } catch (e) {
       errorHandler(e);
@@ -47,7 +46,7 @@ export default {
       if (!mg.isValidObjectId(id))
         throw new UserInputError(`Invalid delete id`);
       const order = await orderServices.findOrder('id', id);
-      // console.log(order);
+      // console.log(JSON.stringify(order));
       return order;
     } catch (e) {
       errorHandler(e);
@@ -67,13 +66,20 @@ export default {
   /**
    * Delete Order
    */
-  deleteOrder: async (_parent, { id: _id }) => {
+  deleteOrder: async (_parent, { _id, customer }) => {
     try {
-      if (!mg.isValidObjectId(_id))
+      if (!mg.isValidObjectId(_id) || !mg.isValidObjectId(customer))
         throw new UserInputError(`Invalid delete id`);
-      const del = await Order.deleteOne({ _id });
-      console.log(del);
-      return del.deletedCount;
+      const delQ = await orderServices.orderDelete('_id', _id);
+      const up = await userCustomerServices.customerOrderIDUpdate(customer, {
+        $pull: { orders: _id },
+      });
+      // console.log(_id, customer, delQ, up);
+      const del = {
+        success: true,
+        delID: _id,
+      };
+      return del;
     } catch (e) {
       errorHandler(e);
     }
