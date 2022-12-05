@@ -76,7 +76,6 @@ const NewOrder = () => {
     totalPrice: 0,
   });
 
-  const [type, setType] = useState({ type_one: true, type_two: false });
   const [gqlErrs, setGqlErrs] = useState({});
   const {
     control,
@@ -103,6 +102,7 @@ const NewOrder = () => {
     bug,
     data,
   } = useMutationFunc('NEW_ORDER', null, null, 'createOrder');
+
   const { data: all_designs } = useGetQurey(
     'SPECIFIC_ALL_DESIGNS',
     null,
@@ -188,7 +188,7 @@ const NewOrder = () => {
       previous_order,
       delivery_date,
       pricing,
-      ...measure1
+      // ...measure1
     } = data;
 
     const transport_charge = parseInt(data?.transport_charge) || 0;
@@ -198,9 +198,7 @@ const NewOrder = () => {
       previous_order,
       discount,
       customer: customerID,
-      // user,
       order_status, //
-      // order_items,
       delivery_date, //
     };
 
@@ -255,15 +253,8 @@ const NewOrder = () => {
       transport_charge,
     };
     setGqlErrs({});
-
-    // ;
-    // createOrder({
-    //   variables: { ...data, price: parseInt(data?.price) || 0 },
-    // });
     // console.log(newOrderDates);
     createOrder({ variables: { order: newOrderDates } });
-    // designFiltering(data?.up)
-    // console.log(JSON.stringify(newOrderDates));
   };
   //Reset form
   useEffect(() => {

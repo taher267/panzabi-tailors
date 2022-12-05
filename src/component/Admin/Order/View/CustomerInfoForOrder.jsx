@@ -11,9 +11,10 @@ const CustomerInfoForOrder = ({
 }) => {
   const { data, loading, error } = useGetQurey(
     'SINGLE_CUSTOMER',
-    { key: 'id', value: customerID },
+    { key: '_id', value: customerID },
     'getCustomer'
   );
+  console.log(data);
   useEffect(() => {
     setCustomerLoading?.(loading);
   }, [loading]);
