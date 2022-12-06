@@ -8,7 +8,8 @@ export default {
   Date: dateResolver,
   DateTime: DateTimeResolver,
   Customer: {
-    user: async ({ user }, args, c) => {
+    user: async ({ user }) => {
+      console.log(user, 'user/customer');
       try {
         return await userCustomerServices.findUser('_id', user);
       } catch (e) {
@@ -18,7 +19,7 @@ export default {
   },
   Order: {
     // customer: async ({ user: id }, args, c) => {
-    customer: async ({ customer: id }, args, c) => {
+    customerDetail: async ({ customer: id }, args, c) => {
       try {
         const customer = await userCustomerServices.findUser(
           '_id',

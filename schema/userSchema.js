@@ -5,8 +5,8 @@ type User {
   phone_no: String!
   status: String
   roles: [String]
-  username: String!
-  email: String!
+  username: String
+  email: String
   token: String
   thirdPirty: [thirdPirtyDetails]
   createdAt: DateTime!

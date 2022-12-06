@@ -58,6 +58,7 @@ export default {
     deleteMeasurement: measurementController.deleteMeasurement,
     //Order functions
     createOrder: orderController.createOrder,
+    addNewOrderItem: orderController.addNewOrderItem,
     updateOrder: orderController.updateOrder,
     deleteOrder: orderController.deleteOrder,
 

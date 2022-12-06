@@ -29,7 +29,7 @@ input InputMeasurement {
 }`;
 
 export const MeasurementQueries = `
-allMeasurements(key: String, value: String): [Measurement!]!
+allMeasurements(key: String, value: String, options:String): [Measurement!]!
 getMeasurement(key: String!, value: String!): Measurement!`;
 
 export const MeasurementMutations = `

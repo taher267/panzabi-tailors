@@ -4,6 +4,58 @@ import { UserInputError } from 'apollo-server-core';
 import errorHandler from '../utils/errorHandler.js';
 import orderServices from '../services/orderServices.js';
 import userCustomerServices from '../services/userCustomerServices.js';
+// import TestModel from '../models/TestModel.js';
+import orderValidation from '../validation/orderValidation.js';
+// TestModel.create({
+//   strData: Math.random()?.toString?.(),
+//   arrData: [
+//     {
+//       name: Math.random()?.toString?.(),
+//       arr: [
+//         {
+//           data: Math.random()?.toString?.(),
+//           data2: Math.random()?.toString?.(),
+//         },
+//       ],
+//     },
+//   ],
+// })
+//   .then((d) => {
+//     console.log(d);
+//   })
+//   .catch((e) => {
+//     console.log(e);
+//   });
+
+// TestModel.updateOne(
+//   { _id: '638f5ea0f6a71645b1ad4163' },
+//   {
+//     $push: {
+//       'arrData.0.arr': [
+//         {
+//           data: Math.random()?.toString?.(),
+//           data2: Math.random()?.toString?.(),
+//         },
+//       ],
+//     },
+//   },
+//   { new: true }
+// )
+//   .then((d) => {
+//     console.log(d);
+//   })
+//   .catch((e) => {
+//     console.log(e);
+//   });
+
+// TestModel.find()
+//   .then((d) => {
+//     console.log(d?.[0]?.arrData?.[0]?.arr);
+//   })
+//   .catch((e) => {
+//     console.log(e);
+//   });
+
 // let Order;
 // ord.then((d) => (Order = d)).catch((e) => console.log(e));
 // orderServices.findOrder();
@@ -20,6 +72,27 @@ export default {
         $push: { orders: newOrder.id },
       });
       return newOrder;
+    } catch (e) {
+      errorHandler(e);
+    }
+  },
+
+  /**
+   * Update Order
+   */
+  addNewOrderItem: async (_, { _id, newItem }) => {
+    try {
+      const { order_items, ...rest } = newItem;
+      await orderValidation.newOrderItemValidation(_id, newItem);
+
+      const addedNewItem = await orderServices.orderUpdate(
+        { _id },
+        {
+          ...rest,
+          $push: { order_items: newItem.order_items },
+        }
+      );
+      return addedNewItem;
     } catch (e) {
       errorHandler(e);
     }
@@ -41,12 +114,11 @@ export default {
   /**
    * Single Order
    */
-  getOrder: async (_parent, { id }, _context) => {
+  getOrder: async (_parent, { key, value }, _context) => {
     try {
-      if (!mg.isValidObjectId(id))
+      if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid delete id`);
-      const order = await orderServices.findOrder('id', id);
-      // console.log(JSON.stringify(order));
+      const order = await orderServices.findOrder(key, value);
       return order;
     } catch (e) {
       errorHandler(e);
