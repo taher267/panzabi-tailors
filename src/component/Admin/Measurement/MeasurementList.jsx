@@ -13,7 +13,7 @@ const MeasurementList = () => {
   const [rowId, setRowId] = useState(null);
   const { loading, data, error } = useGetQurey(
     'ALL_MEASUREMENTS',
-    null,
+    { options: 'reverse' },
     'allMeasurements'
   );
   // console.log(data);
@@ -122,23 +122,22 @@ const MeasurementList = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         }}
       >
-        {!loading && data?.length && (
-          <Box sx={{ width: '100%' }} className="measuementActions">
-            <DataGrid
-              autoHeight
-              rows={data}
-              columns={columns}
-              pageSize={pageSize}
-              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[10, 25, 50]}
-              // checkboxSelection
-              disableSelectionOnClick
-              components={{ Toolbar: GridToolbar }}
-              getRowId={(row) => row._id}
-              onCellEditCommit={(row) => setRowId(row.id)}
-            />
-          </Box>
-        )}
+        {/* {!loading && data?.length && ( */}
+        <Box sx={{ width: '100%' }} className="measuementActions">
+          <DataGrid
+            autoHeight
+            rows={data || []}
+            columns={columns}
+            pageSize={pageSize}
+            onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+            rowsPerPageOptions={[10, 25, 50]}
+            // checkboxSelection
+            disableSelectionOnClick
+            components={{ Toolbar: GridToolbar }}
+            getRowId={(row) => row._id}
+            onCellEditCommit={(row) => setRowId(row.id)}
+          />
+        </Box>
       </div>
     </AdminLayout>
   );

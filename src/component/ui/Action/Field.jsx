@@ -1,10 +1,16 @@
-import { TextareaAutosize, TextField } from '@mui/material';
+import {
+  FormControlLabel,
+  FormGroup,
+  TextareaAutosize,
+  TextField,
+  Checkbox,
+} from '@mui/material';
 import moment from 'moment';
 import React from 'react';
 import csses from '../../../component/styles/common.module.css';
 import stringToObject from '../../utils/stringToObject';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DATE } from '../../../utils';
+
 // multiline→true∂rows→5
 const stringToParamsObj = (params) => {
   const newObj = {};
@@ -60,7 +66,6 @@ const Field = (props) => {
   const type = props?.type;
   // multiline→true∂rows→5
   const parameters = params ? stringToParamsObj(params) : {};
-  // console.log(params);
   switch (type || 'text') {
     case 'text':
     case 'number':
@@ -141,6 +146,22 @@ const Field = (props) => {
             </select>
           </fieldset>
           {err && <p className={csses.error}>{helperText}</p>}
+        </>
+      );
+    case 'checkbox':
+      return (
+        <>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  {...register(name, { ...validation, validate })}
+                  {...rest}
+                />
+              }
+              label={rest?.label}
+            />
+          </FormGroup>
         </>
       );
     default:

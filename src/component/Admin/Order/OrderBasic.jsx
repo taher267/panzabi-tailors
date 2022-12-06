@@ -1,19 +1,13 @@
-import { Checkbox, TextField, Typography } from '@mui/material';
+import { Checkbox, Typography } from '@mui/material';
 import csses from './order.module.css';
 import { orderBasicFields } from '../../arrayForms/orderFields';
 // import { useForm } from 'react-hook-form';
-import { Fragment, useEffect, useState } from 'react';
-import moment from 'moment';
-import { DATE } from '../../../utils';
+import { useEffect, useState } from 'react';
+// import moment from 'moment';
+// import { DATE } from '../../../utils';
 import Field from '../../ui/Action/Field';
 const OrderBasic = ({ watch, ...params }) => {
   const [urgent, setUngent] = useState(false);
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   reset,
-  //   formState: { errors },
-  // } = useForm();
 
   useEffect(() => {
     // document
@@ -30,7 +24,7 @@ const OrderBasic = ({ watch, ...params }) => {
     // }
   });
   return (
-    <Fragment>
+    <>
       <Typography component="div" className={csses.gridFullLast}>
         <Checkbox
           onChange={() => {
@@ -39,11 +33,10 @@ const OrderBasic = ({ watch, ...params }) => {
         />
         Urgent
       </Typography>
-      {orderBasicFields?.map?.((field) => {
-        // let { name, defaultError, validation, ...rest } = field;
-        return <Field key={field.name} {...{ ...field, ...params }} />;
-      })}
-    </Fragment>
+      {orderBasicFields?.map?.((field) => (
+        <Field key={field.name} {...{ ...field, ...params }} />
+      ))}
+    </>
   );
 };
 
