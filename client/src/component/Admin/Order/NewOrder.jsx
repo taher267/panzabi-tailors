@@ -5,9 +5,7 @@ import {
   Button,
   Typography,
   Checkbox,
-  TextField,
   FormControlLabel,
-  FormLabel,
   FormHelperText,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
@@ -30,6 +28,10 @@ import CustomerInfoForOrder from './View/CustomerInfoForOrder';
 import OrderItemCard from './OrderItemCard';
 import PriceSummery from './PriceSummery';
 import useAuth from '../../hooks/useAuth';
+// import { useCallback } from 'react';
+// import { debounce } from 'lodash';
+import CheckingExistingOrderView from './View/CheckingExistingOrderView';
+import AddOrderItemAlert from './View/SingleOrder/AddOrderItemAlert';
 
 const InitFields = {
   type_one: [
@@ -62,6 +64,9 @@ const NewOrder = () => {
   const [desings, setDesigns] = useState({
     // up: {}, down: {}
   });
+  // const [basicOrder, setBasicOrder] = useState({});
+  const [existedOrderAddItemAlert, setExistedOrderAddItemAlert] = useState();
+  const [searchOrder, setSearchOrder] = useState();
   const [designUpState, setDesignUpState] = useState({});
   const [customerLoading, setCustomerLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({});
@@ -102,7 +107,22 @@ const NewOrder = () => {
     bug,
     data,
   } = useMutationFunc('NEW_ORDER', null, null, 'createOrder');
-
+  //Add new order item
+  const {
+    mutation: addNewOrderItem,
+    processing: itemLoading,
+    bug: itemBug,
+    data: newItemData,
+  } = useMutationFunc('ADD_NEW_ORDER_ITEM', null, null, 'addNewOrderItem');
+  const {
+    data: prevOrderData,
+    loading,
+    error,
+  } = useGetQurey(
+    'SINGLE_ORDER_BASIC',
+    { key: 'order_no', value: searchOrder },
+    'getOrder'
+  );
   const { data: all_designs } = useGetQurey(
     'SPECIFIC_ALL_DESIGNS',
     null,
@@ -120,7 +140,6 @@ const NewOrder = () => {
     { key: 'status', value: 'ACTIVE' },
     'allMeasurements'
   );
-
   useEffect(() => {
     if (
       all_measurements &&
@@ -148,7 +167,7 @@ const NewOrder = () => {
     name: 'up',
     control,
   });
-  console.log(bug);
+  // console.log(bug);
 
   //Design 2 /down
   const down = useWatch({
@@ -176,21 +195,55 @@ const NewOrder = () => {
       setDesigns(designDevider(all_designs));
     }
   }, [all_designs]);
-
+  // console.log(prevOrderData);
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
-    // console.log(data);
-    // return true;
     const {
       order_status,
       order_date,
       order_no,
       previous_order,
       delivery_date,
-      pricing,
+      item_add_in_existing_order,
       // ...measure1
     } = data;
-
+    if (
+      (previous_order || item_add_in_existing_order) &&
+      !prevOrderData?.order_no
+    ) {
+      return setExistedOrderAddItemAlert({
+        open: true,
+        message: `Please verify your order id!`,
+      });
+    } else if (previous_order && !item_add_in_existing_order) {
+      return setExistedOrderAddItemAlert({
+        open: true,
+        message: `Would you like to add order item in existd order? if yes, please ✅ check Items ad in existing order!`,
+      });
+    } else if (!previous_order && item_add_in_existing_order) {
+      return setExistedOrderAddItemAlert({
+        open: true,
+        message: `Please verify your order number to fill up the previous order number field for include order items!`,
+      });
+    } else if (order_no !== previous_order) {
+      return setExistedOrderAddItemAlert({
+        open: true,
+        message: `Order no and previous order no mismatch ❌`,
+      });
+    }
+    if (previous_order && item_add_in_existing_order) {
+      if (
+        !confirm(`This item will be include as existing order: ${order_no}`)
+      ) {
+        return;
+      }
+    }
+    /**
+     * TODO have to check both condation total price
+     *have to check Delivery date
+     * total qty both case
+     * due check both case
+     */
     const transport_charge = parseInt(data?.transport_charge) || 0;
     const discount = parseInt(data?.discount) || 0;
     const basic = {
@@ -239,29 +292,53 @@ const NewOrder = () => {
     }
 
     const { totalPrice, up: _up, down: _down } = pricingDetail;
-
+    //Grand Total of price
     const GrandTotal = totalPrice + transport_charge;
 
     let due = GrandTotal - advanced;
+    let totalQty =
+      (parseInt(_up.quantity) || 0) + (parseInt(_down.quantity) || 0);
+    // previous qty add to new total qty for new order item
+    if (previous_order && item_add_in_existing_order) {
+      totalQty += prevOrderData?.totalQty || 0;
+    }
+    // Basic order data
     const newOrderDates = {
       ...basic,
       due,
-      totalQty: (parseInt(_up.quantity) || 0) + (parseInt(_down.quantity) || 0),
+      totalQty,
       totalPrice: GrandTotal,
       advanced,
       order_items,
       transport_charge,
     };
     setGqlErrs({});
-    // console.log(newOrderDates);
-    createOrder({ variables: { order: newOrderDates } });
+    if (previous_order && item_add_in_existing_order) {
+      delete newOrderDates.delivery_date;
+      // console.log(newOrderDates);
+      addNewOrderItem({
+        variables: { _id: prevOrderData._id, newItem: newOrderDates },
+      });
+    } else {
+      createOrder({ variables: { order: newOrderDates } });
+    }
   };
   //Reset form
   useEffect(() => {
-    if (data) {
+    if (data || newItemData) {
       reset();
     }
-  }, [data]);
+  }, [data, newItemData]);
+
+  const prev_order = watch('previous_order');
+  useEffect(() => {
+    if (prev_order) {
+      setSearchOrder(prev_order);
+    }
+  }, [prev_order]);
+
+  // console.log(prev, 'prev_order');
+
   useEffect(() => {
     //     designUpState
     // designDownState
@@ -334,6 +411,13 @@ const NewOrder = () => {
         downDetail = res;
         totalPrice += res.total;
       }
+      if (
+        prevOrderData?.totalPrice &&
+        prev_order &&
+        watch('item_add_in_existing_order')
+      ) {
+        totalPrice += prevOrderData?.totalPrice;
+      }
       setPricingDetail({ up: upDetail, down: downDetail, totalPrice });
     }
   }, [priceing]);
@@ -365,7 +449,9 @@ const NewOrder = () => {
       },
     }));
   };
-  console.log(errors);
+  const itemAddDiologHandler = (d) => {
+    setExistedOrderAddItemAlert({});
+  };
   return (
     <AdminLayout>
       {processing && (
@@ -373,27 +459,46 @@ const NewOrder = () => {
           <LinearProgress />
         </Box>
       )}
-
       {customerLoading && (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
       )}
+      <AddOrderItemAlert
+        {...{ existedOrderAddItemAlert, itemAddDiologHandler }}
+      />
 
-      {customerID ? (
-        <CustomerInfoForOrder
-          {...{ customerID, setCustomerLoading, setCustomerInfo }}
-        />
-      ) : (
-        ''
-      )}
-      {/* <SwipeableEdgeDrawer data={watch} /> */}
-      {/* <OrderDate /> */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          border: '1px solid #ddd',
+          padding: 2,
+        }}
+      >
+        {customerID ? (
+          <CustomerInfoForOrder
+            {...{
+              customerID,
+              setCustomerLoading,
+              setCustomerInfo,
+              prevOrderData,
+            }}
+          />
+        ) : (
+          ''
+        )}
 
+        {prevOrderData ? (
+          <CheckingExistingOrderView {...{ prevOrderData, customerInfo }} />
+        ) : (
+          ''
+        )}
+      </Box>
       {
-        <div>
+        <Box>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-            <div className={csses.orderRequired}>
+            <Box sx={{}} className={csses.orderRequired}>
               <OrderBasic
                 {...{
                   watch,
@@ -405,7 +510,7 @@ const NewOrder = () => {
                   removeGqlErrors,
                 }}
               />
-            </div>
+            </Box>
             <select
               {...register('order_status', { required: true })}
               className={`${csses.orderStatus} ${
@@ -423,14 +528,7 @@ const NewOrder = () => {
                 </option>
               ))}
             </select>
-            {/* <p className={commonCsses?.errMsg}>
-              {gqlErrs?.order_status
-                ? gqlErrs?.order_status
-                : errors?.order_status
-                ? errors?.order_status?.message ||
-                  OrderStatusField?.defaultError
-                : ''}
-            </p> */}
+
             <Typography variant="h5">
               <span>
                 {!checkboxUp && !checkboxDown ? (
@@ -549,7 +647,7 @@ const NewOrder = () => {
               Add Order
             </Button>
           </form>
-        </div>
+        </Box>
       }
     </AdminLayout>
   );

@@ -46,15 +46,15 @@ export const ALL_ORDERS = gql`
 `;
 
 export const SINGLE_ORDER = gql`
-  query getOrder($id: ID!) {
-    getOrder(id: $id) {
+  query getOrder($key: String!, $value: String!) {
+    getOrder(key: $key, value: $value) {
       _id
       order_no
       totalQty
       totalPrice
       discount
       advanced
-      customer {
+      customerDetail {
         name
         phone_no
         email
@@ -93,6 +93,25 @@ export const SINGLE_ORDER = gql`
           src
         }
       }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const SINGLE_ORDER_BASIC = gql`
+  query getOrder($key: String!, $value: String!) {
+    getOrder(key: $key, value: $value) {
+      _id
+      order_no
+      totalQty
+      totalPrice
+      discount
+      advanced
+      customer
+      due
+      transport_charge
+      order_status
       createdAt
       updatedAt
     }

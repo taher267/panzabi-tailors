@@ -15,9 +15,12 @@ order
  * @returns
  */
 const findOrder = (key, value, select = '') => {
-  if (key === 'id') return Order.findById(value).select(select);
+  if (key === '_id') return Order.findById(value).select(select);
   else if (key && value) return Order.findOne({ [key]: value }).select(select);
-  return Order.find(key || {}).select(select);
+  else if (typeof key === 'object') {
+    return Order.find(key || {}).select(select);
+  }
+  return null;
 };
 
 /**

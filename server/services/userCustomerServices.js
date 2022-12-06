@@ -18,6 +18,7 @@ import errorHandler from '../utils/errorHandler.js';
  * @returns
  */
 const findUser = (key, value, select = '') => {
+  console.log(key, value);
   if (key === '_id') return User.findById(value).select(select);
   else if (key === 'single' && value) return User.findOne(value).select(select);
   else if (key && value) return User.findOne({ [key]: value }).select(select);
@@ -35,11 +36,9 @@ const createUser = async ({ name, username, email, password, phone_no }) => {
   }
 };
 
-const customerOrderIDUpdate = async (customer, updateData) => {
+const customerOrderIDUpdate = async (customer, updateData, options = {}) => {
   try {
-    const updated = await User.findByIdAndUpdate(customer, updateData, {
-      upsert: true,
-    });
+    const updated = await User.findByIdAndUpdate(customer, updateData, options);
     return updated;
   } catch (e) {
     errorHandler(e);

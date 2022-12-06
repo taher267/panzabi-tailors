@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const ALL_MEASUREMENTS = gql`
-  query allMeasurements($key: String, $value: String) {
-    allMeasurements(key: $key, value: $value) {
+  query allMeasurements($key: String, $value: String, $options: String) {
+    allMeasurements(key: $key, value: $value, options: $options) {
       _id
       name
       label

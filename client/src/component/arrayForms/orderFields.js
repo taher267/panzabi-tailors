@@ -18,11 +18,6 @@ export const orderBasicFields = [
     placeholder: 'Enter order number...',
   },
   {
-    label: 'Previous Order Number',
-    name: 'previous_order',
-    placeholder: 'Enter previous number...',
-  },
-  {
     label: 'Delivery date',
     type: 'date',
     name: 'delivery_date',
@@ -30,6 +25,16 @@ export const orderBasicFields = [
     validation: `required→Delivery date is mandatory!∂min→${moment().format(
       DATE
     )}←Order date max today`,
+  },
+  {
+    label: 'Previous Order Number',
+    name: 'previous_order',
+    placeholder: 'Enter previous number...',
+  },
+  {
+    label: 'Items ad in existing order!',
+    name: 'item_add_in_existing_order',
+    type: 'checkbox',
   },
 ];
 export const orderPricingFields = [

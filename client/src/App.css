@@ -2,6 +2,7 @@
   --blue: #1e90ff;
   --white: #ffffff;
   --black: #0f0f0f;
+  --danger: rgb(255, 0, 0);
   --blackLight: rgba(15, 15, 15, 0.7);
 }
 #root {

@@ -11,11 +11,10 @@ const SingleOrder = () => {
   const { id } = useParams();
   const { data, loading, error } = useGetQurey(
     'SINGLE_ORDER',
-    { id },
+    { key: '_id', value: id },
     'getOrder'
   );
   // console.log(data);
-
   return (
     <AdminLayout>
       {loading && (
@@ -24,9 +23,10 @@ const SingleOrder = () => {
         </Box>
       )}
       <Box>
-        {loading === false && Object.keys(data?.customer || {})?.length ? (
+        {loading === false &&
+        Object.keys(data?.customerDetail || {})?.length ? (
           <>
-            <CustomerDetailsSingleOrder {...{ ...data?.customer }} />
+            <CustomerDetailsSingleOrder {...{ ...data?.customerDetail }} />
             <SingleOrderSummary {...{ ...data }} />
             {data?.order_items?.length
               ? data?.order_items?.map?.((item, i) => (

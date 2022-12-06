@@ -38,6 +38,14 @@ export const NEW_ORDER = gql`
   }
 `;
 
+export const ADD_NEW_ORDER_ITEM = gql`
+  mutation addNewOrderItem($_id: ID!, $newItem: InputAddOrderItem!) {
+    addNewOrderItem(_id: $_id, newItem: $newItem) {
+      order_no
+    }
+  }
+`;
+
 export const EDIT_ORDER = gql`
   mutation updateOrder(
     $_id: String!

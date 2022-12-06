@@ -48,7 +48,7 @@ export default {
   /**
    * All Measurements
    */
-  allMeasurements: async (_parent, { key, value }, _context) => {
+  allMeasurements: async (_parent, { key, value, options }, _context) => {
     try {
       let filter = key && value ? { [key]: value } : {};
       if (key && !value) {
@@ -56,7 +56,8 @@ export default {
       }
       const all = await Measurement.find(filter);
       // console.log(all);
-      return all?.reverse();
+      if (options === 'reverse') return all.reverse();
+      return all;
     } catch (e) {
       errorHandler(e);
     }

@@ -153,6 +153,7 @@ const Customer = () => {
           <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
               rows={data}
+              autoHeight
               // columns={[{
               //  type:'singleSelect',
               //  valueOptions

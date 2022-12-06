@@ -17,20 +17,55 @@ export default gql`
     updatedAt: DateTime!
   }
   type Order {
-    _id: ID!
-    customer: Customer!
-    order_no: String!
-    totalQty: Int!
-    totalPrice: Float!
+    _id: ID
+    customer: String
+    customerDetail: Customer
+    order_no: String
+    totalQty: Int
+    totalPrice: Float
     discount: Float
     advanced: Float
     due: Float
     transport_charge: Float
     order_status: String
-    delivery_date: Date!
-    createdAt: DateTime!
-    updatedAt: DateTime!
+    delivery_date: Date
+    createdAt: DateTime
+    updatedAt: DateTime
     order_items: [OrderItemsOfOrder!]!
+    notes: String
+  }
+
+  # type Order {
+  #   _id: ID!
+  #   customer: Customer!
+  #   order_no: String!
+  #   totalQty: Int!
+  #   totalPrice: Float!
+  #   discount: Float
+  #   advanced: Float
+  #   due: Float
+  #   transport_charge: Float
+  #   order_status: String
+  #   delivery_date: Date!
+  #   createdAt: DateTime!
+  #   updatedAt: DateTime!
+  #   order_items: [OrderItemsOfOrder!]!
+  # }
+
+  type BasicOrder {
+    _id: ID
+    customer: String
+    order_no: String
+    totalQty: Int
+    totalPrice: Float
+    discount: Float
+    advanced: Float
+    due: Float
+    transport_charge: Float
+    order_status: String
+    delivery_date: Date
+    createdAt: DateTime
+    updatedAt: DateTime
   }
 
   type OrderDesignItems {
@@ -105,16 +140,35 @@ export default gql`
     order_status: String
     delivery_date: Date!
     order_items: [InputOrderItemsOfOrder!]!
+    notes: String
+  }
+
+  input InputAddOrderItem {
+    customer: ID
+    order_no: String
+    previous_order: String!
+    totalQty: Int!
+    totalPrice: Float!
+    discount: Float
+    advanced: Float
+    due: Float!
+    transport_charge: Float
+    order_status: String
+    delivery_date: Date
+    order_items: [InputOrderItemsOfOrder!]!
+    notes: String
   }
   type Del {
     success: Boolean
   }
   type Query {
     allOrders(key: String, value: String): [AllOrder!]!
-    getOrder(id: ID!): Order!
+    getOrder(key: String!, value: String!): Order!
+    # basicOrder(key: String!, value: String!): BasicOrder
   }
   type Mutation {
     createOrder(order: InputOrder!): Order!
+    addNewOrderItem(_id: ID!, newItem: InputAddOrderItem!): Order!
     updateOrder(id: ID!, update: InputOrder!): Order!
     deleteOrder(_id: ID!, customer: ID!): Del!
   }

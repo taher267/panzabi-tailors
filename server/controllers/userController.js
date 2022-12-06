@@ -45,7 +45,8 @@ export default {
         key && value
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['USER'] } };
-      return await userServices.findUser(filter);
+      const users = await userServices.findUser(filter);
+      return users;
     } catch (e) {
       errorHandler(e);
     }
