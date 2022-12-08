@@ -97,6 +97,14 @@ export default con()
             type: Date,
             required: [true, 'Delivery date is mandatory!'],
           },
+          payments: [
+            {
+              _id: false,
+              on: Date,
+              amount: Number,
+            },
+          ],
+          notes: String,
         },
 
         { timestamps: true }

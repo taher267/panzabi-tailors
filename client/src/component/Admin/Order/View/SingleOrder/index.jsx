@@ -3,9 +3,9 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import AdminLayout from '../../../../Layout/AdminLayout';
-import CustomerDetailsSingleOrder from './CustomerDetailsSingleOrder';
+import CustomerDetailsAndBasicSingleOrderInfo from './CustomerDetailsAndBasicSingleOrderInfo';
 import OrderItemView from './OrderItemView';
-import SingleOrderSummary from './SingleOrderSummary';
+// import SingleOrderSummary from './SingleOrderSummary';
 
 const SingleOrder = () => {
   const { id } = useParams();
@@ -26,8 +26,8 @@ const SingleOrder = () => {
         {loading === false &&
         Object.keys(data?.customerDetail || {})?.length ? (
           <>
-            <CustomerDetailsSingleOrder {...{ ...data?.customerDetail }} />
-            <SingleOrderSummary {...{ ...data }} />
+            <CustomerDetailsAndBasicSingleOrderInfo {...{ ...data }} />
+            {/* <SingleOrderSummary {...{ ...data }} /> */}
             {data?.order_items?.length
               ? data?.order_items?.map?.((item, i) => (
                   <OrderItemView {...{ ...item }} key={i} />
