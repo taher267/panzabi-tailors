@@ -102,6 +102,7 @@ export default con()
               _id: false,
               on: Date,
               amount: Number,
+              discount: Number,
             },
           ],
           notes: String,

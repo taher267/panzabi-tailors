@@ -4,7 +4,7 @@ export const NEW_ORDER = gql`
     createOrder(
       order: $order # order: { #   order_no: $order_no #   quantity: $quantity
     ) {
-      # _id
+      _id
       order_no
       # totalQty
       # totalPrice

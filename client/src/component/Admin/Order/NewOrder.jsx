@@ -98,6 +98,7 @@ const NewOrder = () => {
     defaultValues: {
       checkboxUp: false,
       checkboxDown: false,
+      // item_add_in_existing_order: false,
     },
   });
   // New product add
@@ -327,6 +328,11 @@ const NewOrder = () => {
   useEffect(() => {
     if (data || newItemData) {
       reset();
+      if (data?._id || prevOrderData?._id) {
+        navigate(`/dashboard/order/${data?._id || prevOrderData?._id}`, {
+          replace: true,
+        });
+      }
     }
   }, [data, newItemData]);
 

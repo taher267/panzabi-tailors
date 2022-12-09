@@ -1,5 +1,8 @@
 import { gql } from '@apollo/client ';
-
+const order = ` orders {
+  order_id
+  order_no
+}`;
 export const ALL_CUSTOMERS = gql`
   query allCustomers {
     allCustomers {
@@ -20,7 +23,7 @@ export const ALL_CUSTOMERS = gql`
         name
         _id
       }
-      orders
+     ${order}
       createdAt
       updatedAt
     }
@@ -44,7 +47,7 @@ export const SINGLE_CUSTOMER = gql`
       # }
       engage
       # user
-      orders
+      ${order}
       createdAt
       updatedAt
     }

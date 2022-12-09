@@ -1,5 +1,5 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import AdminLayout from '../../../../Layout/AdminLayout';
@@ -8,12 +8,22 @@ import OrderItemView from './OrderItemView';
 // import SingleOrderSummary from './SingleOrderSummary';
 
 const SingleOrder = () => {
+  const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState();
   const { id } = useParams();
   const { data, loading, error } = useGetQurey(
     'SINGLE_ORDER',
     { key: '_id', value: id },
     'getOrder'
   );
+
+  /**
+   * Edit item
+   */
+
+  const handleClickOpen = () => {
+    setOpen((p) => !p);
+  };
   // console.log(data);
   return (
     <AdminLayout>
@@ -29,9 +39,14 @@ const SingleOrder = () => {
             <CustomerDetailsAndBasicSingleOrderInfo {...{ ...data }} />
             {/* <SingleOrderSummary {...{ ...data }} /> */}
             {data?.order_items?.length
-              ? data?.order_items?.map?.((item, i) => (
-                  <OrderItemView {...{ ...item }} key={i} />
-                ))
+              ? [...data?.order_items]
+                  .reverse()
+                  ?.map?.((item, i) => (
+                    <OrderItemView
+                      {...{ ...item, editId, setEditId, handleClickOpen, open }}
+                      key={i}
+                    />
+                  ))
               : ''}
           </>
         ) : (

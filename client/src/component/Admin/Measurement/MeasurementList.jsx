@@ -13,7 +13,7 @@ const MeasurementList = () => {
   const [rowId, setRowId] = useState(null);
   const { loading, data, error } = useGetQurey(
     'ALL_MEASUREMENTS',
-    { options: 'reverse' },
+    null,
     'allMeasurements'
   );
   // console.log(data);
@@ -122,11 +122,10 @@ const MeasurementList = () => {
           gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
         }}
       >
-        {/* {!loading && data?.length && ( */}
         <Box sx={{ width: '100%' }} className="measuementActions">
           <DataGrid
             autoHeight
-            rows={data || []}
+            rows={(data?.length && [...data].reverse()) || []}
             columns={columns}
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

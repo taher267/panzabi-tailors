@@ -55,6 +55,7 @@ export const SINGLE_ORDER = gql`
       discount
       advanced
       customerDetail {
+        _id
         name
         phone_no
         email
@@ -69,6 +70,7 @@ export const SINGLE_ORDER = gql`
       order_items {
         _id
         quantity
+        connection
         products {
           name
           _id

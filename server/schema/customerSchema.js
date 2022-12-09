@@ -10,10 +10,17 @@ type Customer {
   transportation: Transportation
   engage: [String]
   user: User
-  orders: [String]
+  orders: [CustomerOrder]
   createdAt: DateTime!
   updatedAt: DateTime!
 }`;
+
+export const CustomerOrder = `
+type CustomerOrder {
+  order_id: String
+  order_no: String
+}`;
+
 export const InputCustomer = `
 input InputCustomer {
   name: String!
@@ -23,8 +30,8 @@ input InputCustomer {
   address: String
   transportation: InputTransportation
   engage: [String]
-  orders: [String]
 }`;
+// orders: [String]
 export const Transportation = `type Transportation {
   transport_name: String
   receiver_address: String
