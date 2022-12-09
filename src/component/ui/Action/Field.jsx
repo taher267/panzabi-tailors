@@ -1,7 +1,6 @@
 import {
   FormControlLabel,
   FormGroup,
-  TextareaAutosize,
   TextField,
   Checkbox,
 } from '@mui/material';
@@ -73,7 +72,6 @@ const Field = (props) => {
       const val = predefined?.[name]?.length ? predefined?.[name] : '';
       const value = Array.isArray(val) ? val.join('|') : val;
       const validate2 = stringToObject(validation);
-      // console.log(validate2?.max);
       React.useEffect(() => {
         if (type === 'date' && validate2.max) {
           document

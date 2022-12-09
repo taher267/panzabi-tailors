@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import AdminLayout from '../Layout/AdminLayout/index';
 import { DataGrid } from '@mui/x-data-grid';
 import { Visibility } from '@mui/icons-material';
@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import useGetQurey from '../hooks/gql/useGetQurey';
 import LinearLoader from '../Loaders/LinearLoader';
 import CustomerActions from './CustomerActions';
+import { useEffect } from 'react';
 const statusesOptions = [
   { value: 'ACTIVE', label: 'ACTIVE', color: 'red' },
   { value: 'PENDING', label: 'PENDING' },
@@ -23,37 +24,42 @@ const Customer = () => {
   const [rowId, setRowId] = useState(null);
   const columns = useMemo(
     () => [
-      { field: '_id', headerName: 'ID', width: 210, hide: true },
+      {
+        field: '_id',
+        headerName: 'ID',
+        minWidth: 150,
+        hide: false,
+      },
       {
         field: 'name',
         headerName: 'Full Name',
-        width: 110,
+        minWidth: 110,
         editable: true,
       },
       {
         field: 'phone_no',
         headerName: 'Phone',
-        width: 110,
+        minWidth: 110,
         editable: true,
       },
       {
         field: 'email',
         headerName: 'Email',
-        width: 200,
+        minWidth: 200,
         editable: true,
         hide: true,
       },
       {
         field: 'address',
         headerName: 'Adderess',
-        width: 300,
+        minWidth: 300,
         editable: true,
         hide: true,
       },
       {
         field: 'status',
         headerName: 'Status',
-        width: 80,
+        minWidth: 80,
         type: 'singleSelect',
         valueOptions: statusesOptions.map((status) => status.value),
         editable: true,
@@ -62,7 +68,7 @@ const Customer = () => {
       {
         field: 'delivery_details',
         headerName: 'Delivery Details',
-        width: 250,
+        minWidth: 250,
         editable: false,
         hide: true,
       },
@@ -70,7 +76,7 @@ const Customer = () => {
         field: 'createdAt',
         headerName: 'Created Date',
         description: 'Customer Created',
-        width: 160,
+        minWidth: 160,
         hide: true,
       },
       {
@@ -78,24 +84,34 @@ const Customer = () => {
         headerName: 'Entry Update',
         description: 'Customer update info time',
         hide: true,
-        width: 160,
+        minWidth: 160,
       },
       {
         field: 'orders',
         headerName: 'Orders',
         description: 'Customer Created',
         sortable: false,
-        width: 160,
+        minWidth: 75,
         valueGetter: ({ row }) => {
           return row?.orders?.length;
         },
       },
+
+      {
+        field: 'last_order_info',
+        headerName: 'Last Order',
+        description: 'Last order detail',
+        sortable: false,
+        // hide: true,
+        minWidth: 120,
+        renderCell: ({ row }) => <OrderInfo {...{ row }} />,
+      },
       {
         field: 'user',
-        headerName: 'Entry By',
+        headerName: 'Issue By',
         sortable: false,
-        width: 250,
-        hide: false,
+        minWidth: 250,
+        hide: true,
         renderCell: ({ row }) => {
           return (
             <>
@@ -115,7 +131,7 @@ const Customer = () => {
         headerName: 'Reference',
         description: 'Customer Created',
         sortable: false,
-        width: 160,
+        minWidth: 160,
         valueGetter: ({ row }) => {
           return row?.engage?.length;
         },
@@ -125,7 +141,7 @@ const Customer = () => {
         field: 'Actions',
         headerName: 'Actions',
         sortable: false,
-        width: 250,
+        minWidth: 250,
         renderCell: (params) => (
           <CustomerActions {...{ params, rowId, setRowId }} />
         ),
@@ -138,43 +154,53 @@ const Customer = () => {
     null,
     'allCustomers'
   );
-  console.log(error);
+  useEffect(() => {
+    document.querySelector('.Mui-resizeTriggers')?.previousSibling.remove();
+  }, [data]);
   return (
     <AdminLayout>
       {loading && <LinearLoader />}
-      <div
-        style={{
-          display: 'grid',
-          gap: '5px',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+      <DataGridPremium
+        rows={(data?.length && data) || []}
+        autoHeight
+        // columns={[{
+        //  type:'singleSelect',
+        //  valueOptions
+        // }]}
+        columns={columns}
+        pageSize={10}
+        // rowHeight={50}
+        getRowHeight={() => 'auto'}
+        rowsPerPageOptions={[5]}
+        // checkboxSelection
+        // disableSelectionOnClick
+        components={{ Toolbar: GridToolbar }}
+        getRowId={({ _id }) => _id}
+        onCellEditCommit={({ id }) => setRowId(id)}
+        setEditCellValue={(d) => {
+          console.log(d);
         }}
-      >
-        {!loading && data?.length && (
-          <Box sx={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={data}
-              autoHeight
-              // columns={[{
-              //  type:'singleSelect',
-              //  valueOptions
-              // }]}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              // checkboxSelection
-              // disableSelectionOnClick
-              components={{ Toolbar: GridToolbar }}
-              getRowId={({ _id }) => _id}
-              onCellEditCommit={({ id }) => setRowId(id)}
-              setEditCellValue={(d) => {
-                console.log(d);
-              }}
-            />
-          </Box>
-        )}
-      </div>
+      />
     </AdminLayout>
   );
 };
 
 export default Customer;
+
+const OrderInfo = ({ row }) => {
+  const typeSx = { fontSize: '12px' };
+  return (
+    <Box>
+      {row.orders?.reverse?.()?.map(({ order_id, order_no }) => {
+        return (
+          <Box key={order_id}>
+            <Typography sx={typeSx}>Order No :</Typography>
+            <Typography sx={typeSx}>{order_no}</Typography>
+            <Typography sx={typeSx}>Order ID :</Typography>
+            <Typography sx={typeSx}>{order_id}</Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
+};

@@ -9,16 +9,23 @@ import {
   Divider,
   Typography,
 } from '@mui/material';
-const OrderItemView = ({
-  _id,
-  measurements,
-  designs,
-  order_date,
-  price,
-  products,
-  quantity,
-  sample,
-}) => {
+import EditItem from './EditItem';
+const OrderItemView = (props) => {
+  const {
+    _id,
+    measurements,
+    designs,
+    order_date,
+    price,
+    products,
+    quantity,
+    sample,
+    connection,
+    editId,
+    setEditId,
+    handleClickOpen,
+    open,
+  } = props;
   //   const printView = (divName) => {
   //     const printContents = document.getElementById(divName).innerHTML;
   //     const originalContents = document.body.innerHTML;
@@ -27,8 +34,8 @@ const OrderItemView = ({
   //     document.body.innerHTML = originalContents;
   //   };
   return (
-    <Card variant="outlined">
-      <CardActionArea>
+    <Card variant="outlined" sx={{ marginBottom: 1 }}>
+      <Box>
         <CardMedia
           component="img"
           height="40"
@@ -51,6 +58,21 @@ const OrderItemView = ({
             Print
           </Typography> */}
           <Box id={_id}>
+            <Button
+              variant={editId === _id ? 'contained' : 'outlined'}
+              onClick={() => {
+                setEditId(_id);
+                handleClickOpen();
+              }}
+            >
+              Edit
+            </Button>
+            {(editId === _id && (
+              <EditItem {...{ handleClickOpen, open, ...props }} />
+            )) ||
+              ''}
+
+            {/* <Typography>{connection}</Typography> */}
             {(measurements?.length && (
               <>
                 <MeasuremntView {...{ measurements }} />
@@ -67,7 +89,7 @@ const OrderItemView = ({
               ''}
           </Box>
         </CardContent>
-      </CardActionArea>
+      </Box>
     </Card>
   );
 };
