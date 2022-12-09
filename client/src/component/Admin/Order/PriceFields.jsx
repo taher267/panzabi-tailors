@@ -3,39 +3,57 @@ import PropTypes from 'prop-types';
 import { Box, TextField } from '@mui/material';
 
 const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
+  const key = pricingKey?.toString?.() ? '.' + pricingKey : '';
   return (
-    <Box
-      sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}
-      // style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 5 }}
-    >
+    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
       <TextField
         fullWidth
         label="Quantity"
         type="number"
-        {...register(`pricing.${pricingKey}.quantity`, {
+        {...register(`pricing${key}.quantity`, {
           valueAsNumber: true,
           required: `Quantiry Mandatory`,
-          min: 0,
+          min: { value: 1, message: `Minimum Product quantity 1 !` },
           validate: (v) => {
-            if (v > -1 && productLen > v) {
+            if (productLen > v) {
               return `Product quantity minimum ${productLen}`; //2
             }
           },
         })}
-        error={errors?.pricing?.[pricingKey]?.quantity ? true : false}
-        helperText={errors?.pricing?.[pricingKey]?.quantity?.message || ''}
+        error={
+          errors?.pricing?.[pricingKey]?.quantity
+            ? true
+            : errors?.pricing?.quantity
+            ? true
+            : false
+        }
+        helperText={
+          errors?.pricing?.[pricingKey]?.quantity?.message ||
+          errors?.pricing?.quantity?.message ||
+          ''
+        }
       />
       <TextField
         label="Price"
         type="number"
-        {...register(`pricing.${pricingKey}.price`, {
+        {...register(`pricing${key}.price`, {
           valueAsNumber: true,
-          required: `Price Mandatory`,
-          min: 0,
+          required: `Price is Mandatory`,
+          min: { value: 1, message: `Minimum Product price 1` },
         })}
         fullWidth
-        error={errors?.pricing?.[pricingKey]?.price ? true : false}
-        helperText={errors?.pricing?.[pricingKey]?.price?.message || ''}
+        error={
+          errors?.pricing?.[pricingKey]?.price
+            ? true
+            : errors?.pricing?.price
+            ? true
+            : false
+        }
+        helperText={
+          errors?.pricing?.[pricingKey]?.price?.message ||
+          errors?.pricing?.price?.message ||
+          ''
+        }
       />
       <TextField
         fullWidth

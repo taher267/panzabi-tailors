@@ -17,6 +17,8 @@ import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import OrderItemCard from '../../OrderItemCard2';
 import { useForm, useWatch } from 'react-hook-form';
 import removeGqlErrors from '../../../../utils/removeGqlErrors';
+import { IconButton, Snackbar } from '@mui/material';
+import designDevider from '../../../../utils/designDevider';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -49,7 +51,14 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     editId,
   } = props;
   const [gqlErrs, setGqlErrs] = React.useState({});
-  const [orderProduct, setOrderProduct] = React.useState({ up: [], down: [] });
+  const [notice, setNotice] = React.useState(false);
+  const [noticeMsg, setNoticeMsg] = React.useState('');
+  const [orderProduct, setOrderProduct] = React.useState([]);
+  const { data: all_designs } = useGetQurey(
+    'SPECIFIC_ALL_DESIGNS',
+    null,
+    'allDesigns'
+  );
   const {
     data: measurementsFields,
     error,
@@ -78,7 +87,6 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   } = useForm({
     mode: 'all',
   });
-  //   console.log(measurementsFields);
   //   console.log(arrToObj(measurements, 'msr_id', ['size']));
   //   console.log(arrToObj(products, '_id', 'name'));
   const onFocus = ({ target: { name } }) => {
@@ -90,6 +98,28 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     control,
     name: connection,
   });
+  const handleNotice = (mg) => {
+    setNotice((p) => !p);
+    setNoticeMsg(mg || 'Just Minimize the edit form!');
+  };
+  const handleClickOpenWithFromClear = (_, clearFrom) => {
+    // if (clearFrom) {
+    //   reset();
+    // }
+    // handleClickOpen();
+    if (clearFrom && confirm(`Would you like to clear those all data!`)) {
+      reset();
+      handleClickOpen();
+      //   handleNotice(`From has been cleared!`);
+    } else {
+      handleClickOpen();
+      //   handleNotice();
+    }
+  };
+  const pricing = useWatch({
+    control,
+    name: 'pricing',
+  });
 
   return (
     <div>
@@ -99,75 +129,109 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
         onClose={handleClickOpen}
         TransitionComponent={Transition}
       >
-        <AppBarWrapper {...{ handleClickOpen }} />
-        <Box sx={{ height: '100%', paddingX: 5 }}>
-          <form onSubmit={handleSubmit}>
-            {(all_products && measurementsFields && (
-              <OrderItemCard
-                {...{
-                  //Common
-                  all_products,
-                  errors,
-                  register,
-                  gqlErrs,
-                  setGqlErrs,
-                  onFocus,
-                  removeGqlErrors,
-                  //product
-                  setOrderProduct,
-                  productType: connection === 'up' ? 'type-1' : 'type-2',
-                  fieldName: `${connection}_products`,
-                  //Measurement
-                  measurementPrefix: `_${connection}`,
-                  measurementFields: measurementsFields,
-                  // measurementFields: devideMeasurement?.down || [],
-                  // desings: desings?.down || [],
-                  type: connection,
-                  watching,
-                  //Pricing
-                  // productLen: orderProduct?.down?.length || 0,
-                  // total: pricingDetail?.down?.total || 0,
-                  // pricingKey: 1,
-                }}
-              />
-            )) ||
-              ''}
+        <AppBarWrapper {...{ handleClickOpenWithFromClear }} />
+        <Box>
+          <form
+            onSubmit={handleSubmit((d) => {
+              console.log(d);
+            })}
+          >
+            <Box sx={{ paddingX: 5 }}>
+              {(all_products && measurementsFields && (
+                <OrderItemCard
+                  {...{
+                    //Common
+                    all_products,
+                    errors,
+                    register,
+                    gqlErrs,
+                    setGqlErrs,
+                    onFocus,
+                    removeGqlErrors,
+                    //product
+                    defaultProducts: products?.map(({ name, _id }) => ({
+                      name,
+                      _id,
+                    })),
+                    // defaultProducts: [...products],
+                    setOrderProduct,
+                    productType: connection === 'up' ? 'type-1' : 'type-2',
+                    fieldName: `${connection}_products`,
+                    //Measurement
+                    measurementPrefix: '',
+                    measurementFields: measurementsFields,
+                    measurementDefaultValues: arrToObj(
+                      measurements,
+                      'msr_id',
+                      'size'
+                    ),
+                    desings:
+                      designDevider(all_designs || [])?.[connection] || [],
+                    type: connection,
+                    watching,
+                    //Pricing
+                    productLen: orderProduct?.[connection]?.length || 0,
+                    total: (pricing?.quantity || 0) * (pricing?.price || 0),
+                  }}
+                />
+              )) ||
+                ''}
+            </Box>
+            <AppBar sx={{ position: 'relative', marginTop: 2 }}>
+              <Toolbar>
+                <Typography
+                  sx={{ ml: 2, flex: 1 }}
+                  variant="h6"
+                  component="Box"
+                ></Typography>
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  type="submit"
+                  //   onClick={handleClickOpen}
+                >
+                  Update
+                </Button>
+              </Toolbar>
+            </AppBar>
           </form>
         </Box>
-
-        <AppBar sx={{ position: 'relative' }}>
-          <Toolbar>
-            <Typography
-              sx={{ ml: 2, flex: 1 }}
-              variant="h6"
-              component="div"
-            ></Typography>
-            <Button
-              color="secondary"
-              variant="contained"
-              onClick={handleClickOpen}
-            >
-              Update
-            </Button>
-          </Toolbar>
-        </AppBar>
       </Dialog>
+      <Snackbar
+        open={notice}
+        autoHideDuration={3000}
+        onClose={handleNotice}
+        message={noticeMsg}
+        action={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setNotice(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
     </div>
   );
 }
 
-const AppBarWrapper = ({ handleClickOpen }) => (
+const AppBarWrapper = ({ handleClickOpenWithFromClear }) => (
   <AppBar sx={{ position: 'relative' }}>
     <Toolbar>
       <Typography variant="h6" component="div">
-        <Button color="inherit" onClick={handleClickOpen}>
+        <Button color="inherit" onClick={handleClickOpenWithFromClear}>
           <MinimizeIcon />
         </Button>
       </Typography>
       <Typography sx={{ flex: 1 }} variant="h6" component="div">
         Update order item
       </Typography>
-      <Button color="error" onClick={handleClickOpen}>
+      <Button
+        color="error"
+        onClick={(e) => handleClickOpenWithFromClear(e, 'clearFrom')}
+      >
         <CloseIcon />
       </Button>
     </Toolbar>

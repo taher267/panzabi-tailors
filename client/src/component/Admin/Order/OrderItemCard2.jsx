@@ -16,10 +16,12 @@ const OrderItemCard = ({
   removeGqlErrors, //2way
   //product
   setOrderProduct,
+  defaultProducts = [],
   productType = 'type-1',
   fieldName = 'up_products',
   //Measurement
   measurementPrefix = '_up',
+  measurementDefaultValues = {},
   measurementFields,
   //Design
   desings,
@@ -30,6 +32,7 @@ const OrderItemCard = ({
   productLen,
   pricingKey,
 }) => {
+  // console.log(measurementDefaultValues);
   return (
     <>
       <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
@@ -42,11 +45,6 @@ const OrderItemCard = ({
                   'type-1': 'up',
                   'type-2': 'down',
                 };
-                // const reduce = v?.reduce((a, c) => {
-                //   // return [...a, c];
-                //   // return [...a, c?._id];
-                // }, []);
-                // const reduce = v?.reduce((a, c) => [...a, c?._id], []);
                 return {
                   ...p,
                   [types[productType]]: v?.map(({ _id, name }) => ({
@@ -58,6 +56,7 @@ const OrderItemCard = ({
             }}
             products={all_products?.filter((p) => p.category === productType)}
             error={errors?.[fieldName]}
+            defaultProducts={defaultProducts}
           />
         </>
       ) : (
@@ -72,6 +71,7 @@ const OrderItemCard = ({
             register,
             errors,
             setGqlErrs,
+            defaultValues: measurementDefaultValues,
             prefix: measurementPrefix,
             removeGqlErrors,
             fields: measurementFields,
