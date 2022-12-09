@@ -27,6 +27,7 @@ import {
   InputTransportation,
   InputCustomer,
   Transportation,
+  CustomerOrder,
 } from '../schema/customerSchema.js';
 
 import {
@@ -95,6 +96,7 @@ ${OrderSchema}
   # Custoer Query start
   ${Customer}
   ${Transportation}
+  ${CustomerOrder}
   # Custoer Query End
   # Product Query Start
   ${MeasurementItem}

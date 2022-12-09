@@ -89,6 +89,7 @@ export default gql`
   }
   type OrderItemsOfOrder {
     _id: ID!
+    connection: String!
     products: [orderProduct!]!
     price: Float!
     quantity: Int!

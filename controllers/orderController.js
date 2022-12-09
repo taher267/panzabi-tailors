@@ -69,7 +69,7 @@ export default {
     try {
       const newOrder = await orderServices.newOrder({ ...order });
       await userCustomerServices.customerOrderIDUpdate(order.customer, {
-        $push: { orders: newOrder.id },
+        $push: { orders: { order_id: newOrder.id, order_no: order.order_no } },
       });
       return newOrder;
     } catch (e) {
@@ -103,7 +103,7 @@ export default {
   allOrders: async (_parent, { key, value }, _context) => {
     //
     try {
-      const filter = key && value ? { [key]: value } : {};
+      let filter = key && value ? { [key]: value } : {};
       const all = await orderServices.findOrder(filter);
       // console.log(all);
       return all;
