@@ -10,7 +10,9 @@ import userValidation from '../validation/userValidation.js';
 import userServices from '../services/userCustomerServices.js';
 import { UserInputError } from 'apollo-server';
 import getJWT from '../utils/getJWT.js';
-import { errorFormat } from '../../client/src/component/utils/errorConv.js';
+
+import errorFormater from '../utils/errorFormater.js';
+
 export default {
   login: async (parent, { credentials }, { req, res }) => {
     try {
@@ -26,20 +28,20 @@ export default {
       if (!user)
         throw new UserInputError(
           `Wrong credentials!`,
-          errorFormat(`invalid credentials 😈`)
+          errorFormater(`invalid credentials 😈`)
         );
       // Password check
       const match = await bcrypt.compare(password, user.password);
       if (!match)
         throw new UserInputError(
           `Wrong credentials!`,
-          errorFormat(`invalid credentials 😈`)
+          errorFormater(`invalid credentials 😈`)
         );
       // Authorization check
       if (!user?.roles.includes('ADMIN')) {
         throw new UserInputError(
           `Unauthorized!`,
-          errorFormat(`Unauthorized to access this resource 😈`)
+          errorFormater(`Unauthorized to access this resource 😈`)
         );
       }
       // return token with credientials

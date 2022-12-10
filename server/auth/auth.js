@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import userServices from '../services/userCustomerServices.js';
 import config from '../config/config.js';
 import { checkAdmin } from '../utils/checkRoles.js';
-import { errorFormat } from '../../client/src/component/utils/errorConv.js';
+import errorFormater from '../utils/errorFormater.js';
 
 export default {
   userAuthorization: async (req) => {
@@ -20,19 +20,19 @@ export default {
       if (!decoted)
         throw new AuthenticationError(
           `Invalid/ expired credientials!`,
-          errorFormat(`Provide valid credientils! `)
+          errorFormater(`Provide valid credientils! `)
         );
       const user = await userServices.findUser('_id', decoted.id);
       if (!user)
         throw new AuthenticationError(
           `Something going worng!`,
-          errorFormat(`Could be internal issue! 😧`)
+          errorFormater(`Could be internal issue! 😧`)
         );
 
       if (!checkAdmin(user.roles))
         throw new AuthenticationError(
           `Unauthorized!`,
-          errorFormat(`User should be proper authorization`)
+          errorFormater(`User should be proper authorization`)
         );
       req.user = user;
       return user;
