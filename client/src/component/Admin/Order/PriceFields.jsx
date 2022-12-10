@@ -2,7 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Box, TextField } from '@mui/material';
 
-const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
+const PriceFields = ({
+  errors,
+  register,
+  pricingKey,
+  productLen,
+  total,
+  defaultQty = 0,
+  defaultPrice = 0,
+  defaultTotal = 0,
+}) => {
   const key = pricingKey?.toString?.() ? '.' + pricingKey : '';
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
@@ -10,11 +19,13 @@ const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
         fullWidth
         label="Quantity"
         type="number"
+        defaultValue={Number(defaultQty)}
         {...register(`pricing${key}.quantity`, {
           valueAsNumber: true,
           required: `Quantiry Mandatory`,
           min: { value: 1, message: `Minimum Product quantity 1 !` },
           validate: (v) => {
+            // console.log(productLen);
             if (productLen > v) {
               return `Product quantity minimum ${productLen}`; //2
             }
@@ -36,6 +47,7 @@ const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
       <TextField
         label="Price"
         type="number"
+        defaultValue={Number(defaultPrice)}
         {...register(`pricing${key}.price`, {
           valueAsNumber: true,
           required: `Price is Mandatory`,
@@ -58,7 +70,7 @@ const PriceFields = ({ errors, register, pricingKey, productLen, total }) => {
       <TextField
         fullWidth
         label="Total"
-        value={total}
+        value={total || defaultTotal}
         inputProps={{ readOnly: true }}
       />
     </Box>

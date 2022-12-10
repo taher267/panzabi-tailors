@@ -16,7 +16,6 @@ export default function VerticalTabs({
   errors,
   watching,
   design_type = 'up',
-  defaultValues,
 }) {
   const [value, setValue] = React.useState(0);
 
@@ -74,7 +73,6 @@ export default function VerticalTabs({
             />
             {designs?.map(({ item, _id }, k) => {
               let error = errors?.[design_type]?.[i]?.[k];
-              const defVal = defaultValues?.[parent]?.[_id];
               return (
                 <Box
                   key={k}
@@ -118,22 +116,17 @@ export default function VerticalTabs({
                               ? '#dd1334'
                               : '',
                           }}
-                          defaultChecked={defVal !== undefined ? true : false}
                         />
                       }
                       label={item}
                     />
-                    {/* {console.log(
-                      defaultValues?.[parent]?.[_id]?.dsn_id === _id
-                    )} */}
+                    {/* {console.log(_id.$oid)} */}
                     <input
                       type="hidden"
                       defaultValue={_id} //|| _id
                       // defaultValue={_id.$oid}
                       {...register(`${[design_type]}.${i}.${k}.dsn_id`)}
                     />
-
-                    {/* {console.log(parent, _id)} */}
                     <input
                       type="hidden"
                       defaultValue={item} //|| _id
@@ -144,7 +137,6 @@ export default function VerticalTabs({
                   <TextField
                     error={errors?.[design_type]?.[i]?.[k] ? true : false}
                     fullWidth
-                    defaultValue={defVal || ''}
                     {...register(`${[design_type]}.${i}.${k}.desc`, {
                       validate: (val) => {
                         if (val?.trim() && !watching?.[i]?.[k]?.isCheck)
