@@ -11,13 +11,13 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import Slide from '@mui/material/Slide';
-import Box from '@mui/material/Box';
+import { Box } from '@mui/material';
 import clonning from '../../../../utils/clonning';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import OrderItemCard from '../../OrderItemCard2';
 import { useForm, useWatch } from 'react-hook-form';
 import removeGqlErrors from '../../../../utils/removeGqlErrors';
-import { IconButton, Snackbar } from '@mui/material';
+import { CircularProgress, IconButton, Snackbar } from '@mui/material';
 import designDevider from '../../../../utils/designDevider';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -38,6 +38,22 @@ const arrToObj = (data = [], key, selector) => {
   }
   return newObje;
 };
+const designDefaultValuesShape = (data) => {
+  let newObj = {};
+  for (const designsGroup of clonning(data)) {
+    if (designsGroup?.group && designsGroup?.items?.length) {
+      const { group, items } = designsGroup;
+      let groupping = {};
+      for (const { dsn_id, desc } of items) {
+        groupping[dsn_id] = desc;
+        // groupping[dsn_id] = { dsn_id, desc };
+      }
+      newObj[group] = groupping;
+    }
+  }
+  // console.log(newObj, data);
+  return newObj;
+};
 
 export default function EditItem({ handleClickOpen, open, ...props }) {
   const {
@@ -54,7 +70,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   const [notice, setNotice] = React.useState(false);
   const [noticeMsg, setNoticeMsg] = React.useState('');
   const [orderProduct, setOrderProduct] = React.useState([]);
-  const { data: all_designs } = useGetQurey(
+  const { data: all_designs, loading: designsLoading } = useGetQurey(
     'SPECIFIC_ALL_DESIGNS',
     null,
     'allDesigns'
@@ -62,7 +78,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   const {
     data: measurementsFields,
     error,
-    loading,
+    loading: measurementLoading,
   } = useGetQurey(
     'ALL_MEASUREMENTS',
     {
@@ -72,7 +88,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     },
     'allMeasurements'
   );
-  const { data: all_products } = useGetQurey(
+  const { data: all_products, loading: productsLoading } = useGetQurey(
     'PRODUCTS_NAME_ID_CAT',
     null,
     'allProducts'
@@ -88,7 +104,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     mode: 'all',
   });
   //   console.log(arrToObj(measurements, 'msr_id', ['size']));
-  //   console.log(arrToObj(products, '_id', 'name'));
+  // designDefaultValuesShape(designs);
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
     delete newErr[name];
@@ -120,7 +136,6 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     control,
     name: 'pricing',
   });
-
   return (
     <div>
       <Dialog
@@ -129,6 +144,19 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
         onClose={handleClickOpen}
         TransitionComponent={Transition}
       >
+        {((designsLoading || measurementLoading || productsLoading) && (
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '100vh',
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )) ||
+          ''}
         <AppBarWrapper {...{ handleClickOpenWithFromClear }} />
         <Box>
           <form
@@ -165,13 +193,18 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                       'msr_id',
                       'size'
                     ),
+
                     desings:
                       designDevider(all_designs || [])?.[connection] || [],
+                    designsDefaultValues: designDefaultValuesShape(designs),
                     type: connection,
                     watching,
                     //Pricing
                     productLen: orderProduct?.[connection]?.length || 0,
                     total: (pricing?.quantity || 0) * (pricing?.price || 0),
+                    defaultQty: quantity,
+                    defaultPrice: price,
+                    defaultTotal: quantity * price,
                   }}
                 />
               )) ||

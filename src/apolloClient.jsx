@@ -4,8 +4,8 @@ import { ReactSession } from 'react-client-session';
 const httpLink = createHttpLink({
   // uri: 'https://precious-daffodil-da626b.netlify.app',
   // uri: 'https://6339dccf0558fc1390238f4c--precious-daffodil-da626b.netlify.app',
-  uri: 'https://panzabi-tailors.onrender.com',
-  // uri: 'http://localhost:4000',
+  // uri: 'https://panzabi-tailors.onrender.com',
+  uri: 'http://localhost:4000',
 });
 const authLink = setContext((_, { headers }) => {
   let token = ReactSession.get('token');

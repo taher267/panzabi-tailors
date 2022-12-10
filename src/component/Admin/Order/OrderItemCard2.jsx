@@ -22,6 +22,7 @@ const OrderItemCard = ({
   //Measurement
   measurementPrefix = '_up',
   measurementDefaultValues = {},
+  designsDefaultValues = {},
   measurementFields,
   //Design
   desings,
@@ -29,10 +30,12 @@ const OrderItemCard = ({
   type,
   //pricing
   total,
+  defaultQty,
+  defaultPrice,
+  defaultTotal,
   productLen,
   pricingKey,
 }) => {
-  // console.log(measurementDefaultValues);
   return (
     <>
       <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
@@ -97,6 +100,7 @@ const OrderItemCard = ({
               register,
               errors,
               allDesigns: desings,
+              defaultValues: designsDefaultValues,
               watching,
               design_type: type,
             }}
@@ -111,6 +115,9 @@ const OrderItemCard = ({
       </Typography>
       <PriceFields
         {...{
+          defaultQty,
+          defaultPrice,
+          defaultTotal,
           pricingKey,
           errors,
           register,
