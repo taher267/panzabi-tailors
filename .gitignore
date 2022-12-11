@@ -3,6 +3,6 @@ node_modules
 # server.js
 # resolvers.js
 # typeDefs.js
-.env
+config/.env
 
 #git rm ./config/.env --cached

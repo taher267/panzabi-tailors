@@ -1,3 +1,5 @@
+import { config } from 'dotenv';
+config({ path: './config/.env' });
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import resolvers from './resolvers/resolvers.js';
@@ -30,21 +32,35 @@ const server = new ApolloServer({
   // },
   plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
-
-db()
-  .then((d) => {
-    // console.log(d.connect);
-    console.log(d.connection.host);
-    return server.listen(PORT).then(({ url }) => {
-      console.log(
-        `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
-      );
+if (process.env.NODE_ENV === 'development') {
+  db()
+    .then((d) => {
+      console.log(d.connection.host);
+      return server.listen(PORT).then(({ url }) => {
+        console.log(
+          `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
+        );
+      });
+    })
+    .catch((e) => {
+      console.log(e);
+      process.exit(1);
     });
-  })
-  .catch((e) => {
-    console.log(e);
-    process.exit(1);
-  });
+} else {
+  db()
+    .then((d) => {
+      // console.log(d.connection);
+      return server.listen(PORT).then(({ url }) => {
+        console.log(
+          `Alhamdu lillah, 🚀 mongodb connected also Server ready at ${url}`
+        );
+      });
+    })
+    .catch((e) => {
+      console.log(e);
+      process.exit(1);
+    });
+}
 
 // console.log(/[^\∂]$/.test('ফদজকজফকদজফদ9434384←∂'));
 
