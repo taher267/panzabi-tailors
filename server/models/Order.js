@@ -1,6 +1,8 @@
 import mg from 'mongoose';
 import moment from 'moment';
 import con from '../config/db.js';
+let initModel;
+// if (process.env.NODE_ENV === 'development') {
 export default con()
   .then((d) => {
     return d.orders.model(
@@ -115,6 +117,5 @@ export default con()
   .catch((e) => {
     console.log(e);
   });
-// export default orderModel;
 
 // console.log();

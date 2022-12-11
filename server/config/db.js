@@ -1,26 +1,36 @@
+import { config } from 'dotenv';
+config({ path: './config/.env' });
 import mg from 'mongoose';
 import { lookup } from 'dns';
-const cpUri = `mongodb+srv://panzabi-tailors:tailors-panzabi@cluster0.k06iwap.mongodb.net/panzabiDotComTailors`;
-const local = `mongodb://localhost:27017/panzabiDotComTailors`;
 const uris = {
-  cpPri: `mongodb+srv://panzabi-tailors:tailors-panzabi@cluster0.k06iwap.mongodb.net/panzabiDotComTailors`,
-  cpPri2: `mongodb+srv://panzabi-tailors:tailors-panzabi@cluster0.k06iwap.mongodb.net/panzabiDotComTailorsOrders`,
+  cpPri: process.env.MONGO_STR,
+  cpPri2: process.env.MONGO_STR_ORDER,
   local: `mongodb://localhost:27017/panzabiDotComTailors`,
   local2: `mongodb://localhost:27017/panzabiDotComTailorsOrders`,
 };
 
 export default () => {
-  //   return mg.connect(uris['local']);
-  return new Promise((resolve) => {
-    lookup('panzabi.com', (e) => {
-      if (e) {
-        const con = mg.connect(uris['local']);
-        mg.orders = mg.createConnection(uris['local2']);
+  if (process.env.NODE_ENV === 'development') {
+    return new Promise((resolve) => {
+      lookup('panzabi.com', (e) => {
+        if (e) {
+          const con = mg.connect(uris['local']);
+          mg.orders = mg.createConnection(uris['local2']);
+          return resolve(con);
+        }
+        const con = mg.connect(uris['cpPri']);
+        mg.orders = mg.createConnection(uris['cpPri2']);
         return resolve(con);
-      }
-      const con = mg.connect(uris['cpPri']);
-      mg.orders = mg.createConnection(uris['cpPri2']);
-      return resolve(con);
+      });
     });
-  });
+  } else {
+    // const con = mg.connect(uris['cpPri']);
+    // con.orders = mg.createConnection(uris['cpPri2']);
+    // return con;
+    return new Promise((resolve) => {
+      mg.connect(uris['cpPri']);
+      mg.orders = mg.createConnection(uris['cpPri2']);
+      return resolve(mg);
+    });
+  }
 };
