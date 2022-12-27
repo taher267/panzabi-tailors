@@ -1,10 +1,14 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { ReactSession } from 'react-client-session';
+// console.log(import.meta.env.MODE);
 const httpLink = createHttpLink({
   // uri: 'https://precious-daffodil-da626b.netlify.app',
   // uri: 'https://6339dccf0558fc1390238f4c--precious-daffodil-da626b.netlify.app',
-  uri: 'https://panzabi-tailors.onrender.com',
+  uri:
+    import.meta.env.MODE === 'production'
+      ? 'https://panzabi-tailors.onrender.com'
+      : 'http://localhost:4000',
   // uri: 'http://localhost:4000',
 });
 const authLink = setContext((_, { headers }) => {
