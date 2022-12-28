@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { ReactSession } from 'react-client-session';
 import { AuthContext } from '../../context/AuthContext';
 import useMutationFunc from './../../hooks/gql/useMutationFunc';
+import decode from 'jwt-decode';
+
 ReactSession.setStoreType('localStorage');
 const init = {
   username: '01765470147',
@@ -33,7 +35,8 @@ const Login = () => {
       const token = data?.token;
       if (token) {
         ReactSession.set('token', token);
-        context?.login(token);
+        const decoded = decode(token);
+        context?.login?.(decoded);
       }
     }
   }, [data]);

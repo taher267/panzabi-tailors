@@ -6,8 +6,8 @@ import { Visibility } from '@mui/icons-material';
 import {
   DataGridPremium,
   GridToolbar,
-  useGridApiRef,
-  useKeepGroupedColumnsHidden,
+  // useGridApiRef,
+  // useKeepGroupedColumnsHidden,
 } from '@mui/x-data-grid-premium';
 import { Link } from 'react-router-dom';
 import useGetQurey from '../hooks/gql/useGetQurey';
@@ -28,7 +28,7 @@ const Customer = () => {
         field: '_id',
         headerName: 'ID',
         minWidth: 150,
-        hide: false,
+        hide: true,
       },
       {
         field: 'name',

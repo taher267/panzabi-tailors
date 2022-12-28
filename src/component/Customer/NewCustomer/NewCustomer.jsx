@@ -5,6 +5,7 @@ import {
   Box,
   TextField,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
@@ -18,6 +19,7 @@ import {
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
 import useMutationFunc from './../../hooks/gql/useMutationFunc';
+import { useEffect } from 'react';
 
 const colourOptions = [
   { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
@@ -49,9 +51,10 @@ const NewCustomer = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
-      name: 'Abu Taher',
+      // name: 'Abu Taher',
       phone_no: '01',
       email: '',
       address: '',
@@ -62,6 +65,11 @@ const NewCustomer = () => {
       engage: '',
     },
   });
+  useEffect(() => {
+    if (data) {
+      reset();
+    }
+  }, [data]);
 
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErr };
@@ -148,8 +156,17 @@ const NewCustomer = () => {
             variant="contained"
             fullWidth
             onFocus={onFocus}
-            endIcon={<Save />}
+            endIcon={
+              processing ? (
+                <CircularProgress
+                  sx={{ width: '23px !important', height: '23px !important' }}
+                />
+              ) : (
+                <Save />
+              )
+            }
             type="submit"
+            disabled={processing}
           >
             Add Customer
           </Button>

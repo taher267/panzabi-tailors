@@ -1,7 +1,6 @@
 import { useReducer, useState, useEffect, createContext } from 'react';
 import { ReactSession } from 'react-client-session';
 import decode from 'jwt-decode';
-import {} from 'react';
 
 const AuthContext = createContext({
   user: null,
