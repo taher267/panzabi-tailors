@@ -1,9 +1,10 @@
 import { gql } from 'apollo-server';
 
 export default gql`
-  type AllOrder {
+  type Orders {
     _id: ID!
     customer: String!
+    customerDetail: Customer!
     order_no: String!
     totalQty: Int!
     totalPrice: Float!
@@ -16,6 +17,7 @@ export default gql`
     createdAt: DateTime!
     updatedAt: DateTime!
   }
+
   type Order {
     _id: ID
     customer: String
@@ -34,23 +36,6 @@ export default gql`
     order_items: [OrderItemsOfOrder!]!
     notes: String
   }
-
-  # type Order {
-  #   _id: ID!
-  #   customer: Customer!
-  #   order_no: String!
-  #   totalQty: Int!
-  #   totalPrice: Float!
-  #   discount: Float
-  #   advanced: Float
-  #   due: Float
-  #   transport_charge: Float
-  #   order_status: String
-  #   delivery_date: Date!
-  #   createdAt: DateTime!
-  #   updatedAt: DateTime!
-  #   order_items: [OrderItemsOfOrder!]!
-  # }
 
   type BasicOrder {
     _id: ID
@@ -73,6 +58,7 @@ export default gql`
     label: String!
     desc: String
   }
+
   type OrderDesign {
     group: ID!
     items: [OrderDesignItems!]!
@@ -83,10 +69,12 @@ export default gql`
     size: String!
     label: String!
   }
+
   type orderProduct {
     _id: ID!
     name: String!
   }
+
   type OrderItemsOfOrder {
     _id: ID!
     connection: String!
@@ -163,7 +151,7 @@ export default gql`
     success: Boolean
   }
   type Query {
-    allOrders(key: String, value: String): [AllOrder!]!
+    allOrders(key: String, value: String): [Orders!]!
     getOrder(key: String!, value: String!): Order!
     # basicOrder(key: String!, value: String!): BasicOrder
   }

@@ -4,6 +4,19 @@ import DateTimeResolver, {
 import userCustomerServices from '../services/userCustomerServices.js';
 import errorHandler from '../utils/errorHandler.js';
 
+const customerDetail = async ({ customer: id }, args, c) => {
+  try {
+    const customer = await userCustomerServices.findUser(
+      '_id',
+      id,
+      'name phone_no email address order_status transportation'
+    );
+    return customer;
+  } catch (e) {
+    errorHandler(e);
+  }
+};
+
 export default {
   Date: dateResolver,
   DateTime: DateTimeResolver,
@@ -18,18 +31,9 @@ export default {
     },
   },
   Order: {
-    // customer: async ({ user: id }, args, c) => {
-    customerDetail: async ({ customer: id }, args, c) => {
-      try {
-        const customer = await userCustomerServices.findUser(
-          '_id',
-          id,
-          'name phone_no email address order_status transportation'
-        );
-        return customer;
-      } catch (e) {
-        errorHandler(e);
-      }
-    },
+    customerDetail,
+  },
+  Orders: {
+    customerDetail,
   },
 };
