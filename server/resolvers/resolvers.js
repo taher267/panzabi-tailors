@@ -7,6 +7,7 @@ import customerController from '../controllers/customerController.js';
 import authController from '../controllers/authController.js';
 import dailyAccountController from '../controllers/dailyAccountController.js';
 import others from './others.js';
+
 export default {
   Query: {
     allDesigns: designController.allDesigns,

@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useQuery, useLazyQuery } from '@apollo/client';
 import Actions from '../../graphql/Actions';
 import { errorFormat } from '../../utils/errorConv';
 

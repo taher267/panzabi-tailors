@@ -18,7 +18,7 @@ const initReport = {
 };
 const AccountsList = () => {
   const location = useLocation();
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(25);
   const [mnt, setMnt] = useState(moment());
   const [report, setReport] = useState({ ...initReport });
   const [rowId, setRowId] = useState(null);
@@ -139,16 +139,14 @@ const AccountsList = () => {
         }}
       >
         {!loading && data?.length && (
-          <Box
-            sx={{ height: 400, width: '100%' }}
-            className="measuementActions"
-          >
+          <Box sx={{ width: '100%' }} className="measuementActions">
             <DataGrid
+              autoHeight
               rows={data}
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 25, 50]}
+              rowsPerPageOptions={[25, 50, 100]}
               // checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}

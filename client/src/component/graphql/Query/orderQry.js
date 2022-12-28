@@ -2,6 +2,7 @@ import { gql } from '@apollo/client';
 const Product = `products {
   name
 }`;
+
 export const ALL_ORDERS = gql`
   query allOrders($key: String, $value: String) {
     allOrders(key: $key, value: $value) {
@@ -16,6 +17,15 @@ export const ALL_ORDERS = gql`
       due
       transport_charge
       customer
+      customerDetail {
+        _id
+        name
+        phone_no
+        email
+        transportation {
+          transport_name
+        }
+      }
       # order_items {
       #   products {
       #     name
@@ -54,6 +64,7 @@ export const SINGLE_ORDER = gql`
       totalPrice
       discount
       advanced
+      customer
       customerDetail {
         _id
         name

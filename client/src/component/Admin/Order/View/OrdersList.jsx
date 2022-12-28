@@ -1,15 +1,27 @@
 import AdminLayout from '../../../Layout/AdminLayout/index';
 // import './product.css';
-import { Box, LinearProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
 import OrderActions from '../OrderActions';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useGetQurey from '../../../hooks/gql/useGetQurey';
+import { debounce } from 'lodash';
+
+const searchedBy = [
+  { name: 'Phone Number', key: 'phone_no' },
+  { name: 'Name', key: 'name' },
+  { name: 'Email', key: 'email' },
+  { name: 'Order No', key: 'order_no' },
+  { name: 'Order ID', key: 'order_id' },
+];
 
 const OrdersList = () => {
   const location = useLocation();
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [rowId, setRowId] = useState(null);
   const [delt, setDelt] = useState(null);
   const { loading, data, error } = useGetQurey('ALL_ORDERS', null, 'allOrders');
@@ -24,6 +36,7 @@ const OrdersList = () => {
   const columns = useMemo(
     () => [
       { field: '_id', headerName: 'ID', width: 210, hide: true },
+      { field: 'customer', headerName: 'Customer ID', width: 210, hide: true },
       {
         field: 'order_no',
         headerName: 'Order No',
@@ -104,6 +117,28 @@ const OrdersList = () => {
           );
         },
       },
+      {
+        field: 'name',
+        headerName: 'Name',
+        sortable: false,
+        width: 250,
+        valueGetter: ({ row }) => `${row?.customerDetail?.name || ''}`,
+      },
+      {
+        field: 'phone_no',
+        headerName: 'Phone No',
+        sortable: false,
+        width: 150,
+        valueGetter: ({ row }) => `${row?.customerDetail?.phone_no || ''}`,
+      },
+      {
+        field: 'email',
+        headerName: 'Email',
+        sortable: false,
+        hide: true,
+        width: 250,
+        valueGetter: ({ row }) => `${row?.customerDetail?.email || ''}`,
+      },
 
       {
         field: 'Actions',
@@ -125,6 +160,9 @@ const OrdersList = () => {
       window.location.reload();
     }
   }, []);
+  const search = async ({ target }) => {
+    console.log(target?.value);
+  };
   // console.log(data);
   return (
     <AdminLayout>
@@ -134,22 +172,45 @@ const OrdersList = () => {
         </Box>
       ) : (
         <Box
-          style={{
-            display: 'grid',
-            gap: '5px',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          }}
+        // style={{
+        //   display: 'grid',
+        //   gap: '5px',
+        //   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+        // }}
         >
           <Box
             sx={{ height: 600, width: '100%' }}
             className="measuementActions"
           >
+            <Box sx={{ display: 'flex', gap: 2, marginY: 2 }}>
+              <TextField
+                variant="standard"
+                label="Search"
+                fullWidth
+                onChange={debounce(search, 500)}
+              />
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={searchedBy}
+                sx={{ width: 300 }}
+                getOptionLabel={(item) => item.name}
+                renderInput={(params) => (
+                  <TextField
+                    fullWidth
+                    {...params}
+                    label="Search By"
+                    variant="standard"
+                  />
+                )}
+              />
+            </Box>
             <DataGrid
               rows={data || []}
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 25, 50]}
+              rowsPerPageOptions={[25, 50, 100]}
               // checkboxSelection
               autoHeight
               disableSelectionOnClick
