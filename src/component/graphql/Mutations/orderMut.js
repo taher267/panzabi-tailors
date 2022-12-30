@@ -38,6 +38,12 @@ export const NEW_ORDER = gql`
   }
 `;
 
+export const UPDATE_PAYMENT = gql`
+  mutation updatePayment($id: ID!, $update: PaymentUpdate!) {
+    updatePayment(id: $id, update: $update)
+  }
+`;
+
 export const ADD_NEW_ORDER_ITEM = gql`
   mutation addNewOrderItem($_id: ID!, $newItem: InputAddOrderItem!) {
     addNewOrderItem(_id: $_id, newItem: $newItem) {

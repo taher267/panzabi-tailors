@@ -74,6 +74,7 @@ const NewOrder = () => {
   const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
+
   const [devideMeasurement, setDevideMeasurement] = useState({});
   const [pricingDetail, setPricingDetail] = useState({
     up: { ...initPrice },
@@ -208,6 +209,7 @@ const NewOrder = () => {
       item_add_in_existing_order,
       // ...measure1
     } = data;
+    console.log(previous_order);
     if (
       (previous_order || item_add_in_existing_order) &&
       !prevOrderData?.order_no
@@ -226,7 +228,7 @@ const NewOrder = () => {
         open: true,
         message: `Please verify your order number to fill up the previous order number field for include order items!`,
       });
-    } else if (order_no !== previous_order) {
+    } else if (previous_order && order_no !== previous_order) {
       return setExistedOrderAddItemAlert({
         open: true,
         message: `Order no and previous order no mismatch ❌`,

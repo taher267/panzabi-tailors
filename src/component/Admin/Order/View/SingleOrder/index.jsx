@@ -9,7 +9,7 @@ import OrderItemView from './OrderItemView';
 
 const SingleOrder = () => {
   const [open, setOpen] = useState(false);
-  const [editId, setEditId] = useState();
+  const [editId, setEditId] = useState('');
   const { id } = useParams();
   const { data, loading, error } = useGetQurey(
     'SINGLE_ORDER',

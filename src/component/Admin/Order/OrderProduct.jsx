@@ -16,6 +16,7 @@ export default function OrderProduct({
         options={products}
         getOptionLabel={(option) => option.name}
         defaultValue={defaultProducts}
+        onChange={selectedProducts}
         renderInput={(params) => (
           <TextField
             {...params}

@@ -1,20 +1,30 @@
 import { useEffect, useState } from 'react';
+import CurrencyExchange from '@mui/icons-material/CurrencyExchange';
 import { Link } from 'react-router-dom';
 import {
   Visibility,
   Save,
   Delete,
   Check,
-  ConstructionOutlined,
+  ContentCopy,
 } from '@mui/icons-material';
+// import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import useUpdateMutation from '../../hooks/gql/useUpdateMutation';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
+// import Payment from './Payment';
 
-export default function OrderActions({ params, rowId, setRowId }) {
+export default function OrderActions({
+  params,
+  rowId,
+  setRowId,
+  handlePaymentRow,
+}) {
   //   const [loading, setLoading] = useState(false);
+
   const [success, setSuccess] = useState(false);
+
   const { updateMutation, processing, data, bug } = useUpdateMutation(
     'EDIT_PRODUCT',
     setSuccess
@@ -58,7 +68,6 @@ export default function OrderActions({ params, rowId, setRowId }) {
         description,
       },
     });
-    console.log(err);
     // updateMutation({
     //   variables: {
     //     _id: rowId,
@@ -122,12 +131,28 @@ export default function OrderActions({ params, rowId, setRowId }) {
       <Button>
         <Delete
           onClick={() => {
-            if (confirm(`Are you sure to delete: !${id}`)) {
+            if (confirm(`Are you sure to delete this order(${id})?`)) {
               delOrderItem({ variables: { _id: id, customer: row.customer } });
             }
           }}
         />
       </Button>
+      <Button
+        onClick={handlePaymentRow}
+        sx={{ border: 0, outline: 0, ':focus': { border: 0, outline: 0 } }}
+        startIcon={<CurrencyExchange />}
+      >
+        Payment
+      </Button>
+      {/* <Button>
+        <ContentCopy
+        // onClick={() => {
+        //   if (confirm(`Are you sure to delete this order(${id})?`)) {
+        //     delOrderItem({ variables: { _id: id, customer: row.customer } });
+        //   }
+        // }}
+        />
+      </Button> */}
     </Box>
   );
 }
