@@ -132,6 +132,19 @@ export default gql`
     notes: String
   }
 
+  input PaymentUpdate {
+    on: String!
+    amount: Int!
+    discount: Int!
+  }
+
+  type PaymentUpdateReturn {
+    on: String
+    amount: Int
+    discount: Int
+    order_status: String
+  }
+
   input InputAddOrderItem {
     customer: ID
     order_no: String
@@ -159,6 +172,7 @@ export default gql`
     createOrder(order: InputOrder!): Order!
     addNewOrderItem(_id: ID!, newItem: InputAddOrderItem!): Order!
     updateOrder(id: ID!, update: InputOrder!): Order!
+    updatePayment(id: ID!, update: PaymentUpdate!): Boolean!
     deleteOrder(_id: ID!, customer: ID!): Del!
   }
 `;

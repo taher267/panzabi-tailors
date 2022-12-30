@@ -61,6 +61,7 @@ export default {
     createOrder: orderController.createOrder,
     addNewOrderItem: orderController.addNewOrderItem,
     updateOrder: orderController.updateOrder,
+    updatePayment: orderController.updatePayment,
     deleteOrder: orderController.deleteOrder,
 
     //Daily Account functions

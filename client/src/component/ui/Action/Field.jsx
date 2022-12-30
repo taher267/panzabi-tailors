@@ -72,21 +72,21 @@ const Field = (props) => {
       const val = predefined?.[name]?.length ? predefined?.[name] : '';
       const value = Array.isArray(val) ? val.join('|') : val;
       const validate2 = stringToObject(validation);
-      React.useEffect(() => {
-        if (type === 'date' && validate2.max) {
-          document
-            .querySelector(`[name='${name}']`)
-            ?.setAttribute('max', moment().format(DATE));
-        }
-      }, [validate2.max, type]);
+      // React.useEffect(() => {
+      //   if (type === 'date' && validate2.max) {
+      //     document
+      //       .querySelector(`[name='${name}']`)
+      //       ?.setAttribute('max', moment().format(DATE));
+      //   }
+      // }, [validate2.max, type]);
 
-      React.useEffect(() => {
-        if (type === 'date' && validate2.min) {
-          document
-            .querySelector(`[name='${name}']`)
-            ?.setAttribute('min', moment().format(DATE));
-        }
-      }, [validate2.min, type]);
+      // React.useEffect(() => {
+      //   if (type === 'date' && validate2.min) {
+      //     document
+      //       .querySelector(`[name='${name}']`)
+      //       ?.setAttribute('min', moment().format(DATE));
+      //   }
+      // }, [validate2.min, type]);
 
       return (
         <>
@@ -98,7 +98,6 @@ const Field = (props) => {
               removeGqlErrors(name, gqlErrs, setGqlErrs)
             }
             {...parameters}
-            maxRows={10}
             color="secondary"
             variant="filled"
             label={name}
@@ -168,21 +167,3 @@ const Field = (props) => {
 };
 
 export default Field;
-
-// case 'date':
-//       return (
-//         <LocalizationProvider dateAdapter={moment}>
-//           <DatePicker
-//             label="Basic example"
-//             value={new Date('2022-11-12')}
-//             minDate={new Date('2022-11-12')}
-//             onChange={(newValue) => {
-//               // setValue(newValue);
-//             }}
-//             renderInput={(props) => {
-//               console.log(props);
-//               // <TextField {...props} />
-//             }}
-//           />
-//         </LocalizationProvider>
-//       );

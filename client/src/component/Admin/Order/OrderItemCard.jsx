@@ -19,7 +19,7 @@ const OrderItemCard = ({
   productType = 'type-1',
   fieldName = 'up_products',
   //Measurement
-  measurementPrefix = '_up',
+  measurementPrefix,
   measurementFields,
   //Design
   desings,

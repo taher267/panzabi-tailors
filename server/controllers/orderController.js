@@ -1,4 +1,4 @@
-// import ord from '../models/Order.js';
+import ord from '../models/Order.js';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
 import errorHandler from '../utils/errorHandler.js';
@@ -56,8 +56,8 @@ import orderValidation from '../validation/orderValidation.js';
 //     console.log(e);
 //   });
 
-// let Order;
-// ord.then((d) => (Order = d)).catch((e) => console.log(e));
+let Order;
+ord.then((d) => (Order = d)).catch((e) => console.log(e));
 // orderServices.findOrder();
 //   .then((d) => console.log(d))
 //   .catch((d) => console.log(d));
@@ -104,7 +104,7 @@ export default {
     //
     try {
       let filter = key && value ? { [key]: value } : {};
-      const all = await orderServices.findOrder(filter);
+      const all = await orderServices.findOrder(filter, null, '-order_items');
       // console.log(all);
       return all;
     } catch (e) {
@@ -125,12 +125,63 @@ export default {
     }
   },
   /**
-   * Create New Order
+   * Update Order
    */
   updateOrder: async (_parent, { id, update }, _context) => {
     try {
       const updated = await Order.findByIdAndUpdate(id, update, { new: true });
       return updated;
+    } catch (e) {
+      errorHandler(e);
+    }
+  },
+
+  /**
+   * Update payment of Order
+   */
+  updatePayment: async (_parent, { id, update }, { req }) => {
+    try {
+      const issueBy = req.user._id;
+      // const updated = await Order.findByIdAndUpdate(id, update, { new: true });
+      const order = await Order.findById(id).select(
+        ' totalQty totalPrice discount advanced due transport_charge order_items.price order_items.quantity order_status payments.amount'
+      );
+      if (!order)
+        throw new UserInputError(`Could not able to get the order by id!`);
+      const {
+        order_items,
+        totalPrice,
+        payments,
+        advanced,
+        due,
+        discount,
+        transport_charge,
+      } = order;
+      const calTotalPrice = order_items.reduce(
+        (a, { price, quantity }) => a + price * quantity,
+        0
+      );
+      // console.log(update);
+      const totalPayments = payments.reduce(
+        (a, { amount }) => (a += amount),
+        0
+      );
+      const grandTotal = advanced + discount + due + totalPayments;
+      if (calTotalPrice !== totalPrice || grandTotal !== totalPrice)
+        throw new UserInputError(`Got issue on total price!`);
+      const { discount: newDiscount, ...upRest } = update;
+      const todayPayment = newDiscount + update.amount;
+      if (
+        due + advanced + discount + totalPayments - todayPayment !==
+        totalPrice - todayPayment
+      )
+        throw new UserInputError(`Got issue on update calculation!`);
+      await Order.findByIdAndUpdate(id, {
+        $inc: { discount, due: -todayPayment },
+        $push: { payments: { ...upRest, issueBy } },
+      });
+      return true;
+      // return { updated: true };
     } catch (e) {
       errorHandler(e);
     }

@@ -10,6 +10,7 @@ import OrderActions from '../OrderActions';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useGetQurey from '../../../hooks/gql/useGetQurey';
 import { debounce } from 'lodash';
+import Payment from '../Payment';
 
 const searchedBy = [
   { name: 'Phone Number', key: 'phone_no' },
@@ -23,8 +24,19 @@ const OrdersList = () => {
   const location = useLocation();
   const [pageSize, setPageSize] = useState(50);
   const [rowId, setRowId] = useState(null);
+  const [paymentRow, setPaymentRow] = useState(null);
   const [delt, setDelt] = useState(null);
   const { loading, data, error } = useGetQurey('ALL_ORDERS', null, 'allOrders');
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen((p) => !p);
+  };
+
+  const handlePaymentRow = (row = {}) => {
+    setPaymentRow(row);
+    handleClose();
+  };
 
   useEffect(() => {
     if (error) {
@@ -32,7 +44,6 @@ const OrdersList = () => {
     }
   }, [error]);
 
-  // console.log(data);
   const columns = useMemo(
     () => [
       { field: '_id', headerName: 'ID', width: 210, hide: true },
@@ -148,7 +159,18 @@ const OrdersList = () => {
         type: 'actions',
         renderCell: (params) => {
           // console.log(params);
-          return <OrderActions {...{ params, rowId, setRowId }} />;
+          return (
+            <OrderActions
+              {...{
+                params,
+                rowId,
+                setRowId,
+                open,
+                handleClose,
+                handlePaymentRow: () => handlePaymentRow(params.row),
+              }}
+            />
+          );
         },
       },
     ],
@@ -221,6 +243,10 @@ const OrdersList = () => {
           </Box>
         </Box>
       )}
+      {(paymentRow?._id && (
+        <Payment {...{ handleClose, open, paymentRow, handlePaymentRow }} />
+      )) ||
+        ''}
     </AdminLayout>
   );
 };
