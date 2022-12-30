@@ -28,7 +28,7 @@ export default con()
           },
           order_status: {
             type: String,
-            enum: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
+            enum: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW', 'DELIVIRED'],
             default: 'NEW',
           },
           order_items: [
@@ -104,7 +104,8 @@ export default con()
               _id: false,
               on: Date,
               amount: Number,
-              discount: Number,
+              // discount: Number,
+              issueBy: { type: mg.Types.ObjectId, required: true },
             },
           ],
           notes: String,
