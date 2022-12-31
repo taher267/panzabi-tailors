@@ -43,10 +43,12 @@ export default function Payment({
     transport_charge,
     delivery_date,
   } = paymentRow;
+  const [changeStatus, setChangeStaus] = React.useState('');
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     mode: 'all',
     defaultValues: {
@@ -55,15 +57,23 @@ export default function Payment({
       discount: 0,
     },
   });
+  React.useEffect(() => {
+    if (data) {
+      reset();
+      handlePaymentRow();
+    }
 
+    // if (bug) {
+    //   console.log(bug);
+    // }
+  }, [data]);
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
     delete newErr[name];
     setGqlErrs(newErr);
   };
-  console.log(data, 'data');
-  console.log('====================');
-  console.log(bug, 'bug');
+  // console.log(data, 'data');
+  // console.log('====================');
   return (
     <Box sx={{ width: '100%' }}>
       <Dialog
@@ -81,23 +91,21 @@ export default function Payment({
       >
         <form
           style={{ maxWidth: '100%' }}
-          onSubmit={handleSubmit(
-            ({ payment_date, amount, discount, order_status: status }) => {
-              const atNow = moment().format().substring(10);
-              let update;
-              if (amount || discount) {
-                update = {
-                  on: moment(payment_date + atNow).format(),
-                  discount,
-                  amount,
-                };
-              }
-              if (order_status !== status) update.order_status = status;
-
-              // mutation({ variables: { id: paymentRow._id, update } });
-              console.log(update);
+          onSubmit={handleSubmit(({ payment_date, amount, discount }) => {
+            const atNow = moment().format().substring(10);
+            let update = {};
+            if (amount || discount) {
+              update = {
+                on: moment(payment_date + atNow).format(),
+                discount: isNaN(discount) ? 0 : discount,
+                amount: isNaN(amount) ? 0 : amount,
+              };
             }
-          )}
+            if (changeStatus && order_status !== changeStatus)
+              update.order_status = changeStatus;
+            // console.log(update);
+            mutation({ variables: { id: paymentRow._id, update } });
+          })}
         >
           <Box
             sx={{
@@ -127,11 +135,16 @@ export default function Payment({
             <Typography variant="h5" sx={{ marginY: 2 }}>
               Update Payment
             </Typography>
+            {bug?.message && (
+              <Typography sx={{ marginBottom: 2, color: '#ef0b0b' }}>
+                {bug?.message}
+              </Typography>
+            )}
             <Box>
               <Autocomplete
                 // disablePortal
                 defaultValue={order_status}
-                {...register('order_status')}
+                onChange={(_, v) => setChangeStaus(v)}
                 options={[
                   'COMPLETED',
                   'ALTER',

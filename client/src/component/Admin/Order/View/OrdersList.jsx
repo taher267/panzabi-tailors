@@ -66,10 +66,23 @@ const OrdersList = () => {
         headerName: 'Delivery Date',
         width: 100,
       },
+
+      {
+        field: 'due',
+        headerName: 'Due',
+        width: 70,
+      },
+      {
+        field: 'advanced',
+        headerName: 'Advance',
+        width: 100,
+        // editable: true,
+      },
       {
         field: 'createdAt',
         headerName: 'Issue Date',
         width: 152,
+        hide: true,
       },
       {
         field: 'updatedAt',
@@ -96,17 +109,7 @@ const OrdersList = () => {
         hide: true,
         // editable: true,
       },
-      {
-        field: 'advanced',
-        headerName: 'Advance',
-        width: 100,
-        // editable: true,
-      },
-      {
-        field: 'due',
-        headerName: 'Due',
-        width: 70,
-      },
+
       {
         field: 'transport_charge',
         headerName: 'Transport Charge',
@@ -114,20 +117,20 @@ const OrdersList = () => {
         hide: true,
       },
 
-      {
-        field: 'order_items',
-        headerName: 'Order Items',
-        sortable: false,
-        width: 250,
-        hide: true,
-        renderCell: ({ row }) => {
-          return (
-            <>
-              <p>Orders</p>
-            </>
-          );
-        },
-      },
+      // {
+      //   field: 'order_items',
+      //   headerName: 'Order Items',
+      //   sortable: false,
+      //   width: 250,
+      //   hide: true,
+      //   renderCell: ({ row }) => {
+      //     return (
+      //       <>
+      //         <p>Orders</p>
+      //       </>
+      //     );
+      //   },
+      // },
       {
         field: 'name',
         headerName: 'Name',
