@@ -133,9 +133,10 @@ export default gql`
   }
 
   input PaymentUpdate {
-    on: String!
-    amount: Int!
-    discount: Int!
+    on: String
+    amount: Int
+    discount: Int
+    order_status: String
   }
 
   type PaymentUpdateReturn {
