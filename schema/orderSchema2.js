@@ -87,6 +87,19 @@ export default gql`
     sample: Icon
     # user:User
   }
+
+  type OrderItem {
+    _id: ID!
+    connection: String!
+    products: [orderProduct!]!
+    price: Float!
+    quantity: Int!
+    measurements: [OrderMeasurement!]!
+    designs: [OrderDesign!]!
+    order_date: Date!
+    sample: Icon
+    order_no: String!
+  }
   input InputOrderMeasurement {
     msr_id: String!
     size: String!
@@ -167,6 +180,7 @@ export default gql`
   type Query {
     allOrders(key: String, value: String): [Orders!]!
     getOrder(key: String!, value: String!): Order!
+    getOrderItem(id: ID!, key: String!): OrderItem!
     # basicOrder(key: String!, value: String!): BasicOrder
   }
   type Mutation {

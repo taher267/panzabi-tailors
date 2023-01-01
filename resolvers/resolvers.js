@@ -31,6 +31,7 @@ export default {
     //Order
     allOrders: orderController.allOrders,
     getOrder: orderController.getOrder,
+    getOrderItem: orderController.getOrderItem,
   },
   ...others,
   Mutation: {
