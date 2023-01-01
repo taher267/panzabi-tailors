@@ -40,11 +40,19 @@ const SingleOrder = () => {
             {/* <SingleOrderSummary {...{ ...data }} /> */}
             {data?.order_items?.length
               ? [...data?.order_items]
-                  .reverse()
-                  ?.map?.((item, i) => (
+                  // .reverse()
+                  ?.map?.((item, k) => (
                     <OrderItemView
-                      {...{ ...item, editId, setEditId, handleClickOpen, open }}
-                      key={i}
+                      {...{
+                        ...item,
+                        editId,
+                        setEditId,
+                        handleClickOpen,
+                        open,
+                        k,
+                        order_id: id,
+                      }}
+                      key={k}
                     />
                   ))
               : ''}

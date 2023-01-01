@@ -2,15 +2,19 @@ import {
   Box,
   Button,
   Card,
-  CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Divider,
   Typography,
 } from '@mui/material';
+import PrintIcon from '@mui/icons-material/Print';
 import EditItem from './EditItem';
+import { useNavigate } from 'react-router-dom';
+import { useTailors } from '../../../../context/TailorsContext';
+
 const OrderItemView = (props) => {
+  const { setPrintData } = useTailors();
+  const navigate = useNavigate();
   const {
     _id,
     measurements,
@@ -25,7 +29,10 @@ const OrderItemView = (props) => {
     setEditId,
     handleClickOpen,
     open,
+    k,
+    order_id,
   } = props;
+
   //   const printView = (divName) => {
   //     const printContents = document.getElementById(divName).innerHTML;
   //     const originalContents = document.body.innerHTML;
@@ -57,29 +64,44 @@ const OrderItemView = (props) => {
           >
             Print
           </Typography> */}
+
           <Box id={_id}>
-            <Button
-              variant={editId === _id ? 'contained' : 'outlined'}
-              onClick={() => {
-                setEditId(_id);
-                handleClickOpen();
-              }}
-            >
-              Edit
-            </Button>
+            {/* id={_id} */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+              <Button
+                variant={editId === _id ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setEditId(_id);
+                  handleClickOpen();
+                }}
+              >
+                Edit
+              </Button>
+
+              <a
+                target="_blank"
+                href={`/dashboard/order/print/${order_id}/${k}`}
+              >
+                <Button
+                  endIcon={<PrintIcon />}
+                  variant={editId === _id ? 'contained' : 'outlined'}
+                  // onClick={() => navigate(`/dashboard/order/print?${_id}`)}
+                >
+                  Print
+                </Button>
+              </a>
+            </Box>
             {(editId === _id && (
               <EditItem {...{ handleClickOpen, open, ...props }} />
             )) ||
               ''}
-
             {/* <Typography>{connection}</Typography> */}
             {(measurements?.length && (
               <>
-                <MeasuremntView {...{ measurements }} />
+                <MeasuremntView {...{ measurements, _id, k }} />
               </>
             )) ||
               ''}
-
             {(designs?.length && (
               <>
                 <Divider sx={{ marginY: 2 }} />
@@ -96,9 +118,9 @@ const OrderItemView = (props) => {
 
 export default OrderItemView;
 
-const MeasuremntView = ({ measurements }) => {
+const MeasuremntView = ({ measurements, _id, k }) => {
   return (
-    <Box>
+    <Box id={`${_id}_${k}`}>
       <Typography variant="h6">পরিমাপ</Typography>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         {measurements?.map?.((item) => (

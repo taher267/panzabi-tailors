@@ -6,6 +6,7 @@ import orderServices from '../services/orderServices.js';
 import userCustomerServices from '../services/userCustomerServices.js';
 // import TestModel from '../models/TestModel.js';
 import orderValidation from '../validation/orderValidation.js';
+import clonning from '../utils/clonning.js';
 // TestModel.create({
 //   strData: Math.random()?.toString?.(),
 //   arrData: [
@@ -124,6 +125,30 @@ export default {
       errorHandler(e);
     }
   },
+
+  /**
+   * Single Order item
+   */
+  getOrderItem: async (_parent, { id, key }, _context) => {
+    try {
+      if (!mg.isValidObjectId(id)) throw new UserInputError(`Invalid order id`);
+      const order = await orderServices.findOrder(
+        '_id',
+        id,
+        'order_items order_no'
+      );
+
+      const order_item = clonning(order.order_items).slice(
+        key,
+        -order.order_items.length + Number(key) + 1
+      )[0];
+      const result = { ...order_item, order_no: order.order_no };
+      // console.log(result);
+      return result;
+    } catch (e) {
+      errorHandler(e);
+    }
+  },
   /**
    * Update Order
    */
@@ -169,30 +194,45 @@ export default {
         );
         // console.log(update);
         const totalPayments = payments.reduce(
-          (a, { amount }) => (a += amount),
+          (a, { amount = 0 }) => (a += amount),
           0
         );
         const grandTotal = advanced + discount + due + totalPayments;
         if (calTotalPrice !== totalPrice || grandTotal !== totalPrice)
           throw new UserInputError(`Got issue on total price!`);
         const { discount: newDiscount, ...upRest } = update;
-        const todayPayment = newDiscount + update.amount;
+        const todayPayment = newDiscount + update?.amount || 0;
+        const prevTransaction = due + advanced + discount + totalPayments;
         if (
-          due + advanced + discount + totalPayments - todayPayment !==
-          totalPrice - todayPayment
+          due === 0 ||
+          prevTransaction - todayPayment < 0 ||
+          due < todayPayment
         )
+          throw new UserInputError(`Customer payment mismatch!`);
+        console.log(
+          prevTransaction - todayPayment,
+          totalPrice - todayPayment,
+          prevTransaction
+        );
+        if (prevTransaction - todayPayment !== totalPrice - todayPayment)
           throw new UserInputError(`Got issue on update calculation!`);
+
         updateShape = {
-          $inc: { discount, due: -todayPayment },
-          $push: { payments: { ...upRest, issueBy } },
+          $inc: {
+            discount: update?.discount || 0,
+            due: -((update?.amount || 0) + (update?.discount || 0)),
+          },
         };
+        if (update?.amount) {
+          updateShape.$push = { payments: { ...upRest, issueBy } };
+        }
       }
       if (update?.order_status) {
         updateShape.order_status = update.order_status;
       }
+      // console.log(updateShape);
       await Order.findByIdAndUpdate(id, updateShape);
       return true;
-      // return { updated: true };
     } catch (e) {
       errorHandler(e);
     }

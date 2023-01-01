@@ -31,67 +31,72 @@ import StaticNewOrder from './Admin/NewOrder';
 import OrdersList from './Admin/Order/View/OrdersList';
 // import FORM from '../component/FORM-PRACTICE';
 import SingleOrder from './Admin/Order/View/SingleOrder';
+import Print from './Admin/Order/View/Print';
+import { TailorsProvider } from './context/TailorsContext';
 
 const Main = () => {
+  // console.log(location.pathname);
   return (
     <ApolloProvider client={client}>
       <AuthProvider>
-        {/* <MainCard /> */}
-        <BrowserRouter>
-          {/* <DragableList /> */}
-          <Nav />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            {/* <Route path="/form" element={<FORM />} /> */}
-            <Route path="/NEW_ORDER" element={<StaticNewOrder />} />
-            {/* <Route path="/new-product" element={<NewProduct />} /> */}
+        <TailorsProvider>
+          {/* <MainCard /> */}
+          <BrowserRouter>
+            {/* <DragableList /> */}
+            <Nav />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              {/* <Route path="/form" element={<FORM />} /> */}
+              <Route path="/NEW_ORDER" element={<StaticNewOrder />} />
+              {/* <Route path="/new-product" element={<NewProduct />} /> */}
 
-            {/* <Route path="/new-measurement" element={<NewMeasuremen />} /> */}
-            <Route element={<ProtectedRoutes />}>
-              <Route path="/dashboard">
-                <Route path="" element={<Dashboard />} />
-                <Route path="customer">
-                  <Route path="" element={<Customer />} />
-                  <Route path="new" element={<NewCustomer />} />
-                  <Route path="edit/:id" element={<EditCustomer />} />
-                </Route>
-                <Route path="design">
-                  <Route path="" element={<DesignsLists />} />
-                  <Route path="new" element={<NewDesign />} />
-                  <Route path="edit/:id" element={<EditDesign />} />
-                </Route>
+              {/* <Route path="/new-measurement" element={<NewMeasuremen />} /> */}
+              <Route element={<ProtectedRoutes />}>
+                <Route path="/dashboard">
+                  <Route path="" element={<Dashboard />} />
+                  <Route path="customer">
+                    <Route path="" element={<Customer />} />
+                    <Route path="new" element={<NewCustomer />} />
+                    <Route path="edit/:id" element={<EditCustomer />} />
+                  </Route>
+                  <Route path="design">
+                    <Route path="" element={<DesignsLists />} />
+                    <Route path="new" element={<NewDesign />} />
+                    <Route path="edit/:id" element={<EditDesign />} />
+                  </Route>
 
-                <Route path="account">
-                  <Route path="" element={<AccountsList />} />
-                  <Route path="new" element={<NewAccount />} />
-                  <Route path="edit/:id" element={<EditAccount />} />
-                </Route>
+                  <Route path="account">
+                    <Route path="" element={<AccountsList />} />
+                    <Route path="new" element={<NewAccount />} />
+                    <Route path="edit/:id" element={<EditAccount />} />
+                  </Route>
 
-                <Route path="product">
-                  <Route path="" element={<ProductList />} />
+                  <Route path="product">
+                    <Route path="" element={<ProductList />} />
 
-                  <Route path="new" element={<NewProduct />} />
+                    <Route path="new" element={<NewProduct />} />
+                  </Route>
+                  <Route path="order">
+                    <Route path="" element={<OrdersList />} />
+                    <Route path="new/:customerID" element={<NewOrder />} />
+                    <Route path=":id" element={<SingleOrder />} />
+                    <Route path="print/:id/:keey" element={<Print />} />
+                  </Route>
+                  <Route path="measurement">
+                    <Route path="" element={<MeasurementList />} />
+                    <Route path="new" element={<NewMeasuremen />} />
+                    <Route path="edit/:id" element={<EditMeasuremen />} />
+                  </Route>
+                  <Route path="user" element={<UserList />} />
                 </Route>
-                <Route path="order">
-                  <Route path="" element={<OrdersList />} />
-                  <Route path="new/:customerID" element={<NewOrder />} />
-                  {/* <Route path=":customerID/:orderId" element={<NewOrder />} /> */}
-                  <Route path=":id" element={<SingleOrder />} />
-                </Route>
-                <Route path="measurement">
-                  <Route path="" element={<MeasurementList />} />
-                  <Route path="new" element={<NewMeasuremen />} />
-                  <Route path="edit/:id" element={<EditMeasuremen />} />
-                </Route>
-                <Route path="user" element={<UserList />} />
               </Route>
-            </Route>
-            <Route element={<AuthRoute />}>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+              <Route element={<AuthRoute />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </TailorsProvider>
       </AuthProvider>
     </ApolloProvider>
   );

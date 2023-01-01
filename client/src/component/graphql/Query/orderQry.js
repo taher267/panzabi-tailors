@@ -111,6 +111,39 @@ export const SINGLE_ORDER = gql`
     }
   }
 `;
+export const ORDER_ITEM = gql`
+  query getOrderItem($id: ID!, $key: String!) {
+    getOrderItem(id: $id, key: $key) {
+      order_no
+      _id
+      quantity
+      connection
+      products {
+        name
+        # _id
+      }
+      price
+      measurements {
+        # msr_id
+        label
+        size
+      }
+      designs {
+        group
+        items {
+          # dsn_id
+          label
+          desc
+        }
+      }
+      # order_date
+      sample {
+        _id
+        src
+      }
+    }
+  }
+`;
 
 export const SINGLE_ORDER_BASIC = gql`
   query getOrder($key: String!, $value: String!) {

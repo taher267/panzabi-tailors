@@ -103,7 +103,8 @@ export default function Payment({
             }
             if (changeStatus && order_status !== changeStatus)
               update.order_status = changeStatus;
-            // console.log(update);
+            if (!Object.keys(update).length)
+              return alert(`Nothing to be changed!`);
             mutation({ variables: { id: paymentRow._id, update } });
           })}
         >
@@ -126,6 +127,7 @@ export default function Payment({
             <Box sx={{ maxWidth: '100% !important' }}>
               <Typography>Order No : {order_no}</Typography>
               <Typography>Order Status : {order_status}</Typography>
+              <Typography>Due : {due}</Typography>
               <Typography>Total Price : {totalPrice}</Typography>
               <Typography>
                 Total Qty : {totalQty?.toString?.()?.padStart(2, 0)}
@@ -153,7 +155,11 @@ export default function Payment({
                   'DELIVIRED',
                 ]}
                 renderInput={(params) => (
-                  <TextField {...params} label="Order Status" />
+                  <TextField
+                    {...params}
+                    sx={{ marginBottom: 1 }}
+                    label="Order Status"
+                  />
                 )}
               />
               <Field

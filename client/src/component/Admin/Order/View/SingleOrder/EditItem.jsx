@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import MinimizeIcon from '@mui/icons-material/Minimize';
 import Slide from '@mui/material/Slide';
-import { Box } from '@mui/material';
+import Box from '@mui/material/Box';
 import clonning from '../../../../utils/clonning';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import OrderItemCard from '../../OrderItemCard2';

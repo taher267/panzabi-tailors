@@ -1,0 +1,35 @@
+.ORDER_LIST_NEW {
+  background-color: orange;
+  color: aliceblue;
+}
+.ORDER_LIST_NEW:hover {
+  background-color: rgba(255, 165, 0, 0.7) !important;
+}
+
+.ORDER_LIST_COMPLETED {
+  background-color: #007a5a;
+  color: aliceblue;
+}
+.ORDER_LIST_COMPLETED:hover {
+  background-color: rgba(0, 122, 90, 0.7) !important;
+  color: aliceblue;
+}
+.ORDER_LIST_DELIVIRED {
+  background-color: #28a745;
+  color: aliceblue;
+}
+
+.ORDER_LIST_DELIVIRED:hover {
+  background-color: rgba(40, 167, 69, 0.7) !important;
+  color: aliceblue;
+}
+/* 
+.ORDER_LIST_PROCESSING {
+  background-color: #009dea;
+  color: aliceblue;
+}
+
+.ORDER_LIST_PROCESSING:hover {
+  background-color: #009dea70 !important;
+  color: aliceblue;
+} */
