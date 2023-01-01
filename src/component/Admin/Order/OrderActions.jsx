@@ -11,8 +11,9 @@ import {
 // import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
 import { green, red } from '@mui/material/colors';
-import useUpdateMutation from '../../hooks/gql/useUpdateMutation';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
+// import useUpdateMutation from '../../hooks/gql/useUpdateMutation';
+// import useMutationFunc from '../../hooks/gql/useMutationFunc';
 // import Payment from './Payment';
 
 export default function OrderActions({
@@ -25,49 +26,57 @@ export default function OrderActions({
 
   const [success, setSuccess] = useState(false);
 
-  const { updateMutation, processing, data, bug } = useUpdateMutation(
-    'EDIT_PRODUCT',
+  const { bug, mutation, data, processing } = useMutationFunc(
+    'UPDATE_PAYMENT',
     setSuccess
   );
-  const {
-    mutation: delOrderItem,
-    bug: err,
-    data: del,
-  } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder');
+  // const {
+  //   mutation: delOrderItem,
+  //   bug: err,
+  //   data: del,
+  // } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder');
 
   const { id, row } = params;
+
   useEffect(() => {
     if (rowId === id && success) {
       setSuccess(false);
-      setRowId(false);
+      setRowId('');
     }
-  }, [rowId, data, processing]);
+  }, [rowId, data]);
 
-  useEffect(() => {
-    if (del?.success) {
-      window.location.reload();
-    }
-  }, [del]); //
+  // useEffect(() => {
+  //   if (del?.success) {
+  //     window.location.reload();
+  //   }
+  // }, [del]); //
 
   const updateHandle = () => {
-    const { name, category, price, description } = row;
+    const { name, category, price, description, order_status } = row;
+    mutation({
+      variables: {
+        id: rowId,
+        update: { order_status },
+      },
+    });
+
     // console.log({
-    //   variables: {
-    //     _id: rowId,
-    //     update: { name, category, price, description },
-    //   },
+    // variables: {
+    //   _id: rowId,
+    //   update: { name, category, price, description },
+    // },
     // });
     // console.log(updateMutation);
 
-    updateMutation({
-      variables: {
-        _id: rowId,
-        name,
-        category,
-        price,
-        description,
-      },
-    });
+    // updateMutation({
+    //   variables: {
+    //     _id: rowId,
+    //     name,
+    //     category,
+    //     price,
+    //     description,
+    //   },
+    // });
     // updateMutation({
     //   variables: {
     //     _id: rowId,

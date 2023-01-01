@@ -1,5 +1,5 @@
 import AdminLayout from '../../../Layout/AdminLayout/index';
-// import './product.css';
+import './orderList.css';
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useGetQurey from '../../../hooks/gql/useGetQurey';
 import { debounce } from 'lodash';
 import Payment from '../Payment';
+// import useMutationFunc from '../../../hooks/gql/useMutationFunc';
 
 const searchedBy = [
   { name: 'Phone Number', key: 'phone_no' },
@@ -27,6 +28,7 @@ const OrdersList = () => {
   const [paymentRow, setPaymentRow] = useState(null);
   const [delt, setDelt] = useState(null);
   const { loading, data, error } = useGetQurey('ALL_ORDERS', null, 'allOrders');
+
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -52,6 +54,14 @@ const OrdersList = () => {
         field: 'order_no',
         headerName: 'Order No',
         width: 200,
+        editable: true,
+      },
+      {
+        field: 'order_status',
+        headerName: 'Order Status',
+        type: 'singleSelect',
+        valueOptions: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW', 'DELIVIRED'],
+        width: 150,
         editable: true,
       },
       {
@@ -242,12 +252,32 @@ const OrdersList = () => {
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}
               onCellEditCommit={(row) => setRowId(row.id)}
+              sx={
+                {
+                  // boxShadow: 2,
+                  // // border: 2,
+                  // borderColor: 'primary.light',
+                  // '& .MuiDataGrid-cell:hover': {
+                  //   color: 'primary.main',
+                  // },
+                }
+              }
+              getRowClassName={(params) =>
+                `ORDER_LIST_${params.row.order_status}`
+              }
             />
           </Box>
         </Box>
       )}
       {(paymentRow?._id && (
-        <Payment {...{ handleClose, open, paymentRow, handlePaymentRow }} />
+        <Payment
+          {...{
+            handleClose,
+            open,
+            paymentRow,
+            handlePaymentRow,
+          }}
+        />
       )) ||
         ''}
     </AdminLayout>

@@ -1,0 +1,28 @@
+@page {
+  margin: 0;
+  padding: 0;
+}
+* {
+  margin: 0;
+  padding: 0;
+}
+
+@media print {
+  #root * {
+    display: none;
+  }
+
+  ul {
+    display: none;
+  }
+  .contentData,
+  .contentData * {
+    display: block !important;
+  }
+}
+
+.printDesign {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: 'space-evenly';
+}

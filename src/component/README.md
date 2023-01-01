@@ -46,3 +46,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ## compositon Vs Inheritance
 
 Inheritance, Bad practice in React : [Link](https://reactjs.org/docs/composition-vs-inheritance.html)
+
+Print [https://stackoverflow.com/questions/51263460/javascript-css-hide-page-url-when-printing-in-chrome-but-still-show-the-page-nu]

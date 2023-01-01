@@ -11,6 +11,7 @@ import {
   ALL_ORDERS,
   SINGLE_ORDER,
   SINGLE_ORDER_BASIC,
+  ORDER_ITEM,
 } from './../Query/orderQry';
 import {
   NEW_MEASUREMENT,
@@ -64,6 +65,7 @@ export default {
   ALL_ORDERS,
   SINGLE_ORDER,
   SINGLE_ORDER_BASIC,
+  ORDER_ITEM,
   UPDATE_PAYMENT,
 
   //DESIGN
