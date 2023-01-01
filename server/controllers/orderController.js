@@ -137,11 +137,16 @@ export default {
         id,
         'order_items order_no'
       );
+      let order_item;
+      const end = -order.order_items.length + Number(key) + 1;
+      if (end) {
+        order_item = clonning(order.order_items).slice(Number(key), end)[0];
+      } else {
+        order_item = clonning(order.order_items).slice(Number(key))[0];
+      }
 
-      const order_item = clonning(order.order_items).slice(
-        key,
-        -order.order_items.length + Number(key) + 1
-      )[0];
+      // console.log(key, -order.order_items.length + Number(key) + 1);
+
       const result = { ...order_item, order_no: order.order_no };
       // console.log(result);
       return result;
