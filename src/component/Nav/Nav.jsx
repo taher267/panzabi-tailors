@@ -15,7 +15,7 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
-function Nav({ mode, setMode }) {
+function Nav({ mode, handleMode }) {
   const { user, logout } = useAuth();
   const nagivate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -164,7 +164,7 @@ function Nav({ mode, setMode }) {
           )}
           <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
             <Button
-              onClick={() => setMode((p) => (p === 'dark' ? 'light' : 'dark'))}
+              onClick={() => handleMode()}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               {mode}

@@ -3,7 +3,7 @@ import Sidebar from '../../Admin/Sidebar';
 
 const AdminLayout = ({ children }) => {
   return (
-    <Box sx={{ width: '100%', height: '100%', display: 'flex' }}>
+    <Box sx={{ width: '100%', height: '100%', display: 'flex', marginTop: 3 }}>
       <Box
         sx={{
           width: '20%',
