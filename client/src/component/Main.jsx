@@ -40,11 +40,15 @@ import CssBaseline from '@mui/material/CssBaseline';
 const Main = () => {
   const [mode, setMode] = React.useState('light');
   // console.log(location.pathname);
+  const handleMode = () => {
+    setMode((p) => (p === 'dark' ? 'light' : 'dark'));
+  };
   const darkTheme = createTheme({
     palette: {
       mode,
     },
   });
+
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={darkTheme}>
@@ -54,7 +58,7 @@ const Main = () => {
             {/* <MainCard /> */}
             <BrowserRouter>
               {/* <DragableList /> */}
-              <Nav {...{ mode, setMode }} />
+              <Nav {...{ handleMode }} />
               <Routes>
                 <Route path="/" element={<Home />} />
                 {/* <Route path="/form" element={<FORM />} /> */}
@@ -116,13 +120,11 @@ const Main = () => {
 export default Main;
 
 function Home() {
-  const { logout } = useAuth();
+  // const { logout } = useAuth();
   return (
     <>
       <h3>Home</h3>
-      <p>
-        <button onClick={logout}>Logout</button>
-      </p>
+      <p>{/* <button onClick={logout}>Logout</button> */}</p>
     </>
   );
 }
