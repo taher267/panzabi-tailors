@@ -17,15 +17,23 @@ const Print = () => {
   return (
     <>
       <button onClick={print}>Print</button>
-      <div className="contentData" style={{}}>
-        <div className="printDesign">
-          {data?.measurements &&
-            Object.values(data?.measurements).map?.(({ label, size }, i) => (
-              <div key={i}>
-                <p>{label}</p>
-                <p>{size}</p>
-              </div>
-            ))}
+      <div className="contentData">
+        <div className="printCard">
+          <div>
+            {data?.products &&
+              Object.values(data?.products).map?.(({ name }, i) => (
+                <p key={i}>{name}</p>
+              ))}
+          </div>
+          <div className="printDesign">
+            {data?.measurements &&
+              Object.values(data?.measurements).map?.(({ label, size }, i) => (
+                <div key={i}>
+                  <p>{label}</p>
+                  <p>{size}</p>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </>

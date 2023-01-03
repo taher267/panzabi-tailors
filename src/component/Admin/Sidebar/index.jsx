@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 const Sidebar = () => {
   return (
-    <ul>
+    <ul style={{ listStyle: 'none' }}>
       <li>
         <Link to="/dashboard/order">অর্ডার সমুহঃ</Link>
       </li>
