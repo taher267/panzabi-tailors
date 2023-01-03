@@ -6,9 +6,10 @@
   --blackLight: rgba(15, 15, 15, 0.7);
 }
 #root {
-  max-width: 1280px;
+  max-width: 100%;
+  /* 
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem; */
   /* text-align: center; */
 }
 

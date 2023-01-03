@@ -1,6 +1,7 @@
 @page {
   margin: 0;
   padding: 0;
+  /* size: 6in 4in; */
 }
 * {
   margin: 0;
@@ -20,9 +21,13 @@
     display: block !important;
   }
 }
-
+.printCard {
+  width: 141mm !important;
+}
+.printCard:first-child {
+  width: 25mm !important;
+}
 .printDesign {
-  width: 100% !important;
   display: flex !important;
-  justify-content: 'space-evenly';
+  justify-content: space-between !important;
 }
