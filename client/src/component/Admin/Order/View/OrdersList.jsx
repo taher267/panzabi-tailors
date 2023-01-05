@@ -11,6 +11,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useGetQurey from '../../../hooks/gql/useGetQurey';
 import { debounce } from 'lodash';
 import Payment from '../Payment';
+import moment from 'moment';
 // import useMutationFunc from '../../../hooks/gql/useMutationFunc';
 
 const searchedBy = [
@@ -262,9 +263,15 @@ const OrdersList = () => {
                   // },
                 }
               }
-              getRowClassName={(params) =>
-                `ORDER_LIST_${params.row.order_status}`
-              }
+              getRowClassName={(params) => {
+                const status = params.row.order_status;
+                const delivery = params.row.delivery_date;
+                const success = ['DELIVIRED', 'COMPLETED'];
+                if (!success.includes(status) && moment(delivery) < moment()) {
+                  return `ORDER_LIST_DELIVERY_DATE_CROSSED`;
+                }
+                return `ORDER_LIST_${status}`;
+              }}
             />
           </Box>
         </Box>

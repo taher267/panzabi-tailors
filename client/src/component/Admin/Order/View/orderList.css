@@ -23,6 +23,16 @@
   background-color: rgba(40, 167, 69, 0.7) !important;
   color: aliceblue;
 }
+
+.ORDER_LIST_DELIVERY_DATE_CROSSED {
+  background-color: rgb(204, 0, 0);
+  color: aliceblue;
+}
+
+.ORDER_LIST_DELIVERY_DATE_CROSSED:hover {
+  background-color: rgba(204, 0, 0, 0.7) !important;
+  color: aliceblue;
+}
 /* 
 .ORDER_LIST_PROCESSING {
   background-color: #009dea;

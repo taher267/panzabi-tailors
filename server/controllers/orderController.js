@@ -193,34 +193,32 @@ export default {
           discount,
           transport_charge,
         } = order;
-        const calTotalPrice = order_items.reduce(
+        if (due === 0) throw new UserInputError(`গ্রাহকের কোনো বকেয়া নেই!`);
+        const allProductsPriceSum = order_items.reduce(
           (a, { price, quantity }) => a + price * quantity,
           0
         );
-        // console.log(update);
+        if (allProductsPriceSum !== totalPrice) {
+          throw new UserInputError(
+            `Each product price sum with total price mismatch!`
+          );
+        }
         const totalPayments = payments.reduce(
           (a, { amount = 0 }) => (a += amount),
           0
         );
-        const grandTotal = advanced + discount + due + totalPayments;
-        if (calTotalPrice !== totalPrice || grandTotal !== totalPrice)
-          throw new UserInputError(`Got issue on total price!`);
+
         const { discount: newDiscount, ...upRest } = update;
-        const todayPayment = newDiscount + update?.amount || 0;
-        const prevTransaction = due + advanced + discount + totalPayments;
-        if (
-          due === 0 ||
-          prevTransaction - todayPayment < 0 ||
-          due < todayPayment
-        )
-          throw new UserInputError(`Customer payment mismatch!`);
-        console.log(
-          prevTransaction - todayPayment,
-          totalPrice - todayPayment,
-          prevTransaction
-        );
-        if (prevTransaction - todayPayment !== totalPrice - todayPayment)
-          throw new UserInputError(`Got issue on update calculation!`);
+        const totalPaid = advanced + discount + totalPayments;
+        const newPaid = (newDiscount || 0) + update?.amount || 0;
+        const totalWithNewPayments = totalPaid + newPaid;
+        const remainingPayment = due - newPaid;
+        const isEqual = totalPrice - totalWithNewPayments === remainingPayment;
+        if (!isEqual) throw new UserInputError(`Got issue on total price!`);
+        if (remainingPayment < 0)
+          throw new UserInputError(
+            `Customer remaining payment: ${remainingPayment}`
+          );
 
         updateShape = {
           $inc: {
