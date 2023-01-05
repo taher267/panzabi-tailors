@@ -123,7 +123,7 @@ function Home() {
   // const { logout } = useAuth();
   return (
     <>
-      <h3>Home</h3>
+      <h3 contentEditable>Home</h3>
       <p>{/* <button onClick={logout}>Logout</button> */}</p>
     </>
   );
