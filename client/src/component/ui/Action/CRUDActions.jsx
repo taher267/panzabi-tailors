@@ -1,5 +1,6 @@
 import { Visibility, Save, Delete, Check, Add } from '@mui/icons-material';
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { green, red } from '@mui/material/colors';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -30,7 +31,7 @@ export default function CRUDActions({
       className="measuementActions"
       sx={{
         outline: 'none',
-        m: 1,
+        // m: 1,
         position: 'relative',
         display: 'flex',
         justifyContent: 'center',
@@ -40,32 +41,38 @@ export default function CRUDActions({
       <Link to={`${editUrl}/edit/${id}`}>
         <Visibility />
       </Link>
+
       {processing ? (
-        <Fab
-          color="primary"
-          sx={{
-            width: 40,
-            height: 40,
-            bgcolor: green[500],
-            '&:hover': { bgcolor: green[700] },
-          }}
-        >
-          <Check />
-        </Fab>
+        <Typography>
+          <Fab
+            color="primary"
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: green[500],
+              '&:hover': { bgcolor: green[700] },
+            }}
+          >
+            <Check />
+          </Fab>
+        </Typography>
       ) : (
-        <Fab
-          color="primary"
-          sx={{
-            width: 40,
-            height: 40,
-            bgcolor: bug ? red[500] : green[500],
-            '&:hover': { bgcolor: bug ? red[700] : green[700] },
-          }}
-          disabled={id !== rowId || processing}
-        >
-          <Save onClick={updateHandle} />
-        </Fab>
+        <Typography>
+          <Fab
+            color="primary"
+            sx={{
+              width: 40,
+              height: 40,
+              bgcolor: bug ? red[500] : green[500],
+              '&:hover': { bgcolor: bug ? red[700] : green[700] },
+            }}
+            disabled={id !== rowId || processing}
+          >
+            <Save onClick={updateHandle} />
+          </Fab>
+        </Typography>
       )}
+
       {processing && id === rowId && (
         <CircularProgress
           size={52}

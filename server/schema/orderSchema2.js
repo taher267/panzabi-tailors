@@ -174,6 +174,15 @@ export default gql`
     order_items: [InputOrderItemsOfOrder!]!
     notes: String
   }
+  input InputUpdateOrderItem {
+    products: [inputOrderProduct!]!
+    price: Float!
+    quantity: Int!
+    measurements: [InputOrderMeasurement!]!
+    designs: [InputOrderDesign!]!
+    sample: InpIcon
+  }
+
   type Del {
     success: Boolean
   }
@@ -187,6 +196,7 @@ export default gql`
     createOrder(order: InputOrder!): Order!
     addNewOrderItem(_id: ID!, newItem: InputAddOrderItem!): Order!
     updateOrder(id: ID!, update: InputOrder!): Order!
+    updateOrderItem(id: ID!, update: InputUpdateOrderItem!): Boolean!
     updatePayment(id: ID!, update: PaymentUpdate!): Boolean!
     deleteOrder(_id: ID!, customer: ID!): Del!
   }

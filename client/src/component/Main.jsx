@@ -60,7 +60,7 @@ const Main = () => {
             {/* <MainCard /> */}
             <BrowserRouter>
               {/* <DragableList /> */}
-              <Nav {...{ handleMode }} />
+              <Nav {...{ handleMode, mode }} />
               <Routes>
                 <Route path="/" element={<Home />} />
                 {/* <Route path="/form" element={<FORM />} /> */}

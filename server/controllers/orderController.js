@@ -240,6 +240,16 @@ export default {
       errorHandler(e);
     }
   },
+
+  /**
+   * Update Order item
+   */
+  updateOrderItem: async (_parent, { id, update }, { req }) => {
+    try {
+    } catch (e) {
+      errorHandler(e);
+    }
+  },
   /**
    * Delete Order
    */

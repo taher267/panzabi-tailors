@@ -21,15 +21,13 @@ const OrderMeasuementFields = ({ fields, prefix, defaultValues, ...rest1 }) => {
             <input
               type="hidden"
               readOnly
-              {...register(
-                'measurements' + (prefix || '') + '.' + _id + '.label'
-              )}
+              {...register(`measurements${prefix || ''}.${_id}.label`)}
               value={rest.label}
             />
             <Field
               {...{
                 predefined,
-                name: 'measurements' + (prefix || '') + '.' + _id + '.size',
+                name: `measurements${prefix || ''}.${_id}.size`,
                 ...rest1,
                 ...rest,
               }}

@@ -1,15 +1,16 @@
 import moment from 'moment';
 import { DATE } from '../../utils/index';
-
+const today = () => moment().format(DATE);
 export const orderBasicFields = [
   {
     label: 'Order date',
     type: 'date',
     name: 'order_date',
     defaultValue: moment().format(DATE),
-    validation: `required→Order date is mandatory!∂max→${moment().format(
-      DATE
-    )}←Order date max today`, //∂
+    validation: `required→Order date is mandatory!∂max→${today()}←Order date max today(${today()})`, //∂
+    inputProps: {
+      max: today(),
+    },
   },
   {
     label: 'Order number',

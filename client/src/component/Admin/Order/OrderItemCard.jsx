@@ -10,16 +10,20 @@ const OrderItemCard = ({
   onFocus,
   gqlErrs,
   setGqlErrs,
-  all_products,
   errors,
   register,
   removeGqlErrors, //2way
   //product
+  products,
+  prodType,
   setOrderProduct,
+  defaultProducts = [],
   productType = 'type-1',
   fieldName = 'up_products',
   //Measurement
-  measurementPrefix,
+  measurementPrefix = '_up',
+  measurementDefaultValues = {},
+  designsDefaultValues = {},
   measurementFields,
   //Design
   desings,
@@ -27,37 +31,32 @@ const OrderItemCard = ({
   type,
   //pricing
   total,
+  defaultQty,
+  defaultPrice,
+  defaultTotal,
   productLen,
   pricingKey,
 }) => {
+  console.log(errors?.[fieldName]);
   return (
     <>
       <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
-      {all_products ? (
+      {products ? (
         <>
           <OrderProduct
-            selectedProducts={(_, v) => {
+            selectedProducts={(_, v) =>
               setOrderProduct?.((p) => {
-                const types = {
-                  'type-1': 'up',
-                  'type-2': 'down',
-                };
-                // const reduce = v?.reduce((a, c) => {
-                //   // return [...a, c];
-                //   // return [...a, c?._id];
-                // }, []);
-                // const reduce = v?.reduce((a, c) => [...a, c?._id], []);
-                return {
-                  ...p,
-                  [types[productType]]: v?.map(({ _id, name }) => ({
-                    _id,
-                    name,
-                  })),
-                };
-              });
-            }}
-            products={all_products?.filter((p) => p.category === productType)}
+                if (prodType) {
+                  return {
+                    ...p,
+                    [prodType]: v,
+                  };
+                }
+                return v;
+              })
+            }
             error={errors?.[fieldName]}
+            {...{ defaultProducts, products }}
           />
         </>
       ) : (
@@ -72,6 +71,7 @@ const OrderItemCard = ({
             register,
             errors,
             setGqlErrs,
+            defaultValues: measurementDefaultValues,
             prefix: measurementPrefix,
             removeGqlErrors,
             fields: measurementFields,
@@ -97,6 +97,7 @@ const OrderItemCard = ({
               register,
               errors,
               allDesigns: desings,
+              defaultValues: designsDefaultValues,
               watching,
               design_type: type,
             }}
@@ -111,6 +112,9 @@ const OrderItemCard = ({
       </Typography>
       <PriceFields
         {...{
+          defaultQty,
+          defaultPrice,
+          defaultTotal,
           pricingKey,
           errors,
           register,

@@ -103,7 +103,7 @@ const Customer = () => {
         description: 'Last order detail',
         sortable: false,
         // hide: true,
-        minWidth: 120,
+        minWidth: 200,
         renderCell: ({ row }) => <OrderInfo {...{ row }} />,
       },
       {
@@ -141,7 +141,7 @@ const Customer = () => {
         field: 'Actions',
         headerName: 'Actions',
         sortable: false,
-        minWidth: 250,
+        minWidth: 300,
         renderCell: (params) => (
           <CustomerActions {...{ params, rowId, setRowId }} />
         ),
@@ -189,18 +189,21 @@ export default Customer;
 
 const OrderInfo = ({ row }) => {
   const typeSx = { fontSize: '12px' };
-  return (
-    <Box>
-      {row.orders?.reverse?.()?.map(({ order_id, order_no }) => {
-        return (
-          <Box key={order_id}>
-            <Typography sx={typeSx}>Order No :</Typography>
-            <Typography sx={typeSx}>{order_no}</Typography>
-            <Typography sx={typeSx}>Order ID :</Typography>
-            <Typography sx={typeSx}>{order_id}</Typography>
-          </Box>
-        );
-      })}
-    </Box>
-  );
+  if (row?.orders?.length) {
+    return (
+      <Box width="100%">
+        {[...row.orders].reverse().map?.(({ order_id, order_no }) => {
+          return (
+            <Box key={order_id}>
+              <Typography sx={typeSx}>Order No :</Typography>
+              <Typography sx={typeSx}>{order_no}</Typography>
+              <Typography sx={typeSx}>Order ID :</Typography>
+              <Typography sx={typeSx}>{order_id}</Typography>
+            </Box>
+          );
+        })}
+      </Box>
+    );
+  }
+  return <></>;
 };

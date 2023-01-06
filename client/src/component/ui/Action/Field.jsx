@@ -50,17 +50,19 @@ const Field = (props) => {
   let helperText = '';
   let err = false;
   let objErrs = name.split('.');
-  // console.log(errors[objErrs[0]]?.[objErrs[1]]?.message);
+  console.log();
   if (
     gqlErrs?.[name] ||
     errors?.[name] ||
-    errors[objErrs[0]]?.[objErrs[1]]?.message
+    errors[objErrs[0]]?.[objErrs[1]]?.message ||
+    errors[objErrs[0]]?.[objErrs[1]]?.[objErrs[2]]?.message
   ) {
     err = true;
     helperText =
       gqlErrs?.[name] ||
       errors?.[name]?.message ||
-      errors[objErrs[0]]?.[objErrs[1]]?.message;
+      errors[objErrs[0]]?.[objErrs[1]]?.message ||
+      errors[objErrs[0]]?.[objErrs[1]]?.[objErrs[2]]?.message;
   }
   const type = props?.type;
   // multiline→true∂rows→5

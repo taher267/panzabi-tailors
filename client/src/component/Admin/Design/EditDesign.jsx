@@ -1,6 +1,9 @@
 // import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { LinearProgress, Box, TextField, Button } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
@@ -28,7 +31,7 @@ const EditDesign = () => {
     mutation: updateDesign,
     bug,
   } = useMutationFunc('EDIT_DESIGN');
-
+  console.log(data);
   const {
     register,
     handleSubmit,
@@ -48,13 +51,7 @@ const EditDesign = () => {
       }
       return;
     }
-    console.log({ id: ID, ...updatingData });
-    // updateDesign({
-    //   variables: {
-    //     id: ID,
-    //     update: data,
-    //   },
-    // });
+    // console.log({ id: ID, ...updatingData });
   };
   return (
     <AdminLayout>
@@ -66,6 +63,12 @@ const EditDesign = () => {
       {!loading && !processing && data && (
         <div>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
+            <Box>
+              <TextField
+                defaultValue={data?.design_name || ''}
+                name="design_name"
+              />
+            </Box>
             <Button
               disabled={
                 loading ||

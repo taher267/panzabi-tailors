@@ -16,13 +16,10 @@ const OrderItemCard = ({
   removeGqlErrors, //2way
   //product
   setOrderProduct,
-  defaultProducts = [],
   productType = 'type-1',
   fieldName = 'up_products',
   //Measurement
-  measurementPrefix = '_up',
-  measurementDefaultValues = {},
-  designsDefaultValues = {},
+  measurementPrefix,
   measurementFields,
   //Design
   desings,
@@ -30,9 +27,6 @@ const OrderItemCard = ({
   type,
   //pricing
   total,
-  defaultQty,
-  defaultPrice,
-  defaultTotal,
   productLen,
   pricingKey,
 }) => {
@@ -48,6 +42,11 @@ const OrderItemCard = ({
                   'type-1': 'up',
                   'type-2': 'down',
                 };
+                // const reduce = v?.reduce((a, c) => {
+                //   // return [...a, c];
+                //   // return [...a, c?._id];
+                // }, []);
+                // const reduce = v?.reduce((a, c) => [...a, c?._id], []);
                 return {
                   ...p,
                   [types[productType]]: v?.map(({ _id, name }) => ({
@@ -59,7 +58,6 @@ const OrderItemCard = ({
             }}
             products={all_products?.filter((p) => p.category === productType)}
             error={errors?.[fieldName]}
-            defaultProducts={defaultProducts}
           />
         </>
       ) : (
@@ -74,7 +72,6 @@ const OrderItemCard = ({
             register,
             errors,
             setGqlErrs,
-            defaultValues: measurementDefaultValues,
             prefix: measurementPrefix,
             removeGqlErrors,
             fields: measurementFields,
@@ -100,7 +97,6 @@ const OrderItemCard = ({
               register,
               errors,
               allDesigns: desings,
-              defaultValues: designsDefaultValues,
               watching,
               design_type: type,
             }}
@@ -115,9 +111,6 @@ const OrderItemCard = ({
       </Typography>
       <PriceFields
         {...{
-          defaultQty,
-          defaultPrice,
-          defaultTotal,
           pricingKey,
           errors,
           register,
