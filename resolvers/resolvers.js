@@ -49,7 +49,6 @@ export default {
     createUser: userController.createUser,
     updateUser: userController.updateUser,
     deleteUser: userController.deleteUser,
-
     // Customer functions
     createCustomer: customerController.createCustomer,
     updateCustomer: customerController.updateCustomer,
@@ -63,6 +62,7 @@ export default {
     addNewOrderItem: orderController.addNewOrderItem,
     updateOrder: orderController.updateOrder,
     updatePayment: orderController.updatePayment,
+    updateOrderItem: orderController.updateOrderItem,
     deleteOrder: orderController.deleteOrder,
 
     //Daily Account functions
