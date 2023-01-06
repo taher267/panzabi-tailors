@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import useGetQurey from '../../../hooks/gql/useGetQurey';
 import PropTypes from 'prop-types';
 import { Box, Typography } from '@mui/material';
+import Head from '../../../graphql/Head';
 
 const CustomerInfoForOrder = ({
   customerID,
@@ -28,6 +29,7 @@ const CustomerInfoForOrder = ({
   if (data)
     return (
       <Box>
+        <Head title={`${data?.name}, New Order`} />
         <Typography variant="h6">Customer Info</Typography>
         <Box
           sx={{
@@ -38,10 +40,10 @@ const CustomerInfoForOrder = ({
             // display: !Object.keys(prevOrderDate || {}).length ? 'flex' : '',
           }}
         >
-          <Typography>Customer ID: {data._id}</Typography>
-          <Typography>Customer Name: {data.name}</Typography>
-          <Typography>Phone No: {data.phone_no}</Typography>
-          <Typography>Total Orders : {data.orders.length}</Typography>
+          <Typography>Customer ID: {data?._id}</Typography>
+          <Typography>Customer Name: {data?.name}</Typography>
+          <Typography>Phone No: {data?.phone_no}</Typography>
+          <Typography>Total Orders : {data?.orders.length}</Typography>
         </Box>
       </Box>
     );

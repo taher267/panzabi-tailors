@@ -14,11 +14,15 @@ import Slide from '@mui/material/Slide';
 import Box from '@mui/material/Box';
 import clonning from '../../../../utils/clonning';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
-import OrderItemCard from '../../OrderItemCard2';
+import OrderItemCard from '../../OrderItemCard';
 import { useForm, useWatch } from 'react-hook-form';
 import removeGqlErrors from '../../../../utils/removeGqlErrors';
 import { CircularProgress, IconButton, Snackbar } from '@mui/material';
 import designDevider from '../../../../utils/designDevider';
+import {
+  designFiltering,
+  measurementKeyValue,
+} from '../../../../../helpers/orderHelper';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -65,6 +69,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     quantity,
     connection,
     editId,
+    _id,
   } = props;
   const [gqlErrs, setGqlErrs] = React.useState({});
   const [notice, setNotice] = React.useState(false);
@@ -103,7 +108,6 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   } = useForm({
     mode: 'all',
   });
-  //   console.log(arrToObj(measurements, 'msr_id', ['size']));
   // designDefaultValuesShape(designs);
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
@@ -136,6 +140,28 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     control,
     name: 'pricing',
   });
+  const onSubmit = (d) => {
+    console.log(orderProduct);
+    // const desings = designFiltering(d.designs);
+    // const measurements = measurementKeyValue(d.measurements);
+    // const products = orderProduct;
+    // const updateData = {
+    //   products,
+    //   ...d.pricing,
+    //   measurements,
+    //   desings,
+    // };
+    // console.log(updateData);
+    // price
+    // quantity
+    // measurements
+    // designs
+    // order_date
+    // sample
+  };
+  const connectionTypeProducts = (data = [], con) =>
+    data.filter((p) => p.category === con);
+
   return (
     <div>
       <Dialog
@@ -159,17 +185,16 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
           ''}
         <AppBarWrapper {...{ handleClickOpenWithFromClear }} />
         <Box>
-          <form
-            onSubmit={handleSubmit((d) => {
-              console.log(d);
-            })}
-          >
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ paddingX: 5 }}>
               {(all_products && measurementsFields && (
                 <OrderItemCard
                   {...{
                     //Common
-                    all_products,
+                    products: connectionTypeProducts(
+                      all_products,
+                      connection === 'up' ? 'type-1' : 'type-2'
+                    ),
                     errors,
                     register,
                     gqlErrs,
@@ -193,11 +218,11 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                       'msr_id',
                       'size'
                     ),
-
                     desings:
                       designDevider(all_designs || [])?.[connection] || [],
                     designsDefaultValues: designDefaultValuesShape(designs),
-                    type: connection,
+                    type: 'designs', //dsns designs
+                    // type: connection,
                     watching,
                     //Pricing
                     productLen: orderProduct?.[connection]?.length || 0,
@@ -215,7 +240,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                 <Typography
                   sx={{ ml: 2, flex: 1 }}
                   variant="h6"
-                  component="Box"
+                  component="div"
                 ></Typography>
                 <Button
                   color="secondary"

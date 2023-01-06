@@ -135,7 +135,7 @@ const NewOrder = () => {
     null,
     'allProducts'
   );
-  // console.log(data);
+  // console.log(errors);
   const { data: all_measurements } = useGetQurey(
     'ALL_MEASUREMENTS',
     // { key: 'status:ACTIVE,template:template-01' },
@@ -197,9 +197,9 @@ const NewOrder = () => {
       setDesigns(designDevider(all_designs));
     }
   }, [all_designs]);
-  // console.log(prevOrderData);
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
+    // console.log(data);
     const {
       order_status,
       order_date,
@@ -209,7 +209,7 @@ const NewOrder = () => {
       item_add_in_existing_order,
       // ...measure1
     } = data;
-    console.log(previous_order);
+
     if (
       (previous_order || item_add_in_existing_order) &&
       !prevOrderData?.order_no
@@ -241,6 +241,7 @@ const NewOrder = () => {
         return;
       }
     }
+
     /**
      * TODO have to check both condation total price
      *have to check Delivery date
@@ -257,7 +258,6 @@ const NewOrder = () => {
       order_status, //
       delivery_date, //
     };
-
     const order_items = [];
     let total_up = 0;
     let total_down = 0;
@@ -315,10 +315,11 @@ const NewOrder = () => {
       order_items,
       transport_charge,
     };
+
     setGqlErrs({});
     if (previous_order && item_add_in_existing_order) {
       delete newOrderDates.delivery_date;
-      // console.log(newOrderDates);
+
       addNewOrderItem({
         variables: { _id: prevOrderData._id, newItem: newOrderDates },
       });
@@ -345,7 +346,7 @@ const NewOrder = () => {
     }
   }, [prev_order]);
 
-  // console.log(prev, 'prev_order');
+  // console.log(errors);
 
   useEffect(() => {
     //     designUpState
@@ -398,8 +399,6 @@ const NewOrder = () => {
     control,
     name: 'pricing',
   });
-
-  // console.log(pricingDetail);
   //Pricing Details
   useEffect(() => {
     if (priceing) {
@@ -563,7 +562,6 @@ const NewOrder = () => {
               <OrderItemCard
                 {...{
                   //Common
-                  all_products,
                   errors,
                   register,
                   gqlErrs,
@@ -572,6 +570,7 @@ const NewOrder = () => {
                   removeGqlErrors,
                   //product
                   setOrderProduct,
+                  prodType: 'up',
                   productType: 'type-1',
                   fieldName: 'up_products',
                   //Measurement
@@ -582,6 +581,9 @@ const NewOrder = () => {
                   watching: up,
                   //Pricing
                   productLen: orderProduct?.up?.length || 0,
+                  products: [
+                    ...all_products?.filter((p) => p.category === 'type-1'),
+                  ],
                   total: pricingDetail?.up?.total || 0,
                   pricingKey: 0,
                 }}
@@ -615,7 +617,6 @@ const NewOrder = () => {
                 <OrderItemCard
                   {...{
                     //Common
-                    all_products,
                     errors,
                     register,
                     gqlErrs,
@@ -624,7 +625,11 @@ const NewOrder = () => {
                     removeGqlErrors,
                     //product
                     setOrderProduct,
-                    productType: 'type-2',
+
+                    products: [
+                      ...all_products?.filter((p) => p.category === 'type-2'),
+                    ],
+                    prodType: 'down',
                     fieldName: 'down_products',
                     //Measurement
                     measurementPrefix: '_down',

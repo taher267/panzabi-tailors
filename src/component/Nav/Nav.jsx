@@ -12,6 +12,10 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import Brightness4 from '@mui/icons-material/Brightness4';
+import Brightness7 from '@mui/icons-material/Brightness7';
+import ToggleOff from '@mui/icons-material/ToggleOff';
+import ToggleOn from '@mui/icons-material/ToggleOn';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 
@@ -162,14 +166,22 @@ function Nav({ mode, handleMode }) {
               </Box>
             </>
           )}
-          <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              onClick={() => handleMode()}
-              sx={{ my: 2, color: 'white', display: 'block' }}
-            >
-              {mode}
-            </Button>
-          </Box>
+          <Button
+            endIcon={mode === 'light' ? <ToggleOn /> : <ToggleOff />}
+            onClick={() => handleMode()}
+            sx={{
+              flexGrow: 0,
+              display: { xs: 'none', md: 'flex', color: 'white' },
+              marginRight: 2,
+              ':focus': {
+                border: 0,
+                outline: 'none',
+              },
+            }}
+            variant="text"
+          >
+            {mode}
+          </Button>
           {user?.id ? (
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">

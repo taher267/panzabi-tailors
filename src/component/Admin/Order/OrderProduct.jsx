@@ -15,11 +15,27 @@ export default function OrderProduct({
         id="tags-standard"
         options={products}
         getOptionLabel={(option) => option.name}
-        defaultValue={defaultProducts}
+        defaultValue={
+          defaultProducts?.length
+            ? [
+                ...products.reduce((a, c) => {
+                  for (const item of defaultProducts) {
+                    if (c._id === item._id) {
+                      a.push(c);
+                    }
+                  }
+
+                  return a;
+                }, []),
+              ]
+            : []
+        }
         onChange={selectedProducts}
         renderInput={(params) => (
           <TextField
+            error={error ? true : false}
             {...params}
+            helperText={error?.message || ''}
             variant="standard"
             label="Multiple values"
             placeholder="Favorites"
