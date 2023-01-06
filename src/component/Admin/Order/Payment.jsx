@@ -49,6 +49,7 @@ export default function Payment({
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm({
     mode: 'all',
     defaultValues: {
@@ -187,6 +188,13 @@ export default function Payment({
                   label: 'Discount',
                   register,
                   validation: `max→${due}←Maximum Discount, ${due}∂min→0←Discount can't less than 0∂valueAsNumber→true`,
+                  validate: (val) => {
+                    const tk = watch('amount');
+                    const valTk = val + tk;
+                    if ((tk && val && valTk > due) || valTk < 0) {
+                      return `Payment crossed!`;
+                    }
+                  },
                   errors,
                   name: 'discount',
                   onFocus,
