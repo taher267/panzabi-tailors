@@ -36,6 +36,7 @@ import Print from './Admin/Order/View/Print';
 import { TailorsProvider } from './context/TailorsContext';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import Head from './graphql/Head';
 
 const Main = () => {
   const [mode, setMode] = React.useState('light');
@@ -53,6 +54,7 @@ const Main = () => {
     <ApolloProvider client={client}>
       <ThemeProvider theme={darkTheme}>
         <CssBaseline />
+        <Head />
         <AuthProvider>
           <TailorsProvider>
             {/* <MainCard /> */}
@@ -123,7 +125,7 @@ function Home() {
   // const { logout } = useAuth();
   return (
     <>
-      <h3 contentEditable>Home</h3>
+      <h3>Home</h3>
       <p>{/* <button onClick={logout}>Logout</button> */}</p>
     </>
   );

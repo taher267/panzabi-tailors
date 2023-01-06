@@ -24,7 +24,6 @@ const SingleOrder = () => {
   const handleClickOpen = () => {
     setOpen((p) => !p);
   };
-  // console.log(data);
   return (
     <AdminLayout>
       {loading && (

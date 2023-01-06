@@ -1,5 +1,6 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Head from '../../../../graphql/Head';
 import GridItem from '../../../../ui/GridItem';
 import SingleOrderSummary from './SingleOrderSummary';
 const sx = {
@@ -27,6 +28,7 @@ const CustomerDetailsAndBasicSingleOrderInfo = ({
   const navigate = useNavigate();
   return (
     <>
+      <Head title={`${name}, ${phone_no}`} />
       <Grid
         container
         // sx={{ marginBottom: '40px' }}

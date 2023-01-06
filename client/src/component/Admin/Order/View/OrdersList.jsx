@@ -28,7 +28,12 @@ const OrdersList = () => {
   const [rowId, setRowId] = useState(null);
   const [paymentRow, setPaymentRow] = useState(null);
   const [delt, setDelt] = useState(null);
-  const { loading, data, error } = useGetQurey('ALL_ORDERS', null, 'allOrders');
+  const { loading, data, error } = useGetQurey(
+    'ALL_ORDERS',
+    null,
+    'allOrders'
+    // { pollInterval: 2000 }
+  );
 
   const [open, setOpen] = useState(false);
 
@@ -201,7 +206,7 @@ const OrdersList = () => {
   };
   // console.log(data);
   return (
-    <AdminLayout>
+    <AdminLayout title="Orders">
       {loading ? (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
