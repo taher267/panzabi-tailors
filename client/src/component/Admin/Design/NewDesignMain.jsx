@@ -1,17 +1,11 @@
 import { useState } from 'react';
-import {
-  LinearProgress,
-  Box,
-  TextField,
-  Button,
-  Typography,
-} from '@mui/material';
+import { LinearProgress, Box, TextField, Button } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import { AddCircle, Save, Delete } from '@mui/icons-material';
 import { v4 } from 'uuid';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 // import { useNavigate } from 'react-router-dom';
-import useMutationFunc from './../../hooks/gql/useMutationFunc';
+import useMutationFunc from '../../hooks/gql/useMutationFunc';
 const valuesInit = { name: '', sl_id: '', icon: '' };
 const NewDesign = () => {
   const [gqlErrs, setGqlErrs] = useState({});
@@ -27,17 +21,8 @@ const NewDesign = () => {
     register,
     handleSubmit,
     formState: { errors },
-    control,
-  } = useForm({
-    mode: 'all',
-    defaultValues: {
-      designs: { name: '', status: '1' },
-    },
-  });
-  const { fields, append, prepend, remove } = useFieldArray({
-    control,
-    name: 'designs',
-  });
+  } = useForm();
+
   // console.dir(bug);
   const onSubmit = ({ design_name, type, ...newDesign }) => {
     setGqlErrs({});
@@ -80,13 +65,12 @@ const NewDesign = () => {
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
           <Box
             sx={{
-              // display: 'grid',
-              // gridTemplateColumns: 'repeat(2, 1fr)',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(2, 1fr)',
               gap: '5px',
             }}
           >
-            <Typography variant="h4">New Design</Typography>
-            {/* <TextField
+            <TextField
               {...register('design_name', {
                 required: true,
               })}
@@ -105,27 +89,8 @@ const NewDesign = () => {
                   ? errors?.design_name?.message || 'Design name mandatory!'
                   : ''
               }
-            /> */}
-            {fields.map(({ name, status, id }, i) => (
-              <Box key={id} sx={{ display: 'flex', width: '100%' }}>
-                <TextField fullWidth {...register(`designs.${i}.name`)} />
-                <select {...register(`designs.${i}.status`)} defaultValue="1">
-                  <option value="1">Active</option>
-                  <option value="0">Deactive</option>
-                </select>
-                <Button type="button" onClick={() => remove(i)}>
-                  Del
-                </Button>
-              </Box>
-            ))}
-            <Button
-              fullWidth
-              type="button"
-              onClick={() => append({ name: 'bill', status: 1 })}
-            >
-              Add
-            </Button>
-            {/* <fieldset
+            />
+            <fieldset
               style={{
                 borderColor: gqlErrs?.type ? 'red' : errors?.type ? 'red' : '',
                 color: gqlErrs?.type ? 'red' : errors?.type ? 'red' : '',
@@ -148,9 +113,9 @@ const NewDesign = () => {
                 <option value={1}>Panzabi</option>
                 <option value={2}>Pazama</option>
               </select>
-            </fieldset> */}
+            </fieldset>
           </Box>
-          {/* {designs?.map((id, i) => (
+          {designs?.map((id, i) => (
             <div key={id} style={{ display: 'flex', marginBottom: '5px' }}>
               <TextField
                 {...register(id, {
@@ -179,8 +144,8 @@ const NewDesign = () => {
                 Del
               </Button>
             </div>
-          ))} */}
-          {/* <Button
+          ))}
+          <Button
             onClick={() => {
               setDesigns((p) => [...p, v4()]);
             }}
@@ -202,7 +167,7 @@ const NewDesign = () => {
             type="submit"
           >
             Add Design
-          </Button> */}
+          </Button>
         </form>
       </div>
     </AdminLayout>

@@ -20,7 +20,7 @@ export default function VerticalTabs({
 }) {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (_, newValue) => {
     if (!Object.keys(errors)?.length) setValue(newValue);
   };
 
@@ -119,6 +119,14 @@ export default function VerticalTabs({
                               : '',
                           }}
                           defaultChecked={defVal !== undefined ? true : false}
+                          onChange={() => {
+                            // const isChecked = watching?.[i]?.[k]?.isCheck;
+                            // if (
+                            //   errors?.[design_type]?.[i]?.[k] &&
+                            //   isChecked === false
+                            // ) {
+                            // }
+                          }}
                         />
                       }
                       label={item}

@@ -6,6 +6,7 @@ import {
   DELETE_ORDER_ITEM,
   EDIT_ORDER,
   UPDATE_PAYMENT,
+  UPDATE_ORDER_ITEM,
 } from './../Mutations/orderMut';
 import {
   ALL_ORDERS,
@@ -67,7 +68,7 @@ export default {
   SINGLE_ORDER_BASIC,
   ORDER_ITEM,
   UPDATE_PAYMENT,
-
+  UPDATE_ORDER_ITEM,
   //DESIGN
   ALL_DESIGNS,
   SPECIFIC_ALL_DESIGNS,

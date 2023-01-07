@@ -244,8 +244,10 @@ export default {
   /**
    * Update Order item
    */
-  updateOrderItem: async (_parent, { id, update }, { req }) => {
+  updateOrderItem: async (_parent, { _id, update }, { req }) => {
     try {
+      console.log(_id);
+      return true;
     } catch (e) {
       errorHandler(e);
     }

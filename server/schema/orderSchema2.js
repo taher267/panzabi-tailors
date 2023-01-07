@@ -175,6 +175,7 @@ export default gql`
     notes: String
   }
   input InputUpdateOrderItem {
+    itemId: String!
     products: [inputOrderProduct!]!
     price: Float!
     quantity: Int!
@@ -196,7 +197,7 @@ export default gql`
     createOrder(order: InputOrder!): Order!
     addNewOrderItem(_id: ID!, newItem: InputAddOrderItem!): Order!
     updateOrder(id: ID!, update: InputOrder!): Order!
-    updateOrderItem(id: ID!, update: InputUpdateOrderItem!): Boolean!
+    updateOrderItem(_id: ID!, update: InputUpdateOrderItem!): Boolean!
     updatePayment(id: ID!, update: PaymentUpdate!): Boolean!
     deleteOrder(_id: ID!, customer: ID!): Del!
   }

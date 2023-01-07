@@ -31,6 +31,7 @@ const PriceFields = ({
             }
           },
         })}
+        inputProps={{ min: 1 }}
         error={
           errors?.pricing?.[pricingKey]?.quantity
             ? true
@@ -54,6 +55,7 @@ const PriceFields = ({
           min: { value: 1, message: `Minimum Product price 1` },
         })}
         fullWidth
+        inputProps={{ min: 0 }}
         error={
           errors?.pricing?.[pricingKey]?.price
             ? true
