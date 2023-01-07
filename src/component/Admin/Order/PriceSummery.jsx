@@ -23,6 +23,7 @@ const PriceSummery = ({ pricingDetail, advanced, setAdvanced }) => {
           value={advanced}
           onChange={(e) => setAdvanced(parseInt(e.target.value) || 0)}
           fullWidth
+          inputProps={{ min: 0 }}
         />
         <TextField
           label="Due"

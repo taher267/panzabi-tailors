@@ -37,13 +37,13 @@ const OrderItemCard = ({
   productLen,
   pricingKey,
 }) => {
-  console.log(errors?.[fieldName]);
   return (
     <>
       <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
       {products ? (
         <>
           <OrderProduct
+            fullWidth={true}
             selectedProducts={(_, v) =>
               setOrderProduct?.((p) => {
                 if (prodType) {

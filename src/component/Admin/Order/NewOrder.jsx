@@ -266,7 +266,8 @@ const NewOrder = () => {
     if (data?.checkboxUp) {
       let up_item = {};
       total_up = up.price * up.quantity;
-      up_item.products = orderProduct?.up || [];
+      up_item.products =
+        orderProduct?.up?.map(({ _id, name }) => ({ _id, name })) || [];
       up_item.quantity = up.quantity;
       up_item.price = up.price;
       up_item.connection = 'up';
@@ -281,7 +282,8 @@ const NewOrder = () => {
     if (data?.checkboxDown) {
       let down_item = {};
       total_down = down.price * down.quantity;
-      down_item.products = orderProduct?.down || [];
+      down_item.products =
+        orderProduct?.down?.map(({ _id, name }) => ({ _id, name })) || [];
       down_item.quantity = down.quantity;
       down_item.price = down.price;
       down_item.connection = 'down';

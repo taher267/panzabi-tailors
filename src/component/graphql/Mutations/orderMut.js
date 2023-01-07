@@ -84,7 +84,11 @@ export const EDIT_ORDER = gql`
     }
   }
 `;
-
+export const UPDATE_ORDER_ITEM = gql`
+  mutation updateOrderItem($_id: ID!, $update: InputUpdateOrderItem!) {
+    updateOrderItem(_id: $_id, update: $update)
+  }
+`;
 export const DELETE_ORDER_ITEM = gql`
   mutation deleteOrder($_id: ID!, $customer: ID!) {
     deleteOrder(_id: $_id, customer: $customer) {

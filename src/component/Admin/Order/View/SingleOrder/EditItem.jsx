@@ -23,6 +23,7 @@ import {
   designFiltering,
   measurementKeyValue,
 } from '../../../../../helpers/orderHelper';
+import useMutationFunc from '../../../../hooks/gql/useMutationFunc';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -68,8 +69,8 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     price,
     quantity,
     connection,
-    editId,
-    _id,
+    _id, // editId
+    order_id,
   } = props;
   const [gqlErrs, setGqlErrs] = React.useState({});
   const [notice, setNotice] = React.useState(false);
@@ -99,6 +100,12 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     'allProducts'
   );
   const {
+    mutation: updateItem,
+    bug,
+    processing,
+    data,
+  } = useMutationFunc('UPDATE_ORDER_ITEM');
+  const {
     control,
     handleSubmit,
     register,
@@ -108,7 +115,9 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   } = useForm({
     mode: 'all',
   });
+
   // designDefaultValuesShape(designs);
+
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
     delete newErr[name];
@@ -116,7 +125,8 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   };
   const watching = useWatch({
     control,
-    name: connection,
+    name: 'designs',
+    // name: connection,
   });
   const handleNotice = (mg) => {
     setNotice((p) => !p);
@@ -141,23 +151,31 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     name: 'pricing',
   });
   const onSubmit = (d) => {
-    console.log(orderProduct);
-    // const desings = designFiltering(d.designs);
-    // const measurements = measurementKeyValue(d.measurements);
-    // const products = orderProduct;
-    // const updateData = {
-    //   products,
-    //   ...d.pricing,
-    //   measurements,
-    //   desings,
-    // };
-    // console.log(updateData);
-    // price
-    // quantity
-    // measurements
-    // designs
-    // order_date
-    // sample
+    // console.log(
+    //   orderProduct.map(({ _id, name }) => ({ _id, name })),
+    //   products.map(({ _id, name }) => ({ _id, name }))
+    // );
+    const designs = designFiltering(d.designs);
+    const measurements = measurementKeyValue(d.measurements);
+    const productsMap = orderProduct?.length
+      ? orderProduct.map(({ _id, name }) => ({ _id, name }))
+      : products.map(({ _id, name }) => ({ _id, name }));
+    const variables = {
+      _id: order_id,
+      update: {
+        itemId: _id,
+        products: productsMap,
+        ...d.pricing,
+        measurements,
+        designs,
+        sample: {
+          src: 'fdfdf',
+          // _id: 'fdfd'
+        },
+      },
+    };
+    updateItem({ variables });
+    // console.log(designs);
   };
   const connectionTypeProducts = (data = [], con) =>
     data.filter((p) => p.category === con);

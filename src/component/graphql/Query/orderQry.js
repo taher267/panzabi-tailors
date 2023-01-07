@@ -163,37 +163,3 @@ export const SINGLE_ORDER_BASIC = gql`
     }
   }
 `;
-
-export const UPDATE_ORDER_ITEM = gql`
-  query UpdateOrderItem($id: ID!, $key: String!) {
-    UpdateOrderItem(id: $id, key: $key) {
-      order_no
-      _id
-      quantity
-      connection
-      products {
-        name
-        # _id
-      }
-      price
-      measurements {
-        # msr_id
-        label
-        size
-      }
-      designs {
-        group
-        items {
-          # dsn_id
-          label
-          desc
-        }
-      }
-      # order_date
-      sample {
-        _id
-        src
-      }
-    }
-  }
-`;
