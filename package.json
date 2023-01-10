@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.mjs",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "start": "set NODE_ENV=production&&node",
+    "start": "node index.mjs",
     "dev": "set NODE_ENV=development&&nodemon",
     "dev-esm": "set NODE_ENV=development&&nodemon -r esm"
   },
