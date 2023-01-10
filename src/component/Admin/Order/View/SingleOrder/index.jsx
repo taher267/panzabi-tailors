@@ -36,7 +36,6 @@ const SingleOrder = () => {
         Object.keys(data?.customerDetail || {})?.length ? (
           <>
             <CustomerDetailsAndBasicSingleOrderInfo {...{ ...data }} />
-            {/* <SingleOrderSummary {...{ ...data }} /> */}
             {data?.order_items?.length
               ? [...data?.order_items]
                   // .reverse()

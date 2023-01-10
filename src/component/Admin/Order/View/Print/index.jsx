@@ -1,4 +1,5 @@
 import React from 'react';
+import parser from 'html-react-parser';
 import './print.css';
 import { useLocation, useParams } from 'react-router-dom';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
@@ -14,12 +15,27 @@ const Print = () => {
     },
     'getOrderItem'
   );
+  // console.log(data);
   return (
     <>
       <button onClick={print}>Print</button>
-      <div className="contentData">
+      {/* {(data?.htmlTemplate && data?.htmlTemplate?.replace(/\\n/g, '')) || ''} */}
+      {(data?.htmlTemplate &&
+        parser(data?.htmlTemplate?.replace(/\\n|"/g, ''))) ||
+        ''}
+      {/* <div className="contentData">
         <div className="printCard">
-          <div>
+          <div
+            className="productsCard"
+            style={{
+              width:
+                data?.connection === 'down'
+                  ? '38mm'
+                  : data?.connection === 'up'
+                  ? '23mm'
+                  : '',
+            }}
+          >
             {data?.products &&
               Object.values(data?.products).map?.(({ name }, i) => (
                 <p key={i}>{name}</p>
@@ -35,7 +51,7 @@ const Print = () => {
               ))}
           </div>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };

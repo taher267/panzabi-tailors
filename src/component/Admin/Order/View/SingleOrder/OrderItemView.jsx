@@ -80,7 +80,7 @@ const OrderItemView = (props) => {
 
               <a
                 target="_blank"
-                href={`/dashboard/order/print/${order_id}/${k}`}
+                href={`/dashboard/order/print/${order_id}/${_id}`}
               >
                 <Button
                   endIcon={<PrintIcon />}
