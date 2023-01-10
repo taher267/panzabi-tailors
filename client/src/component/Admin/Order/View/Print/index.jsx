@@ -16,13 +16,22 @@ const Print = () => {
     'getOrderItem'
   );
   // console.log(data);
+
+  React.useEffect(() => {
+    if (data?.htmlTemplate) {
+      // document.body.insertAdjacentHTML('afterbegin', data?.htmlTemplate);
+      document
+        .querySelector('header')
+        .insertAdjacentHTML('afterend', data?.htmlTemplate);
+    }
+  }, [data]);
   return (
     <>
       <button onClick={print}>Print</button>
       {/* {(data?.htmlTemplate && data?.htmlTemplate?.replace(/\\n/g, '')) || ''} */}
-      {(data?.htmlTemplate &&
+      {/* {(data?.htmlTemplate &&
         parser(data?.htmlTemplate?.replace(/\\n|"/g, ''))) ||
-        ''}
+        ''} */}
       {/* <div className="contentData">
         <div className="printCard">
           <div
@@ -49,6 +58,72 @@ const Print = () => {
                   <p>{size}</p>
                 </div>
               ))}
+          </div>
+        </div>
+      </div> */}
+      {/* <div id="wrapper">
+        <div
+          style={{
+            width: '17%',
+            display: 'block',
+            float: 'left',
+            fontSize: '12.5px',
+            lineHeight: 2,
+          }}
+        >
+          <p>&nbsp;</p>
+          <p style={{ display: 'flex' }}>
+            একছাটা <input type="checkbox" checked readOnly />
+          </p>
+          <p style={{ display: 'flex' }}>
+            একছাটা <input type="checkbox" checked readOnly />
+          </p>
+          <p style={{ display: 'flex' }}>
+            একছাটা <input type="checkbox" checked readOnly />
+          </p>
+          <p style={{ display: 'flex' }}>
+            একছাটা <input type="checkbox" checked readOnly />
+          </p>
+        </div>
+        <div style={{ width: ' 83%', display: 'inline-block' }}>
+          <div style={{ display: 'flex', fontSize: ' 13.5px' }}>
+            <p style={{ marginLeft: ' 25mm' }}>নং</p>
+            <p style={{ marginLeft: '38mm' }}>তারিখ</p>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              width: '142mm',
+              maxWidth: '100%',
+              padding: '0 5px',
+              fontSize: '12.5px',
+            }}
+          >
+            <div>
+              <div>লম্বা</div>
+              <div>&nbsp;</div>
+              <div>লম্বা</div>
+            </div>
+            <div>
+              <p>বডি</p>
+              <p>বডি</p>
+              <p>বডি</p>
+              <p>বডি</p>
+              <p>বডি</p>
+            </div>
+            <div>পুট</div>
+            <div>
+              <div>হাতা</div>
+              <div>হাতা</div>
+            </div>
+            <div>কলার</div>
+            <div>
+              <div>হাতার মুহরি</div>
+              <div>হাতার মুহরি</div>
+            </div>
+            <div>বুতাম</div>
+            <div>বুতাম</div>
           </div>
         </div>
       </div> */}

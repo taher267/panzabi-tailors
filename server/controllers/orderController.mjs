@@ -9,10 +9,73 @@ import orderValidation from '../validation/orderValidation.mjs';
 import clonning from '../utils/clonning.mjs';
 import tempUp from '../template/temp-up.mjs';
 import order_item_sample from '../order_item_sample.mjs';
+import moment from 'moment';
+import Template from '../models/Template.mjs';
 // console.log(typeof tempUp);
+const temp2 = `<div id="wrapper" style="margin-top:50px">
+<div
+  style="width:17%;display:block;float:left;font-size:12.5px;line-height:20px"
+>
+  <p>&nbsp;</p>
+  <p style="display: flex">একছাটা <input type="checkbox" checked /></p>
+  <p style="display: flex">একছাটা <input type="checkbox" checked /></p>
+  <p style="display: flex">একছাটা <input type="checkbox" checked /></p>
+  <p style="display: flex">একছাটা <input type="checkbox" checked /></p>
+</div>
+<div style="width:83%;display:inline-block">
+<div style="display:flex;font-size:13.5px">
+    <p style="margin-left:25mm">নং- {order_no}</p>
+    <p style="margin-left:38mm">তারিখ- {print_date}</p>
+  </div>
+  <div
+    style="display:flex;justify-content:space-between;width:142mm;max-width:100%;padding:0 5px;padding-right:5px; font-size:12.5px"
+  >
+    <div>
+      <div>লম্বা</div>
+      <div>&nbsp;</div>
+      <div>leng</div>
+    </div>
+    <div>
+      <p>বডি</p>
+      <p>বডি</p>
+      <p>বডি</p>
+      <p>বডি</p>
+      <p>বডি</p>
+    </div>
+    <div>পুট</div>
+    <div>
+      <div>হাতা</div>
+      <div>হাতা</div>
+    </div>
+    <div>কলার</div>
+    <div>
+      <div>হাতার মুহরি</div>
+      <div>হাতার মুহরি</div>
+    </div>
+    <div>বুতাম</div>
+    <div>বুতাম</div>
+  </div>
+</div>
+</div>`;
+// Template.create({
+//   name: 'Temp-01',
+//   productsPlace: {
+//     tag: `<p style='display: flex'>product_place<input type='checkbox' checked /></p>`,
+//     placeOn: 'product_place',
+//     replaceOn: 'all_product_place',
+//   },
+//   temp: temp2,
+// })
+//   .then((d) => console.log(d))
+//   .catch((d) => console.log(d));
 let Order;
 ord.then((d) => (Order = d)).catch((e) => console.log(e));
-console.log();
+
+async function testing() {
+  console.log(order_item_sample?.measurements);
+}
+
+// testing();
 // let sum = new Function(
 //   'd',
 //   `<div className="contentData">
@@ -123,18 +186,49 @@ export default {
       let order_item = clonning(order.order_items)?.filter(
         (item) => item._id === key
       )?.[0];
-      // console.log(JSON.stringify(order_item));
-      // const measurements = Object.values(order_item?.measurements).map?.(
-      //   ({ label, size }) => {
-      //     return `<div><p>${label}</p><p>${size}</p></div>`;
-      //   }
-      // );
-      // console.log(measurements);
-      // tempUp.replace('product_place', '1111111')
 
-      let htmlTemplate = tempUp;
+      let htmlTemplate = `<div id='singleSlipPrintwrapper' style='margin-top:50px'>
+      <div
+        style='width:10%;display:block;float:left;font-size:12.5px;line-height:20px'
+      >
+        <p>&nbsp;</p>
+        all_product_place
+      </div>
+      <div style='width:83%;display:inline-block'>
+      <div style='display:flex;font-size:13.5px'>
+          <p style='margin-left:25mm'>নং- ${order?.order_no}</p>
+          <p style='margin-left:38mm'>তারিখ- ${moment().format(
+            'YYYY-MM-DD'
+          )}</p>
+        </div>
+        <div
+          style='display:flex;justify-content:space-between;width:142mm;max-width:100%;padding:0 5px; font-size:12.5px'
+        >
+          <div>
+            <div>লম্বা</div>
+            <div>&nbsp;</div>
+            <div>plat</div>
+          </div>
+          <div>
+            <p>বডি</p>
+          </div>
+          <div>পুট</div>
+          <div>
+            <div>হাতা</div>
+            <div></div>
+          </div>
+          <div>কলার</div>
+          <div>
+            <div>হাতার মুহরি</div>
+            <div></div>
+          </div>
+          <div>বুতাম</div>
+          <div></div>
+        </div>
+      </div>
+    </div>`;
       const productsRep = {
-        tag: `<p>product_place</p>`,
+        tag: `<p style='display: flex'>product_place<input type='checkbox' checked /></p>`,
         placeOn: 'product_place',
         replaceOn: 'all_product_place',
       };
@@ -143,43 +237,18 @@ export default {
           (a += productsRep?.tag?.replace?.(productsRep?.placeOn, name)),
         ''
       );
-      htmlTemplate = JSON.stringify(htmlTemplate).replace(
+
+      htmlTemplate = htmlTemplate?.replace?.(
         productsRep?.replaceOn,
         prductsDesigns
       );
-      // console.log(htmlTemplate);
+      for (const measue of order_item?.measurements || []) {
+        let { size, label } = measue;
+        htmlTemplate = htmlTemplate.replace(label, size);
 
-      // for (const prod of order_item?.products) {
-      //   htmlTemplate = htmlTemplate.replace(productsRep, ``);
-      // }
+        // htmlTemplate.replace(label, size);
+      }
 
-      //   let htmlTemplate = `<div className="contentData">
-      //   <div className="printCard" style='display:flex;'>
-      //     <div
-      //       className="productsCard"
-      //       style="width: ${
-      //         order_item?.connection === 'down'
-      //           ? '38mm;'
-      //           : order_item?.connection === 'up'
-      //           ? '23mm;'
-      //           : ''
-      //       }"
-      //     >
-      // ${Object.values(order_item?.products).reduce?.(
-      //   (a, { name }) => (a += `<p>${name}</p>`),
-      //   ''
-      // )}
-      //     </div>
-      //     <div className="printDesign" style='display:flex;'>
-      //       ${Object.values(order_item?.measurements).reduce?.(
-      //         (a, { label, size }) =>
-      //           (a += `<div><p>${label}</p><p>${size}</p></div>`),
-      //         ''
-      //       )}
-      //     </div>
-      //   </div>
-      // </div>`;
-      // console.log(htmlTemplate);
       const result = {
         ...order_item,
         htmlTemplate,
@@ -255,7 +324,6 @@ export default {
           throw new UserInputError(
             `Customer remaining payment: ${remainingPayment}`
           );
-
         updateShape = {
           $inc: {
             discount: update?.discount || 0,
