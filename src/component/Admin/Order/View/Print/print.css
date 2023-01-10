@@ -8,7 +8,7 @@
   padding: 0;
 }
 
-@media print {
+/* @media print {
   #root * {
     display: none;
   }
@@ -33,4 +33,20 @@
     display: flex !important;
     justify-content: space-between !important;
   }
+} */
+
+@media print {
+  /* Sets print view with media query */
+  #root * {
+    display: none;
+  }
+  /* Sets body and elements in it to not display */
+  #singleSlipPrintwrapper,
+  #singleSlipPrintwrapper * {
+    display: block;
+  }
+  /*  */
+
+  /*  */
+  /* Sets print area element and all its content to display */
 }
