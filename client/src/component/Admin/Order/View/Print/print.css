@@ -20,14 +20,17 @@
   .contentData * {
     display: block !important;
   }
-}
-.printCard {
-  width: 141mm !important;
-}
-.printCard:first-child {
-  width: 25mm !important;
-}
-.printDesign {
-  display: flex !important;
-  justify-content: space-between !important;
+  .printCard {
+    width: 141mm !important;
+    display: flex !important;
+    font-size: 0.75em !important;
+  }
+  .productsCard {
+    width: 25mm !important;
+    background-color: green !important;
+  }
+  .printDesign {
+    display: flex !important;
+    justify-content: space-between !important;
+  }
 }

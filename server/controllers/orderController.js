@@ -7,61 +7,41 @@ import userCustomerServices from '../services/userCustomerServices.js';
 // import TestModel from '../models/TestModel.js';
 import orderValidation from '../validation/orderValidation.js';
 import clonning from '../utils/clonning.js';
-// TestModel.create({
-//   strData: Math.random()?.toString?.(),
-//   arrData: [
-//     {
-//       name: Math.random()?.toString?.(),
-//       arr: [
-//         {
-//           data: Math.random()?.toString?.(),
-//           data2: Math.random()?.toString?.(),
-//         },
-//       ],
-//     },
-//   ],
-// })
-//   .then((d) => {
-//     console.log(d);
-//   })
-//   .catch((e) => {
-//     console.log(e);
-//   });
-
-// TestModel.updateOne(
-//   { _id: '638f5ea0f6a71645b1ad4163' },
-//   {
-//     $push: {
-//       'arrData.0.arr': [
-//         {
-//           data: Math.random()?.toString?.(),
-//           data2: Math.random()?.toString?.(),
-//         },
-//       ],
-//     },
-//   },
-//   { new: true }
-// )
-//   .then((d) => {
-//     console.log(d);
-//   })
-//   .catch((e) => {
-//     console.log(e);
-//   });
-
-// TestModel.find()
-//   .then((d) => {
-//     console.log(d?.[0]?.arrData?.[0]?.arr);
-//   })
-//   .catch((e) => {
-//     console.log(e);
-//   });
-
+import tempUp from '../template/temp-up.js';
+// console.log(typeof tempUp);
 let Order;
 ord.then((d) => (Order = d)).catch((e) => console.log(e));
-// orderServices.findOrder();
-//   .then((d) => console.log(d))
-//   .catch((d) => console.log(d));
+// let sum = new Function(
+//   'd',
+//   `<div className="contentData">
+//   <div className="printCard" style='display:flex;'>
+//     <div
+//       className="productsCard"
+//       style="width: ${
+//         d?.connection === 'down'
+//           ? '38mm;'
+//           : d?.connection === 'up'
+//           ? '23mm;'
+//           : ''
+//       }"
+//     >
+// ${Object.values(d?.products).reduce?.(
+//   (a, { name }) => (a += `<p>${name}</p>`),
+//   ''
+// )}
+//     </div>
+//     <div className="printDesign" style='display:flex;'>
+//       ${Object.values(d?.measurements).reduce?.(
+//         (a, { label, size }) =>
+//           (a += `<div><p>${label}</p><p>${size}</p></div>`),
+//         ''
+//       )}
+//     </div>
+//   </div>
+// </div>`
+// );
+
+// console.log(sum([{ p: 1, q: 2 }, { q: 1, p: 2 }, 3, 4, 5]));
 export default {
   /**
    * Create New Order
@@ -137,18 +117,71 @@ export default {
         id,
         'order_items order_no'
       );
-      let order_item;
-      const end = -order.order_items.length + Number(key) + 1;
-      if (end) {
-        order_item = clonning(order.order_items).slice(Number(key), end)[0];
-      } else {
-        order_item = clonning(order.order_items).slice(Number(key))[0];
-      }
+      // let order_item = clonning(order.order_items)[0];
+      let order_item = clonning(order.order_items)?.filter(
+        (item) => item._id === key
+      )?.[0];
+      // const measurements = Object.values(order_item?.measurements).map?.(
+      //   ({ label, size }) => {
+      //     return `<div><p>${label}</p><p>${size}</p></div>`;
+      //   }
+      // );
+      // console.log(measurements);
+      // tempUp.replace('product_place', '1111111')
 
-      // console.log(key, -order.order_items.length + Number(key) + 1);
+      let htmlTemplate = tempUp;
+      const productsRep = {
+        tag: `<p>product_place</p>`,
+        placeOn: 'product_place',
+        replaceOn: 'all_product_place',
+      };
+      const prductsDesigns = Object.values(order_item?.products).reduce(
+        (a, { name }) =>
+          (a += productsRep?.tag?.replace?.(productsRep?.placeOn, name)),
+        ''
+      );
+      htmlTemplate = JSON.stringify(htmlTemplate).replace(
+        productsRep?.replaceOn,
+        prductsDesigns
+      );
+      console.log(htmlTemplate);
 
-      const result = { ...order_item, order_no: order.order_no };
-      // console.log(result);
+      // for (const prod of order_item?.products) {
+      //   htmlTemplate = htmlTemplate.replace(productsRep, ``);
+      // }
+
+      //   let htmlTemplate = `<div className="contentData">
+      //   <div className="printCard" style='display:flex;'>
+      //     <div
+      //       className="productsCard"
+      //       style="width: ${
+      //         order_item?.connection === 'down'
+      //           ? '38mm;'
+      //           : order_item?.connection === 'up'
+      //           ? '23mm;'
+      //           : ''
+      //       }"
+      //     >
+      // ${Object.values(order_item?.products).reduce?.(
+      //   (a, { name }) => (a += `<p>${name}</p>`),
+      //   ''
+      // )}
+      //     </div>
+      //     <div className="printDesign" style='display:flex;'>
+      //       ${Object.values(order_item?.measurements).reduce?.(
+      //         (a, { label, size }) =>
+      //           (a += `<div><p>${label}</p><p>${size}</p></div>`),
+      //         ''
+      //       )}
+      //     </div>
+      //   </div>
+      // </div>`;
+      // console.log(htmlTemplate);
+      const result = {
+        ...order_item,
+        htmlTemplate,
+        order_no: order.order_no,
+      };
       return result;
     } catch (e) {
       errorHandler(e);
@@ -274,27 +307,3 @@ export default {
     }
   },
 };
-
-// Order.create({
-//   order_no: 1,
-//   quantity: 1,
-//   totalPrice: 500,
-//   user: "6324efa9255bce344100a4da",
-
-//   order_status: "PROCESSING",
-//   orders: [
-//     {
-//       order: "6324e1243fefdc8d0b5dd571",
-//       price: 500,
-//       measurements: [
-//         {
-//           _id: "6324e1243fefdc8d0b5dd579",
-//           size: "35'",
-//         },
-//       ],
-//       designs: [{ "6324e1243fefdc8d0b5dd579": '4343' }],
-//     },
-//   ],
-// })
-//   .then((d) => console.log(d))
-//   .catch((e) => console.log(e));

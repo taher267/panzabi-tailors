@@ -123,6 +123,7 @@ export const ORDER_ITEM = gql`
         # _id
       }
       price
+      htmlTemplate
       measurements {
         # msr_id
         label
