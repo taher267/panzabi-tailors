@@ -94,6 +94,7 @@ export default gql`
     products: [orderProduct!]!
     price: Float!
     quantity: Int!
+    htmlTemplate: String
     measurements: [OrderMeasurement!]!
     designs: [OrderDesign!]!
     order_date: Date!
