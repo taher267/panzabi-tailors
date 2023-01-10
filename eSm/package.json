@@ -1,0 +1,15 @@
+{
+  "name": "esm",
+  "version": "1.0.0",
+  "main": "index.mjs",
+  "license": "MIT",
+  "scripts": {
+    "start": "node",
+    "dev": "set NODE_ENV=developement&nodemon -r esm index.mjs"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "esm": "^3.2.25",
+    "express": "^4.18.2"
+  }
+}
