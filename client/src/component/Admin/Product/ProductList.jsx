@@ -1,6 +1,9 @@
 import AdminLayout from '../../Layout/AdminLayout/index';
 import './product.css';
-import { Box, LinearProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import LinearProgress from '@mui/material/LinearProgress';
+import Tooltip from '@mui/material/Tooltip';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
 import MeasurementActions from './ProductActions';
@@ -11,6 +14,7 @@ const ProductList = () => {
   const location = useLocation();
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
+  const [copyId, setCopyId] = useState();
   const { loading, data, error } = useGetQurey(
     'ALL_PRODUCTS',
     null,
@@ -22,9 +26,54 @@ const ProductList = () => {
     }
   }, [error]);
 
+  /**
+   * <Tooltip open={false} title="Coppied to Add" leaveDelay={1500}  onClose={()=>{}}>
+      <Button>Arrow</Button>
+    </Tooltip>
+   */
   const columns = useMemo(
     () => [
-      { field: '_id', headerName: 'ID', width: 210, hide: true },
+      // { field: '_id', headerName: 'ID', width: 250, hide: true },
+      {
+        field: '_id',
+        headerName: 'ID',
+        width: 250,
+        // hide: true,
+        renderCell: ({ row }) => {
+          let { _id } = row;
+          return (
+            <Box
+              sx={
+                {
+                  // bgcolor: copyId === _id ? '#970bee' : '',
+                }
+              }
+            >
+              <Tooltip
+                title="Coppied the ID"
+                open={copyId === _id ? true : false}
+                onClick={() => {
+                  setCopyId(_id);
+                  navigator.clipboard.writeText(_id);
+                }}
+                leaveDelay={1500}
+              >
+                <Button
+                  sx={{
+                    border: 0,
+                    // color: copyId === _id ? '#fff' : '',
+                    '&:focus': {
+                      outline: 'none',
+                    },
+                  }}
+                >
+                  {row?._id}
+                </Button>
+              </Tooltip>
+            </Box>
+          );
+        },
+      },
       {
         field: 'name',
         headerName: 'Measurement Name',
@@ -79,8 +128,9 @@ const ProductList = () => {
         ),
       },
     ],
-    [rowId]
+    [rowId, copyId]
   );
+
   useEffect(() => {
     if (location?.state) {
       window.history.replaceState({}, document.title);
@@ -107,11 +157,12 @@ const ProductList = () => {
             className="measuementActions"
           >
             <DataGrid
+              autoHeight
               rows={data}
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 25, 50]}
+              rowsPerPageOptions={[25, 50, 100]}
               // checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}

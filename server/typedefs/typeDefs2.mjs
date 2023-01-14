@@ -61,8 +61,11 @@ import {
   dailyAccountMutations,
 } from '../schema/accountSchema.mjs';
 
+import TempateSchema from '../schema/templateSchema.mjs';
+
 export default gql`
 ${OrderSchema}
+${TempateSchema}
   type Query {
     ${DesignQueries}
     # Product

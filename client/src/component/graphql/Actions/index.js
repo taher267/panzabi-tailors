@@ -8,6 +8,8 @@ import {
   UPDATE_PAYMENT,
   UPDATE_ORDER_ITEM,
 } from './../Mutations/orderMut';
+
+import { NEW_TEMPLATE, EDIT_TEMPLATE } from './../Mutations/templateMut';
 import {
   ALL_ORDERS,
   SINGLE_ORDER,
@@ -75,6 +77,9 @@ export default {
   SINGLE_DESIGN,
   NEW_DESIGN,
   EDIT_DESIGN,
+  // TEMPLATE
+  NEW_TEMPLATE,
+  EDIT_TEMPLATE,
   // ACCOUNT
   ALL_ACCOUNTS,
   DAILY_ACCOUNT,

@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 
 export default (e) => {
   console.log(e.message);
+  console.log(e?.extensions?.errors);
   throw new GraphQLError(e.message, {
     errors: e?.extensions?.errors || { success: false, message: e.message },
     extensions: { status: e?.status || 500 },

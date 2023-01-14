@@ -1,6 +1,9 @@
 import AdminLayout from '../../Layout/AdminLayout/index';
 import './measurement.css';
-import { Box, LinearProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
 import MeasurementActions from './MeasurementActions';
@@ -11,6 +14,7 @@ const MeasurementList = () => {
   const location = useLocation();
   const [pageSize, setPageSize] = useState(10);
   const [rowId, setRowId] = useState(null);
+  const [copyId, setCopyId] = useState();
   const { loading, data, error } = useGetQurey(
     'ALL_MEASUREMENTS',
     null,
@@ -24,7 +28,47 @@ const MeasurementList = () => {
   }, [error]);
   const columns = useMemo(
     () => [
-      { field: '_id', headerName: 'ID', width: 220, hide: true },
+      // { field: '_id', headerName: 'ID', width: 220, hide: true },
+      {
+        field: '_id',
+        headerName: 'ID',
+        width: 250,
+        // hide: true,
+        renderCell: ({ row }) => {
+          let { _id } = row;
+          return (
+            <Box
+              sx={
+                {
+                  // bgcolor: copyId === _id ? '#970bee' : '',
+                }
+              }
+            >
+              <Tooltip
+                title="Coppied the ID"
+                open={copyId === _id ? true : false}
+                onClick={() => {
+                  setCopyId(_id);
+                  navigator.clipboard.writeText(_id);
+                }}
+                leaveDelay={1500}
+              >
+                <Button
+                  sx={{
+                    border: 0,
+                    // color: copyId === _id ? '#fff' : '',
+                    '&:focus': {
+                      outline: 'none',
+                    },
+                  }}
+                >
+                  {row?._id}
+                </Button>
+              </Tooltip>
+            </Box>
+          );
+        },
+      },
       {
         field: 'label',
         headerName: 'Measurement Label',
@@ -100,7 +144,7 @@ const MeasurementList = () => {
         },
       },
     ],
-    [rowId]
+    [rowId, copyId]
   );
   useEffect(() => {
     if (location?.state) {

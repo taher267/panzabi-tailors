@@ -57,6 +57,7 @@ const temp2 = `<div id="wrapper" style="margin-top:50px">
   </div>
 </div>
 </div>`;
+
 // Template.create({
 //   name: 'Temp-01',
 //   productsPlace: {
@@ -207,7 +208,7 @@ export default {
           <div>
             <div>লম্বা</div>
             <div>&nbsp;</div>
-            <div>plat</div>
+            <div>{plate_length}</div>
           </div>
           <div>
             <p>বডি</p>
