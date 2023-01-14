@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Box, Button, Typography } from '@mui/material';
-import AdminLayout from '../Layout/AdminLayout';
+
 import { DataGrid } from '@mui/x-data-grid';
 import { Visibility } from '@mui/icons-material';
 import {
@@ -10,16 +10,18 @@ import {
   // useKeepGroupedColumnsHidden,
 } from '@mui/x-data-grid-premium';
 import { Link } from 'react-router-dom';
-import useGetQurey from '../hooks/gql/useGetQurey';
-import LinearLoader from '../Loaders/LinearLoader';
-import CustomerActions from './CustomerActions';
+import useGetQurey from '../../hooks/gql/useGetQurey';
+import LinearLoader from '../../Loaders/LinearLoader';
 import { useEffect } from 'react';
+import AdminLayout from '../../Layout/AdminLayout';
+import CustomerActions from '../../Customer/CustomerActions';
+
 const statusesOptions = [
   { value: 'ACTIVE', label: 'ACTIVE', color: 'red' },
   { value: 'PENDING', label: 'PENDING' },
   { value: 'REJECT', label: 'REJECT' },
 ];
-const Customer = () => {
+const TemplateList = () => {
   const [val, setVal] = useState(null);
   const [rowId, setRowId] = useState(null);
   const columns = useMemo(
@@ -157,6 +159,7 @@ const Customer = () => {
   useEffect(() => {
     document.querySelector('.Mui-resizeTriggers')?.previousSibling.remove();
   }, [data]);
+  return <></>;
   return (
     <AdminLayout>
       {loading && <LinearLoader />}
@@ -185,7 +188,7 @@ const Customer = () => {
   );
 };
 
-export default Customer;
+export default TemplateList;
 
 const OrderInfo = ({ row }) => {
   const typeSx = { fontSize: '12px' };

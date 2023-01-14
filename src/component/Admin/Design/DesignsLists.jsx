@@ -12,6 +12,7 @@ const DesignsLists = () => {
   const [type, setType] = useState([]);
   const [pageSize, setPageSize] = useState(5);
   const [rowId, setRowId] = useState(null);
+  const [copyId, setCopyId] = useState();
   const { loading, data, error } = useGetQurey(
     'ALL_DESIGNS',
     null,
@@ -24,7 +25,47 @@ const DesignsLists = () => {
   }, [error]);
   const columns = useMemo(
     () => [
-      { field: '_id', headerName: 'ID', width: 210, hide: true },
+      // { field: '_id', headerName: 'ID', width: 210, hide: true },
+      {
+        field: '_id',
+        headerName: 'ID',
+        width: 250,
+        // hide: true,
+        renderCell: ({ row }) => {
+          let { _id } = row;
+          return (
+            <Box
+              sx={
+                {
+                  // bgcolor: copyId === _id ? '#970bee' : '',
+                }
+              }
+            >
+              <Tooltip
+                title="Coppied the ID"
+                open={copyId === _id ? true : false}
+                onClick={() => {
+                  setCopyId(_id);
+                  navigator.clipboard.writeText(_id);
+                }}
+                leaveDelay={1500}
+              >
+                <Button
+                  sx={{
+                    border: 0,
+                    // color: copyId === _id ? '#fff' : '',
+                    '&:focus': {
+                      outline: 'none',
+                    },
+                  }}
+                >
+                  {row?._id}
+                </Button>
+              </Tooltip>
+            </Box>
+          );
+        },
+      },
       {
         requreid: true,
         field: 'design_name',

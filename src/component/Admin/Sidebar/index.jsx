@@ -6,7 +6,6 @@ const Sidebar = () => {
       <li>
         <Link to="/dashboard/order">অর্ডার সমুহঃ</Link>
       </li>
-
       {/* <li>
         <Link to="/dashboard/order/new">নতুন অর্ডারঃ</Link>
       </li> */}
@@ -31,11 +30,15 @@ const Sidebar = () => {
       <li>
         <Link to="/dashboard/measurement">Measurement</Link>
       </li>
-
       <li>
         <Link to="/dashboard/measurement/new">New Measurement</Link>
       </li>
-
+      <li>
+        <Link to="/template">Template</Link>
+      </li>
+      <li>
+        <Link to="/template/new">New Template</Link>
+      </li>
       <li>
         <Link to="/dashboard/account">Account</Link>
       </li>

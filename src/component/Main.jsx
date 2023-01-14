@@ -37,6 +37,8 @@ import { TailorsProvider } from './context/TailorsContext';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Head from './graphql/Head';
+import TemplateList from './Admin/Tempalte';
+import NewTempate from './Admin/Tempalte/NewTemplate';
 
 const Main = () => {
   const [mode, setMode] = React.useState('light');
@@ -90,7 +92,6 @@ const Main = () => {
 
                     <Route path="product">
                       <Route path="" element={<ProductList />} />
-
                       <Route path="new" element={<NewProduct />} />
                     </Route>
                     <Route path="order">
@@ -105,6 +106,10 @@ const Main = () => {
                       <Route path="edit/:id" element={<EditMeasuremen />} />
                     </Route>
                     <Route path="user" element={<UserList />} />
+                  </Route>
+                  <Route path="/template">
+                    <Route path="" element={<TemplateList />} />
+                    <Route path="new" element={<NewTempate />} />
                   </Route>
                 </Route>
                 <Route element={<AuthRoute />}>

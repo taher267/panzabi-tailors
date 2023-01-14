@@ -45,6 +45,9 @@
   #singleSlipPrintwrapper * {
     display: block;
   }
+  #singleSlipPrintwrapper {
+    height: 81mm;
+  }
   /*  */
 
   /*  */
