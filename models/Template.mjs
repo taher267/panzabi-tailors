@@ -8,9 +8,19 @@ export default mg.model(
       required: [true, 'Name is mandatory!'],
       trim: true,
     },
-    temp: { type: String, required: [true, 'Template is required'] },
+    templateBody: { type: String, required: [true, 'Template is required'] },
     productsPlace: {
-      tag: { type: String, required: true },
+      singleItemWrapper: { type: String, required: true },
+      placeOn: { type: String, required: true },
+      replaceOn: { type: String, required: true },
+    },
+    measurementsPlace: {
+      singleItemWrapper: { type: String, required: true },
+      placeOn: { type: String, required: true },
+      replaceOn: { type: String, required: true },
+    },
+    designsPlace: {
+      singleItemWrapper: { type: String, required: true },
       placeOn: { type: String, required: true },
       replaceOn: { type: String, required: true },
     },

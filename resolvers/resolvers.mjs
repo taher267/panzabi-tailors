@@ -7,6 +7,7 @@ import customerController from '../controllers/customerController.mjs';
 import authController from '../controllers/authController.mjs';
 import dailyAccountController from '../controllers/dailyAccountController.mjs';
 import others from './others.mjs';
+import templateController from '../controllers/templateController.mjs';
 
 export default {
   Query: {
@@ -64,6 +65,8 @@ export default {
     updatePayment: orderController.updatePayment,
     updateOrderItem: orderController.updateOrderItem,
     deleteOrder: orderController.deleteOrder,
+    // Tempate functions
+    createTemplate: templateController.createDesign,
 
     //Daily Account functions
     createDailyAccount: dailyAccountController.createDailyAccount,

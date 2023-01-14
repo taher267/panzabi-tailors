@@ -62,6 +62,10 @@ if (process.env.NODE_ENV === 'development') {
       process.exit(1);
     });
 }
+// const exp = /\{[^}]*\}}/g;
+// let str = `abcd,{{-ABC-}}efgh,{{-ABC-}},fjsdkfjakfds,,{{-ABC-}}`;
+
+// console.log(str.replace(exp, ''));
 
 // console.log(/[^\∂]$/.test('ফদজকজফকদজফদ9434384←∂'));
 
