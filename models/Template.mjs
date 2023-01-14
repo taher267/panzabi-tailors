@@ -4,25 +4,28 @@ export default mg.model(
   new mg.Schema({
     name: {
       unique: true,
+      enum: ['up', 'down'],
       type: String,
       required: [true, 'Name is mandatory!'],
       trim: true,
     },
     templateBody: { type: String, required: [true, 'Template is required'] },
     productsPlace: {
-      singleItemWrapper: { type: String, required: true },
-      placeOn: { type: String, required: true },
-      replaceOn: { type: String, required: true },
+      singleItemWrapper: String,
+      placeOn: String,
+      placeOnBody: String,
     },
     measurementsPlace: {
-      singleItemWrapper: { type: String, required: true },
-      placeOn: { type: String, required: true },
-      replaceOn: { type: String, required: true },
+      singleItemWrapper: String,
+      placeOn: String,
+      placeOnBody: String,
+      replasedBy: String,
     },
     designsPlace: {
-      singleItemWrapper: { type: String, required: true },
-      placeOn: { type: String, required: true },
-      replaceOn: { type: String, required: true },
+      singleItemWrapper: String,
+      placeOn: String,
+      placeOnBody: String,
+      replasedBy: String,
     },
   })
 );

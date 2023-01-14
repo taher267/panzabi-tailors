@@ -1,6 +1,9 @@
 import Template from '../models/Template.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
 
+// Template.find()
+//   .then((d) => console.log(d))
+//   .catch((d) => console.log(d));
 /**
  *
  * @param {string||object} key
@@ -28,10 +31,10 @@ const templateUpdate = async (qry, update, options) => {
   }
 };
 
-const createTemplate = async ({ template_name, type, templates }) => {
+const createTemplate = async (data) => {
   try {
-    const newData = { template_name, type, templates };
-    const saved = new Template(newData);
+    // const newData = { template_name, type, templates };
+    const saved = new Template(data);
     return await saved.save();
   } catch (e) {
     errorHandler(e);

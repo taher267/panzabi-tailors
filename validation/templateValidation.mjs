@@ -2,12 +2,44 @@ import { UserInputError } from 'apollo-server';
 import templateServices from '../services/templateServices.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
 import Joi from 'joi';
+const schema = Joi.object({
+  name: Joi.string().trim().alphanum().required(),
+  templateBody: Joi.string().trim().min(100).required(),
+  productsPlace: Joi.object({
+    singleItemWrapper: Joi.string(),
+    placeOn: Joi.string(),
+    replaceOn: Joi.string(),
+  }),
+});
+
+// const check = schema.validate(
+//   {
+//     name: 'fjsdkfjsdj',
+//     templateBody:
+//       'length must be at least 100 characters long length must be at least 100 characters long length must be at least 100 characters long length must be at least 100 characters long ',
+//     productsPlace: {
+//       singleItemWrapper: 12545,
+//     },
+//   },
+//   { abortEarly: false }
+// );
+// console.log(check?.error?.details);
 
 const newTemplateValidation = async (payload) => {
   // try {
   const schema = Joi.object({
-    name: Joi.string().trim().alphanum().min(10).max(20).required(),
+    name: Joi.string().trim().alphanum().required(),
     templateBody: Joi.string().trim().min(100).required(),
+    productsPlace: Joi.object({
+      singleItemWrapper: Joi.string(),
+      placeOn: Joi.string(),
+      replaceOn: Joi.string(),
+    }),
+    productsPlace: {
+      singleItemWrapper: Joi.string(),
+      placeOn: Joi.string(),
+      placeOnBody: Joi.string(),
+    },
   });
   let { error } = schema.validate(payload, { abortEarly: false });
 
