@@ -7,6 +7,8 @@ export default [
       required: { value: true, message: `Template name is mandatory!` },
     },
     fullWidth: true,
+    type: 'select',
+    options: ['up', 'down'],
   },
   {
     label: 'Template Body',

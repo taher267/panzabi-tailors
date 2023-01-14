@@ -12,9 +12,9 @@ export default {
    */
   createDesign: async (_, { newData }) => {
     try {
-      // const data = templateServices.createTemplate(newData);
-      console.log(newData);
-      const check = await templateValidation.newTemplateValidation(newData);
+      // console.log(newData);
+      await templateValidation.newTemplateValidation(newData);
+      const data = await templateServices.createTemplate(newData);
       return true;
     } catch (e) {
       // console.log(e);

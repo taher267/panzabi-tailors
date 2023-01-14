@@ -47,15 +47,27 @@ const NewTempate = () => {
     }
   }, [data]);
   console.log(errors);
-  const onSubmit = (data) => {
+  console.log(gqlErrs);
+  const onSubmit = ({
+    productsPlace,
+    measurementsPlace,
+    designsPlace,
+    ...rest
+  }) => {
     setGqlErrs({});
-    console.log(data);
+    let newData = { ...rest };
 
-    if (!checkObj(data.productsPlace)) delete data.productsPlace;
-    if (!checkObj(data.measurementsPlace)) delete data.measurementsPlace;
-    if (!checkObj(data.designsPlace)) delete data.designsPlace;
-
-    // createTemplate({ variables: { template: data } });
+    if (checkObj(productsPlace)) {
+      newData.productsPlace = JSON.parse(JSON.stringify(productsPlace));
+    }
+    if (checkObj(measurementsPlace)) {
+      newData.measurementsPlace = JSON.parse(JSON.stringify(measurementsPlace));
+    }
+    if (checkObj(designsPlace)) {
+      newData.designsPlace = JSON.parse(JSON.stringify(designsPlace));
+    }
+    // console.log(newData);
+    createTemplate({ variables: { template: newData } });
   };
 
   const onFocus = ({ target: { name } }) => {
@@ -76,7 +88,45 @@ const NewTempate = () => {
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
           {templateForm?.map?.((item, i) => {
             if (!Array.isArray(item)) {
-              let { name: nam, rules, ...rest } = item;
+              let { name: nam, rules, type, options, ...rest } = item;
+              if (type === 'select') {
+                return (
+                  <Controller
+                    key={nam}
+                    control={control}
+                    name={nam}
+                    rules={rules}
+                    render={({
+                      field: { onChange, onBlur, value, ref, name },
+                      fieldState: { error },
+                    }) => {
+                      return (
+                        <Autocomplete
+                          onBlur={onBlur}
+                          id="combo-box-demo"
+                          options={options}
+                          onChange={(_, v) => onChange(v)}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label={rest?.label}
+                              variant="standard"
+                              error={
+                                ((error || gqlErrs[name]) && true) || false
+                              }
+                              helperText={
+                                (error && error?.message) ||
+                                gqlErrs?.[name]?.message ||
+                                ''
+                              }
+                            />
+                          )}
+                        />
+                      );
+                    }}
+                  />
+                );
+              }
               return (
                 <Controller
                   key={nam}
@@ -126,6 +176,7 @@ const NewTempate = () => {
                           <Controller
                             control={control}
                             name={nam}
+                            key={nam}
                             // rules={{ required: { value: true, messaage: 'select' } }}
                             render={({
                               field: { onChange, onBlur, value, ref, name },
