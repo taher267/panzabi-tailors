@@ -11,22 +11,6 @@ export const EDIT_TEMPLATE = gql`
     $id: String!
     $update: InputMeasurement # $name: String! # $sl_id: String! # $icon: InpIcon
   ) {
-    updateTemplate(id: $id, update: $update) {
-      #  { name: $name, sl_id: $sl_id }
-      _id
-      label
-      name
-      sl_id
-      type
-      template
-      status
-      options
-      validation
-      placeholder
-      icon {
-        _id
-        src
-      }
-    }
+    updateTemplate(id: $id, update: $update)
   }
 `;
