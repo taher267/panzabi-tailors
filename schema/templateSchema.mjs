@@ -4,12 +4,22 @@ export default gql`
   type ProductsPlace {
     singleItemWrapper: String!
     placeOn: String!
-    replaceOn: String!
+    placeOnBody: String!
   }
+  type MeasurementAndDesignPlace {
+    singleItemWrapper: String
+    placeOn: String
+    placeOnBody: String
+    replasedBy: String
+  }
+
   type Tempate {
+    _id: ID!
     name: String!
-    temp: String!
-    productsPlace: ProductsPlace!
+    templateBody: String!
+    productsPlace: ProductsPlace
+    measurementsPlace: MeasurementAndDesignPlace
+    designsPlace: MeasurementAndDesignPlace
   }
   input InputsTempate {
     name: String!
@@ -18,7 +28,6 @@ export default gql`
     measurementsPlace: InputMeasurementDesignPlace
     designsPlace: InputMeasurementDesignPlace
   }
-
   input InputProductsPlace {
     singleItemWrapper: String
     placeOn: String
@@ -38,12 +47,13 @@ export default gql`
     placeOnBody: String
   }
 
-  # type Query {
-  #   allTemplates(key: String, value: String): [Tempate!]!
-  #   getTempate(key: String!, value: String!): Tempate!
-  # }
+  type Query {
+    allTemplates(key: String, value: String): [Tempate]
+    #   getTempate(key: String!, value: String!): Tempate!
+  }
   type Mutation {
     createTemplate(newData: InputsTempate!): Boolean!
+    updateTemplate(update: InputsTempate!): Boolean!
   }
 `;
 /**
