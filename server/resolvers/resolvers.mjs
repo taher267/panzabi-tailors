@@ -26,6 +26,7 @@ export default {
     // Measurement functions
     allMeasurements: measurementController.allMeasurements,
     getMeasurement: measurementController.getMeasurement,
+    allTemplates: templateController.allTempates,
     // Daily Account
     allAccounts: dailyAccountController.allAccounts,
     getDailyAccount: dailyAccountController.getDailyAccount,
@@ -66,7 +67,7 @@ export default {
     updateOrderItem: orderController.updateOrderItem,
     deleteOrder: orderController.deleteOrder,
     // Tempate functions
-    createTemplate: templateController.createDesign,
+    createTemplate: templateController.createTempate,
 
     //Daily Account functions
     createDailyAccount: dailyAccountController.createDailyAccount,

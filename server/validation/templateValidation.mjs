@@ -40,6 +40,18 @@ const newTemplateValidation = async (payload) => {
       placeOn: Joi.string(),
       placeOnBody: Joi.string(),
     },
+    measurementsPlace: {
+      singleItemWrapper: Joi.string(),
+      placeOn: Joi.string(),
+      placeOnBody: Joi.string(),
+      replasedBy: Joi.string(),
+    },
+    designsPlace: {
+      singleItemWrapper: Joi.string(),
+      placeOn: Joi.string(),
+      placeOnBody: Joi.string(),
+      replasedBy: Joi.string(),
+    },
   });
   let { error } = schema.validate(payload, { abortEarly: false });
 

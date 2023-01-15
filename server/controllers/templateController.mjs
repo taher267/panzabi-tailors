@@ -10,7 +10,7 @@ export default {
   /**
    * Create New design
    */
-  createDesign: async (_, { newData }) => {
+  createTempate: async (_, { newData }) => {
     try {
       // console.log(newData);
       await templateValidation.newTemplateValidation(newData);
@@ -28,42 +28,49 @@ export default {
   /**
    * All designs
    */
-  allDesigns: async (_parent, { key, value }, context) => {
+  allTempates: async (_parent, { key, value }) => {
     try {
       const filter = key && value ? { [key]: value } : {};
-      return await templateServices.findDesign(filter);
+      let templates = await templateServices.findTemplate(
+        filter,
+        null,
+        'name templateBody'
+      );
+      return templates;
     } catch (e) {
       errorHandler(e);
     }
   },
   /**
-   * Single design
+   * Single Tempate
    */
-  getDesign: async (_parent, { key, value }, context) => {
+  getTempate: async (_parent, { key, value }, context) => {
     try {
       if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid delete id`);
-      const design = await templateServices.findDesign(key, value);
-      return design;
+      const Tempate = await templateServices.findTemplate(key, value);
+      return Tempate;
     } catch (e) {
       throw errorHandler(e);
     }
   },
   /**
-   * Create New design
+   * Create New Tempate
    */
-  updateDesign: async (_parent, { id, update }, context) => {
+  updateTempate: async (_parent, { id, update }, context) => {
     try {
-      const updated = await Design.findByIdAndUpdate(id, update, { new: true });
+      const updated = await Template.findByIdAndUpdate(id, update, {
+        new: true,
+      });
       return updated;
     } catch (e) {
       errorHandler(e);
     }
   },
   /**
-   * Delete Design
+   * Delete Tempate
    */
-  deleteDesign: async (_parent, { id: _id }) => {
+  deleteTempate: async (_parent, { id: _id }) => {
     try {
       if (!mg.isValidObjectId(_id))
         throw new UserInputError(`Invalid delete id`);

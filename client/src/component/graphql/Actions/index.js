@@ -20,8 +20,10 @@ import {
   NEW_MEASUREMENT,
   EDIT_MEASUREMENT,
 } from './../Mutations/measurementMut';
+
 import { ALL_USERS } from '../Query/userQry';
 import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
+import { ALL_TEMPATES, SINGLE_TEMPATE } from './../Query/templateQry';
 import { ALL_MEASUREMENTS, SINGLE_MEASUREMENT } from '../Query/measurementQry';
 import { ALL_PRODUCTS } from '../Query/productQry';
 import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
@@ -78,6 +80,8 @@ export default {
   NEW_DESIGN,
   EDIT_DESIGN,
   // TEMPLATE
+  ALL_TEMPATES,
+  SINGLE_TEMPATE,
   NEW_TEMPLATE,
   EDIT_TEMPLATE,
   // ACCOUNT
