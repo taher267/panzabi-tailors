@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Box, Button, LinearProgress, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import AdminLayout from '../Layout/AdminLayout';
 import { DataGrid } from '@mui/x-data-grid';
 import { Visibility } from '@mui/icons-material';
@@ -10,11 +10,11 @@ import {
   // useKeepGroupedColumnsHidden,
 } from '@mui/x-data-grid-premium';
 import { Link } from 'react-router-dom';
-// import useGetQurey from '../hooks/gql/useGetQurey';
+import useGetQurey from '../hooks/gql/useGetQurey';
 import LinearLoader from '../Loaders/LinearLoader';
 import CustomerActions from './CustomerActions';
 import { useEffect } from 'react';
-import clientQuery from '../hooks/gql/usePromissQurey';
+// import client from '../../apolloClient';
 
 const statusesOptions = [
   { value: 'ACTIVE', label: 'ACTIVE', color: 'red' },
@@ -24,9 +24,6 @@ const statusesOptions = [
 const Customer = () => {
   const [val, setVal] = useState(null);
   const [rowId, setRowId] = useState(null);
-  const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
-
   const columns = useMemo(
     () => [
       {
@@ -154,40 +151,25 @@ const Customer = () => {
     ],
     [rowId]
   );
-  // const { loading, data, error } = useGetQurey(
-  //   'ALL_CUSTOMERS',
-  //   null
-  //   // 'allCustomers'
-  // );
+  // useEffect(() => {
+  //   const fetch = async () => {
+  //     const data = await client.query('allCustomers');
+  //   };
+  //   fetch();
+  // }, []);
+  const { loading, data, error } = useGetQurey(
+    'ALL_CUSTOMERS',
+    null,
+    'allCustomers'
+  );
   useEffect(() => {
-    if (customers?.length) {
-      document.querySelector('.Mui-resizeTriggers')?.previousSibling.remove();
-    }
-  }, [customers]);
-
-  useEffect(() => {
-    const fatch = async () => {
-      try {
-        const { data } = await clientQuery('ALL_CUSTOMERS');
-        setCustomers(data?.allCustomers || []);
-      } catch (e) {
-        console.log(e?.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fatch();
-  }, []);
+    document.querySelector('.Mui-resizeTriggers')?.previousSibling.remove();
+  }, [data]);
   return (
     <AdminLayout>
-      {/* {loading && <LinearLoader />} */}
+      {loading && <LinearLoader />}
       <DataGridPremium
-        components={{
-          LoadingOverlay: LinearProgress,
-          Toolbar: GridToolbar,
-        }}
-        loading={loading}
-        rows={customers || []}
+        rows={(data?.length && data) || []}
         autoHeight
         // columns={[{
         //  type:'singleSelect',
@@ -200,7 +182,7 @@ const Customer = () => {
         rowsPerPageOptions={[5]}
         // checkboxSelection
         // disableSelectionOnClick
-
+        components={{ Toolbar: GridToolbar }}
         getRowId={({ _id }) => _id}
         onCellEditCommit={({ id }) => setRowId(id)}
         setEditCellValue={(d) => {
