@@ -24,7 +24,7 @@ const NewAccount = () => {
     data,
     processing,
     bug,
-  } = useMutationFunc('NEW_ACCOUNT', null, setGqlErrs);
+  } = useMutationFunc('NEW_ACCOUNT', null, setGqlErrs, null, ['allAccounts']);
   const {
     register,
     handleSubmit,

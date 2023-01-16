@@ -1,7 +1,13 @@
 import { useMutation } from '@apollo/client';
 import { errorFormat } from '../../utils/errorConv';
 import Actions from '../../graphql/Actions';
-export default function useMutationFunc(MUT, setSuccess, setErrors, back) {
+export default function useMutationFunc(
+  MUT,
+  setSuccess,
+  setErrors,
+  back,
+  refetchQueries = []
+) {
   const [mutation, { data, loading, error }] = useMutation(Actions[MUT], {
     update(proxy, result) {},
     onError(e) {
@@ -10,6 +16,7 @@ export default function useMutationFunc(MUT, setSuccess, setErrors, back) {
     onCompleted() {
       setSuccess && setSuccess(true);
     },
+    refetchQueries: [...refetchQueries],
   });
   return {
     mutation,
