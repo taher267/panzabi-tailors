@@ -36,21 +36,21 @@ const newTemplateValidation = async (payload) => {
       replaceOn: Joi.string(),
     }),
     productsPlace: {
-      singleItemWrapper: Joi.string(),
-      placeOn: Joi.string(),
-      placeOnBody: Joi.string(),
+      singleItemWrapper: Joi.string().required(),
+      placeOn: Joi.string().required(),
+      placeOnBody: Joi.string().required(),
     },
     measurementsPlace: {
-      singleItemWrapper: Joi.string(),
-      placeOn: Joi.string(),
-      placeOnBody: Joi.string(),
-      replasedBy: Joi.string(),
+      singleItemWrapper: Joi.string().required(),
+      placeOn: Joi.string().required(),
+      placeOnBody: Joi.string().required(),
+      replasedBy: Joi.string().required(),
     },
     designsPlace: {
-      singleItemWrapper: Joi.string(),
-      placeOn: Joi.string(),
-      placeOnBody: Joi.string(),
-      replasedBy: Joi.string(),
+      singleItemWrapper: Joi.string().required(),
+      placeOn: Joi.string().required(),
+      placeOnBody: Joi.string().required(),
+      replasedBy: Joi.string().required(),
     },
   });
   let { error } = schema.validate(payload, { abortEarly: false });
