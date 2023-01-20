@@ -3,7 +3,7 @@ config({ path: './config/.env' });
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import resolvers from './resolvers/resolvers.mjs';
-import typeDefs from './typedefs/typeDefs2.mjs';
+import typeDefs from './typedefs/typeDefs.mjs';
 import contexts from './context/contexts.mjs';
 import db from './config/db.mjs';
 import auth from './auth/auth.mjs';

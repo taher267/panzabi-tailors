@@ -1,21 +1,22 @@
-export const Login = `
-type Login {
-    token: String!
-}`;
+import { gql } from 'apollo-server';
 
-export const InputSignUp = `
-input InputSignUp {
-  name: String!
-  phone_no: String!
-  email: String!
-  username: String!
-  password: String!
-}`;
-export const InputLogin = `input InputLogin {
+export default gql`
+  type Login {
+    token: String!
+  }
+  input InputSignUp {
+    name: String!
+    phone_no: String!
+    email: String!
     username: String!
     password: String!
-  }`;
-
-export const userLogin = `userLogin(credentials: InputLogin): Login!`;
-
-export const userSignup = `userSignup(register: InputSignUp): Login!`;
+  }
+  input InputLogin {
+    username: String!
+    password: String!
+  }
+  type Mutation {
+    userLogin(credentials: InputLogin): Login!
+    userSignup(register: InputSignUp): Login!
+  }
+`;

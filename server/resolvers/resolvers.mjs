@@ -19,7 +19,6 @@ export default {
     // User functons
     allUsers: userController.allUsers,
     getUser: userController.getUser,
-
     // Customer functons
     allCustomers: customerController.allCustomers,
     getCustomer: customerController.getCustomer,
