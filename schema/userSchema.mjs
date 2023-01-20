@@ -1,47 +1,50 @@
-export const User = `
-type User {
-  _id: ID!
-  name: String!
-  phone_no: String!
-  status: String
-  roles: [String]
-  username: String
-  email: String
-  token: String
-  thirdPirty: [thirdPirtyDetails]
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}`;
-export const example = ``;
-export const thirdPirtyDetails = ` type thirdPirtyDetails {
+import { gql } from 'apollo-server-core';
+
+export default gql`
+  type User {
+    _id: ID!
+    name: String!
+    phone_no: String!
+    status: String
+    roles: [String]
+    username: String
+    email: String
+    token: String
+    thirdPirty: [thirdPirtyDetails]
+    createdAt: DateTime!
+    updatedAt: DateTime!
+  }
+
+  type thirdPirtyDetails {
     via3rd: Boolean
     name: String
     token: String
     token_secret: String
     client_id: String
-  }`;
-export const InputThirdPirty = `
-input InputThirdPirty {
-  via3rd: Boolean
-  name: String
-  token: String
-  token_secret: String
-  client_id: String
-}`;
+  }
 
-export const InputUser = `
-input InputUser {
-  name: String!
-  phone_no: String!
-  email: String!
-  username: String!
-  password: String!
-}`;
-export const UserQueries = `
-allUsers(key: String, value: String): [User]
-getUser(key: String!, value: String!): User`;
+  input InputThirdPirty {
+    via3rd: Boolean
+    name: String
+    token: String
+    token_secret: String
+    client_id: String
+  }
+  input InputUser {
+    name: String!
+    phone_no: String!
+    email: String!
+    username: String!
+    password: String!
+  }
+  type Query {
+    allUsers(key: String, value: String): [User]
+    getUser(key: String!, value: String!): User
+  }
 
-export const UserMutations = `
-createUser(user: InputUser): User
-updateUser(id: ID!, update: InputUser): User
-deleteUser(id: ID!): Boolean`;
+  type Mutation {
+    createUser(user: InputUser): User
+    updateUser(id: ID!, update: InputUser): User
+    deleteUser(id: ID!): Boolean
+  }
+`;

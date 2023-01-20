@@ -1,251 +1,47 @@
 import { gql } from 'apollo-server';
-
-export const Design = `
-type Disign {
-  _id: ID!
-  design_name: String!
-  designs: [DesignItem!]!
-  type: [String!]!
-}`;
-export const DesignItem = `
-type DesignItem {
-  _id: String!
-    item: String!
-    ds_id: Int!
-    status:Int
-    icon: Icon
-  }`;
-export const InpDesignItem = `
-input InpDesignItem {
-  item: String!
-  ds_id: Int!
-  status:Boolean
-  icon: InpIcon
-}`;
-export const InpIcon = `
-input InpIcon {
-  _id: String
-  src: String
-}`;
-
-export const InputDisign = `
-input InputDisign {
-  design_name: String!
-  designs: [InpDesignItem!]!
-  type: [String!]!
-}`;
-
-export const Icon = `type Icon {
-  _id: String
-  src: String
-}`;
-
-export const DesignQueries = `
-allDesigns(key: String, value: String): [Disign!]!
-getDesign(key: String! value: String!): Disign!
-`;
-
-export const DesignMutations = `
-createDesign(design: InputDisign): Disign
-updateDesign(_id: ID!, update: InputDisign): Disign
-deleteDesign(_id: ID!): Boolean`;
-
-//রাবার,ফিতা,পকেট,চেইন
-
-export const all = gql`
-  type Disign2 {
+export default gql`
+  type Disign {
     _id: ID!
     design_name: String!
     designs: [DesignItem!]!
     type: [String!]!
   }
-  # type Orders {
-  #   _id: ID!
-  #   customer: String!
-  #   customerDetail: Customer!
-  #   order_no: String!
-  #   totalQty: Int!
-  #   totalPrice: Float!
-  #   discount: Float
-  #   advanced: Float
-  #   due: Float
-  #   transport_charge: Float
-  #   order_status: String
-  #   delivery_date: Date!
-  #   createdAt: DateTime!
-  #   updatedAt: DateTime!
-  # }
+  type DesignItem {
+    _id: String!
+    item: String!
+    ds_id: Int!
+    status: Int
+    icon: Icon
+  }
+  input InpDesignItem {
+    item: String!
+    ds_id: Int!
+    status: Boolean
+    icon: InpIcon
+  }
+  input InpIcon {
+    _id: String
+    src: String
+  }
+  input InputDisign {
+    design_name: String!
+    designs: [InpDesignItem!]!
+    type: [String!]!
+  }
 
-  # type Order {
-  #   _id: ID
-  #   customer: String
-  #   customerDetail: Customer
-  #   order_no: String
-  #   totalQty: Int
-  #   totalPrice: Float
-  #   discount: Float
-  #   advanced: Float
-  #   due: Float
-  #   transport_charge: Float
-  #   order_status: String
-  #   delivery_date: Date
-  #   createdAt: DateTime
-  #   updatedAt: DateTime
-  #   order_items: [OrderItemsOfOrder!]!
-  #   notes: String
-  # }
-
-  # type BasicOrder {
-  #   _id: ID
-  #   customer: String
-  #   order_no: String
-  #   totalQty: Int
-  #   totalPrice: Float
-  #   discount: Float
-  #   advanced: Float
-  #   due: Float
-  #   transport_charge: Float
-  #   order_status: String
-  #   delivery_date: Date
-  #   createdAt: DateTime
-  #   updatedAt: DateTime
-  # }
-
-  # type OrderDesignItems {
-  #   dsn_id: String!
-  #   label: String!
-  #   desc: String
-  # }
-
-  # type OrderDesign {
-  #   group: ID!
-  #   items: [OrderDesignItems!]!
-  # }
-
-  # type OrderMeasurement {
-  #   msr_id: String!
-  #   size: String!
-  #   label: String!
-  # }
-
-  # type orderProduct {
-  #   _id: ID!
-  #   name: String!
-  # }
-
-  # type OrderItemsOfOrder {
-  #   _id: ID!
-  #   connection: String!
-  #   products: [orderProduct!]!
-  #   price: Float!
-  #   quantity: Int!
-  #   measurements: [OrderMeasurement!]!
-  #   designs: [OrderDesign!]!
-  #   order_date: Date!
-  #   sample: Icon
-  #   # user:User
-  # }
-
-  # type OrderItem {
-  #   _id: ID!
-  #   connection: String!
-  #   products: [orderProduct!]!
-  #   price: Float!
-  #   quantity: Int!
-  #   measurements: [OrderMeasurement!]!
-  #   designs: [OrderDesign!]!
-  #   order_date: Date!
-  #   sample: Icon
-  #   order_no: String!
-  # }
-  # input InputOrderMeasurement {
-  #   msr_id: String!
-  #   size: String!
-  #   label: String!
-  # }
-  # input inputOrderProduct {
-  #   _id: ID!
-  #   name: String!
-  # }
-  # input InputOrderItemsOfOrder {
-  #   connection: String!
-  #   products: [inputOrderProduct!]!
-  #   user: String!
-  #   quantity: Int!
-  #   price: Float!
-  #   measurements: [InputOrderMeasurement!]!
-  #   sample: InpIcon
-  #   order_date: Date!
-  #   designs: [InputOrderDesign!]!
-  # }
-  # input InputOrderDesignItems {
-  #   dsn_id: ID!
-  #   label: String!
-  #   desc: String
-  # }
-  # input InputOrderDesign {
-  #   group: String!
-  #   items: [InputOrderDesignItems!]!
-  # }
-  # input InputOrder {
-  #   customer: ID!
-  #   order_no: String
-  #   previous_order: String
-  #   totalQty: Int!
-  #   totalPrice: Float!
-  #   discount: Float
-  #   advanced: Float
-  #   due: Float!
-  #   transport_charge: Float
-  #   order_status: String
-  #   delivery_date: Date!
-  #   order_items: [InputOrderItemsOfOrder!]!
-  #   notes: String
-  # }
-
-  # input PaymentUpdate {
-  #   on: String
-  #   amount: Int
-  #   discount: Int
-  #   order_status: String
-  # }
-
-  # type PaymentUpdateReturn {
-  #   on: String
-  #   amount: Int
-  #   discount: Int
-  #   order_status: String
-  # }
-
-  # input InputAddOrderItem {
-  #   customer: ID
-  #   order_no: String
-  #   previous_order: String!
-  #   totalQty: Int!
-  #   totalPrice: Float!
-  #   discount: Float
-  #   advanced: Float
-  #   due: Float!
-  #   transport_charge: Float
-  #   order_status: String
-  #   delivery_date: Date
-  #   order_items: [InputOrderItemsOfOrder!]!
-  #   notes: String
-  # }
-  # type Del {
-  #   success: Boolean
-  # }
-  # type Query {
-  #   allOrders(key: String, value: String): [Orders!]!
-  #   getOrder(key: String!, value: String!): Order!
-  #   getOrderItem(id: ID!, key: String!): OrderItem!
-  #   # basicOrder(key: String!, value: String!): BasicOrder
-  # }
-  # type Mutation {
-  #   createOrder(order: InputOrder!): Order!
-  #   addNewOrderItem(_id: ID!, newItem: InputAddOrderItem!): Order!
-  #   updateOrder(id: ID!, update: InputOrder!): Order!
-  #   updatePayment(id: ID!, update: PaymentUpdate!): Boolean!
-  #   deleteOrder(_id: ID!, customer: ID!): Del!
-  # }
+  type Icon {
+    _id: String
+    src: String
+  }
+  type Query {
+    allDesigns(key: String, value: String): [Disign!]!
+    getDesign(key: String!, value: String!): Disign!
+  }
+  type Mutation {
+    createDesign(design: InputDisign): Disign
+    updateDesign(_id: ID!, update: InputDisign): Disign
+    deleteDesign(_id: ID!): Boolean
+  }
 `;
+
+//রাবার,ফিতা,পকেট,চেইন

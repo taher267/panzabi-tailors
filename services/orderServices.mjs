@@ -1,19 +1,21 @@
-// import Order from '../models/Order2.mjs';
 import { UserInputError } from 'apollo-server';
 import order from '../models/Order.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
+
 let Order;
 order
   .then((d) => {
     Order = d;
   })
   .catch((e) => console.log(e));
+
 /**
  *
  * @param {string||object} key
  * @param {string||object} value
  * @returns
  */
+
 const findOrder = (key, value, select = '') => {
   if (key === '_id') return Order.findById(value).select(select);
   else if (key && value) return Order.findOne({ [key]: value }).select(select);
@@ -29,6 +31,7 @@ const findOrder = (key, value, select = '') => {
  * @param {object} options
  * @returns
  */
+
 const orderUpdate = async (qry, update, options) => {
   try {
     return await Order.updateOne(qry, update, options);
