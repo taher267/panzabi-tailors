@@ -18,7 +18,7 @@ export default gql`
   }
 
   type CustomerOrder {
-    order_id: String
+    _id: String
     order_no: String
   }
 

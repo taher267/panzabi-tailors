@@ -1,6 +1,13 @@
 import User from '../models/User.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
 
+// User.findOne({ _id: '63b7d68cae4056b8114ee3b8' })
+//   .populate('orders', 'order_no')
+//   .populate('user', 'name')
+//   .select('-password -roles')
+//   .then((d) => console.log(d))
+//   .catch((e) => console.log(e));
+
 // User.findOne({
 //   $or: [
 //     { username: '01765470147' },
@@ -23,6 +30,13 @@ const findUser = (key, value, select = '') => {
   else if (key === 'single' && value) return User.findOne(value).select(select);
   else if (key && value) return User.findOne({ [key]: value }).select(select);
   return User.find(key || {}).select(select);
+};
+
+const findCustomer = (value, select = '') => {
+  return User.find(value)
+    .populate('orders', 'order_no')
+    .populate('user', 'name')
+    .select(select);
 };
 
 const createUser = async ({ name, username, email, password, phone_no }) => {
@@ -61,4 +75,5 @@ export default {
   customerOrderIDUpdate,
   findUser,
   createUser,
+  findCustomer,
 };

@@ -16,11 +16,11 @@ export default () => {
       lookup('panzabi.com', (e) => {
         if (e) {
           const con = mg.connect(uris['local']);
-          mg.orders = mg.createConnection(uris['local2']);
+          // mg.orders = mg.createConnection(uris['local2']);
           return resolve(con);
         }
         const con = mg.connect(uris['cpPri']);
-        mg.orders = mg.createConnection(uris['cpPri2']);
+        // mg.orders = mg.createConnection(uris['cpPri2']);
         return resolve(con);
       });
     });
@@ -30,7 +30,7 @@ export default () => {
     // return con;
     return new Promise((resolve) => {
       mg.connect(uris['cpPri']);
-      mg.orders = mg.createConnection(uris['cpPri2']);
+      // mg.orders = mg.createConnection(uris['cpPri2']);
       return resolve(mg);
     });
   }

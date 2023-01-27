@@ -20,20 +20,19 @@ const customerDetail = async ({ customer: id }, args, c) => {
 export default {
   Date: dateResolver,
   DateTime: DateTimeResolver,
-  Customer: {
-    user: async ({ user }) => {
-      console.log(user, 'user/customer');
-      try {
-        return await userCustomerServices.findUser('_id', user);
-      } catch (e) {
-        errorHandler(e);
-      }
-    },
-  },
+  // Customer: {
+  //   user: async ({ user }) => {
+  //     try {
+  //       return await userCustomerServices.findUser('_id', user);
+  //     } catch (e) {
+  //       errorHandler(e);
+  //     }
+  //   },
+  // },
   Order: {
     customerDetail,
   },
-  Orders: {
-    customerDetail,
-  },
+  // Orders: {
+  //   customerDetail,
+  // },
 };
