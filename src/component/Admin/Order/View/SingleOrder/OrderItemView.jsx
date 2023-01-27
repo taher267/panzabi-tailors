@@ -92,7 +92,7 @@ const OrderItemView = (props) => {
               </a>
             </Box>
             {(editId === _id && (
-              <EditItem {...{ handleClickOpen, open, ...props }} />
+              <EditItem {...{ handleClickOpen, setEditId, open, ...props }} />
             )) ||
               ''}
             {/* <Typography>{connection}</Typography> */}
