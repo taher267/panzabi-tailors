@@ -21,7 +21,7 @@ const Item = GridItem({
 });
 
 const CustomerDetailsAndBasicSingleOrderInfo = ({
-  customerDetail: { name, phone_no, email, _id },
+  customer: { name, phone_no, email, _id },
   order_items,
   ...rest
 }) => {

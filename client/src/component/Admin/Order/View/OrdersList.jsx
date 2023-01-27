@@ -55,7 +55,15 @@ const OrdersList = () => {
   const columns = useMemo(
     () => [
       { field: '_id', headerName: 'ID', width: 210, hide: true },
-      { field: 'customer', headerName: 'Customer ID', width: 210, hide: true },
+      // { field: 'customer', headerName: 'Customer ID', width: 210, hide: true },
+      {
+        field: 'customer',
+        headerName: 'Customer ID',
+        sortable: false,
+        width: 230,
+        // hide: true ,
+        valueGetter: ({ row }) => `${row?.customer?._id || ''}`,
+      },
       {
         field: 'order_no',
         headerName: 'Order No',
@@ -152,14 +160,14 @@ const OrdersList = () => {
         headerName: 'Name',
         sortable: false,
         width: 250,
-        valueGetter: ({ row }) => `${row?.customerDetail?.name || ''}`,
+        valueGetter: ({ row }) => `${row?.customer?.name || ''}`,
       },
       {
         field: 'phone_no',
         headerName: 'Phone No',
         sortable: false,
         width: 150,
-        valueGetter: ({ row }) => `${row?.customerDetail?.phone_no || ''}`,
+        valueGetter: ({ row }) => `${row?.customer?.phone_no || ''}`,
       },
       {
         field: 'email',
@@ -167,7 +175,7 @@ const OrdersList = () => {
         sortable: false,
         hide: true,
         width: 250,
-        valueGetter: ({ row }) => `${row?.customerDetail?.email || ''}`,
+        valueGetter: ({ row }) => `${row?.customer?.email || ''}`,
       },
 
       {
@@ -177,7 +185,6 @@ const OrdersList = () => {
         width: 250,
         type: 'actions',
         renderCell: (params) => {
-          // console.log(params);
           return (
             <OrderActions
               {...{
@@ -247,7 +254,7 @@ const OrdersList = () => {
               />
             </Box>
             <DataGrid
-              rows={data || []}
+              rows={[...data]?.reverse?.()}
               columns={columns}
               pageSize={pageSize}
               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}

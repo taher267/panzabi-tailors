@@ -29,9 +29,9 @@ export default {
   //     }
   //   },
   // },
-  Order: {
-    customerDetail,
-  },
+  // Order: {
+  //   customerDetail,
+  // },
   // Orders: {
   //   customerDetail,
   // },

@@ -36,7 +36,8 @@ const findCustomer = (value, select = '') => {
   return User.find(value)
     .populate('orders', 'order_no')
     .populate('user', 'name')
-    .select(select);
+    .select(select)
+    .exec();
 };
 
 const createUser = async ({ name, username, email, password, phone_no }) => {

@@ -9,13 +9,26 @@ import errorHandler from '../utils/errorHandler.mjs';
  * @returns
  */
 
-const findOrder = (key, value, select = '') => {
-  if (key === '_id') return Order.findById(value).select(select);
-  else if (key && value) return Order.findOne({ [key]: value }).select(select);
+const findOrder = (key, value, select = '', pop = []) => {
+  if (key === '_id')
+    return Order.findById(value)
+      .populate(...pop)
+      .select(select);
+  else if (key && value)
+    return Order.findOne({ [key]: value })
+      .populate(...pop)
+      .select(select)
+      .exec();
   else if (typeof key === 'object') {
     return Order.find(key || {}).select(select);
   }
   return null;
+};
+
+const findAllOrders = (key, value, select = '') => {
+  return Order.find(key)
+    .populate('customer', 'name phone_no email transportation.transport_name')
+    .select(select);
 };
 
 /**
@@ -62,4 +75,5 @@ export default {
   findOrder,
   orderUpdate,
   orderDelete,
+  findAllOrders,
 };
