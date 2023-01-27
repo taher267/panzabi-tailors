@@ -66,6 +66,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     measurements,
     products,
     order_date,
+    setEditId,
     price,
     quantity,
     connection,
@@ -116,6 +117,14 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     mode: 'all',
   });
 
+  React.useEffect(() => {
+    if (data?.updateOrderItem) {
+      reset();
+      setEditId('');
+      setOrderProduct([]);
+    }
+  }, [data]);
+
   // designDefaultValuesShape(designs);
 
   const onFocus = ({ target: { name } }) => {
@@ -164,6 +173,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
       _id: order_id,
       update: {
         itemId: _id,
+        // connection,
         products: productsMap,
         ...d.pricing,
         measurements,

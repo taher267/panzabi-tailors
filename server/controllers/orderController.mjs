@@ -357,7 +357,43 @@ export default {
    */
   updateOrderItem: async (_parent, { _id, update }, { req }) => {
     try {
-      console.log(_id);
+      const order = await orderServices.findOrder('_id', _id);
+      if (!order)
+        return new UserInputError(`There is not order item`, {
+          errors: {
+            success: false,
+            message: `There is not order item of this id ${id}`,
+          },
+        });
+      let totalQty = 0;
+      let totalPrice = 0;
+      let totalPayments =
+        order?.discount +
+        order?.advanced +
+        order.payments?.reduce((a, { amount }) => {
+          if (amount) {
+            a += amount;
+          }
+          return a;
+        }, 0);
+
+      const order_items = order.order_items?.map?.((item) => {
+        if (item._id?.toString?.() === update.itemId) {
+          totalQty += item.quantity;
+          totalPrice += item.quantity * item.price;
+          return {
+            ...item,
+            ...update,
+          };
+        }
+        return item;
+      });
+      order.totalQty = totalQty;
+      order.totalPrice = totalPrice;
+      order.order_items = order_items;
+      order.due = totalPrice - totalPayments;
+      const updated = await order.save();
+      // console.log(updated);
       return true;
     } catch (e) {
       errorHandler(e);
@@ -366,7 +402,7 @@ export default {
   /**
    * Delete Order
    */
-  deleteOrder: async (_parent, { _id, customer }) => {
+  deleteOrder: async (_parent, { _id, customer }, info) => {
     try {
       if (!mg.isValidObjectId(_id) || !mg.isValidObjectId(customer))
         throw new UserInputError(`Invalid delete id`);
@@ -374,7 +410,7 @@ export default {
       const up = await userCustomerServices.customerOrderIDUpdate(customer, {
         $pull: { orders: _id },
       });
-      // console.log(_id, customer, delQ, up);
+      // console.log(info.user?);
       const del = {
         success: true,
         delID: _id,

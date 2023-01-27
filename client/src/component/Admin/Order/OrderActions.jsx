@@ -30,11 +30,11 @@ export default function OrderActions({
     'UPDATE_PAYMENT',
     setSuccess
   );
-  // const {
-  //   mutation: delOrderItem,
-  //   bug: err,
-  //   data: del,
-  // } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder');
+  const {
+    mutation: delOrderItem,
+    bug: err,
+    data: del,
+  } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder');
 
   const { id, row } = params;
 
@@ -45,11 +45,11 @@ export default function OrderActions({
     }
   }, [rowId, data]);
 
-  // useEffect(() => {
-  //   if (del?.success) {
-  //     window.location.reload();
-  //   }
-  // }, [del]); //
+  useEffect(() => {
+    if (del?.success) {
+      window.location.reload();
+    }
+  }, [del]); //
 
   const updateHandle = () => {
     const { name, category, price, description, order_status } = row;
@@ -141,7 +141,9 @@ export default function OrderActions({
         <Delete
           onClick={() => {
             if (confirm(`Are you sure to delete this order(${id})?`)) {
-              delOrderItem({ variables: { _id: id, customer: row.customer } });
+              delOrderItem({
+                variables: { _id: id, customer: row.customer?._id },
+              });
             }
           }}
         />
