@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client ';
 const order = `orders {
-  order_id
+  _id
   order_no
 }`;
 export const ALL_CUSTOMERS = gql`
