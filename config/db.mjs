@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 config({ path: './config/.env' });
 import mg from 'mongoose';
 mg.set('strictQuery', true);
+
 import { lookup } from 'dns';
 const uris = {
   cpPri: process.env.MONGO_STR,
