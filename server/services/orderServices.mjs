@@ -1,13 +1,6 @@
 import { UserInputError } from 'apollo-server';
-import order from '../models/Order.mjs';
+import Order from '../models/Order.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
-
-let Order;
-order
-  .then((d) => {
-    Order = d;
-  })
-  .catch((e) => console.log(e));
 
 /**
  *

@@ -218,13 +218,13 @@ const OrderInfo = ({ row }) => {
   if (row?.orders?.length) {
     return (
       <Box width="100%">
-        {[...row.orders].reverse().map?.(({ order_id, order_no }) => {
+        {[...row.orders].reverse().map?.(({ _id, order_no }) => {
           return (
-            <Box key={order_id}>
+            <Box key={_id}>
               <Typography sx={typeSx}>Order No :</Typography>
               <Typography sx={typeSx}>{order_no}</Typography>
               <Typography sx={typeSx}>Order ID :</Typography>
-              <Typography sx={typeSx}>{order_id}</Typography>
+              <Typography sx={typeSx}>{_id}</Typography>
             </Box>
           );
         })}

@@ -50,8 +50,8 @@ export default {
         key && value
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['CUSTOMER'] } };
-      const all = await customerServices.findUser(filter);
-      return all?.reverse();
+      const all = await customerServices.findCustomer(filter);
+      return all;
     } catch (e) {
       throw new UserInputError(e);
     }

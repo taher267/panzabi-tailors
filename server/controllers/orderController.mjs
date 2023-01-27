@@ -1,4 +1,4 @@
-import ord from '../models/Order.mjs';
+import Order from '../models/Order.mjs';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
 import errorHandler from '../utils/errorHandler.mjs';
@@ -69,9 +69,6 @@ const temp2 = `<div id="wrapper" style="margin-top:50px">
 // })
 //   .then((d) => console.log(d))
 //   .catch((d) => console.log(d));
-let Order;
-ord.then((d) => (Order = d)).catch((e) => console.log(e));
-
 async function testing() {
   console.log(order_item_sample?.measurements);
 }
@@ -152,7 +149,7 @@ export default {
     try {
       let filter = key && value ? { [key]: value } : {};
       const all = await orderServices.findOrder(filter, null, '-order_items');
-      // console.log(all);
+      console.log(all);
       return all;
     } catch (e) {
       errorHandler(e);
