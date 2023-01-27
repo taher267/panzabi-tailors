@@ -209,7 +209,7 @@ const NewOrder = () => {
       item_add_in_existing_order,
       // ...measure1
     } = data;
-
+    if (!data?.previous_order) delete data.previous_order;
     if (
       (previous_order || item_add_in_existing_order) &&
       !prevOrderData?.order_no
@@ -319,6 +319,7 @@ const NewOrder = () => {
     };
 
     setGqlErrs({});
+    // console.log(data);
     if (previous_order && item_add_in_existing_order) {
       delete newOrderDates.delivery_date;
 
