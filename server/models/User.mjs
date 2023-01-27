@@ -24,14 +24,14 @@ const userSchema = new mg.Schema(
       type: mg.Types.ObjectId,
       ref: 'User',
     },
-    orders: [
+    orders: [{ type: mg.Types.ObjectId, ref: 'Order' }],
+    /**orders: [
       {
         _id: false,
         order_id: { type: mg.Types.ObjectId, ref: 'Order' },
         order_no: String,
       },
-    ],
-    thirdPirty: [
+    ], */ thirdPirty: [
       {
         _id: false,
         via3rd: { type: Boolean, default: false },

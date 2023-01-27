@@ -3,12 +3,18 @@ import customerServices from '../services/userCustomerServices.mjs';
 import mg from 'mongoose';
 import customerValidation from '../validation/customerValidation.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
+import User from '../models/User.mjs';
 // import auth from '../auth/auth.mjs';
 import {
   ApolloError,
   AuthenticationError,
   UserInputError,
 } from 'apollo-server';
+
+// User.find({ roles: { $in: ['CUSTOMER'] } })
+//   .populate('orders')
+//   .then((d) => console.log(d))
+//   .catch((d) => console.log(d));
 
 export default {
   /**
@@ -50,8 +56,10 @@ export default {
         key && value
           ? { [key]: { $in: value.split('|') } }
           : { roles: { $in: ['CUSTOMER'] } };
-      const all = await customerServices.findUser(filter);
+      const all = await customerServices.findUser2(filter);
       return all?.reverse();
+      // let all = await User.find(filter).populate('orders');
+      return all;
     } catch (e) {
       throw new UserInputError(e);
     }
@@ -64,6 +72,10 @@ export default {
       if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid customer id`);
       const customer = await customerServices.findUser(key, value);
+      const customer2 = await Customer.findOne({ [key]: value }).populate(
+        'orders'
+      );
+      console.log(customer2);
       return customer;
     } catch (e) {
       throw new UserInputError(e);

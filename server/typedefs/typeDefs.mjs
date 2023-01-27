@@ -19,11 +19,6 @@ export default gql`
   ${OrderSchema}
   ${TempateSchema}
   ${DesignSchema}
-  # type Icon {
-  #   _id: String
-  #   src: String
-  # }
-
   scalar Date
   scalar DateTime
 `;

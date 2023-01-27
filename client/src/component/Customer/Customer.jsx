@@ -218,9 +218,9 @@ const OrderInfo = ({ row }) => {
   if (row?.orders?.length) {
     return (
       <Box width="100%">
-        {[...row.orders].reverse().map?.(({ order_id, order_no }) => {
+        {[...row.orders].reverse().map?.(({ order_id, order_no }, i) => {
           return (
-            <Box key={order_id}>
+            <Box key={order_id || i}>
               <Typography sx={typeSx}>Order No :</Typography>
               <Typography sx={typeSx}>{order_no}</Typography>
               <Typography sx={typeSx}>Order ID :</Typography>

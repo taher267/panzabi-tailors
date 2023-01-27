@@ -1,8 +1,8 @@
 import React from 'react';
-import { useEffect } from 'react';
 import useGetQurey from '../../../hooks/gql/useGetQurey';
 import PropTypes from 'prop-types';
-import { Box, Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import Head from '../../../graphql/Head';
 
 const CustomerInfoForOrder = ({
@@ -16,12 +16,11 @@ const CustomerInfoForOrder = ({
     { key: '_id', value: customerID },
     'getCustomer'
   );
-  // console.log(data);
-  useEffect(() => {
+  React.useEffect(() => {
     setCustomerLoading?.(loading);
   }, [loading]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (data) {
       setCustomerInfo?.(data);
     }
@@ -43,15 +42,16 @@ const CustomerInfoForOrder = ({
           <Typography>Customer ID: {data?._id}</Typography>
           <Typography>Customer Name: {data?.name}</Typography>
           <Typography>Phone No: {data?.phone_no}</Typography>
-          <Typography>Total Orders : {data?.orders.length}</Typography>
+          <Typography>Total Orders : {data?.orders?.length}</Typography>
         </Box>
       </Box>
     );
+  return <></>;
 };
 
-CustomerInfoForOrder.propTypes = {
-  customerID: PropTypes.string.isRequired,
-  setCustomerLoading: PropTypes.func.isRequired,
-  setCustomerInfo: PropTypes.func.isRequired,
-};
+// CustomerInfoForOrder.propTypes = {
+//   customerID: PropTypes.string.isRequired,
+//   setCustomerLoading: PropTypes.func.isRequired,
+//   setCustomerInfo: PropTypes.func.isRequired,
+// };
 export default CustomerInfoForOrder;

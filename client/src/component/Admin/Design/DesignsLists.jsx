@@ -1,6 +1,9 @@
 import AdminLayout from '../../Layout/AdminLayout/index';
 import './design.css';
-import { Box, LinearProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useEffect, useState, useMemo } from 'react';
 import DesignActions from './DesignActions';

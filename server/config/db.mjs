@@ -30,7 +30,7 @@ export default () => {
     // return con;
     return new Promise((resolve) => {
       mg.connect(uris['cpPri']);
-      mg.orders = mg.createConnection(uris['cpPri2']);
+      mg.Order = mg.createConnection(uris['cpPri2']);
       return resolve(mg);
     });
   }

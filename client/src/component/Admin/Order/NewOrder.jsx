@@ -485,7 +485,7 @@ const NewOrder = () => {
           padding: 2,
         }}
       >
-        {customerID ? (
+        {(customerID && (
           <CustomerInfoForOrder
             {...{
               customerID,
@@ -494,9 +494,8 @@ const NewOrder = () => {
               prevOrderData,
             }}
           />
-        ) : (
-          ''
-        )}
+        )) ||
+          ''}
 
         {prevOrderData ? (
           <CheckingExistingOrderView {...{ prevOrderData, customerInfo }} />

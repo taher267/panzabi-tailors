@@ -116,7 +116,8 @@ export default {
     try {
       const newOrder = await orderServices.newOrder({ ...order });
       await userCustomerServices.customerOrderIDUpdate(order.customer, {
-        $push: { orders: { order_id: newOrder.id, order_no: order.order_no } },
+        $push: { orders: newOrder.id },
+        // $push: { orders: { order_id: newOrder.id, order_no: order.order_no } },
       });
       return newOrder;
     } catch (e) {
