@@ -3,8 +3,7 @@ import { gql } from 'apollo-server';
 export default gql`
   type Orders {
     _id: ID!
-    customer: String!
-    customerDetail: Customer!
+    customer: OrderCustomer!
     order_no: String!
     totalQty: Int!
     totalPrice: Float!
@@ -20,8 +19,7 @@ export default gql`
 
   type Order {
     _id: ID
-    customer: String
-    customerDetail: Customer
+    customer: OrderCustomer!
     order_no: String
     totalQty: Int
     totalPrice: Float
@@ -36,7 +34,12 @@ export default gql`
     order_items: [OrderItemsOfOrder!]!
     notes: String
   }
-
+  type OrderCustomer {
+    _id: String!
+    name: String!
+    phone_no: String!
+    email: String
+  }
   type BasicOrder {
     _id: ID
     customer: String

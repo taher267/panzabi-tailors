@@ -105,6 +105,7 @@ async function testing() {
 // );
 
 // console.log(sum([{ p: 1, q: 2 }, { q: 1, p: 2 }, 3, 4, 5]));
+
 export default {
   /**
    * Create New Order
@@ -148,8 +149,12 @@ export default {
     //
     try {
       let filter = key && value ? { [key]: value } : {};
-      const all = await orderServices.findOrder(filter, null, '-order_items');
-      console.log(all);
+      const all = await orderServices.findAllOrders(
+        filter,
+        null,
+        '-order_items'
+      );
+      // console.log(all);
       return all;
     } catch (e) {
       errorHandler(e);
@@ -162,7 +167,11 @@ export default {
     try {
       if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid delete id`);
-      const order = await orderServices.findOrder(key, value);
+      const order = await orderServices.findOrder(key, value, null, [
+        'customer',
+        'name phone_no email transportation.transport_name',
+      ]);
+      // console.log(order);
       return order;
     } catch (e) {
       errorHandler(e);
