@@ -32,8 +32,7 @@ const SingleOrder = () => {
         </Box>
       )}
       <Box>
-        {loading === false &&
-        Object.keys(data?.customerDetail || {})?.length ? (
+        {loading === false && Object.keys(data?.customer || {})?.length ? (
           <>
             <CustomerDetailsAndBasicSingleOrderInfo {...{ ...data }} />
             {data?.order_items?.length
