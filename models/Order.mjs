@@ -9,7 +9,7 @@ export default mg.model(
         required: [true, 'Order Number is mandatory!'],
         unique: [true, 'Please provide a unique Order no'],
       },
-      previous_order: [String],
+      previous_order: Array,
       totalQty: { type: Number, required: true },
       totalPrice: { type: Number, required: true },
       discount: { type: Number, default: 0 },
@@ -71,14 +71,11 @@ export default mg.model(
               ],
             },
           ],
-          user: [
-            {
-              _id: false,
-              type: mg.Types.ObjectId,
-              ref: 'User',
-              required: true,
-            },
-          ],
+          user: {
+            type: mg.Types.ObjectId,
+            ref: 'User',
+            required: true,
+          },
           sample: {
             _id: false,
             id: String,

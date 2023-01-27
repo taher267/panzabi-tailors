@@ -183,6 +183,7 @@ export default gql`
     products: [inputOrderProduct!]!
     price: Float!
     quantity: Int!
+    # connection: String!
     measurements: [InputOrderMeasurement!]!
     designs: [InputOrderDesign!]!
     sample: InpIcon
