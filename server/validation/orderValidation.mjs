@@ -1,8 +1,9 @@
 import { UserInputError } from 'apollo-server';
 import orderServices from '../services/orderServices.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
-const newOrderValidation = async ({ order_name, type, orders }) => {
+const newOrderValidation = async ({ order_name, type, orders, ...rest }) => {
   let errors = {};
+  console.log(rest);
   try {
     //order_name
     if (!order_name) errors.order_name = `order name is mandatory!`;

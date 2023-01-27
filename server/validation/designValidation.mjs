@@ -1,8 +1,34 @@
 import { UserInputError } from 'apollo-server';
+import Joi from 'joi';
 import designServices from '../services/designServices.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
+
+async function IsValid(payload) {
+  try {
+    let err = await Schema.validateAsync(payload, { abortEarly: false });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 const newDesignValidation = async ({ design_name, type, designs }) => {
+  const Schema = Joi.object().keys({
+    name: Joi.string().required(),
+    order_no: Joi.string()
+      .required()
+      .custom(async (v, helpers) => {
+        const doesExist = await orderServices.findOrder(
+          'order_no',
+          v,
+          'order_no'
+        );
+        if (doesExist) throw new Error(`Order no already exist!`);
+      }),
+    user: Joi.string().required(),
+  });
+
   let errors = {};
+
   try {
     //design_name
     if (!design_name) errors.design_name = `Design name is mandatory!`;

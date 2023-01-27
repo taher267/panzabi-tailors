@@ -13,7 +13,8 @@ const findOrder = (key, value, select = '', pop = []) => {
   if (key === '_id')
     return Order.findById(value)
       .populate(...pop)
-      .select(select);
+      .select(select)
+      .exec();
   else if (key && value)
     return Order.findOne({ [key]: value })
       .populate(...pop)

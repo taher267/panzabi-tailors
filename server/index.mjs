@@ -2,6 +2,10 @@ import { config } from 'dotenv';
 config({ path: './config/.env' });
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import {
+  constraintDirective,
+  constraintDirectiveTypeDefs,
+} from 'graphql-constraint-directive';
 import resolvers from './resolvers/resolvers.mjs';
 import typeDefs from './typedefs/typeDefs.mjs';
 import contexts from './context/contexts.mjs';
@@ -12,7 +16,7 @@ const publicRoutes = ['userLogin', 'userSignup', '/'];
 // console.log(publicRoutes.indexOf('userLogin'));
 const PORT = process.env.PORT || 4000;
 const server = new ApolloServer({
-  typeDefs,
+  typeDefs: [constraintDirectiveTypeDefs, typeDefs],
   resolvers,
   context: async (ctx) => {
     const { req, res } = ctx;
