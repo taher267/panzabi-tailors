@@ -2,19 +2,20 @@ import { gql } from 'apollo-server';
 
 export default gql`
   type Orders {
-    _id: ID!
-    customer: OrderCustomer!
-    order_no: String!
-    totalQty: Int!
-    totalPrice: Float!
+    _id: ID
+    customer: OrderCustomer
+    order_no: String
+    totalQty: Int
+    totalPrice: Float
     discount: Float
     advanced: Float
     due: Float
     transport_charge: Float
     order_status: String
-    delivery_date: Date!
-    createdAt: DateTime!
-    updatedAt: DateTime!
+    delivery_date: Date
+    createdAt: DateTime
+    updatedAt: DateTime
+    order_items: [OrderItemsOfOrder]
   }
 
   type Order {
@@ -31,7 +32,7 @@ export default gql`
     delivery_date: Date
     createdAt: DateTime
     updatedAt: DateTime
-    order_items: [OrderItemsOfOrder!]!
+    order_items: [OrderItemsOfOrder]
     notes: String
   }
   type OrderCustomer {
@@ -79,14 +80,14 @@ export default gql`
   }
 
   type OrderItemsOfOrder {
-    _id: ID!
-    connection: String!
-    products: [orderProduct!]!
-    price: Float!
-    quantity: Int!
-    measurements: [OrderMeasurement!]!
-    designs: [OrderDesign!]!
-    order_date: Date!
+    _id: ID
+    connection: String
+    products: [orderProduct]
+    price: Float
+    quantity: Int
+    measurements: [OrderMeasurement]
+    designs: [OrderDesign]
+    order_date: Date
     sample: Icon
     # user:User
   }
@@ -194,8 +195,15 @@ export default gql`
   type Del {
     success: Boolean
   }
+
+  input Options {
+    select: String
+    populate: [[String]]
+  }
+
   type Query {
-    allOrders(key: String, value: String): [Orders!]!
+    allOrders(key: String, value: String, options: Options): [Orders!]
+    # userOrderItems(key: String, value: String, options: Options): [Orders]
     getOrder(key: String!, value: String!): Order
     getOrderItem(id: ID!, key: String!): OrderItem!
     # basicOrder(key: String!, value: String!): BasicOrder

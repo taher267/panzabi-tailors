@@ -160,15 +160,11 @@ export default {
   /**
    * All Orders
    */
-  allOrders: async (_parent, { key, value }, _context) => {
+  allOrders: async (_parent, { key, value, options }, _context) => {
     //
     try {
       let filter = key && value ? { [key]: value } : {};
-      const all = await orderServices.findAllOrders(
-        filter,
-        null,
-        '-order_items'
-      );
+      const all = await orderServices.findAllOrders(filter, null, options);
       // console.log(all);
       return all;
     } catch (e) {

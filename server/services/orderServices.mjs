@@ -26,9 +26,12 @@ const findOrder = (key, value, select = '', pop = []) => {
   return null;
 };
 
-const findAllOrders = (key, value, select = '') => {
+const findAllOrders = (key, value, { select = '', populate = [] }) => {
+  let pop0 = populate?.[0] || [];
+  let pop1 = populate?.[1] || [];
   return Order.find(key)
-    .populate('customer', 'name phone_no email transportation.transport_name')
+    .populate(...pop0)
+    .populate(...pop1)
     .select(select);
 };
 

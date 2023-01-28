@@ -24,41 +24,43 @@ import {
   measurementKeyValue,
 } from '../../../../../helpers/orderHelper';
 import useMutationFunc from '../../../../hooks/gql/useMutationFunc';
+import arrayToObject from '../../../../../utils/arrayToObject';
+import defaultDesignsShape from '../../../../../utils/defaultDesignsShape';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-const arrToObj = (data = [], key, selector) => {
-  let newObje = {};
-  for (const item of clonning(data)) {
-    if (typeof selector === 'object') {
-      let vals = {};
-      for (const sel of selector || []) {
-        vals[sel] = item[sel];
-      }
-      newObje[item[key]] = vals;
-    } else {
-      newObje[item[key]] = item[selector];
-    }
-  }
-  return newObje;
-};
-const designDefaultValuesShape = (data) => {
-  let newObj = {};
-  for (const designsGroup of clonning(data)) {
-    if (designsGroup?.group && designsGroup?.items?.length) {
-      const { group, items } = designsGroup;
-      let groupping = {};
-      for (const { dsn_id, desc } of items) {
-        groupping[dsn_id] = desc;
-        // groupping[dsn_id] = { dsn_id, desc };
-      }
-      newObj[group] = groupping;
-    }
-  }
-  // console.log(newObj, data);
-  return newObj;
-};
+// const arrToObj = (data = [], key, selector) => {
+//   let newObje = {};
+//   for (const item of clonning(data)) {
+//     if (typeof selector === 'object') {
+//       let vals = {};
+//       for (const sel of selector || []) {
+//         vals[sel] = item[sel];
+//       }
+//       newObje[item[key]] = vals;
+//     } else {
+//       newObje[item[key]] = item[selector];
+//     }
+//   }
+//   return newObje;
+// };
+// const designDefaultValuesShape = (data) => {
+//   let newObj = {};
+//   for (const designsGroup of clonning(data)) {
+//     if (designsGroup?.group && designsGroup?.items?.length) {
+//       const { group, items } = designsGroup;
+//       let groupping = {};
+//       for (const { dsn_id, desc } of items) {
+//         groupping[dsn_id] = desc;
+//         // groupping[dsn_id] = { dsn_id, desc };
+//       }
+//       newObj[group] = groupping;
+//     }
+//   }
+//   // console.log(newObj, data);
+//   return newObj;
+// };
 
 export default function EditItem({ handleClickOpen, open, ...props }) {
   const {
@@ -241,14 +243,14 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                     //Measurement
                     measurementPrefix: '',
                     measurementFields: measurementsFields,
-                    measurementDefaultValues: arrToObj(
+                    measurementDefaultValues: arrayToObject(
                       measurements,
                       'msr_id',
                       'size'
                     ),
                     desings:
                       designDevider(all_designs || [])?.[connection] || [],
-                    designsDefaultValues: designDefaultValuesShape(designs),
+                    designsDefaultValues: defaultDesignsShape(designs),
                     type: 'designs', //dsns designs
                     // type: connection,
                     watching,

@@ -1,4 +1,4 @@
-import { UserInputError } from 'apollo-server-core';
+import { AuthenticationError, UserInputError } from 'apollo-server-core';
 import { GraphQLError } from 'graphql';
 
 export default (e) => {
@@ -22,8 +22,15 @@ export const InputErr = (e) => {
     success: false,
     status: e?.extensions?.status || 500,
   });
+};
 
-  // throw new UserInputError(e.message, {
-  //   errors: e?.extensions?.errors || { success: false, message: e.message },
-  // });
+export const AuthErr = (e) => {
+  console.log(e.message);
+  console.log(e?.extensions?.errors);
+
+  throw new AuthenticationError(e?.message, {
+    errors: e?.extensions?.errors || e?.message,
+    success: false,
+    status: e?.extensions?.status || 500,
+  });
 };
