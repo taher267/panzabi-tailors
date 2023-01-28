@@ -20,3 +20,4 @@ export default gql`
     userSignup(register: InputSignUp): Login!
   }
 `;
+// @constraint(minLength: 25)

@@ -135,10 +135,12 @@ export default gql`
   }
   input InputOrder {
     customer: ID!
-    order_no: String @constraint(minLength: 5)
+    order_no: String
+    # @constraint(minLength: 5)
     previous_order: String
     totalQty: Int!
-    totalPrice: Float! @constraint(min: 500000)
+    totalPrice: Float!
+    # @constraint(min: 500000)
     discount: Float
     advanced: Float
     due: Float!

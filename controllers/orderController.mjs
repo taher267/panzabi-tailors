@@ -1,7 +1,7 @@
 import Order from '../models/Order.mjs';
 import mg from 'mongoose';
 import { UserInputError } from 'apollo-server-core';
-import errorHandler from '../utils/errorHandler.mjs';
+import errorHandler, { InputErr } from '../utils/errorHandler.mjs';
 import orderServices from '../services/orderServices.mjs';
 import userCustomerServices from '../services/userCustomerServices.mjs';
 // import TestModel from '../models/TestModel.mjs';
@@ -113,13 +113,27 @@ export default {
   createOrder: async (_parent, { order }, _context) => {
     try {
       // await orderValidation.newOrderValidation(order);
+      if (order?.order_no) {
+        const doesExist = await orderServices.findOrder(
+          'order_no',
+          order?.order_no
+        );
+        if (doesExist)
+          throw new UserInputError(`Fail to create order`, {
+            errors: { order_no: `Order no already exists` },
+            status: 400,
+          });
+      }
       const newOrder = await orderServices.newOrder({ ...order });
       await userCustomerServices.customerOrderIDUpdate(order.customer, {
         $push: { orders: { order_id: newOrder.id } }, //  order_no: order.order_no
       });
       return newOrder;
     } catch (e) {
-      errorHandler(e);
+      if (e?.extensions) {
+        throw InputErr(e);
+      }
+      throw errorHandler(e);
     }
   },
 
