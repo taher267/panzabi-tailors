@@ -6,6 +6,7 @@ import {
   Typography,
   Checkbox,
   Divider,
+  CircularProgress,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
 import Save from '@mui/icons-material/Save';
@@ -33,6 +34,7 @@ import useAuth from '../../hooks/useAuth';
 import CheckingExistingOrderView from './View/CheckingExistingOrderView';
 import AddOrderItemAlert from './View/SingleOrder/AddOrderItemAlert';
 import clientQuery from '../../hooks/gql/usePromissQurey';
+import SearchForCopy from './SearchForCopy';
 
 const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
 const initPrice = { quantity: 0, price: 0, total: 0 };
@@ -50,6 +52,11 @@ const NewOrder = () => {
   const [all_products, set_all_products] = useState([]);
   const [all_measurements, set_all_measurements] = useState([]);
 
+  const [thisCustomerOrders, setThisCustomerOrders] = useState({});
+  const [searchItems, setSearchItems] = useState([]);
+  const [loadingFetchingOrders, setLoadingFetchingOrders] = useState(false);
+  const [checkForOrders, setCheckForOrders] = useState(false);
+
   const [designUpState, setDesignUpState] = useState({});
   const [customerLoading, setCustomerLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({});
@@ -57,7 +64,16 @@ const NewOrder = () => {
   const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
   const [prevOrderData, setPrevOrderData] = useState({});
-  const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
+  const [copyPrderProduct, setCopyOrderProduct] = useState({
+    up: [],
+    down: [],
+  });
+
+  const [copyDesigns, setCopyDesigns] = useState({});
+  const [orderProduct, setOrderProduct] = useState({
+    up: copyPrderProduct['up'] || [],
+    down: copyPrderProduct['down'] || [],
+  });
 
   const [devideMeasurement, setDevideMeasurement] = useState({});
   const [pricingDetail, setPricingDetail] = useState({
@@ -65,7 +81,7 @@ const NewOrder = () => {
     down: { ...initPrice },
     totalPrice: 0,
   });
-
+  // console.log(thisCustomerOrders);
   const [gqlErrs, setGqlErrs] = useState({});
   const {
     control,
@@ -77,6 +93,7 @@ const NewOrder = () => {
     unregister,
     clearErrors,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'onBlur',
@@ -175,33 +192,6 @@ const NewOrder = () => {
       })();
     }
   }, []);
-
-  // const { data: all_measurements } = useGetQurey(
-  //   '',
-  //   // { key: 'status:ACTIVE,template:template-01' },
-  //   { key: 'status', value: 'ACTIVE' },
-  //   'allMeasurements'
-  // );
-  // useEffect(() => {
-  //   if (
-  //     all_measurements &&
-  //     all_measurements?.length &&
-  //     !Object.keys(devideMeasurement).length
-  //   ) {
-  //     setDevideMeasurement(
-  //       all_measurements?.reduce((a, c) => {
-  //         if (c.template === 'template-01') {
-  //           let up = clonning(a?.up || []);
-  //           up.push(c);
-  //           a = { ...a, up };
-  //         } else {
-  //           a = { ...a, down: [...(a?.down || []), c] };
-  //         }
-  //         return a;
-  //       }, {})
-  //     );
-  //   }
-  // }, [all_measurements]);
 
   useFieldArray({ control, name: 'down' });
   //Design 0ne /up
@@ -482,26 +472,27 @@ const NewOrder = () => {
   // useEffect(() => {
   //   if (order_number){};
   // }, [order_number, prev_order_number]);
-  const designsHandler = (
-    { target: { name, value, checked } },
-    items_id,
-    is
-  ) => {
-    // console.log(name, value, checked, items_id, is);
-    setDesignWithValue((p) => ({
-      ...p,
-      [items_id]: {
-        ...p[items_id],
-        [name]: {
-          desc: is ? p[items_id]?.[name]?.desc || '' : value,
-          isChecked: is ? checked : p?.[items_id]?.[name]?.isChecked || true,
-        },
-      },
-    }));
-  };
+  // const designsHandler = (
+  //   { target: { name, value, checked } },
+  //   items_id,
+  //   is
+  // ) => {
+  //   // console.log(name, value, checked, items_id, is);
+  //   setDesignWithValue((p) => ({
+  //     ...p,
+  //     [items_id]: {
+  //       ...p[items_id],
+  //       [name]: {
+  //         desc: is ? p[items_id]?.[name]?.desc || '' : value,
+  //         isChecked: is ? checked : p?.[items_id]?.[name]?.isChecked || true,
+  //       },
+  //     },
+  //   }));
+  // };
   const itemAddDiologHandler = (d) => {
     setExistedOrderAddItemAlert({});
   };
+  console.log(orderProduct);
   return (
     <AdminLayout>
       {processing && (
@@ -625,6 +616,53 @@ const NewOrder = () => {
                 </Typography>
               </Box>
             </Box>
+            <Box display="flex" justifyContent="space-evenly">
+              <Typography variant="h6">সকল অর্ডার</Typography>
+              <Typography>
+                {loadingFetchingOrders ? (
+                  <CircularProgress
+                    sx={{
+                      width: '20px !important',
+                      height: '20px !important',
+                    }}
+                  />
+                ) : (
+                  <Checkbox
+                    icon={
+                      checkForOrders === true ? (
+                        <CheckBoxIcon sx={{ color: '#009dea' }} />
+                      ) : (
+                        <CheckBoxOutlineBlank />
+                      )
+                    }
+                    onClick={() => {
+                      setCheckForOrders((p) => {
+                        console.log(p);
+                        return !p;
+                      });
+                    }}
+                  />
+                )}
+              </Typography>
+            </Box>
+            {(checkForOrders && customerID && (
+              <SearchForCopy
+                {...{
+                  customerID,
+                  setLoadingFetchingOrders,
+                  setThisCustomerOrders,
+                  setCopyOrderProduct,
+                  thisCustomerOrders,
+                  setOrderProduct,
+                  setCopyDesigns,
+                  setSearchItems,
+                  searchItems,
+                  setValue,
+                }}
+              />
+            )) ||
+              ''}
+
             {/* Measurement Type End */}
             {/* <Typography variant="h5">
               <span>
@@ -660,6 +698,7 @@ const NewOrder = () => {
                   removeGqlErrors,
                   //product
                   productLabel: 'সালোয়ার, পাজামা',
+                  defaultProducts: copyPrderProduct?.up || [],
                   setOrderProduct,
                   prodType: 'up',
                   productType: 'type-1',
@@ -668,6 +707,7 @@ const NewOrder = () => {
                   measurementPrefix: '_up',
                   measurementFields: devideMeasurement?.up || [],
                   desings: desings?.up || [],
+                  designsDefaultValues: copyDesigns || {},
                   type: 'up',
                   watching: up,
                   //Pricing
@@ -698,6 +738,7 @@ const NewOrder = () => {
                     //product
                     productLabel: 'পাঞ্জাবী, জুব্বা',
                     setOrderProduct,
+                    defaultProducts: copyPrderProduct?.down || [],
                     products: [
                       ...all_products?.filter((p) => p.category === 'type-2'),
                     ],

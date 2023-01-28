@@ -15,6 +15,7 @@ import {
   SINGLE_ORDER,
   SINGLE_ORDER_BASIC,
   ORDER_ITEM,
+  USER_ORDERS_ITEMS,
 } from './../Query/orderQry';
 import {
   NEW_MEASUREMENT,
@@ -68,6 +69,7 @@ export default {
   ADD_NEW_ORDER_ITEM,
   EDIT_ORDER,
   ALL_ORDERS,
+  USER_ORDERS_ITEMS,
   SINGLE_ORDER,
   SINGLE_ORDER_BASIC,
   ORDER_ITEM,

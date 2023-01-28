@@ -30,7 +30,14 @@ const OrdersList = () => {
   const [delt, setDelt] = useState(null);
   const { loading, data, error } = useGetQurey(
     'ALL_ORDERS',
-    null,
+    {
+      options: {
+        select: '-order_items',
+        populate: [
+          ['customer', 'name phone_no email transportation.transport_name'],
+        ],
+      },
+    },
     'allOrders'
     // { pollInterval: 2000 }
   );
@@ -213,7 +220,7 @@ const OrdersList = () => {
   };
   // console.log(data);
   return (
-    <AdminLayout title="Orders">
+    <AdminLayout title="Orders of Customers">
       <Box
       // style={{
       //   display: 'grid',

@@ -8,7 +8,6 @@ export default function OrderProduct({
   defaultProducts,
   productLabel = '',
 }) {
-  // const options = [{ name: 'The Shawshank Redemption', y: 1994 }];
   return (
     <Stack spacing={3} sx={{ width: 500 }}>
       <Autocomplete
