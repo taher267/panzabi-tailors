@@ -6,6 +6,7 @@ export default function OrderProduct({
   selectedProducts,
   error,
   defaultProducts,
+  productLabel = '',
 }) {
   // const options = [{ name: 'The Shawshank Redemption', y: 1994 }];
   return (
@@ -37,8 +38,8 @@ export default function OrderProduct({
             {...params}
             helperText={error?.message || ''}
             variant="standard"
-            label="Multiple values"
-            placeholder="Favorites"
+            label={productLabel}
+            placeholder={productLabel}
           />
         )}
       />

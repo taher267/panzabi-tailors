@@ -5,11 +5,12 @@ import {
   Button,
   Typography,
   Checkbox,
-  FormControlLabel,
-  FormHelperText,
+  Divider,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
-import { Save } from '@mui/icons-material';
+import Save from '@mui/icons-material/Save';
+import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { OrderStatusField } from '../../arrayForms/orderFields';
 import { useForm, useWatch, useFieldArray } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,7 +21,6 @@ import useMutationFunc from '../../hooks/gql/useMutationFunc';
 import OrderBasic from './OrderBasic';
 // import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
 import useGetQurey from './../../hooks/gql/useGetQurey';
-// import DesignView from './DesignView2';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
@@ -32,29 +32,8 @@ import useAuth from '../../hooks/useAuth';
 // import { debounce } from 'lodash';
 import CheckingExistingOrderView from './View/CheckingExistingOrderView';
 import AddOrderItemAlert from './View/SingleOrder/AddOrderItemAlert';
+import clientQuery from '../../hooks/gql/usePromissQurey';
 
-const InitFields = {
-  type_one: [
-    'long',
-    'body',
-    'body_loose',
-    'belly',
-    'belly_loose',
-    'sholder',
-    'sleeve',
-    'coller',
-    'sleeve_cuff',
-    'aditional',
-  ],
-  type_two: [
-    'length',
-    'anklet_cuff',
-    'waist_to_crotch',
-    'waist',
-    'thigh',
-    'hips',
-  ],
-};
 const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
 const initPrice = { quantity: 0, price: 0, total: 0 };
 const NewOrder = () => {
@@ -64,15 +43,20 @@ const NewOrder = () => {
   const [desings, setDesigns] = useState({
     // up: {}, down: {}
   });
-  // const [basicOrder, setBasicOrder] = useState({});
   const [existedOrderAddItemAlert, setExistedOrderAddItemAlert] = useState();
   const [searchOrder, setSearchOrder] = useState();
+
+  const [all_designs, set_all_designs] = useState([]);
+  const [all_products, set_all_products] = useState([]);
+  const [all_measurements, set_all_measurements] = useState([]);
+
   const [designUpState, setDesignUpState] = useState({});
   const [customerLoading, setCustomerLoading] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({});
   const [advanced, setAdvanced] = useState(0);
   const [designDownState, setDesignDownState] = useState({});
   const [designWithValue, setDesignWithValue] = useState({});
+  const [prevOrderData, setPrevOrderData] = useState({});
   const [orderProduct, setOrderProduct] = useState({ up: [], down: [] });
 
   const [devideMeasurement, setDevideMeasurement] = useState({});
@@ -95,7 +79,7 @@ const NewOrder = () => {
     reset,
     formState: { errors },
   } = useForm({
-    mode: 'all',
+    mode: 'onBlur',
     defaultValues: {
       checkboxUp: false,
       checkboxDown: false,
@@ -116,52 +100,108 @@ const NewOrder = () => {
     bug: itemBug,
     data: newItemData,
   } = useMutationFunc('ADD_NEW_ORDER_ITEM', null, null, 'addNewOrderItem');
-  const {
-    data: prevOrderData,
-    loading,
-    error,
-  } = useGetQurey(
-    'SINGLE_ORDER_BASIC',
-    { key: 'order_no', value: searchOrder },
-    'getOrder'
-  );
-  const { data: all_designs } = useGetQurey(
-    'SPECIFIC_ALL_DESIGNS',
-    null,
-    'allDesigns'
-  );
-  const { data: all_products } = useGetQurey(
-    'PRODUCTS_NAME_ID_CAT',
-    null,
-    'allProducts'
-  );
-  // console.log(errors);
-  const { data: all_measurements } = useGetQurey(
-    'ALL_MEASUREMENTS',
-    // { key: 'status:ACTIVE,template:template-01' },
-    { key: 'status', value: 'ACTIVE' },
-    'allMeasurements'
-  );
+
   useEffect(() => {
-    if (
-      all_measurements &&
-      all_measurements?.length &&
-      !Object.keys(devideMeasurement).length
-    ) {
-      const datas = all_measurements?.reduce((a, c) => {
-        if (c.template === 'template-01') {
-          let up = clonning(a?.up || []);
-          up.push(c);
-          a = { ...a, up };
-        } else {
-          a = { ...a, down: [...(a?.down || []), c] };
-        }
-        return a;
-      }, {});
-      // console.log(datas);
-      setDevideMeasurement(datas);
+    const fatch = async () => {
+      try {
+        const { data } = await clientQuery('SINGLE_ORDER_BASIC', {
+          key: 'order_no',
+          value: searchOrder,
+        });
+        setPrevOrderData(data?.getOrder || {});
+      } catch (e) {
+        setPrevOrderData({});
+        console.log(e?.message);
+      } finally {
+        // setLoading(false);
+      }
+    };
+    if (searchOrder) {
+      fatch();
     }
-  }, [all_measurements]);
+  }, [searchOrder]);
+
+  useEffect(() => {
+    // /fetching All designs
+    if (!all_designs?.length) {
+      (async () => {
+        try {
+          const { data } = await clientQuery('SPECIFIC_ALL_DESIGNS');
+          set_all_designs(data?.allDesigns || []);
+        } catch (e) {
+          set_all_designs([]);
+          console.log(e?.message);
+        }
+      })();
+    }
+    //fetching All products
+    if (!all_products?.length) {
+      (async () => {
+        try {
+          const { data } = await clientQuery('PRODUCTS_NAME_ID_CAT');
+          set_all_products(data?.allProducts || []);
+        } catch (e) {
+          set_all_products([]);
+          console.log(e?.message);
+        }
+      })();
+    }
+    //Fetch all measurements
+    if (!Object.keys(devideMeasurement || {})?.length) {
+      //!all_measurements?.length
+      (async () => {
+        try {
+          const { data } = await clientQuery('ALL_MEASUREMENTS', {
+            key: 'status',
+            value: 'ACTIVE',
+          });
+          // set_all_measurements(data?.allMeasurements || []);
+          setDevideMeasurement(
+            data?.allMeasurements?.reduce?.((a, c) => {
+              if (c.template === 'template-01') {
+                let up = clonning(a?.up || []);
+                up.push(c);
+                a = { ...a, up };
+              } else {
+                a = { ...a, down: [...(a?.down || []), c] };
+              }
+              return a;
+            }, {}) || {}
+          );
+        } catch (e) {
+          set_all_measurements([]);
+          console.log(e?.message);
+        }
+      })();
+    }
+  }, []);
+
+  // const { data: all_measurements } = useGetQurey(
+  //   '',
+  //   // { key: 'status:ACTIVE,template:template-01' },
+  //   { key: 'status', value: 'ACTIVE' },
+  //   'allMeasurements'
+  // );
+  // useEffect(() => {
+  //   if (
+  //     all_measurements &&
+  //     all_measurements?.length &&
+  //     !Object.keys(devideMeasurement).length
+  //   ) {
+  //     setDevideMeasurement(
+  //       all_measurements?.reduce((a, c) => {
+  //         if (c.template === 'template-01') {
+  //           let up = clonning(a?.up || []);
+  //           up.push(c);
+  //           a = { ...a, up };
+  //         } else {
+  //           a = { ...a, down: [...(a?.down || []), c] };
+  //         }
+  //         return a;
+  //       }, {})
+  //     );
+  //   }
+  // }, [all_measurements]);
 
   useFieldArray({ control, name: 'down' });
   //Design 0ne /up
@@ -341,7 +381,6 @@ const NewOrder = () => {
       }
     }
   }, [data, newItemData]);
-
   const prev_order = watch('previous_order');
   useEffect(() => {
     if (prev_order) {
@@ -397,6 +436,7 @@ const NewOrder = () => {
       'measurements_down',
     ]);
   };
+  useEffect(() => {}, []);
 
   const priceing = useWatch({
     control,
@@ -499,7 +539,7 @@ const NewOrder = () => {
           ''
         )}
 
-        {prevOrderData ? (
+        {Object.keys(prevOrderData || {})?.length ? (
           <CheckingExistingOrderView {...{ prevOrderData, customerInfo }} />
         ) : (
           ''
@@ -538,8 +578,55 @@ const NewOrder = () => {
                 </option>
               ))}
             </select>
-
-            <Typography variant="h5">
+            {/* Measurement Type Start */}
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ border: 1, padding: 1, borderRadius: 2 }}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="h5">পাঞ্জাবী, জুব্বা</Typography>
+                  <Typography>
+                    <Checkbox
+                      icon={
+                        checkboxUp ? (
+                          <CheckBoxIcon sx={{ color: '#009dea' }} />
+                        ) : (
+                          <CheckBoxOutlineBlank />
+                        )
+                      }
+                      onClick={(e) => !e.target?.checked && upUnregiser()}
+                      {...register('checkboxUp')}
+                    />
+                  </Typography>
+                </Box>
+                <Typography>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam
+                  architecto sunt neque in magnam quasi consequuntur
+                </Typography>
+              </Box>
+              <Box sx={{ border: 1, padding: 1, borderRadius: 2 }}>
+                <Box display="flex" justifyContent="space-between">
+                  <Typography variant="h5">সালোয়ার, পাজামা</Typography>
+                  <Typography>
+                    <Checkbox
+                      icon={
+                        checkboxDown ? (
+                          <CheckBoxIcon sx={{ color: '#009dea' }} />
+                        ) : (
+                          <CheckBoxOutlineBlank />
+                        )
+                      }
+                      onClick={(e) => !e.target?.checked && downUnregiser()}
+                      {...register('checkboxDown')}
+                    />
+                  </Typography>
+                </Box>
+                <Typography>
+                  Facilis culpa. Voluptas, quia vero quam et provident voluptate
+                  sint optio quos repudiandae illo?
+                </Typography>
+              </Box>
+            </Box>
+            {/* Measurement Type End */}
+            {/* <Typography variant="h5">
               <span>
                 {!checkboxUp && !checkboxDown ? (
                   <FormHelperText sx={{ color: 'red' }}>
@@ -560,7 +647,7 @@ const NewOrder = () => {
                   label="Measuremnt 01"
                 />
               </span>
-            </Typography>
+            </Typography> */}
             {checkboxUp && (
               <OrderItemCard
                 {...{
@@ -572,6 +659,7 @@ const NewOrder = () => {
                   onFocus,
                   removeGqlErrors,
                   //product
+                  productLabel: 'সালোয়ার, পাজামা',
                   setOrderProduct,
                   prodType: 'up',
                   productType: 'type-1',
@@ -592,29 +680,10 @@ const NewOrder = () => {
                 }}
               />
             )}
-
-            <Typography variant="h5">
-              <span>
-                {!checkboxUp && !checkboxDown ? (
-                  <FormHelperText sx={{ color: 'red' }}>
-                    {NOT_ANY_MEASUREMENT_CHECK}
-                  </FormHelperText>
-                ) : (
-                  ''
-                )}
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onClick={(e) => !e.target?.checked && downUnregiser()}
-                      className={errors?.checkboxDown ? csses.CheckBox : ''}
-                      {...register('checkboxDown')}
-                    />
-                  }
-                  label="Measuremnt 02"
-                />
-              </span>
-            </Typography>
+            {(checkboxUp && checkboxDown && (
+              <Divider sx={{ marginTop: 2, border: '2.5px solid #ddd' }} />
+            )) ||
+              ''}
             {checkboxDown && (
               <>
                 <OrderItemCard
@@ -627,8 +696,8 @@ const NewOrder = () => {
                     onFocus,
                     removeGqlErrors,
                     //product
+                    productLabel: 'পাঞ্জাবী, জুব্বা',
                     setOrderProduct,
-
                     products: [
                       ...all_products?.filter((p) => p.category === 'type-2'),
                     ],
@@ -648,20 +717,26 @@ const NewOrder = () => {
                 />
               </>
             )}
-            <PriceSummery {...{ pricingDetail, advanced, setAdvanced }} />
-            <Button
-              disabled={
-                processing ||
-                Object.keys(gqlErrs).length > 0 ||
-                Object.keys(errors).length > 0
-              }
-              variant="contained"
-              fullWidth
-              endIcon={<Save />}
-              type="submit"
-            >
-              Add Order
-            </Button>
+            {((checkboxUp || checkboxDown) && (
+              <>
+                <PriceSummery {...{ pricingDetail, advanced, setAdvanced }} />
+                <Button
+                  sx={{ marginTop: 2 }}
+                  disabled={
+                    processing ||
+                    Object.keys(gqlErrs).length > 0 ||
+                    Object.keys(errors).length > 0
+                  }
+                  variant="contained"
+                  fullWidth
+                  endIcon={<Save />}
+                  type="submit"
+                >
+                  Add Order
+                </Button>
+              </>
+            )) ||
+              ''}
           </form>
         </Box>
       }

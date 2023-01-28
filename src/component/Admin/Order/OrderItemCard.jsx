@@ -36,6 +36,7 @@ const OrderItemCard = ({
   defaultTotal,
   productLen,
   pricingKey,
+  productLabel,
 }) => {
   return (
     <>
@@ -56,7 +57,7 @@ const OrderItemCard = ({
               })
             }
             error={errors?.[fieldName]}
-            {...{ defaultProducts, products }}
+            {...{ defaultProducts, products, productLabel }}
           />
         </>
       ) : (

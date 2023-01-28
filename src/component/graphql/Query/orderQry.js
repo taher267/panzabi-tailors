@@ -3,6 +3,16 @@ const Product = `products {
   name
 }`;
 
+const Customer = ` customer {
+  _id
+  name
+  phone_no
+  email
+  
+}`;
+// # transportation {
+//   #   transport_name
+//   # }
 export const ALL_ORDERS = gql`
   query allOrders($key: String, $value: String) {
     allOrders(key: $key, value: $value) {
@@ -16,15 +26,7 @@ export const ALL_ORDERS = gql`
       order_status
       due
       transport_charge
-      customer {
-        _id
-        name
-        phone_no
-        email
-        # transportation {
-        #   transport_name
-        # }
-      }
+      ${Customer}
       delivery_date
       createdAt
       updatedAt
@@ -41,15 +43,7 @@ export const SINGLE_ORDER = gql`
       totalPrice
       discount
       advanced
-      customer {
-        _id
-        name
-        phone_no
-        email
-        # transportation {
-        #   transport_name
-        # }
-      }
+      ${Customer}
       due
       transport_charge
       # user
@@ -131,7 +125,7 @@ export const SINGLE_ORDER_BASIC = gql`
       totalPrice
       discount
       advanced
-      customer
+      ${Customer}
       due
       transport_charge
       order_status
