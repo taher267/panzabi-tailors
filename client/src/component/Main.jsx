@@ -83,7 +83,6 @@ const Main = () => {
                       <Route path="new" element={<NewDesign />} />
                       <Route path="edit/:id" element={<EditDesign />} />
                     </Route>
-
                     <Route path="account">
                       <Route path="" element={<AccountsList />} />
                       <Route path="new" element={<NewAccount />} />

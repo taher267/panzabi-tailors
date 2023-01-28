@@ -196,7 +196,7 @@ export default gql`
   }
   type Query {
     allOrders(key: String, value: String): [Orders!]!
-    getOrder(key: String!, value: String!): Order!
+    getOrder(key: String!, value: String!): Order
     getOrderItem(id: ID!, key: String!): OrderItem!
     # basicOrder(key: String!, value: String!): BasicOrder
   }

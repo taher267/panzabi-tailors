@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 const CheckingExistingOrderView = ({ prevOrderData, customerInfo }) => {
   const { _id, order_no, customer, order_status, updatedAt, totalPrice } =
     prevOrderData;
+
   return (
     <Box sx={{ maxWidth: '100%' }}>
       <Typography variant="h6">Searched Order Info</Typography>
@@ -15,11 +16,11 @@ const CheckingExistingOrderView = ({ prevOrderData, customerInfo }) => {
           <span
             style={{
               color: `var(--${
-                customerInfo?._id === customer ? 'blue' : 'danger'
+                customerInfo?._id === customer?._id ? 'blue' : 'danger'
               })`,
             }}
           >
-            {customer}
+            {customer?._id}
           </span>
         </Typography>
         <Typography sx={{ color: 'var(--black)' }}>

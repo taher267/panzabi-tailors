@@ -8,7 +8,6 @@ export default (e) => {
     errors: e?.extensions?.errors || { success: false, message: e.message },
     extensions: { status: e?.status || e?.extensions?.status || 500 },
   });
-
   // throw new UserInputError(e.message, {
   //   errors: e?.extensions?.errors || { success: false, message: e.message },
   // });
