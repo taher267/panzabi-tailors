@@ -31,6 +31,7 @@ export default {
     getDailyAccount: dailyAccountController.getDailyAccount,
     //Order
     allOrders: orderController.allOrders,
+    // userOrderItems: orderController.allOrders,
     getOrder: orderController.getOrder,
     getOrderItem: orderController.getOrderItem,
   },
