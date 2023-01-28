@@ -1,11 +1,14 @@
 import { config } from 'dotenv';
 config({ path: './config/.env' });
 import { ApolloServer } from 'apollo-server';
-import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import {
-  constraintDirective,
-  constraintDirectiveTypeDefs,
-} from 'graphql-constraint-directive';
+// import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+// import {
+//   constraintDirectiveTypeDefs,
+//   createApolloQueryValidationPlugin,
+//   createEnvelopQueryValidationPlugin,
+// } from 'graphql-constraint-directive';
+// import { makeExecutableSchema } from '@graphql-tools/schema';
+
 import resolvers from './resolvers/resolvers.mjs';
 import typeDefs from './typedefs/typeDefs.mjs';
 import contexts from './context/contexts.mjs';
@@ -15,8 +18,19 @@ import auth from './auth/auth.mjs';
 const publicRoutes = ['userLogin', 'userSignup', '/'];
 // console.log(publicRoutes.indexOf('userLogin'));
 const PORT = process.env.PORT || 4000;
+// let schema = makeExecutableSchema({
+//   typeDefs: [constraintDirectiveTypeDefs, typeDefs],
+// });
+
+// const plugins = [
+//   createApolloQueryValidationPlugin({
+//     schema,
+//   }),
+// ];
 const server = new ApolloServer({
-  typeDefs: [constraintDirectiveTypeDefs, typeDefs],
+  typeDefs,
+  // typeDefs: [constraintDirectiveTypeDefs, typeDefs],
+  // plugins: [createEnvelopQueryValidationPlugin()],
   resolvers,
   context: async (ctx) => {
     const { req, res } = ctx;
@@ -35,7 +49,8 @@ const server = new ApolloServer({
   // cors: {
   //   origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
   // },
-  plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+
+  // plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
 if (process.env.NODE_ENV === 'development') {
   db()
