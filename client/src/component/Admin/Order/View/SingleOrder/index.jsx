@@ -46,7 +46,7 @@ const SingleOrder = () => {
                         setEditId,
                         handleClickOpen,
                         open,
-                        k,
+                        // k,
                         order_id: id,
                       }}
                       key={k}

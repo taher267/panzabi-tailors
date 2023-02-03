@@ -143,6 +143,8 @@ export default {
   addNewOrderItem: async (_, { _id, newItem }) => {
     try {
       const { order_items, ...rest } = newItem;
+      console.log(order_items);
+
       await orderValidation.newOrderItemValidation(_id, newItem);
 
       const addedNewItem = await orderServices.orderUpdate(
@@ -288,7 +290,6 @@ export default {
       errorHandler(e);
     }
   },
-
   /**
    * Update payment of Order
    */
@@ -362,12 +363,14 @@ export default {
       errorHandler(e);
     }
   },
-
   /**
    * Update Order item
    */
   updateOrderItem: async (_parent, { _id, update }, { req }) => {
     try {
+      const check = await orderValidation.isValidUpdateOrderItem(update);
+      // console.log(check, 'check');
+
       const order = await orderServices.findOrder('_id', _id);
       if (!order)
         return new UserInputError(`There is not order item`, {
@@ -376,8 +379,8 @@ export default {
             message: `There is not order item of this id ${id}`,
           },
         });
-      let totalQty = 0;
-      let totalPrice = 0;
+      let totalQty = order.totalQty;
+      let totalPrice = order.totalPrice;
       let totalPayments =
         order?.discount +
         order?.advanced +
@@ -390,8 +393,9 @@ export default {
 
       const order_items = order.order_items?.map?.((item) => {
         if (item._id?.toString?.() === update.itemId) {
-          totalQty += item.quantity;
-          totalPrice += item.quantity * item.price;
+          totalPrice -=
+            item.quantity * item.price - update.quantity * update.price;
+          totalQty -= item.quantity - update.quantity;
           return {
             ...item,
             ...update,
@@ -407,6 +411,13 @@ export default {
       // console.log(updated);
       return true;
     } catch (e) {
+      if (e.isJoi) {
+        // const objErr = e.details.reduce((a, c) => {
+        //   let { message, context } = c;
+
+        // }, {});
+        console.log(e);
+      }
       errorHandler(e);
     }
   },

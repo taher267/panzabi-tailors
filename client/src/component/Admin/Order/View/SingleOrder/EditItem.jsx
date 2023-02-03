@@ -107,7 +107,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     bug,
     processing,
     data,
-  } = useMutationFunc('UPDATE_ORDER_ITEM');
+  } = useMutationFunc('UPDATE_ORDER_ITEM', null, null, null, ['SINGLE_ORDER']);
   const {
     control,
     handleSubmit,

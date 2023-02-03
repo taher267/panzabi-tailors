@@ -9,12 +9,12 @@ import {
 } from '@mui/material';
 import PrintIcon from '@mui/icons-material/Print';
 import EditItem from './EditItem';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useTailors } from '../../../../context/TailorsContext';
 
 const OrderItemView = (props) => {
   const { setPrintData } = useTailors();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const {
     _id,
     measurements,
@@ -29,7 +29,7 @@ const OrderItemView = (props) => {
     setEditId,
     handleClickOpen,
     open,
-    k,
+    // k,
     order_id,
   } = props;
 
@@ -98,7 +98,7 @@ const OrderItemView = (props) => {
             {/* <Typography>{connection}</Typography> */}
             {(measurements?.length && (
               <>
-                <MeasuremntView {...{ measurements, _id, k }} />
+                <MeasuremntView {...{ measurements, _id }} /> {/**k */}
               </>
             )) ||
               ''}
@@ -184,14 +184,14 @@ const Basic = ({ order_date, products, price, quantity, sample }) => {
   );
 };
 
-const printDiv = (divName) => {
-  const printContents = document.getElementById(divName).innerHTML;
-  const originalContents = document.body.innerHTML;
+// const printDiv = (divName) => {
+//   const printContents = document.getElementById(divName).innerHTML;
+//   const originalContents = document.body.innerHTML;
 
-  document.body.innerHTML = printContents;
+//   document.body.innerHTML = printContents;
 
-  window.print();
+//   window.print();
 
-  document.body.innerHTML = originalContents;
-  return <></>;
-};
+//   document.body.innerHTML = originalContents;
+//   return <></>;
+// };

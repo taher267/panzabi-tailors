@@ -2,7 +2,7 @@ import { AuthenticationError, UserInputError } from 'apollo-server-core';
 import { GraphQLError } from 'graphql';
 
 export default (e) => {
-  console.log(e.message);
+  console.log(e.message, '======errorHandler.mjs=====');
   console.log(e?.extensions?.errors);
   throw new GraphQLError(e.message, {
     errors: e?.extensions?.errors || { success: false, message: e.message },

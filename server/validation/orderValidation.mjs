@@ -1,9 +1,10 @@
 import { UserInputError } from 'apollo-server';
+import Joi from 'joi';
 import orderServices from '../services/orderServices.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
+
 const newOrderValidation = async ({ order_name, type, orders, ...rest }) => {
   let errors = {};
-  console.log(rest);
   try {
     //order_name
     if (!order_name) errors.order_name = `order name is mandatory!`;
@@ -89,4 +90,66 @@ const newOrderItemValidation = async (_id, newItem) => {
     errorHandler(e);
   }
 };
-export default { newOrderValidation, newOrderItemValidation };
+const updateOrderItemSchema = Joi.array()
+  .items(
+    Joi.object({
+      _id: Joi.string().required(),
+      itemId: Joi.string().required(),
+      connection: Joi.string().valid('up', 'down').required(),
+      price: Joi.number().required(),
+      quantity: Joi.number().required(),
+      products: Joi.array()
+        .items(
+          Joi.object({
+            _id: Joi.string().required(),
+            name: Joi.string().required(),
+          }).required()
+        )
+        .required(),
+      designs: Joi.array()
+        .items(
+          Joi.object({
+            group: Joi.string().required(),
+            items: Joi.array()
+              .items(
+                Joi.object({
+                  label: Joi.string().required(),
+                  dsn_id: Joi.string().required(),
+                  desc: Joi.string().allow(''),
+                })
+              )
+              .required(),
+          }).required()
+        )
+        .required(),
+      measurements: Joi.array()
+        .items(
+          Joi.object({
+            msr_id: Joi.string().required(),
+            label: Joi.string().required(),
+            size: Joi.string().required(),
+          }).required()
+        )
+        .required(),
+      sample: Joi.object({
+        src: Joi.string(),
+        id: Joi.string(),
+      }),
+    }).required()
+  )
+  .required();
+
+const isValidUpdateOrderItem = (data = []) =>
+  updateOrderItemSchema.validateAsync(data, {
+    abortEarly: false,
+  });
+// isValidUpdateOrderItem([
+//   {
+//     connection: 'down',
+//   },
+// ]);
+export default {
+  newOrderValidation,
+  newOrderItemValidation,
+  isValidUpdateOrderItem,
+};

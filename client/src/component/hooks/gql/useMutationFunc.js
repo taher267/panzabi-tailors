@@ -21,7 +21,7 @@ export default function useMutationFunc(
     //     return observableQuery.refetch();
     //   }
     // },
-    refetchQueries: [...refetchQueries],
+    refetchQueries,
     // refetchQueries: [],
   });
   return {
