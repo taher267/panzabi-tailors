@@ -68,8 +68,9 @@ const NewOrder = () => {
     up: [],
     down: [],
   });
-
+  // Copy item state
   const [copyDesigns, setCopyDesigns] = useState({});
+  const [copyMeasurements, setCopyMeasurements] = useState({});
   const [orderProduct, setOrderProduct] = useState({
     up: copyPrderProduct['up'] || [],
     down: copyPrderProduct['down'] || [],
@@ -81,8 +82,9 @@ const NewOrder = () => {
     down: { ...initPrice },
     totalPrice: 0,
   });
-  // console.log(thisCustomerOrders);
+  // for Graphql error state
   const [gqlErrs, setGqlErrs] = useState({});
+  // React Hook form
   const {
     control,
     register,
@@ -230,6 +232,7 @@ const NewOrder = () => {
   //////////////////////////////////////////////////////SUBMIT DATA
   const onSubmit = (data) => {
     // console.log(data);
+    // return;
     const {
       order_status,
       order_date,
@@ -352,7 +355,6 @@ const NewOrder = () => {
     // console.log(data);
     if (previous_order && item_add_in_existing_order) {
       delete newOrderDates.delivery_date;
-
       addNewOrderItem({
         variables: { _id: prevOrderData._id, newItem: newOrderDates },
       });
@@ -461,38 +463,16 @@ const NewOrder = () => {
       setPricingDetail({ up: upDetail, down: downDetail, totalPrice });
     }
   }, [priceing]);
-
+  // on focus remove graphql error
   const onFocus = ({ target: { name } }) => {
     let newErr = { ...gqlErrs };
     delete newErr[name];
     setGqlErrs(newErr);
   };
-  // const order_number = watch('order_no');
-  // const prev_order_number = watch('previous_order');
-  // useEffect(() => {
-  //   if (order_number){};
-  // }, [order_number, prev_order_number]);
-  // const designsHandler = (
-  //   { target: { name, value, checked } },
-  //   items_id,
-  //   is
-  // ) => {
-  //   // console.log(name, value, checked, items_id, is);
-  //   setDesignWithValue((p) => ({
-  //     ...p,
-  //     [items_id]: {
-  //       ...p[items_id],
-  //       [name]: {
-  //         desc: is ? p[items_id]?.[name]?.desc || '' : value,
-  //         isChecked: is ? checked : p?.[items_id]?.[name]?.isChecked || true,
-  //       },
-  //     },
-  //   }));
-  // };
   const itemAddDiologHandler = (d) => {
     setExistedOrderAddItemAlert({});
   };
-  console.log(orderProduct);
+  // console.log(orderProduct);
   return (
     <AdminLayout>
       {processing && (
@@ -651,6 +631,7 @@ const NewOrder = () => {
                   customerID,
                   setLoadingFetchingOrders,
                   setThisCustomerOrders,
+                  setCopyMeasurements,
                   setCopyOrderProduct,
                   thisCustomerOrders,
                   setOrderProduct,
@@ -697,7 +678,7 @@ const NewOrder = () => {
                   onFocus,
                   removeGqlErrors,
                   //product
-                  productLabel: 'সালোয়ার, পাজামা',
+                  productLabel: 'পাঞ্জাবী, জুব্বা',
                   defaultProducts: copyPrderProduct?.up || [],
                   setOrderProduct,
                   prodType: 'up',
@@ -706,6 +687,8 @@ const NewOrder = () => {
                   //Measurement
                   measurementPrefix: '_up',
                   measurementFields: devideMeasurement?.up || [],
+                  measurementDefaultValues: copyMeasurements || {},
+                  // Designs
                   desings: desings?.up || [],
                   designsDefaultValues: copyDesigns || {},
                   type: 'up',
@@ -724,40 +707,42 @@ const NewOrder = () => {
               <Divider sx={{ marginTop: 2, border: '2.5px solid #ddd' }} />
             )) ||
               ''}
-            {checkboxDown && (
-              <>
-                <OrderItemCard
-                  {...{
-                    //Common
-                    errors,
-                    register,
-                    gqlErrs,
-                    setGqlErrs,
-                    onFocus,
-                    removeGqlErrors,
-                    //product
-                    productLabel: 'পাঞ্জাবী, জুব্বা',
-                    setOrderProduct,
-                    defaultProducts: copyPrderProduct?.down || [],
-                    products: [
-                      ...all_products?.filter((p) => p.category === 'type-2'),
-                    ],
-                    prodType: 'down',
-                    fieldName: 'down_products',
-                    //Measurement
-                    measurementPrefix: '_down',
-                    measurementFields: devideMeasurement?.down || [],
-                    desings: desings?.down || [],
-                    type: 'down',
-                    watching: down,
-                    //Pricing
-                    productLen: orderProduct?.down?.length || 0,
-                    total: pricingDetail?.down?.total || 0,
-                    pricingKey: 1,
-                  }}
-                />
-              </>
-            )}
+            {(checkboxDown && (
+              <OrderItemCard
+                {...{
+                  //Common
+                  errors,
+                  register,
+                  gqlErrs,
+                  setGqlErrs,
+                  onFocus,
+                  removeGqlErrors,
+                  //product
+                  productLabel: 'সালোয়ার, পাজামা',
+                  setOrderProduct,
+                  defaultProducts: copyPrderProduct?.down || [],
+                  products: [
+                    ...all_products?.filter((p) => p.category === 'type-2'),
+                  ],
+                  prodType: 'down',
+                  fieldName: 'down_products',
+                  //Measurement
+                  measurementPrefix: '_down',
+                  measurementFields: devideMeasurement?.down || [],
+                  measurementDefaultValues: copyMeasurements || {},
+                  // Designs
+                  desings: desings?.down || [],
+                  designsDefaultValues: copyDesigns || {},
+                  type: 'down',
+                  watching: down,
+                  //Pricing
+                  productLen: orderProduct?.down?.length || 0,
+                  total: pricingDetail?.down?.total || 0,
+                  pricingKey: 1,
+                }}
+              />
+            )) ||
+              ''}
             {((checkboxUp || checkboxDown) && (
               <>
                 <PriceSummery {...{ pricingDetail, advanced, setAdvanced }} />

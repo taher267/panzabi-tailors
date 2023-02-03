@@ -24,8 +24,8 @@ import {
   measurementKeyValue,
 } from '../../../../../helpers/orderHelper';
 import useMutationFunc from '../../../../hooks/gql/useMutationFunc';
-import arrayToObject from '../../../../../utils/arrayToObject';
 import defaultDesignsShape from '../../../../../utils/defaultDesignsShape';
+import defaultMeasurementsShape from '../../../../../utils/defaultMeasurementsShape';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -243,7 +243,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                     //Measurement
                     measurementPrefix: '',
                     measurementFields: measurementsFields,
-                    measurementDefaultValues: arrayToObject(
+                    measurementDefaultValues: defaultMeasurementsShape(
                       measurements,
                       'msr_id',
                       'size'

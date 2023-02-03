@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import clientQuery from '../../hooks/gql/usePromissQurey';
-import arrayToObject from '../../../utils/arrayToObject';
+import defaultMeasurementsShape from '../../../utils/defaultMeasurementsShape';
 import defaultDesignsShape from '../../../utils/defaultDesignsShape';
 
 const SearchForCopy = ({
@@ -13,6 +13,7 @@ const SearchForCopy = ({
   loadingFetchingOrders,
   setThisCustomerOrders,
   setCopyOrderProduct,
+  setCopyMeasurements,
   thisCustomerOrders,
   setOrderProduct,
   setSearchItems,
@@ -74,10 +75,13 @@ const SearchForCopy = ({
     let connection = selectedData.connection;
     // measurements_up.632ea691a3a5bd3d881c565c.size
     if (selectedData?.measurements?.length) {
-      for (const item of selectedData.measurements) {
-        setValue(`measurements_${connection}.${item.msr_id}.size`, item.size);
-        // setCopyDesigns(arrayToObject(selectedData?.designs, 'msr_id', 'size'));
-      }
+      setCopyMeasurements(
+        defaultMeasurementsShape(selectedData?.measurements, 'msr_id', 'size')
+      );
+      // for (const item of selectedData.measurements) {
+      //   // setValue(`measurements_${connection}.${item.msr_id}.size`, item.size);
+
+      // }
     }
     if (selectedData?.designs?.length) {
       setCopyDesigns(defaultDesignsShape(selectedData?.designs));

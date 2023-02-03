@@ -47,10 +47,11 @@ const Field = (props) => {
     ...rest
   } = props;
 
+  // console.log(predefined);
+
   let helperText = '';
   let err = false;
   let objErrs = name.split('.');
-  console.log();
   if (
     gqlErrs?.[name] ||
     errors?.[name] ||

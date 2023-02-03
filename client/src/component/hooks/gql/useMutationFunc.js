@@ -16,7 +16,13 @@ export default function useMutationFunc(
     onCompleted() {
       setSuccess && setSuccess(true);
     },
+    // onQueryUpdated(observableQuery) {
+    //   if (shouldRefetchQuery(observableQuery)) {
+    //     return observableQuery.refetch();
+    //   }
+    // },
     refetchQueries: [...refetchQueries],
+    // refetchQueries: [],
   });
   return {
     mutation,

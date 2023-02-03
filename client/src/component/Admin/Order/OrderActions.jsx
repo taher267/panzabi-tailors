@@ -34,7 +34,9 @@ export default function OrderActions({
     mutation: delOrderItem,
     bug: err,
     data: del,
-  } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder');
+  } = useMutationFunc('DELETE_ORDER_ITEM', null, null, 'deleteOrder', [
+    'allOrders',
+  ]);
 
   const { id, row } = params;
 
@@ -47,7 +49,7 @@ export default function OrderActions({
 
   useEffect(() => {
     if (del?.success) {
-      window.location.reload();
+      // window.location.reload();
     }
   }, [del]); //
 
