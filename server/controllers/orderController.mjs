@@ -370,6 +370,7 @@ export default {
     try {
       const check = await orderValidation.isValidUpdateOrderItem(update);
       // console.log(check, 'check');
+      console.log('order');
 
       const order = await orderServices.findOrder('_id', _id);
       if (!order)
@@ -407,17 +408,30 @@ export default {
       order.totalPrice = totalPrice;
       order.order_items = order_items;
       order.due = totalPrice - totalPayments;
+
       const updated = await order.save();
       // console.log(updated);
       return true;
     } catch (e) {
       if (e.isJoi) {
-        // const objErr = e.details.reduce((a, c) => {
-        //   let { message, context } = c;
-
-        // }, {});
-        console.log(e);
+        const objErr = e.details.reduce((a, c) => {
+          let {
+            message,
+            context: { key },
+          } = c;
+          // console.log(context);
+          a[key] = message?.replace?.(/"/g, '');
+          return a;
+        }, {});
+        return new UserInputError(`Fail to update order item!`, {
+          status: 400,
+          errors: {
+            success: false,
+            ...objErr,
+          },
+        });
       }
+      // console.log(e);
       errorHandler(e);
     }
   },

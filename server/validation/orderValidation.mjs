@@ -90,54 +90,50 @@ const newOrderItemValidation = async (_id, newItem) => {
     errorHandler(e);
   }
 };
-const updateOrderItemSchema = Joi.array()
-  .items(
-    Joi.object({
-      _id: Joi.string().required(),
-      itemId: Joi.string().required(),
-      connection: Joi.string().valid('up', 'down').required(),
-      price: Joi.number().required(),
-      quantity: Joi.number().required(),
-      products: Joi.array()
-        .items(
-          Joi.object({
-            _id: Joi.string().required(),
-            name: Joi.string().required(),
-          }).required()
-        )
-        .required(),
-      designs: Joi.array()
-        .items(
-          Joi.object({
-            group: Joi.string().required(),
-            items: Joi.array()
-              .items(
-                Joi.object({
-                  label: Joi.string().required(),
-                  dsn_id: Joi.string().required(),
-                  desc: Joi.string().allow(''),
-                })
-              )
-              .required(),
-          }).required()
-        )
-        .required(),
-      measurements: Joi.array()
-        .items(
-          Joi.object({
-            msr_id: Joi.string().required(),
-            label: Joi.string().required(),
-            size: Joi.string().required(),
-          }).required()
-        )
-        .required(),
-      sample: Joi.object({
-        src: Joi.string(),
-        id: Joi.string(),
-      }),
-    }).required()
-  )
-  .required();
+const updateOrderItemSchema = Joi.object({
+  // _id: Joi.string().required(),
+  itemId: Joi.string().required(),
+  // connection: Joi.string().valid('up', 'down').required(),
+  price: Joi.number().required(),
+  quantity: Joi.number().required(),
+  products: Joi.array()
+    .items(
+      Joi.object({
+        _id: Joi.string().required(),
+        name: Joi.string().required(),
+      }).required()
+    )
+    .required(),
+  designs: Joi.array()
+    .items(
+      Joi.object({
+        group: Joi.string().required(),
+        items: Joi.array()
+          .items(
+            Joi.object({
+              label: Joi.string().required(),
+              dsn_id: Joi.string().required(),
+              desc: Joi.string().allow(''),
+            })
+          )
+          .required(),
+      }).required()
+    )
+    .required(),
+  measurements: Joi.array()
+    .items(
+      Joi.object({
+        msr_id: Joi.string().required(),
+        label: Joi.string().required(),
+        size: Joi.string().required(),
+      }).required()
+    )
+    .required(),
+  sample: Joi.object({
+    src: Joi.string(),
+    id: Joi.string(),
+  }),
+}).required();
 
 const isValidUpdateOrderItem = (data = []) =>
   updateOrderItemSchema.validateAsync(data, {

@@ -46,6 +46,7 @@ const orderUpdate = async (qry, update, options) => {
   try {
     return await Order.updateOne(qry, update, options);
   } catch (e) {
+    // console.log(e);
     errorHandler(e);
   }
 };

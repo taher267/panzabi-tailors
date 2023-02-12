@@ -118,7 +118,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   } = useForm({
     mode: 'all',
   });
-
+  // console.log(bug);
   React.useEffect(() => {
     if (data?.updateOrderItem) {
       reset();
@@ -215,6 +215,11 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
           ''}
         <AppBarWrapper {...{ handleClickOpenWithFromClear }} />
         <Box>
+          <Box sx={{ marginTop: 3, marginLeft: 4, color: '#E33E31' }}>
+            {Object.keys(bug || {})?.map?.((keye) => (
+              <Typography key={keye}>{bug[keye]}</Typography>
+            ))}
+          </Box>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ paddingX: 5 }}>
               {(all_products && measurementsFields && (
