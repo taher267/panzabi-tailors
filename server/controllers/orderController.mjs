@@ -143,7 +143,7 @@ export default {
   addNewOrderItem: async (_, { _id, newItem }) => {
     try {
       const { order_items, ...rest } = newItem;
-      console.log(order_items);
+      // console.log(order_items);
 
       await orderValidation.newOrderItemValidation(_id, newItem);
 
@@ -156,6 +156,10 @@ export default {
       );
       return addedNewItem;
     } catch (e) {
+      const status = e?.extensions?.status;
+      if (status > 399 && 500 > status) {
+        return InputErr(e);
+      }
       errorHandler(e);
     }
   },

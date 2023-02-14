@@ -43,12 +43,7 @@ const findAllOrders = (key, value, { select = '', populate = [] }) => {
  */
 
 const orderUpdate = async (qry, update, options) => {
-  try {
-    return await Order.updateOne(qry, update, options);
-  } catch (e) {
-    // console.log(e);
-    errorHandler(e);
-  }
+  return await Order.updateOne(qry, update, options);
 };
 
 const newOrder = async (data) => {

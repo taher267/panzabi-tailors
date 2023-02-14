@@ -21,7 +21,7 @@ import useMutationFunc from '../../hooks/gql/useMutationFunc';
 // import OrderMeasuementFields from './OrderMeasuementFields';
 import OrderBasic from './OrderBasic';
 // import SwipeableEdgeDrawer from '../../Drawer/SwipeableEdgeDrawer';
-import useGetQurey from './../../hooks/gql/useGetQurey';
+// import useGetQurey from './../../hooks/gql/useGetQurey';
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import clonning from '../../utils/clonning';
 import designDevider from '../../utils/designDevider';
@@ -36,7 +36,7 @@ import AddOrderItemAlert from './View/SingleOrder/AddOrderItemAlert';
 import clientQuery from '../../hooks/gql/usePromissQurey';
 import SearchForCopy from './SearchForCopy';
 
-const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
+// const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
 const initPrice = { quantity: 0, price: 0, total: 0 };
 const NewOrder = () => {
   const { user } = useAuth();
@@ -355,10 +355,13 @@ const NewOrder = () => {
     // console.log(data);
     if (previous_order && item_add_in_existing_order) {
       delete newOrderDates.delivery_date;
+      // console.log(newOrderDates);
+      // return;
       addNewOrderItem({
         variables: { _id: prevOrderData._id, newItem: newOrderDates },
       });
     } else {
+      if (!newOrderDates?.previous_order) delete newOrderDates?.previous_order;
       createOrder({ variables: { order: newOrderDates } });
     }
   };
@@ -453,13 +456,13 @@ const NewOrder = () => {
         downDetail = res;
         totalPrice += res.total;
       }
-      if (
-        prevOrderData?.totalPrice &&
-        prev_order &&
-        watch('item_add_in_existing_order')
-      ) {
-        totalPrice += prevOrderData?.totalPrice;
-      }
+      // if (
+      //   prevOrderData?.totalPrice &&
+      //   prev_order &&
+      //   watch('item_add_in_existing_order')
+      // ) {
+      //   totalPrice += prevOrderData?.totalPrice;
+      // }
       setPricingDetail({ up: upDetail, down: downDetail, totalPrice });
     }
   }, [priceing]);
@@ -644,29 +647,6 @@ const NewOrder = () => {
             )) ||
               ''}
 
-            {/* Measurement Type End */}
-            {/* <Typography variant="h5">
-              <span>
-                {!checkboxUp && !checkboxDown ? (
-                  <FormHelperText sx={{ color: 'red' }}>
-                    {NOT_ANY_MEASUREMENT_CHECK}
-                  </FormHelperText>
-                ) : (
-                  ''
-                )}
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onClick={(e) => !e.target?.checked && upUnregiser()}
-                      className={errors?.checkboxUp ? csses.CheckBox : ''}
-                      {...register('checkboxUp')}
-                    />
-                  }
-                  label="Measuremnt 01"
-                />
-              </span>
-            </Typography> */}
             {checkboxUp && (
               <OrderItemCard
                 {...{

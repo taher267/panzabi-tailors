@@ -1,7 +1,7 @@
 import { UserInputError } from 'apollo-server';
 import Joi from 'joi';
 import orderServices from '../services/orderServices.mjs';
-import errorHandler from '../utils/errorHandler.mjs';
+import errorHandler, { InputErr } from '../utils/errorHandler.mjs';
 
 const newOrderValidation = async ({ order_name, type, orders, ...rest }) => {
   let errors = {};
@@ -61,6 +61,8 @@ const newOrderItemValidation = async (_id, newItem) => {
         newTotalPrice += price * quantity;
         newTotalQty += quantity;
       }
+
+      // console.log(newTotalPrice, newTotalQty, totalPrice);
       const order = await orderServices.findOrder('_id', _id);
       if (!order) {
         errors.commons = `Doesn't get any order of this id`;
@@ -72,6 +74,78 @@ const newOrderItemValidation = async (_id, newItem) => {
           prevTotalPrice += value * qty;
           prevTotalQty += qty;
         }
+
+        console.log(newTotalPrice + prevTotalPrice, totalPrice);
+        if (newTotalPrice + prevTotalPrice !== totalPrice) {
+          errors.totalPrice = `Total price is miscalculated`;
+        }
+        if (newTotalQty + prevTotalQty !== totalQty) {
+          errors.totalQty = `Total quantiry is miscalculated!`;
+        }
+      }
+    }
+    // error throw
+    if (!Object.keys(errors).length) return true;
+    throw new UserInputError(`Failed to add order item`, {
+      status: 400,
+      errors,
+    });
+  } catch (e) {
+    const status = e?.extensions?.status;
+    if (status > 399 && 500 > status) {
+      return InputErr(e);
+    }
+    errorHandler(e);
+  }
+};
+
+/**
+ * const newOrderItemValidation = async (_id, newItem) => {
+  let errors = {};
+  try {
+    const {
+      customer,
+      order_no,
+      previous_order,
+      totalQty,
+      totalPrice,
+      discount,
+      advanced,
+      due,
+      transport_charge,
+      order_status,
+      order_items,
+    } = newItem;
+    //previous order no
+    if (!order_no) errors.order_no = `Order number is mandatory!`;
+    if (!previous_order)
+      errors.previous_order = `Previous order no is mandatory!`;
+    else if (previous_order !== order_no)
+      errors.previous_order = `Previous order no is not equal to order number!`;
+    if (!order_items?.length) {
+      errors.order_items = `Doesn't get any item!`;
+    } else {
+      let newTotalPrice = 0;
+      let newTotalQty = 0;
+      for (const { quantity, price } of order_items) {
+        newTotalPrice += price * quantity;
+        newTotalQty += quantity;
+      }
+
+      // console.log(newTotalPrice, newTotalQty, totalPrice);
+      const order = await orderServices.findOrder('_id', _id);
+      if (!order) {
+        errors.commons = `Doesn't get any order of this id`;
+      } else {
+        let prevTotalPrice = 0;
+        let prevTotalQty = 0;
+        for (const { quantity: qty, price: value } of order?.order_items ||
+          []) {
+          prevTotalPrice += value * qty;
+          prevTotalQty += qty;
+        }
+
+        console.log(newTotalPrice + prevTotalPrice, totalPrice);
         if (newTotalPrice + prevTotalPrice !== totalPrice) {
           errors.totalPrice = `Total price is miscalculated`;
         }
@@ -90,6 +164,8 @@ const newOrderItemValidation = async (_id, newItem) => {
     errorHandler(e);
   }
 };
+ */
+
 const updateOrderItemSchema = Joi.object({
   // _id: Joi.string().required(),
   itemId: Joi.string().required(),
