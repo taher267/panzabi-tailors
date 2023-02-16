@@ -118,7 +118,9 @@ const NewOrder = () => {
     processing: itemLoading,
     bug: itemBug,
     data: newItemData,
-  } = useMutationFunc('ADD_NEW_ORDER_ITEM', null, null, 'addNewOrderItem');
+  } = useMutationFunc('ADD_NEW_ORDER_ITEM', null, null, 'addNewOrderItem', [
+    'SINGLE_ORDER',
+  ]);
 
   useEffect(() => {
     const fatch = async () => {

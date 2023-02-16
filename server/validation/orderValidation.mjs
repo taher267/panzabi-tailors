@@ -86,10 +86,17 @@ const newOrderItemValidation = async (_id, newItem) => {
         let prevTotalPrice = 0;
         let prevTotalQty = 0;
 
-        for (const { quantity: qty, price: value } of order?.order_items ??
-          []) {
+        for (const {
+          quantity: qty,
+          price: value,
+          products,
+        } of order?.order_items ?? []) {
           prevTotalPrice += value * qty;
           prevTotalQty += qty;
+          if (!qty) errors.order_items.quantity = `Item quanity is mandatory!`;
+          if (!value) errors.order_items.price = `Item Price is mandatory!`;
+          if (!products?.length)
+            errors.order_items.products = `Item products is mandatory!`;
         }
 
         const payments = order?.payments?.reduce?.((a, { amount }) => {
