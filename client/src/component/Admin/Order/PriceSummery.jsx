@@ -26,6 +26,11 @@ const PriceSummery = ({ pricingDetail, advanced, setAdvanced }) => {
           inputProps={{ min: 0 }}
         />
         <TextField
+          sx={
+            {
+              // color: totalPrice - advanced < 0 ? 'red !important' : '',
+            }
+          }
           label="Due"
           type="number"
           value={totalPrice - advanced}

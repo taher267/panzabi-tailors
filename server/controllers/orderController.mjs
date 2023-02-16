@@ -145,6 +145,35 @@ export default {
       const { order_items, ...rest } = newItem;
       // console.log(order_items);
 
+      const filteredData = await orderValidation.newOrderItemValidation(
+        _id,
+        newItem
+      );
+
+      const addedNewItem = await orderServices.orderUpdate(
+        { _id },
+        {
+          ...filteredData,
+          $push: { order_items: newItem.order_items },
+        },
+        { runValidators: true }
+      );
+      return addedNewItem;
+    } catch (e) {
+      const status = e?.extensions?.status;
+      if (status > 399 && 500 > status) {
+        return InputErr(e);
+      }
+      errorHandler(e);
+    }
+  },
+  /**
+   * 
+   addNewOrderItem: async (_, { _id, newItem }) => {
+    try {
+      const { order_items, ...rest } = newItem;
+      // console.log(order_items);
+
       await orderValidation.newOrderItemValidation(_id, newItem);
 
       const addedNewItem = await orderServices.orderUpdate(
@@ -163,6 +192,7 @@ export default {
       errorHandler(e);
     }
   },
+   */
   /**
    * All Orders
    */

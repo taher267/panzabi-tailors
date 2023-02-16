@@ -52,6 +52,12 @@ const newOrderItemValidation = async (_id, newItem) => {
       errors.previous_order = `Previous order no is mandatory!`;
     else if (previous_order !== order_no)
       errors.previous_order = `Previous order no is not equal to order number!`;
+    let subTotal = totalPrice;
+    let subDiscount = discount ?? 0;
+    let subAdvanced = advanced ?? 0;
+    let subQty = totalQty;
+    let subDue = due ?? 0;
+    let subTransportChage = transport_charge ?? 0;
     if (!order_items?.length) {
       errors.order_items = `Doesn't get any item!`;
     } else {
@@ -64,28 +70,49 @@ const newOrderItemValidation = async (_id, newItem) => {
 
       // console.log(newTotalPrice, newTotalQty, totalPrice);
       const order = await orderServices.findOrder('_id', _id);
+
       if (!order) {
         errors.commons = `Doesn't get any order of this id`;
       } else {
+        subTotal += order.totalPrice;
+        subDiscount += order.discount ?? 0;
+        subAdvanced += order.advanced ?? 0;
+        subQty += order.totalQty;
+        subDue += order.due ?? 0;
+        subTransportChage += order.transport_charge ?? 0;
+
+        if (subDue < 0) errors.due = `Due can't be less than 0!`;
+
         let prevTotalPrice = 0;
         let prevTotalQty = 0;
-        for (const { quantity: qty, price: value } of order?.order_items ||
+
+        for (const { quantity: qty, price: value } of order?.order_items ??
           []) {
           prevTotalPrice += value * qty;
           prevTotalQty += qty;
         }
 
-        console.log(newTotalPrice + prevTotalPrice, totalPrice);
-        if (newTotalPrice + prevTotalPrice !== totalPrice) {
-          errors.totalPrice = `Total price is miscalculated`;
-        }
-        if (newTotalQty + prevTotalQty !== totalQty) {
-          errors.totalQty = `Total quantiry is miscalculated!`;
-        }
+        const payments = order?.payments?.reduce?.((a, { amount }) => {
+          a += amount ?? 0;
+          return a;
+        }, 0);
+        if (subTotal < subAdvanced + payments)
+          errors.totalPrice = `Payment can't be greter than Total, ${
+            subAdvanced + payments
+          }`;
       }
     }
+    const upObj = {
+      totalPrice: subTotal,
+      discount: subDiscount,
+      advanced: subAdvanced,
+      totalQty: subQty,
+      due: subDue,
+      transport_charge: subTransportChage,
+      order_status,
+    };
     // error throw
-    if (!Object.keys(errors).length) return true;
+    if (!Object.keys(errors).length) return upObj;
     throw new UserInputError(`Failed to add order item`, {
       status: 400,
       errors,
