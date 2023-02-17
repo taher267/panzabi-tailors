@@ -36,7 +36,7 @@ const NewProduct = () => {
     processing,
     bug,
     data,
-  } = useMutationFunc('NEW_PRODUCT', null, setGqlErrs);
+  } = useMutationFunc('NEW_PRODUCT', null, setGqlErrs, null, ['ALL_PRODUCTS']);
   //   console.dir(data);
   //   console.dir('validErrs', validErrs);
   const onSubmit = (newData) => {
