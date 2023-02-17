@@ -112,24 +112,42 @@ export default {
    */
   createOrder: async (_parent, { order }, _context) => {
     try {
-      // await orderValidation.newOrderValidation(order);
-      if (order?.order_no) {
-        const doesExist = await orderServices.findOrder(
-          'order_no',
-          order?.order_no
-        );
-        if (doesExist)
-          throw new UserInputError(`Fail to create order`, {
-            errors: { order_no: `Order no already exists` },
-            status: 400,
-          });
-      }
+      const doesExist = await orderServices.findOrder(
+        'order_no',
+        order?.order_no,
+        '_id'
+      );
+      if (doesExist)
+        throw new UserInputError(`Fail to create order`, {
+          errors: { order_no: `Order no already exists` },
+          status: 400,
+        });
+      await orderValidation.joiNewOrderValidation(order);
+
       const newOrder = await orderServices.newOrder({ ...order });
       await userCustomerServices.customerOrderIDUpdate(order.customer, {
         $push: { orders: newOrder.id }, //  order_no: order.order_no
       });
       return newOrder;
     } catch (e) {
+      if (e?.isJoi) {
+        const objErr = e.details.reduce((a, c) => {
+          let {
+            message,
+            context: { key },
+          } = c;
+          // console.log(context);
+          a[key] = message?.replace?.(/"/g, '');
+          return a;
+        }, {});
+        return new UserInputError(`Fail to update order item!`, {
+          status: 400,
+          errors: {
+            success: false,
+            ...objErr,
+          },
+        });
+      }
       if (e?.extensions) {
         throw InputErr(e);
       }

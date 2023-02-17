@@ -2,18 +2,91 @@ import { UserInputError } from 'apollo-server';
 import Joi from 'joi';
 import orderServices from '../services/orderServices.mjs';
 import errorHandler, { InputErr } from '../utils/errorHandler.mjs';
+const productsSchema = Joi.array()
+  .items(
+    Joi.object({
+      _id: Joi.string().required(),
+      name: Joi.string().required(),
+    }).required()
+  )
+  .required();
+const measurementsSchema = Joi.array()
+  .items(
+    Joi.object({
+      msr_id: Joi.string().required(),
+      size: Joi.string().required(),
+      label: Joi.string().required(),
+    }).required()
+  )
+  .required();
+const designsItemsSchema = Joi.array()
+  .items(
+    Joi.object({
+      dsn_id: Joi.string().required(),
+      label: Joi.string().required(),
+      desc: Joi.string(),
+    }).required()
+  )
+  .required();
+const designsSchema = Joi.array()
+  .items(
+    Joi.object({
+      group: Joi.string().required(),
+      items: designsItemsSchema,
+    }).required()
+  )
+  .required();
+const ItemsSchema = Joi.array()
+  .items(
+    Joi.object({
+      connection: Joi.string().valid('up', 'down').required(),
+      products: productsSchema,
+      measurements: measurementsSchema,
+      designs: designsSchema,
+      price: Joi.number().required(),
+      order_date: Joi.date().required(),
+      sample: Joi.object({
+        id: Joi.string(),
+        src: Joi.string(),
+      }),
+      user: Joi.string().required(),
+      quantity: Joi.number().required(),
+    }).required()
+  )
+  .required();
+const newOrderValidSchema = Joi.object({
+  order_no: Joi.string().required(),
+  previous_order: Joi.string(),
+  totalQty: Joi.number().required(),
+  totalPrice: Joi.number().required(),
+  discount: Joi.number(),
+  advanced: Joi.number(),
+  due: Joi.number(),
+  transport_charge: Joi.number(),
+  // user: Joi.string().required(),
+  customer: Joi.string().required(),
+  order_status: Joi.string()
+    .valid('COMPLETED', 'ALTER', 'PROCESSING', 'NEW', 'DELIVIRED')
+    .required(),
+  // Order items
+  order_items: ItemsSchema,
+  delivery_date: Joi.date().required(),
+  // payments:Joi.object().required()
+  notes: Joi.string(),
+}).required();
 
-const newOrderValidation = async ({ order_name, type, orders, ...rest }) => {
+const joiNewOrderValidation = (payload) =>
+  newOrderValidSchema.validateAsync(payload, { abortEarly: false });
+const newOrderValidation = async ({ order_no, type, orders, ...rest }) => {
   let errors = {};
   try {
-    //order_name
-    if (!order_name) errors.order_name = `order name is mandatory!`;
-    else if (await orderServices.findOrder('order_name', order_name))
-      errors.order_name = `order name is already exists!`;
+    //order_no
+    if (!order_no) errors.order_no = `order name is mandatory!`;
+    else if (await orderServices.findOrder('order_no', order_no))
+      errors.order_no = `order name is already exists!`;
     //type
     if (!type?.length) errors.type = `Type is mandatory!`;
     // else if (!Array.isArray(type))errors.type = `Type should be an array!`;
-
     //type
     if (!orders?.length) errors.orders = `orders are mandatory!`;
     else if (!Array.isArray(orders))
@@ -109,6 +182,7 @@ const newOrderItemValidation = async (_id, newItem) => {
           }`;
       }
     }
+    const delKeys = ['discount', 'advanced', 'due', 'transport_charge'];
     const upObj = {
       totalPrice: subTotal,
       discount: subDiscount,
@@ -118,6 +192,11 @@ const newOrderItemValidation = async (_id, newItem) => {
       transport_charge: subTransportChage,
       order_status,
     };
+    // "previous_order": [],
+    for (const k of delKeys) {
+      delete upObj[k];
+    }
+
     // error throw
     if (!Object.keys(errors).length) return upObj;
     throw new UserInputError(`Failed to add order item`, {
@@ -258,4 +337,5 @@ export default {
   newOrderValidation,
   newOrderItemValidation,
   isValidUpdateOrderItem,
+  joiNewOrderValidation,
 };

@@ -168,7 +168,7 @@ export const OrderStatusField = {
   label: 'Order Status',
   name: 'order_status',
   type: 'number',
-  options: ['ALTER', 'PROCESSING', 'NEW'],
+  options: ['NEW', 'COMPLETED', 'ALTER', 'PROCESSING', 'DELIVIRED'],
   validation: { required: true },
   defaultError: `Order status is mandatory`,
 };

@@ -62,7 +62,6 @@ const NewOrder = () => {
   const [customerInfo, setCustomerInfo] = useState({});
   const [advanced, setAdvanced] = useState(0);
   const [designDownState, setDesignDownState] = useState({});
-  const [designWithValue, setDesignWithValue] = useState({});
   const [prevOrderData, setPrevOrderData] = useState({});
   const [copyPrderProduct, setCopyOrderProduct] = useState({
     up: [],
@@ -854,8 +853,10 @@ const objToArray = (data) => {
     const items = [];
     for (const item of slicing) {
       const { isCheck, ...rest } = cloneData[item];
+      if (!rest?.desc) delete rest.desc;
       if (isCheck) items.push(rest);
     }
+    console.log(items);
     if (items?.length) result = { group, items };
   }
   return result;
