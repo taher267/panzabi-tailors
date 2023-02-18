@@ -11,7 +11,7 @@ export default {
    */
   createDesign: async (_parent, { design }, context) => {
     try {
-      await designValidation.newDesignValidation({ ...design });
+      await designValidation.newDesignValidation(design);
       const data = await designServices.createDesign(design);
       // console.log(data);
       return data;

@@ -77,31 +77,31 @@ const newOrderValidSchema = Joi.object({
 
 const joiNewOrderValidation = (payload) =>
   newOrderValidSchema.validateAsync(payload, { abortEarly: false });
-const newOrderValidation = async ({ order_no, type, orders, ...rest }) => {
-  let errors = {};
-  try {
-    //order_no
-    if (!order_no) errors.order_no = `order name is mandatory!`;
-    else if (await orderServices.findOrder('order_no', order_no))
-      errors.order_no = `order name is already exists!`;
-    //type
-    if (!type?.length) errors.type = `Type is mandatory!`;
-    // else if (!Array.isArray(type))errors.type = `Type should be an array!`;
-    //type
-    if (!orders?.length) errors.orders = `orders are mandatory!`;
-    else if (!Array.isArray(orders))
-      errors.orders = `order should be an array!`;
+// const newOrderValidation = async ({ order_no, type, orders, ...rest }) => {
+//   let errors = {};
+//   try {
+//     //order_no
+//     if (!order_no) errors.order_no = `order name is mandatory!`;
+//     else if (await orderServices.findOrder('order_no', order_no))
+//       errors.order_no = `order name is already exists!`;
+//     //type
+//     if (!type?.length) errors.type = `Type is mandatory!`;
+//     // else if (!Array.isArray(type))errors.type = `Type should be an array!`;
+//     //type
+//     if (!orders?.length) errors.orders = `orders are mandatory!`;
+//     else if (!Array.isArray(orders))
+//       errors.orders = `order should be an array!`;
 
-    // error throw
-    if (!Object.keys(errors).length) return true;
-    throw new UserInputError(
-      `A number's of errors cought on ${Object.keys(errors).join(', ')}`,
-      { errors }
-    );
-  } catch (e) {
-    errorHandler(e);
-  }
-};
+//     // error throw
+//     if (!Object.keys(errors).length) return true;
+//     throw new UserInputError(
+//       `A number's of errors cought on ${Object.keys(errors).join(', ')}`,
+//       { errors }
+//     );
+//   } catch (e) {
+//     errorHandler(e);
+//   }
+// };
 
 const newOrderItemValidation = async (_id, newItem) => {
   let errors = {};
@@ -334,7 +334,7 @@ const isValidUpdateOrderItem = (data = []) =>
 //   },
 // ]);
 export default {
-  newOrderValidation,
+  // newOrderValidation,
   newOrderItemValidation,
   isValidUpdateOrderItem,
   joiNewOrderValidation,

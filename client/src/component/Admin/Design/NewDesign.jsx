@@ -5,14 +5,15 @@ import {
   TextField,
   Button,
   Typography,
+  Autocomplete,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
-import { AddCircle, Save, Delete } from '@mui/icons-material';
+import { AddCircle, Save, Delete, Add } from '@mui/icons-material';
 import { v4 } from 'uuid';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 // import { useNavigate } from 'react-router-dom';
 import useMutationFunc from './../../hooks/gql/useMutationFunc';
-const valuesInit = { name: '', sl_id: '', icon: '' };
+
 const NewDesign = () => {
   const [gqlErrs, setGqlErrs] = useState({});
   const [designs, setDesigns] = useState([v4()]);
@@ -31,36 +32,25 @@ const NewDesign = () => {
   } = useForm({
     mode: 'all',
     defaultValues: {
-      designs: { name: '', status: '1' },
+      design_name: '',
+      designs: [{ item: '' }],
+      type: [],
     },
   });
-  const { fields, append, prepend, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: 'designs',
   });
-  // console.dir(bug);
-  const onSubmit = ({ design_name, type, ...newDesign }) => {
+  const onSubmit = (data) => {
+    const { design_name, type, designs } = data;
     setGqlErrs({});
-    // console.log(newDesign);
     const newData = {
       design_name,
       type,
-      designs: designs.reduce(
-        (acc, cur) =>
-          newDesign[cur] && [
-            ...acc,
-            {
-              item: newDesign[cur],
-              ds_id: acc.length + 1,
-              status: newDesign['status_' + cur] === 'true' ? true : false,
-            },
-          ],
-        []
-      ),
+      designs: designs.map(({ item }, i) => ({ item, ds_id: i + 1 })),
     };
-    // console.log(newData);
     createDesign({
-      variables: { ...newData },
+      variables: newData,
     });
   };
 
@@ -82,127 +72,131 @@ const NewDesign = () => {
             sx={{
               // display: 'grid',
               // gridTemplateColumns: 'repeat(2, 1fr)',
+              width: '95%',
               gap: '5px',
             }}
           >
             <Typography variant="h4">New Design</Typography>
-            {/* <TextField
-              {...register('design_name', {
-                required: true,
-              })}
-              onFocus={onFocus}
-              color="secondary"
-              variant="filled"
-              label={`Design Name`}
-              fullWidth
-              error={
-                gqlErrs?.design_name ? true : errors?.design_name ? true : false
-              }
-              helperText={
-                gqlErrs?.design_name
-                  ? gqlErrs?.design_name
-                  : errors?.design_name
-                  ? errors?.design_name?.message || 'Design name mandatory!'
-                  : ''
-              }
-            /> */}
-            {fields.map(({ name, status, id }, i) => (
-              <Box key={id} sx={{ display: 'flex', width: '100%' }}>
-                <TextField fullWidth {...register(`designs.${i}.name`)} />
-                <select {...register(`designs.${i}.status`)} defaultValue="1">
-                  <option value="1">Active</option>
-                  <option value="0">Deactive</option>
-                </select>
-                <Button type="button" onClick={() => remove(i)}>
-                  Del
+            <Controller
+              rules={{
+                required: {
+                  value: true,
+                  message: `Name is mandatory!`,
+                },
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  label="Design Name"
+                  fullWidth
+                  error={error ? true : false}
+                  helperText={error?.message}
+                />
+              )}
+              name="design_name"
+              control={control}
+            />
+            <Controller
+              rules={{
+                required: {
+                  value: true,
+                  message: `Type is mandatory!`,
+                },
+              }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Autocomplete
+                  multiple
+                  id="tags-standard"
+                  options={['1', '2']}
+                  renderInput={(props) => (
+                    <TextField
+                      {...props}
+                      sx={{ marginY: 1 }}
+                      label={`Type`}
+                      type="number"
+                      fullWidth
+                      error={error ? true : false}
+                      helperText={error?.message}
+                    />
+                  )}
+                  onChange={(_, data) => {
+                    onChange(data);
+                    return data;
+                  }}
+                />
+              )}
+              name={`type`}
+              control={control}
+            />
+            {fields.map((item, i) => (
+              <Box
+                key={i}
+                sx={{ display: 'flex', gap: 1, width: '100%', marginY: 1.5 }}
+              >
+                {/* <TextField fullWidth {...register(`designs.${i}.name`)} /> */}
+                <Controller
+                  rules={{
+                    required: {
+                      value: true,
+                      message: `Item[${i + 1}] is mandatory!`,
+                    },
+                  }}
+                  render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      {...field}
+                      label={`Design item ${i + 1}`}
+                      error={error ? true : false}
+                      helperText={error?.message}
+                      fullWidth
+                    />
+                  )}
+                  name={`designs.${i}.item`}
+                  control={control}
+                />
+
+                <Button
+                  type="button"
+                  variant="outlined"
+                  disabled={fields.length < 2 ? true : false}
+                  onClick={() => {
+                    if (fields.length > 1) remove(i);
+                  }}
+                >
+                  <Delete />
                 </Button>
               </Box>
             ))}
+          </Box>
+
+          <Box
+            sx={{
+              gap: 1,
+              width: '95%',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Button
+              fullWidth
+              type="submit"
+              variant="contained"
+              sx={{ display: 'inline-block', width: '95%' }}
+            >
+              Submit <Save />
+            </Button>
             <Button
               fullWidth
               type="button"
-              onClick={() => append({ name: 'bill', status: 1 })}
+              onClick={() => append({ item: '' })}
+              variant="outlined"
+              sx={{ display: 'inline-block', width: '5%' }}
             >
-              Add
+              <Add />
             </Button>
-            {/* <fieldset
-              style={{
-                borderColor: gqlErrs?.type ? 'red' : errors?.type ? 'red' : '',
-                color: gqlErrs?.type ? 'red' : errors?.type ? 'red' : '',
-              }}
-            >
-              <legend>
-                {(gqlErrs?.design_name
-                  ? gqlErrs?.design_name
-                  : errors?.design_name
-                  ? errors?.design_name?.message || 'Design name mandatory!'
-                  : '') || 'Select Design type'}
-              </legend>
-              <select
-                multiple
-                style={{ width: '100%' }}
-                {...register('type', {
-                  required: true,
-                })}
-              >
-                <option value={1}>Panzabi</option>
-                <option value={2}>Pazama</option>
-              </select>
-            </fieldset> */}
           </Box>
-          {/* {designs?.map((id, i) => (
-            <div key={id} style={{ display: 'flex', marginBottom: '5px' }}>
-              <TextField
-                {...register(id, {
-                  required: true,
-                })}
-                onFocus={onFocus}
-                color="secondary"
-                variant="filled"
-                label={`Design ${i + 1}`}
-                fullWidth
-                error={errors[id] ? true : false}
-              />
-              <select name="status" {...register('status_' + id)}>
-                <option value={true}>Active</option>
-                <option value={false}>Deactive</option>
-              </select>
-              <Button
-                onClick={() => {
-                  if (designs?.length < 2) return;
-                  setDesigns(designs.filter((d) => d !== id));
-                }}
-                variant="outlined"
-                endIcon={<Delete />}
-                type="button"
-              >
-                Del
-              </Button>
-            </div>
-          ))} */}
-          {/* <Button
-            onClick={() => {
-              setDesigns((p) => [...p, v4()]);
-            }}
-            variant="outlined"
-            endIcon={<AddCircle />}
-            type="button"
-          >
-            add
-          </Button>
-          <Button
-            disabled={
-              processing ||
-              Object.keys(gqlErrs).length > 0 ||
-              Object.keys(errors).length > 0
-            }
-            variant="contained"
-            fullWidth
-            endIcon={<Save />}
-            type="submit"
-          >
-            Add Design
-          </Button> */}
         </form>
       </div>
     </AdminLayout>

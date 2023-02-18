@@ -136,21 +136,14 @@ const EditDesign = () => {
                           value: true,
                           message: `ds_id[${i + 1}] is mandatory!`,
                         },
-                        validate: (v) => {
-                          console.log(
-                            watch('designs')
-                              ?.map?.(({ ds_id }) => ds_id)
-                              ?.indexOf?.(v)
-                          );
-                          // if (isUnique(v)) return `ds_id should be unique`;
-                        },
                       }}
                       render={({ field, fieldState: { error } }) => (
                         <TextField
                           {...field}
                           label={`Design Id ${i + 1}`}
-                          error={error ? true : false}
-                          helperText={error?.message}
+                          // error={error ? true : false}
+                          // helperText={error?.message}
+                          disabled
                           type="number"
                         />
                       )}
