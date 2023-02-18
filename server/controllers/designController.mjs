@@ -2,7 +2,7 @@ import mg from 'mongoose';
 import Design from '../models/Design.mjs';
 import { UserInputError } from 'apollo-server-core';
 import designValidation from '../validation/designValidation.mjs';
-import errorHandler from '../utils/errorHandler.mjs';
+import errorHandler, { InputErr } from '../utils/errorHandler.mjs';
 import designServices from '../services/designServices.mjs';
 
 export default {
@@ -16,6 +16,22 @@ export default {
       // console.log(data);
       return data;
     } catch (e) {
+      if (e.isJoi) {
+        const errors = e.details.reduce((a, c) => {
+          let {
+            message,
+            context: { key },
+          } = c;
+          // console.log(context);
+          a[key] = message?.replace?.(/"/g, '');
+          return a;
+        }, {});
+        throw InputErr({
+          message: `Fail to update design`,
+          status: 400,
+          extensions: { errors },
+        });
+      }
       errorHandler(e);
     }
   },
