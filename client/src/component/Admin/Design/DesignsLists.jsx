@@ -28,12 +28,11 @@ const DesignsLists = () => {
   }, [error]);
   const columns = useMemo(
     () => [
-      // { field: '_id', headerName: 'ID', width: 210, hide: true },
       {
         field: '_id',
         headerName: 'ID',
         width: 250,
-        // hide: true,
+        hide: true,
         renderCell: ({ row }) => {
           let { _id } = row;
           return (
@@ -141,7 +140,7 @@ const DesignsLists = () => {
           <LinearProgress />
         </Box>
       )}
-      <div
+      <Box
         style={{
           display: 'grid',
           gap: '5px',
@@ -154,12 +153,13 @@ const DesignsLists = () => {
             className="measuementActions"
           >
             <DataGrid
+              autoHeight
               rows={data}
               columns={columns}
-              pageSize={pageSize}
-              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 25, 50]}
-              checkboxSelection
+              // pageSize={pageSize}
+              // onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+              // rowsPerPageOptions={[5, 10, 25, 50]}
+              // checkboxSelection
               disableSelectionOnClick
               components={{ Toolbar: GridToolbar }}
               getRowId={(row) => row._id}
@@ -167,7 +167,7 @@ const DesignsLists = () => {
             />
           </Box>
         )}
-      </div>
+      </Box>
     </AdminLayout>
   );
 };

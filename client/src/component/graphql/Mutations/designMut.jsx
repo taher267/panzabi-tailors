@@ -25,16 +25,8 @@ export const NEW_DESIGN = gql`
 `;
 
 export const EDIT_DESIGN = gql`
-  mutation updateDesign(
-    $_id: ID!
-    $design_name: String!
-    $designs: [InpDesignItem!]!
-    $type: [String!]!
-  ) {
-    updateDesign(
-      _id: $_id
-      update: { design_name: $design_name, designs: $designs, type: $type }
-    ) {
+  mutation updateDesign($_id: ID!, $update: InputDisign!) {
+    updateDesign(_id: $_id, update: $update) {
       _id
       type
       design_name

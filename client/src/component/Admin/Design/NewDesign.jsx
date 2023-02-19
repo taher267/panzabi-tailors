@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React from 'react';
 import {
   LinearProgress,
   Box,
@@ -11,18 +11,19 @@ import AdminLayout from '../../Layout/AdminLayout';
 import { AddCircle, Save, Delete, Add } from '@mui/icons-material';
 import { v4 } from 'uuid';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import useMutationFunc from './../../hooks/gql/useMutationFunc';
 
 const NewDesign = () => {
-  const [gqlErrs, setGqlErrs] = useState({});
-  const [designs, setDesigns] = useState([v4()]);
+  const navigate = useNavigate();
+  const [gqlErrs, setGqlErrs] = React.useState({});
+  const [designs, setDesigns] = React.useState([v4()]);
   const {
     mutation: createDesign,
     data,
     processing,
     bug,
-  } = useMutationFunc('NEW_DESIGN', null, setGqlErrs);
+  } = useMutationFunc('NEW_DESIGN', null, setGqlErrs, null, ['ALL_DESIGNS']);
 
   const {
     register,
@@ -37,6 +38,9 @@ const NewDesign = () => {
       type: [],
     },
   });
+  React.useEffect(() => {
+    if (data) navigate('/dashboard/design', { replace: true });
+  }, [data]);
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'designs',

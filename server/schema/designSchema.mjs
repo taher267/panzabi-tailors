@@ -16,7 +16,9 @@ export default gql`
   input InpDesignItem {
     item: String!
     ds_id: Int!
-    status: Boolean
+    _id: String
+
+    # status: Boolean
     icon: InpIcon
   }
   input InpIcon {

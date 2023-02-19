@@ -62,11 +62,30 @@ export default {
   /**
    * Create New design
    */
-  updateDesign: async (_parent, { id, update }, context) => {
+  updateDesign: async (_parent, { _id, update }) => {
     try {
-      const updated = await Design.findByIdAndUpdate(id, update, { new: true });
+      const value = await designValidation.designUpdateValidation(update);
+      const updated = await Design.findByIdAndUpdate(_id, value, {
+        new: true,
+      });
       return updated;
     } catch (e) {
+      if (e.isJoi) {
+        const errors = e.details.reduce((a, c) => {
+          let {
+            message,
+            context: { key },
+          } = c;
+          // console.log(context);
+          a[key] = message?.replace?.(/"/g, '');
+          return a;
+        }, {});
+        throw InputErr({
+          message: `Fail to update design`,
+          status: 400,
+          extensions: { errors },
+        });
+      }
       errorHandler(e);
     }
   },

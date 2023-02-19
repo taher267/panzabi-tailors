@@ -12,7 +12,7 @@ async function IsValid(payload) {
   }
 }
 
-const designSchema = Joi.object().keys({
+const newDesignSchema = Joi.object().keys({
   design_name: Joi.string().required(),
   type: Joi.array().items(Joi.string().required()).required(),
   designs: Joi.array()
@@ -32,12 +32,16 @@ const updateDsignSchema = Joi.object().keys({
       item: Joi.string().required(),
       _id: Joi.string().default(Types.ObjectId()),
       ds_id: Joi.number().required(),
+      icon: Joi.object({
+        _id: Joi.string(),
+        src: Joi.string(),
+      }),
     })
     .required(),
 });
 
 const newDesignValidation = (payload) =>
-  designSchema.validateAsync(payload, { abortEarly: false });
+  newDesignSchema.validateAsync(payload, { abortEarly: false });
 
 const designUpdateValidation = (payload) =>
   updateDsignSchema.validateAsync(payload, { abortEarly: false });
