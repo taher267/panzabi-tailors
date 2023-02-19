@@ -102,11 +102,11 @@ const DesignsLists = () => {
         width: 500,
         renderCell: ({ row: { designs } }) => {
           return (
-            <div style={{ display: 'block' }}>
+            <Box style={{ display: 'block' }}>
               {designs.reduce((acc, cur) => {
                 return (acc += `${cur.item} => ${cur.ds_id},`);
               }, '')}
-            </div>
+            </Box>
           );
         },
       },

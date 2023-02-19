@@ -92,7 +92,7 @@ export default {
   /**
    * Delete Design
    */
-  deleteDesign: async (_parent, { id: _id }) => {
+  deleteDesign: async (_parent, { _id }) => {
     try {
       if (!mg.isValidObjectId(_id))
         throw new UserInputError(`Invalid delete id`);

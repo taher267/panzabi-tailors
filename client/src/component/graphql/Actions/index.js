@@ -27,7 +27,11 @@ import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
 import { ALL_TEMPATES, SINGLE_TEMPATE } from './../Query/templateQry';
 import { ALL_MEASUREMENTS, SINGLE_MEASUREMENT } from '../Query/measurementQry';
 import { ALL_PRODUCTS } from '../Query/productQry';
-import { NEW_DESIGN, EDIT_DESIGN } from './../Mutations/designMut';
+import {
+  NEW_DESIGN,
+  EDIT_DESIGN,
+  DELETE_DESIGN,
+} from './../Mutations/designMut';
 import {
   ALL_DESIGNS,
   SPECIFIC_ALL_DESIGNS,
@@ -81,6 +85,7 @@ export default {
   SINGLE_DESIGN,
   NEW_DESIGN,
   EDIT_DESIGN,
+  DELETE_DESIGN,
   // TEMPLATE
   ALL_TEMPATES,
   SINGLE_TEMPATE,

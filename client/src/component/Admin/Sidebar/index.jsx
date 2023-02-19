@@ -10,28 +10,28 @@ const Sidebar = () => {
         <Link to="/dashboard/order/new">নতুন অর্ডারঃ</Link>
       </li> */}
       <li>
-        <Link to="/dashboard/design">Design</Link>
+        <Link to="/dashboard/design">নকশাসমূহ</Link>
       </li>
       <li>
-        <Link to="/dashboard/design/new">New Design</Link>
+        <Link to="/dashboard/design/new">নতুন নকশা</Link>
       </li>
       <li>
-        <Link to="/dashboard/customer">Customer</Link>
+        <Link to="/dashboard/customer">গ্রাহকসমূহ</Link>
       </li>
       <li>
-        <Link to="/dashboard/customer/new">New</Link>
+        <Link to="/dashboard/customer/new">নতুন গ্রাহক</Link>
       </li>
       <li>
-        <Link to="/dashboard/product">Product</Link>
+        <Link to="/dashboard/product">পণ্যসমূহ</Link>
       </li>
       <li>
-        <Link to="/dashboard/product/new">New Product</Link>
+        <Link to="/dashboard/product/new">নতুন পণ্য</Link>
       </li>
       <li>
-        <Link to="/dashboard/measurement">Measurement</Link>
+        <Link to="/dashboard/measurement">পরিমাপ</Link>
       </li>
       <li>
-        <Link to="/dashboard/measurement/new">New Measurement</Link>
+        <Link to="/dashboard/measurement/new">নতুন পরিমাপ</Link>
       </li>
       <li>
         <Link to="/template">Template</Link>
@@ -40,10 +40,10 @@ const Sidebar = () => {
         <Link to="/template/new">New Template</Link>
       </li>
       <li>
-        <Link to="/dashboard/account">Account</Link>
+        <Link to="/dashboard/account">হিসাবসমূহ</Link>
       </li>
       <li>
-        <Link to="/dashboard/account/new">New Account</Link>
+        <Link to="/dashboard/account/new">নতুন হিসাব</Link>
       </li>
     </ul>
   );

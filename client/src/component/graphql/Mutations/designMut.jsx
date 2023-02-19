@@ -41,3 +41,8 @@ export const EDIT_DESIGN = gql`
     }
   }
 `;
+export const DELETE_DESIGN = gql`
+  mutation deleteDesign($_id: ID!) {
+    deleteDesign(_id: $_id)
+  }
+`;

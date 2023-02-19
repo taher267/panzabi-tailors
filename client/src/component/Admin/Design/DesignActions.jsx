@@ -9,10 +9,19 @@ import useMutationFunc from '../../hooks/gql/useMutationFunc';
 export default function DesignActions({ params, rowId, setRowId }) {
   //   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const { processing, data, updateMutation, bug } = useMutationFunc(
-    'EDIT_DESIGN',
-    setSuccess
-  );
+  const {
+    processing,
+    data,
+    mutation: updateMutation,
+    bug,
+  } = useMutationFunc('EDIT_DESIGN', setSuccess);
+
+  const {
+    mutation: deleteMutation,
+    processing: deleting,
+    data: delSuccess,
+    delBug,
+  } = useMutationFunc('DELETE_DESIGN', null, null, null, ['ALL_DESIGNS']);
   // const { processing, data, updateMeasurement, bug } =useMutMeasurement(setSuccess);
   const { id, row, type } = params;
   useEffect(() => {
@@ -23,6 +32,13 @@ export default function DesignActions({ params, rowId, setRowId }) {
     if (bug) {
     }
   }, [rowId, data, processing]);
+
+  // useEffect(() => {
+  //   if (delSuccess) {
+  //     setSuccess(false);
+  //     setRowId(false);
+  //   }
+  // }, [delSuccess]);
   const updateHandle = () => {
     // console.log(row);
     // updateMutation({
@@ -82,10 +98,12 @@ export default function DesignActions({ params, rowId, setRowId }) {
           }}
         />
       )}
-      <Button>
+      <Button disabled={deleting}>
         <Delete
           onClick={() => {
-            window.alert(id);
+            if (confirm(`Are you sure to delete this!`)) {
+              deleteMutation({ variables: { _id: id } });
+            }
           }}
         />
       </Button>
