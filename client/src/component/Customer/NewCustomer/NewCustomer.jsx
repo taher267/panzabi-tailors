@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import {
-  LinearProgress,
-  Checkbox,
-  Box,
-  TextField,
-  Button,
-  CircularProgress,
-} from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
+import Checkbox from '@mui/material/Checkbox';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import AdminLayout from '../../Layout/AdminLayout';
 import { Save } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
@@ -15,36 +14,32 @@ import {
   newCustomerFields,
   newCustomerTransportFields,
 } from '../../arrayForms/customerForm';
-
+import PersonAdd from '@mui/icons-material/PersonAddAlt';
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
 import useMutationFunc from './../../hooks/gql/useMutationFunc';
 import { useEffect } from 'react';
-
-const colourOptions = [
-  { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
-  { value: 'blue', label: 'Blue', color: '#0052CC', isDisabled: true },
-  { value: 'purple', label: 'Purple', color: '#5243AA' },
-  { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
-  { value: 'orange', label: 'Orange', color: '#FF8B00' },
-  { value: 'yellow', label: 'Yellow', color: '#FFC400' },
-  { value: 'green', label: 'Green', color: '#36B37E' },
-  { value: 'forest', label: 'Forest', color: '#00875A' },
-  { value: 'slate', label: 'Slate', color: '#253858' },
-  { value: 'silver', label: 'Silver', color: '#666666' },
-];
+import Divider from '@mui/material/Divider';
 
 // const animatedComponents = makeAnimated();
 const NewCustomer = () => {
   const [gqlErr, setGqlErr] = useState({});
+  const [gqlCommonErr, setGqlCommonErr] = useState({});
 
   const {
     mutation: createCustomer,
     data,
     processing,
     bug,
-  } = useMutationFunc('NEW_CUSTOMER', null, setGqlErr);
-  console.log(bug);
+  } = useMutationFunc(
+    'NEW_CUSTOMER',
+    null,
+    setGqlErr,
+    null,
+    ['ALL_CUSTOMERS'],
+    setGqlCommonErr
+  );
+
   const [deliveryFields, setDeliveryFields] = useState(false);
   // use form hook
   const {
@@ -53,16 +48,13 @@ const NewCustomer = () => {
     formState: { errors },
     reset,
   } = useForm({
+    mode: 'all',
     defaultValues: {
-      // name: 'Abu Taher',
+      name: '',
       phone_no: '01',
-      email: '',
-      address: '',
       // delivery_by: '',
-      // delivery_charge: '',
       // delivery_address: '',
       // delivery_phone: '',
-      engage: '',
     },
   });
   useEffect(() => {
@@ -78,80 +70,93 @@ const NewCustomer = () => {
   };
   // console.log(check);
   const onSubmit = (data) => {
-    createCustomer({ variables: data });
-  };
+    const variables = { ...data };
+    if (!variables?.email) delete variables?.email;
+    if (!variables?.address) delete variables?.address;
 
+    createCustomer({ variables });
+  };
+  console.log(errors);
   return (
-    <AdminLayout>
+    <AdminLayout rightSX={{ paddingRight: 4 }}>
       {processing && (
         <Box sx={{ width: '100%' }}>
           <LinearProgress />
         </Box>
       )}
-      <div>
+      <Box>
+        <Typography variant="h5">
+          <PersonAdd color="primary" fontSize="60" /> নতুন গ্রাহক
+        </Typography>
+        <Divider />
+      </Box>
+      <Box>
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
-          {newCustomerFields?.map(
-            ({ name, validation, defaultError, ...field }) => (
-              <TextField
-                key={name}
-                onFocus={onFocus}
-                error={gqlErr?.[name] ? true : errors?.[name] ? true : false}
-                helperText={
-                  gqlErr?.[name]
-                    ? gqlErr?.[name]
-                    : errors?.[name]
-                    ? errors?.[name]?.message || defaultError
-                    : ''
-                }
-                {...register(name, { ...validation })}
-                {...field}
-                color="secondary"
-                variant="filled"
-                fullWidth
-              />
-            )
-          )}
-          <h4>
+          {newCustomerFields?.map(({ name, validation, ...field }) => (
+            <TextField
+              key={name}
+              onFocus={onFocus}
+              error={gqlErr?.[name] ? true : errors?.[name] ? true : false}
+              helperText={
+                gqlErr?.[name]
+                  ? gqlErr?.[name]
+                  : errors?.[name]
+                  ? errors?.[name]?.message
+                  : ''
+              }
+              {...register(name, { ...validation })}
+              {...field}
+              color="secondary"
+              variant="filled"
+              fullWidth
+              sx={{ marginY: 1 }}
+            />
+          ))}
+          <Typography>
             Delivery information
             <Checkbox
               checked={deliveryFields}
               onClick={({ target: { checked } }) => setDeliveryFields(checked)}
             />
-          </h4>
+          </Typography>
           {deliveryFields && (
-            <div className={classes.deliveryDetails}>
+            <Box className={classes.deliveryDetails}>
               {newCustomerTransportFields?.map(
-                ({ name, validation, defaultError, ...field }) => (
-                  <div key={name}>
-                    <TextField
-                      fullWidth
-                      onFocus={onFocus}
-                      variant="filled"
-                      {...register(name, { ...validation })}
-                      helperText={
-                        gqlErr?.[name]
-                          ? gqlErr?.[name]
-                          : errors?.[name]
-                          ? errors?.[name]?.message || defaultError
-                          : ''
-                      }
-                      {...field}
-                    />
-                  </div>
-                )
+                ({ name, validation, ...field }) => {
+                  const path = name?.split?.('.');
+                  return (
+                    <Box key={name}>
+                      <TextField
+                        key={name}
+                        onFocus={onFocus}
+                        error={
+                          gqlErr?.[path?.[1]]
+                            ? true
+                            : errors?.[path?.[0]]?.[path?.[1]]
+                            ? true
+                            : false
+                        }
+                        helperText={
+                          gqlErr?.[path?.[1]]
+                            ? gqlErr?.[name?.split?.('.')?.[1]]
+                            : errors?.[path?.[0]]?.[path?.[1]]
+                            ? errors?.[path?.[0]]?.[path?.[1]]?.message
+                            : ''
+                        }
+                        {...register(name, { ...validation })}
+                        {...field}
+                        color="secondary"
+                        variant="filled"
+                        fullWidth
+                        sx={{ marginY: 1 }}
+                      />
+                    </Box>
+                  );
+                }
               )}
-            </div>
+            </Box>
           )}
 
-          {/* <Select
-            className={classes.enagageSelect}
-            onChange={selectHandler}
-            closeMenuOnSelect={false}
-            components={animatedComponents}
-            defaultValue={[colourOptions[4], colourOptions[5]]}
-            isMulti
-            options={colourOptions}
-          /> */}
           <Button
             variant="contained"
             fullWidth
@@ -166,12 +171,16 @@ const NewCustomer = () => {
               )
             }
             type="submit"
-            disabled={processing}
+            disabled={
+              processing ||
+              !!Object.keys(errors)?.length ||
+              !!Object.keys(gqlErr)?.length
+            }
           >
             Add Customer
           </Button>
         </form>
-      </div>
+      </Box>
     </AdminLayout>
   );
 };

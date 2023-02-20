@@ -83,7 +83,8 @@ const measurementUpdateValidation = async ({
 
     //Template
     if (!status?.trim()) errors.status = `Status is mandatory!`;
-    else if (!config?.includes(status)) errors.status = `Invalid status!`;
+    else if (!config.MEASUREMENT_STATUS?.includes?.(status))
+      errors.status = `Invalid status!`;
 
     // Password
     if (!sl_id) errors.sl_id = `Serial id is mandatory!`;

@@ -2,13 +2,15 @@ import Customer from '../models/User.mjs';
 import customerServices from '../services/userCustomerServices.mjs';
 import mg from 'mongoose';
 import customerValidation from '../validation/customerValidation.mjs';
-import errorHandler from '../utils/errorHandler.mjs';
+import errorHandler, { InputErr } from '../utils/errorHandler.mjs';
 // import auth from '../auth/auth.mjs';
 import {
   ApolloError,
   AuthenticationError,
   UserInputError,
 } from 'apollo-server';
+import userCustomerServices from '../services/userCustomerServices.mjs';
+import joiInputErrorsFormater from '../utils/joiInputErrorsFormater.mjs';
 
 export default {
   /**
@@ -20,18 +22,50 @@ export default {
         throw new AuthenticationError(`Unauthorized`, {
           errors: { message: `Unauthorized user` },
         });
+
       if (!req?.user?.id) throw ApolloError(`Server Error Occered!`);
-      await customerValidation.newCustomerValidation(customer);
-      const newCustomerData = customer;
-      if (!newCustomerData?.engage?.[0]?.length) newCustomerData.engage = [];
+      const values = await customerValidation.newCustomerValidation(customer);
+      const { phone_no, email } = customer;
+      const userQry = [{ phone_no }];
+      if (email) {
+        userQry.push({ email });
+      }
+
+      const doesExist = await userCustomerServices.findUser('single', {
+        $or: userQry,
+      });
+      if (doesExist) {
+        const errors = {
+          phone_no: `Phone no already exists!`,
+        };
+        if (email) {
+          errors.email = `Email or phone already exists!`;
+        }
+        throw new UserInputError(`Fail to add new customer`, {
+          status: 400,
+          errors,
+        });
+      }
       const newCustomer = new Customer({
-        ...newCustomerData,
+        ...values,
         user: req?.user?._id || req?.user?.id,
       });
       const saved = await newCustomer.save();
-      // console.log(newCustomer);
+      console.log(newCustomer);
       return newCustomer;
     } catch (e) {
+      if (e.isJoi) {
+        const errors = joiInputErrorsFormater(e.details);
+        return InputErr({
+          message: `Fail to create new customer`,
+          extensions: {
+            status: 400,
+            errors,
+          },
+        });
+      } else if (e?.extensions) {
+        throw InputErr(e);
+      }
       return errorHandler(e);
     }
   },
@@ -94,15 +128,14 @@ export default {
   /**
    * Delete Customer
    */
-  deleteCustomer: async (_parent, { id: _id }) => {
+  deleteCustomer: async (_parent, { _id }) => {
     try {
       if (!mg.isValidObjectId(_id))
-        throw new UserInputError(`Invalid delete id`);
-      const del = await Customer.deleteOne({ _id });
-      console.log(del);
+        throw new UserInputError(`Fail to delete the customer!`);
+      const del = await Customer.findByIdAndDelete(_id);
       return del.deletedCount;
     } catch (e) {
-      throw new UserInputError(e);
+      return InputErr(e);
     }
   },
 };

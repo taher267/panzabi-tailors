@@ -18,7 +18,8 @@ export const InputErr = (e) => {
   console.log(e?.extensions?.errors);
 
   throw new UserInputError(e?.message, {
-    errors: e?.extensions?.errors || e?.message,
+    message: e?.message,
+    errors: e?.extensions?.errors || {},
     success: false,
     status: e?.extensions?.status || 500,
   });

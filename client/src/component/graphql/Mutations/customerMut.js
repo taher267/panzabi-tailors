@@ -32,18 +32,6 @@ export const NEW_CUSTOMER = gql`
         receiver_phone
       }
       engage
-      user {
-        _id
-        name
-        # phone_no
-        # status
-        # roles
-        # username
-        # email
-        # createdAt
-        # updatedAt
-      }
-      # orders
     }
   }
 `;
@@ -91,5 +79,11 @@ export const EDIT_CUSTOMER = gql`
       # }
       # orders
     }
+  }
+`;
+
+export const DELETE_CUSTOMER = gql`
+  mutation deleteCustomer($_id: ID!) {
+    deleteCustomer(_id: $_id)
   }
 `;

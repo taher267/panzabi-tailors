@@ -11,6 +11,7 @@ import tempUp from '../template/temp-up.mjs';
 import order_item_sample from '../order_item_sample.mjs';
 import moment from 'moment';
 import Template from '../models/Template.mjs';
+import joiInputErrorsFormater from '../utils/joiInputErrorsFormater.mjs';
 // console.log(typeof tempUp);
 const temp2 = `<div id="wrapper" style="margin-top:50px">
 <div
@@ -131,24 +132,17 @@ export default {
       return newOrder;
     } catch (e) {
       if (e?.isJoi) {
-        const objErr = e.details.reduce((a, c) => {
-          let {
-            message,
-            context: { key },
-          } = c;
-          // console.log(context);
-          a[key] = message?.replace?.(/"/g, '');
-          return a;
-        }, {});
-        return new UserInputError(`Fail to update order item!`, {
-          status: 400,
-          errors: {
-            success: false,
-            ...objErr,
+        const errors = joiInputErrorsFormater(e.details);
+        return InputErr({
+          extensions: {
+            message: `Fail to update order item!`,
+            status: 400,
+            errors,
           },
         });
-      }
-      if (e?.extensions) {
+
+        // return new UserInputError();
+      } else if (e?.extensions) {
         throw InputErr(e);
       }
       throw errorHandler(e);

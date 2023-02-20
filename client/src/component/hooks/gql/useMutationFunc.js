@@ -6,12 +6,15 @@ export default function useMutationFunc(
   setSuccess,
   setErrors,
   back,
-  refetchQueries = []
+  refetchQueries = [],
+  setGqlCommonErr
 ) {
   const [mutation, { data, loading, error }] = useMutation(Actions[MUT], {
     update(proxy, result) {},
     onError(e) {
-      setErrors && setErrors(errorFormat(e));
+      const err = errorFormat(e);
+      setGqlCommonErr && setGqlCommonErr(err.message);
+      setErrors && setErrors(err?.errors);
     },
     onCompleted() {
       setSuccess && setSuccess(true);

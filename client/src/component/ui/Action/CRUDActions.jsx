@@ -16,14 +16,13 @@ export default function CRUDActions({
   updateHandle,
   delFunc,
   editUrl,
+  DelIcon,
+  deleting,
 }) {
   useEffect(() => {
     if (rowId === id && success) {
       setSuccess(false);
       setRowId(false);
-    }
-
-    if (bug) {
     }
   }, [rowId, data, processing]);
   return (
@@ -88,8 +87,12 @@ export default function CRUDActions({
       <Link to={`/dashboard/order/new/${id}`}>
         <Add /> নতুন অর্ডারঃ
       </Link>
-      <Button>
-        <Delete onClick={delFunc} />
+      <Button disabled={deleting}>
+        {DelIcon ? (
+          <DelIcon sx={{ color: red[700] }} onClick={delFunc} />
+        ) : (
+          <Delete onClick={delFunc} />
+        )}
       </Button>
     </Box>
   );

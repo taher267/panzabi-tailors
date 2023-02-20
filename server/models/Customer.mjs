@@ -11,7 +11,7 @@ export default mg.model(
         unique: true,
       },
       password: { type: String, select: false },
-      engage: [String],
+      engage: Array,
       user: {
         type: mg.Types.ObjectId,
         ref: 'User',
@@ -42,7 +42,7 @@ export default mg.model(
       order_status: {
         type: String,
         enum: ['COMPLETED', 'ALTER', 'PROCESSING', 'NEW'],
-        default: 'NEW',
+        // default: 'NEW',
       },
       email: String,
       address: String,

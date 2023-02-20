@@ -1,4 +1,8 @@
-import { NEW_CUSTOMER, EDIT_CUSTOMER } from './../Mutations/customerMut';
+import {
+  NEW_CUSTOMER,
+  EDIT_CUSTOMER,
+  DELETE_CUSTOMER,
+} from './../Mutations/customerMut';
 import { NEW_PRODUCT, EDIT_PRODUCT } from './../Mutations/productMut';
 import {
   NEW_ORDER,
@@ -55,6 +59,7 @@ export default {
   SINGLE_CUSTOMER,
   NEW_CUSTOMER,
   EDIT_CUSTOMER,
+  DELETE_CUSTOMER,
   //PRODUCT
   ALL_PRODUCTS,
   NEW_PRODUCT,

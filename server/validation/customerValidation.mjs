@@ -1,9 +1,25 @@
 import { UserInputError } from 'apollo-server';
 import check from 'validator';
+import Joi from 'joi';
 import customerServices from '../services/userCustomerServices.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
 
-const newCustomerValidation = async ({ name, phone_no, email }) => {
+const newCustomerSchema = Joi.object({
+  name: Joi.string().required(),
+  phone_no: Joi.string().required(),
+  email: Joi.string(),
+  address: Joi.string(),
+  transportation: Joi.object({
+    transport_name: Joi.string(),
+    receiver_address: Joi.string(),
+    receiver_phone: Joi.string(),
+  }),
+}).required();
+
+const newCustomerValidation = (payload) =>
+  newCustomerSchema.validateAsync(payload, { abortEarly: false });
+
+const newCustomerValidation2 = async ({ name, phone_no, email }) => {
   let errors = {};
   try {
     //name

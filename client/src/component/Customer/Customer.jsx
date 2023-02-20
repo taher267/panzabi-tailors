@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
 import AdminLayout from '../Layout/AdminLayout';
-import { DataGrid } from '@mui/x-data-grid';
+
 import { Visibility } from '@mui/icons-material';
 import {
   DataGridPremium,
@@ -15,13 +15,13 @@ import LinearLoader from '../Loaders/LinearLoader';
 import CustomerActions from './CustomerActions';
 import { useEffect } from 'react';
 import clientQuery from '../hooks/gql/usePromissQurey';
-
 const statusesOptions = [
   { value: 'ACTIVE', label: 'ACTIVE', color: 'red' },
   { value: 'PENDING', label: 'PENDING' },
   { value: 'REJECT', label: 'REJECT' },
 ];
 const Customer = () => {
+  const [actionErrs, setActionErrs] = useState({});
   const [val, setVal] = useState(null);
   const [rowId, setRowId] = useState(null);
   const [customers, setCustomers] = useState([]);
@@ -148,7 +148,7 @@ const Customer = () => {
         sortable: false,
         minWidth: 300,
         renderCell: (params) => (
-          <CustomerActions {...{ params, rowId, setRowId }} />
+          <CustomerActions {...{ params, rowId, setRowId, setActionErrs }} />
         ),
       },
     ],

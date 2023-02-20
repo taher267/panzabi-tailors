@@ -1,20 +1,26 @@
 import { gql } from 'apollo-server-core';
-
+const CustomerCommon = `
+  _id: ID!
+  name: String!
+  phone_no: String!
+  status: String
+  email: String
+  address: String
+  order_status: String
+  transportation: Transportation
+  engage: [String]
+  orders: [CustomerOrder]
+  createdAt: DateTime!
+  updatedAt: DateTime!
+`;
 export default gql`
   type Customer {
-    _id: ID!
-    name: String!
-    phone_no: String!
-    status: String
-    email: String
-    address: String
-    order_status: String
-    transportation: Transportation
-    engage: [String]
+ ${CustomerCommon}
     user: User
-    orders: [CustomerOrder]
-    createdAt: DateTime!
-    updatedAt: DateTime!
+  }
+  type newCustomer {
+    ${CustomerCommon}
+    user: String!
   }
 
   type CustomerOrder {
@@ -52,6 +58,6 @@ export default gql`
   type Mutation {
     createCustomer(customer: InputCustomer!): Customer!
     updateCustomer(id: String!, update: InputCustomer): Customer
-    deleteCustomer(id: ID!): Boolean
+    deleteCustomer(_id: ID!): Boolean
   }
 `;
