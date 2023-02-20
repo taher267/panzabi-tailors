@@ -21,7 +21,6 @@ export default mg.model(
           required: [true, 'Serial is mandatory'],
           // unique: true,
         },
-        status: { type: Boolean },
         icon: {
           _id: String,
           src: String,
@@ -29,5 +28,6 @@ export default mg.model(
       },
     ],
     type: { type: [String], required: [true, 'Type is mandatory!'] },
+    status: { type: Boolean },
   })
 );
