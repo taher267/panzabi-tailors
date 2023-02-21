@@ -9,6 +9,8 @@ import {
 } from '@mui/material';
 import PrintIcon from '@mui/icons-material/Print';
 import EditItem from './EditItem';
+import StraightenIcon from '@mui/icons-material/Straighten';
+import DesignServicesIcon from '@mui/icons-material/DesignServices';
 // import { useNavigate } from 'react-router-dom';
 import { useTailors } from '../../../../context/TailorsContext';
 
@@ -52,22 +54,15 @@ const OrderItemView = (props) => {
 
         <CardContent>
           <Basic {...{ order_date, price, products, quantity, sample }} />
-          {/* <Typography
-            sx={{
-              border: '1px solid #009dea',
-              bgcolor: '#009dea',
-              textAlign: 'center',
-              width: '100px',
-              float: 'right',
-            }}
-            onClick={() => printView(_id)}
-          >
-            Print
-          </Typography> */}
-
           <Box id={_id}>
             {/* id={_id} */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                marginBottom: 2,
+              }}
+            >
               <Button
                 variant={editId === _id ? 'contained' : 'outlined'}
                 onClick={() => {
@@ -95,10 +90,9 @@ const OrderItemView = (props) => {
               <EditItem {...{ handleClickOpen, setEditId, open, ...props }} />
             )) ||
               ''}
-            {/* <Typography>{connection}</Typography> */}
             {(measurements?.length && (
               <>
-                <MeasuremntView {...{ measurements, _id }} /> {/**k */}
+                <MeasuremntView {...{ measurements, _id }} />
               </>
             )) ||
               ''}
@@ -121,8 +115,18 @@ export default OrderItemView;
 const MeasuremntView = ({ measurements, _id, k }) => {
   return (
     <Box id={`${_id}_${k}`}>
-      <Typography variant="h6">পরিমাপ</Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Typography variant="h5" color="rgba(0,0,0,0.7)">
+        <StraightenIcon sx={{ color: '#009dea' }} /> পরিমাপঃ
+      </Typography>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+          textAlign: { xs: 'center' },
+          gap: { sm: 2, xs: 1 },
+        }}
+      >
+        {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}> */}
         {measurements?.map?.((item) => (
           <Box key={item.msr_id}>
             <Typography sx={{ fontWeight: 700, color: 'var(--black)' }}>
@@ -142,7 +146,9 @@ const DesignView = ({ designs }) => {
   //   if (!designs?.items?.[0]?.length) return <></>;
   return (
     <Box>
-      <Typography variant="h6">ডিজাইনঃ</Typography>
+      <Typography variant="h6">
+        <DesignServicesIcon sx={{ color: '#009dea' }} /> ডিজাইনঃ
+      </Typography>
       {designs?.map?.(({ items, group }) => (
         <Box
           key={group}
@@ -164,10 +170,30 @@ const DesignView = ({ designs }) => {
 
 const Basic = ({ order_date, products, price, quantity, sample }) => {
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'space-evenly' }}>
-      <Box sx={{ border: '1px solid #d3d3d3', padding: 2 }}>
+    <Box
+      sx={{
+        display: { sm: 'flex' },
+        justifyContent: 'space-evenly',
+        div: {
+          marginBottom: { xs: 2 },
+        },
+      }}
+    >
+      <Box
+        sx={{
+          border: '1px solid #d3d3d3',
+          padding: 2,
+          'p.MuiTypography-root': {
+            lineHeight: 2,
+          },
+        }}
+      >
         <Typography>অর্ডারের তারিখঃ {order_date}</Typography>
-        <Box>
+        <Box
+          sx={{
+            display: { xs: 'flex' },
+          }}
+        >
           <Typography>পণ্যঃ </Typography>
           {products?.map?.(({ name, _id }, i) => (
             <Typography key={_id}>
@@ -176,7 +202,15 @@ const Basic = ({ order_date, products, price, quantity, sample }) => {
           ))}
         </Box>
       </Box>
-      <Box sx={{ border: '1px solid #d3d3d3', padding: 2 }}>
+      <Box
+        sx={{
+          border: '1px solid #d3d3d3',
+          padding: 2,
+          'p.MuiTypography-root': {
+            lineHeight: 2,
+          },
+        }}
+      >
         <Typography>অর্ডারের পরিমানঃ {quantity}</Typography>
         <Typography>অর্ডারের মূল্যঃ {price}</Typography>
       </Box>

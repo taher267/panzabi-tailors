@@ -4,13 +4,17 @@ import Head from '../../../../graphql/Head';
 import GridItem from '../../../../ui/GridItem';
 import SingleOrderSummary from './SingleOrderSummary';
 const sx = {
-  display: 'flex',
+  display: { xs: 'block', sm: 'flex' },
   justifyContent: 'space-between',
   'p:last-child': { color: 'var(--black)' },
 };
 
 const gridSx = {
   // marginBottom: '40px'
+};
+
+const ItemBoxSx = {
+  display: { md: 'block', lg: 'flex', sm: 'flex' },
 };
 
 const Item = GridItem({
@@ -32,14 +36,14 @@ const CustomerDetailsAndBasicSingleOrderInfo = ({
       <Grid
         container
         // sx={{ marginBottom: '40px' }}
-        spacing={{ xs: 3, md: 3, sm: 3 }}
+        spacing={{ xs: 1, md: 3, sm: 1 }}
         // columns={{ xs: 4, sm: 4, md: 12 }}
       >
         {/* Customer info */}
-        <SingleOrderSummary {...{ ...rest, sx, gridSx }} />
-        <Grid item xs={4} sm={12} md={4} sx={gridSx}>
+
+        <Grid item xs={12} sm={12} md={4} sx={gridSx}>
           <Item>
-            <Box sx={sx}>
+            <Box sx={{ ...sx }}>
               <Typography>Name:</Typography>
               <Typography>{name}</Typography>
             </Box>
@@ -56,6 +60,9 @@ const CustomerDetailsAndBasicSingleOrderInfo = ({
               ''}
           </Item>
         </Grid>
+        <SingleOrderSummary
+          {...{ ...rest, sx: { ...sx, ...ItemBoxSx }, gridSx }}
+        />
       </Grid>
       <Button
         disabled={rest?.order_status === 'NEW' ? false : true}

@@ -150,7 +150,10 @@ export default function OrderActions({
           }}
         />
       </Button>
+
       <Button
+        variant="outlined"
+        disabled={row?.due < 1}
         onClick={handlePaymentRow}
         sx={{ border: 0, outline: 0, ':focus': { border: 0, outline: 0 } }}
         startIcon={<CurrencyExchange />}

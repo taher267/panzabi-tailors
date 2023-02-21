@@ -21,40 +21,40 @@ const SingleOrderSummary = ({
 }) => {
   return (
     <>
-      <Grid item xs={4} sm={12} md={4} sx={gridSx}>
+      <Grid item xs={12} sm={12} md={4} sx={gridSx}>
         {/* Order basic info */}
         <Item>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Order No:</Typography>
             <Typography>{order_no}</Typography>
           </Box>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Order Status:</Typography>
             <Typography>{order_status}</Typography>
           </Box>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Order Product Qry:</Typography>
             <Typography>{totalQty}</Typography>
           </Box>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Total Price:</Typography>
             <Typography>{totalPrice}</Typography>
           </Box>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Transport Charge:</Typography>
             <Typography>{transport_charge}</Typography>
           </Box>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Advanced:</Typography>
             <Typography>{advanced}</Typography>
           </Box>
-          <Box sx={sx}>
+          <Box sx={{ ...sx, display: 'flex' }}>
             <Typography>Due:</Typography>
             <Typography>{due}</Typography>
           </Box>
         </Item>
       </Grid>
-      <Grid item xs={4} sm={12} md={4} sx={gridSx}>
+      <Grid item xs={12} sm={12} md={4} sx={gridSx}>
         <Item>
           <Box sx={sx}>
             <Typography>Order ID:</Typography>

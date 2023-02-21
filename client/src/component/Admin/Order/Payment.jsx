@@ -9,7 +9,7 @@ import Slide from '@mui/material/Slide';
 import Box from '@mui/material/Box';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Divider, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import Field from '../../ui/Action/Field';
 import removeGqlErrors from '../../utils/removeGqlErrors';
@@ -31,7 +31,7 @@ export default function Payment({
   const { bug, mutation, data, processing } = useMutationFunc('UPDATE_PAYMENT');
   const [gqlErrs, setGqlErrs] = React.useState({});
   const {
-    customerDetail,
+    customer,
     order_no,
     totalQty,
     totalPrice,
@@ -85,7 +85,8 @@ export default function Payment({
         aria-describedby="alert-dialog-slide-description"
         sx={{
           '.MuiDialog-paperWidthSm.css-1t1j96h-MuiPaper-root-MuiDialog-paper': {
-            width: '65% !important',
+            width: { xs: '100%', sm: '100%', md: '65%' },
+            margin: { xs: '1%', sm: '1%' },
             maxWidth: '100% !important',
           },
         }}
@@ -116,14 +117,19 @@ export default function Payment({
               justifyContent: 'space-between',
             }}
           >
-            <DialogTitle>
-              Payment of {customerDetail?.name}, {customerDetail?.phone_no}
-            </DialogTitle>
-            <Typography>
+            <Box>
+              <DialogTitle sx={{ paddingY: 1 }}>
+                Payment of {customer?.name}
+              </DialogTitle>
+              <Typography sx={{ paddingX: '24px', paddingY: 1 }}>
+                Phone No: {customer?.phone_no}
+              </Typography>
+            </Box>
+            <Typography sx={{ marginRight: 1.5, marginTop: 1.5 }}>
               <CloseIcon onClick={handlePaymentRow} />
             </Typography>
           </Box>
-
+          <Divider />
           <DialogContent sx={{ maxWidth: '100% !important' }}>
             <Box sx={{ maxWidth: '100% !important' }}>
               <Typography>Order No : {order_no}</Typography>

@@ -8,13 +8,13 @@ const httpLink = createHttpLink({
   // uri: 'https://6339dccf0558fc1390238f4c--precious-daffodil-da626b.netlify.app',
   uri:
     import.meta.env.MODE === 'production'
-      ? 'https://panzabi-tailors.onrender.com'
+      ? 'https://tailor-server.onrender.com'
       : 'http://localhost:4000',
   // uri: 'http://localhost:4000',
   // uri: import.meta.env.VITE_URI
   //   ? import.meta.env.VITE_URI
-  //   : 'https:panzabi-tailors.onrender.com',
-  // uri: 'https://panzabi-tailors.onrender.com',
+  //   : 'https:tailor-server.onrender.com',
+  // uri: 'https://tailor-server.onrender.com',
 });
 const authLink = setContext((_, { headers }) => {
   let token = ReactSession.get('token');

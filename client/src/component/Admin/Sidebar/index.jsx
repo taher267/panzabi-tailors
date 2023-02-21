@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 
-const Sidebar = () => {
+const Sidebar = ({ position }) => {
   return (
-    <ul style={{ listStyle: 'none' }}>
+    <ul style={{ listStyle: 'none', position }}>
       <li>
         <Link to="/dashboard/order">অর্ডার সমুহঃ</Link>
       </li>

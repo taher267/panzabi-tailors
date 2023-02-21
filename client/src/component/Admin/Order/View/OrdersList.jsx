@@ -12,6 +12,7 @@ import useGetQurey from '../../../hooks/gql/useGetQurey';
 import { debounce } from 'lodash';
 import Payment from '../Payment';
 import moment from 'moment';
+import { Typography } from '@mui/material';
 // import useMutationFunc from '../../../hooks/gql/useMutationFunc';
 
 const searchedBy = [
@@ -220,16 +221,20 @@ const OrdersList = () => {
   };
   // console.log(data);
   return (
-    <AdminLayout title="Orders of Customers">
-      <Box
-      // style={{
-      //   display: 'grid',
-      //   gap: '5px',
-      //   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-      // }}
-      >
+    <AdminLayout
+      title="Orders of Customers"
+      rightSX={{ paddingTop: '0 !important' }}
+    >
+      <Box>
         <Box sx={{ height: 600, width: '100%' }} className="measuementActions">
-          <Box sx={{ display: 'flex', gap: 2, marginY: 2 }}>
+          {/* <Typography variant="h5">Searching</Typography> */}
+          <Box
+            sx={{
+              display: { xs: 'block', sm: 'flex' },
+              gap: 2,
+              marginBottom: 2,
+            }}
+          >
             <TextField
               variant="standard"
               label="Search"
@@ -240,7 +245,8 @@ const OrdersList = () => {
               disablePortal
               id="combo-box-demo"
               options={searchedBy}
-              sx={{ width: 300 }}
+              // sx={{ width: 300 }}
+              sx={{ width: { xs: '100%', sm: 300 } }}
               getOptionLabel={(item) => item.name}
               renderInput={(params) => (
                 <TextField
@@ -301,84 +307,6 @@ const OrdersList = () => {
         />
       )) ||
         ''}
-    </AdminLayout>
-  );
-  return (
-    <AdminLayout title="Orders">
-      {loading ? (
-        <Box sx={{ width: '100%' }}>
-          <LinearProgress />
-        </Box>
-      ) : (
-        <Box
-        // style={{
-        //   display: 'grid',
-        //   gap: '5px',
-        //   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-        // }}
-        >
-          <Box
-            sx={{ height: 600, width: '100%' }}
-            className="measuementActions"
-          >
-            <Box sx={{ display: 'flex', gap: 2, marginY: 2 }}>
-              <TextField
-                variant="standard"
-                label="Search"
-                fullWidth
-                onChange={debounce(search, 500)}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={searchedBy}
-                sx={{ width: 300 }}
-                getOptionLabel={(item) => item.name}
-                renderInput={(params) => (
-                  <TextField
-                    fullWidth
-                    {...params}
-                    label="Search By"
-                    variant="standard"
-                  />
-                )}
-              />
-            </Box>
-            <DataGrid
-              rows={[...data]?.reverse?.()}
-              columns={columns}
-              pageSize={pageSize}
-              onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-              rowsPerPageOptions={[25, 50, 100]}
-              // checkboxSelection
-              autoHeight
-              disableSelectionOnClick
-              components={{ Toolbar: GridToolbar }}
-              getRowId={(row) => row._id}
-              onCellEditCommit={(row) => setRowId(row.id)}
-              sx={
-                {
-                  // boxShadow: 2,
-                  // // border: 2,
-                  // borderColor: 'primary.light',
-                  // '& .MuiDataGrid-cell:hover': {
-                  //   color: 'primary.main',
-                  // },
-                }
-              }
-              getRowClassName={(params) => {
-                const status = params.row.order_status;
-                const delivery = params.row.delivery_date;
-                const success = ['DELIVIRED', 'COMPLETED'];
-                if (!success.includes(status) && moment(delivery) < moment()) {
-                  return `ORDER_LIST_DELIVERY_DATE_CROSSED`;
-                }
-                return `ORDER_LIST_${status}`;
-              }}
-            />
-          </Box>
-        </Box>
-      )}
     </AdminLayout>
   );
 };
