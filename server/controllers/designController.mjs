@@ -26,7 +26,7 @@ export default {
           a[key] = message?.replace?.(/"/g, '');
           return a;
         }, {});
-        throw InputErr({
+        return InputErr({
           message: `Fail to update design`,
           status: 400,
           extensions: { errors },
@@ -80,7 +80,7 @@ export default {
           a[key] = message?.replace?.(/"/g, '');
           return a;
         }, {});
-        throw InputErr({
+        return InputErr({
           message: `Fail to update design`,
           status: 400,
           extensions: { errors },
