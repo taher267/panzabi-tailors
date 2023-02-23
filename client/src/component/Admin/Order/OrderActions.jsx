@@ -61,30 +61,6 @@ export default function OrderActions({
         update: { order_status },
       },
     });
-
-    // console.log({
-    // variables: {
-    //   _id: rowId,
-    //   update: { name, category, price, description },
-    // },
-    // });
-    // console.log(updateMutation);
-
-    // updateMutation({
-    //   variables: {
-    //     _id: rowId,
-    //     name,
-    //     category,
-    //     price,
-    //     description,
-    //   },
-    // });
-    // updateMutation({
-    //   variables: {
-    //     _id: rowId,
-    //     update: { name, category, price, description },
-    //   },
-    // });
   };
   return (
     <Box
@@ -96,6 +72,7 @@ export default function OrderActions({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        gap: 2,
       }}
     >
       <Link to={`/dashboard/order/${id}`}>

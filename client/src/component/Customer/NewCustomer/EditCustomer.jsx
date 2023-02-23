@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import {
   LinearProgress,
@@ -6,9 +5,10 @@ import {
   Box,
   TextField,
   Button,
+  Typography,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
-import { Save } from '@mui/icons-material';
+import { Save, Sync, SyncAlt } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 // import Select from 'react-select';
 // import makeAnimated from 'react-select/animated';
@@ -69,7 +69,10 @@ const EditCustomer = () => {
           <LinearProgress />
         </Box>
       )}
-      <div>
+      <Box>
+        <Typography variant="h5" sx={{ marginBottom: 2, color: '#009dea' }}>
+          <Sync /> গ্রাহক তথ্য আপডেট
+        </Typography>
         {!processing && (
           <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
             {newCustomerFields?.map(
@@ -91,6 +94,7 @@ const EditCustomer = () => {
                   color="secondary"
                   variant="filled"
                   fullWidth
+                  sx={{ marginBottom: 1 }}
                 />
               )
             )}
@@ -104,10 +108,10 @@ const EditCustomer = () => {
               />
             </h4>
             {deliveryFields && (
-              <div className={classes.deliveryDetails}>
+              <Box className={classes.deliveryDetails}>
                 {newCustomerTransportFields?.map(
                   ({ name, validation, defaultError, ...field }) => (
-                    <div key={name}>
+                    <Box key={name}>
                       <TextField
                         fullWidth
                         onFocus={onFocus}
@@ -122,10 +126,10 @@ const EditCustomer = () => {
                         }
                         {...field}
                       />
-                    </div>
+                    </Box>
                   )
                 )}
-              </div>
+              </Box>
             )}
 
             <Button
@@ -139,7 +143,7 @@ const EditCustomer = () => {
             </Button>
           </form>
         )}
-      </div>
+      </Box>
     </AdminLayout>
   );
 };

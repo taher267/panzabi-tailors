@@ -14,7 +14,11 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-
+.customerEven {
+  background: rgba(128, 0, 128, 1);
+}
+.customerOdd {
+}
 a {
   font-weight: 500;
   color: #646cff;

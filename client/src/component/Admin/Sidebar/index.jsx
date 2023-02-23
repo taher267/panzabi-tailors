@@ -6,18 +6,13 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
-import ContentCut from '@mui/icons-material/ContentCut';
-import ContentCopy from '@mui/icons-material/ContentCopy';
-import ContentPaste from '@mui/icons-material/ContentPaste';
-import Cloud from '@mui/icons-material/Cloud';
 import { Link } from 'react-router-dom';
 const menuItems = [
   { url: '/dashboard/order', name: 'অর্ডার সমুহঃ' },
-  // { url: '/dashboard/order/new', name: 'নতুন অর্ডারঃ' },
-  { url: '/dashboard/design', name: 'নকশাসমূহ' },
-  { url: '/dashboard/design/new', name: 'নতুন নকশা' },
   { url: '/dashboard/customer', name: 'গ্রাহকসমূহ' },
   { url: '/dashboard/customer/new', name: 'নতুন গ্রাহক' },
+  { url: '/dashboard/design', name: 'নকশাসমূহ' },
+  { url: '/dashboard/design/new', name: 'নতুন নকশা' },
   { url: '/dashboard/product', name: 'পণ্যসমূহ' },
   { url: '/dashboard/product/new', name: 'নতুন পণ্য' },
   { url: '/dashboard/measurement', name: 'পরিমাপ' },

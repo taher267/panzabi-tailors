@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Box, Button, LinearProgress, Typography } from '@mui/material';
+import { Box, LinearProgress, Typography } from '@mui/material';
 import AdminLayout from '../Layout/AdminLayout';
 
-import { Visibility } from '@mui/icons-material';
+import Visibility from '@mui/icons-material/Visibility';
+import Groups from '@mui/icons-material/Groups';
 import {
   DataGridPremium,
   GridToolbar,
@@ -38,7 +39,7 @@ const Customer = () => {
       {
         field: 'name',
         headerName: 'Full Name',
-        minWidth: 110,
+        minWidth: 150,
         editable: true,
       },
       {
@@ -117,6 +118,7 @@ const Customer = () => {
         sortable: false,
         minWidth: 250,
         hide: true,
+
         renderCell: ({ row }) => {
           return (
             <>
@@ -146,6 +148,7 @@ const Customer = () => {
         field: 'Actions',
         headerName: 'Actions',
         sortable: false,
+        headerAlign: 'center',
         minWidth: 300,
         renderCell: (params) => (
           <CustomerActions {...{ params, rowId, setRowId, setActionErrs }} />
@@ -181,6 +184,9 @@ const Customer = () => {
   return (
     <AdminLayout>
       {/* {loading && <LinearLoader />} */}
+      <Typography variant="h5" sx={{ marginBottom: 2, color: '#009dea' }}>
+        <Groups /> গ্রাহকসমূহ
+      </Typography>
       <DataGridPremium
         components={{
           LoadingOverlay: LinearProgress,
@@ -200,7 +206,11 @@ const Customer = () => {
         rowsPerPageOptions={[5]}
         // checkboxSelection
         // disableSelectionOnClick
-
+        getRowClassName={(params) =>
+          params.indexRelativeToCurrentPage % 2 === 0
+            ? 'customerEven'
+            : 'customerOdd'
+        }
         getRowId={({ _id }) => _id}
         onCellEditCommit={({ id }) => setRowId(id)}
         setEditCellValue={(d) => {

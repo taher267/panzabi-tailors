@@ -4,7 +4,10 @@ import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import {
+  DataGridPremium as DataGrid,
+  GridToolbar,
+} from '@mui/x-data-grid-premium';
 import { useEffect, useState, useMemo } from 'react';
 import OrderActions from '../OrderActions';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -13,6 +16,7 @@ import { debounce } from 'lodash';
 import Payment from '../Payment';
 import moment from 'moment';
 import { Typography } from '@mui/material';
+import { NestCamWiredStand } from '@mui/icons-material';
 // import useMutationFunc from '../../../hooks/gql/useMutationFunc';
 
 const searchedBy = [
@@ -226,6 +230,9 @@ const OrdersList = () => {
       title="Orders of Customers"
       rightSX={{ paddingTop: '0 !important' }}
     >
+      <Typography variant="h5" sx={{ marginBottom: 2, color: '#009dea' }}>
+        <NestCamWiredStand /> অর্ডার সমুহঃ
+      </Typography>
       <Box>
         <Box sx={{ height: 600, width: '100%' }} className="measuementActions">
           {/* <Typography variant="h5">Searching</Typography> */}

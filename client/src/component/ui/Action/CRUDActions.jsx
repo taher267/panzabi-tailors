@@ -27,17 +27,25 @@ export default function CRUDActions({
   }, [rowId, data, processing]);
   return (
     <Box
-      className="measuementActions"
       sx={{
         outline: 'none',
         // m: 1,
-        position: 'relative',
+        // position: 'relative',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        height: '100%',
+        gap: 1,
       }}
     >
-      <Link to={`${editUrl}/edit/${id}`}>
+      <Link
+        to={`/dashboard/order/new/${id}`}
+        style={{ display: 'flex' }}
+        title=""
+      >
+        <Add /> নতুন অর্ডারঃ
+      </Link>
+      <Link to={`${editUrl}/edit/${id}`} style={{ display: 'flex' }}>
         <Visibility />
       </Link>
 
@@ -84,9 +92,7 @@ export default function CRUDActions({
           }}
         />
       )}
-      <Link to={`/dashboard/order/new/${id}`}>
-        <Add /> নতুন অর্ডারঃ
-      </Link>
+
       <Button disabled={deleting}>
         {DelIcon ? (
           <DelIcon sx={{ color: red[700] }} onClick={delFunc} />
