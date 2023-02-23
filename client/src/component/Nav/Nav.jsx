@@ -12,8 +12,6 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import Brightness4 from '@mui/icons-material/Brightness4';
-import Brightness7 from '@mui/icons-material/Brightness7';
 import ToggleOff from '@mui/icons-material/ToggleOff';
 import ToggleOn from '@mui/icons-material/ToggleOn';
 import { useNavigate } from 'react-router-dom';

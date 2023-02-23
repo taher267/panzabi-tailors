@@ -41,11 +41,18 @@ import TemplateList from './Admin/Tempalte';
 import NewTempate from './Admin/Tempalte/NewTemplate';
 
 const Main = () => {
-  const [mode, setMode] = React.useState('light');
+  const [mode, setMode] = React.useState(
+    localStorage.getItem('themeMode') || 'light'
+  );
   // console.log(location.pathname);
   const handleMode = () => {
-    setMode((p) => (p === 'dark' ? 'light' : 'dark'));
+    setMode((p) => {
+      const newMode = p === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('themeMode', newMode);
+      return newMode;
+    });
   };
+
   const darkTheme = createTheme({
     palette: {
       mode,

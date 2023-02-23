@@ -190,6 +190,7 @@ const OrdersList = () => {
         field: 'Actions',
         headerName: 'Actions',
         sortable: false,
+        headerAlign: 'center',
         width: 250,
         type: 'actions',
         renderCell: (params) => {
@@ -274,16 +275,7 @@ const OrdersList = () => {
             }}
             getRowId={(row) => row._id}
             onCellEditCommit={(row) => setRowId(row.id)}
-            sx={
-              {
-                // boxShadow: 2,
-                // // border: 2,
-                // borderColor: 'primary.light',
-                // '& .MuiDataGrid-cell:hover': {
-                //   color: 'primary.main',
-                // },
-              }
-            }
+            sx={{}}
             getRowClassName={(params) => {
               const status = params.row.order_status;
               const delivery = params.row.delivery_date;

@@ -12,6 +12,7 @@ let i = 20;
 const AdminLayout = ({ children, title, rightSX, leftSX }) => {
   const [width, setWidth] = React.useState(20);
   const [isExpend, setisExpend] = React.useState(false);
+  const rightContent = React.useRef();
   const widthHandler = () => {
     let clrInterval;
     if (width > 0) {
@@ -46,6 +47,9 @@ const AdminLayout = ({ children, title, rightSX, leftSX }) => {
   };
   // const match = useMediaQuery('(max-width:900px)');
   // console.log(match);
+  // React.useEffect(() => {
+  //   console.log(rightContent.current.clientHeight);
+  // }, [rightContent]);
   return (
     <Box
       sx={{
@@ -78,6 +82,8 @@ const AdminLayout = ({ children, title, rightSX, leftSX }) => {
 
       <Box
         sx={{
+          // minHeight: '85vh',
+          minHeight: `${rightContent?.current?.clientHeight}px`,
           width: {
             xs: i < 2 ? '200px' : 0,
             sm: i < 2 ? '200px' : 0,
@@ -116,13 +122,13 @@ const AdminLayout = ({ children, title, rightSX, leftSX }) => {
           },
           zIndex: { xs: i < 2 ? 99 : '' },
           // zIndex: { xs: isExpend ? 99 : '' },
-          height: '100%',
           ...leftSX,
         }}
       >
         <Sidebar />
       </Box>
       <Box
+        ref={rightContent}
         sx={{
           width: { xs: '100%', sm: '100%', md: `${isExpend ? 100 : 100 - i}%` },
           display: { xs: 'block', sm: 'block', md: 'inline-block' },

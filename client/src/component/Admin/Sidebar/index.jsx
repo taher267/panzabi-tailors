@@ -29,10 +29,13 @@ const menuItems = [
 ];
 export default function Sidebar() {
   return (
-    <Paper sx={{ width: '100%', maxWidth: '100%' }}>
+    <Paper sx={{ width: '100%', maxWidth: '100%', height: '100%' }}>
       <MenuList>
         {menuItems?.map?.(({ url, name }) => (
-          <MenuItem key={name}>
+          <MenuItem
+            key={name}
+            sx={{ borderBottom: '1px solid #ddd', lineHeight: 2.5 }}
+          >
             <ListItemIcon>⌘</ListItemIcon>
             <ListItemText>
               <Link to={url}>{name}</Link>
