@@ -172,7 +172,7 @@ const Customer = () => {
     const fatch = async () => {
       try {
         const { data } = await clientQuery('ALL_CUSTOMERS');
-        setCustomers(data?.allCustomers || []);
+        setCustomers([...data?.allCustomers]?.reverse?.() || []);
       } catch (e) {
         console.log(e?.message);
       } finally {

@@ -171,9 +171,9 @@ const MeasurementList = () => {
             autoHeight
             rows={(data?.length && [...data].reverse()) || []}
             columns={columns}
-            pageSize={pageSize}
+            // pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-            rowsPerPageOptions={[10, 25, 50]}
+            // rowsPerPageOptions={[10, 25, 50]}
             // checkboxSelection
             disableSelectionOnClick
             components={{ Toolbar: GridToolbar }}

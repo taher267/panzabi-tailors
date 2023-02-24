@@ -17,6 +17,7 @@ const menuItems = [
   { url: '/dashboard/product/new', name: 'নতুন পণ্য' },
   { url: '/dashboard/measurement', name: 'পরিমাপ' },
   { url: '/dashboard/measurement/new', name: 'নতুন পরিমাপ' },
+  { url: '/dashboard/measurement/field', name: 'নতুন পরিমাপ2' },
   { url: '/template', name: 'Template' },
   { url: '/template/new', name: 'New Template' },
   { url: '/dashboard/account', name: 'হিসাবসমূহ' },

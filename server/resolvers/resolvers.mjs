@@ -8,6 +8,7 @@ import authController from '../controllers/authController.mjs';
 import dailyAccountController from '../controllers/dailyAccountController.mjs';
 import others from './others.mjs';
 import templateController from '../controllers/templateController.mjs';
+import inputFieldsController from '../controllers/inputFieldsController.mjs';
 
 export default {
   Query: {
@@ -73,5 +74,8 @@ export default {
     createDailyAccount: dailyAccountController.createDailyAccount,
     updateDailyAccount: dailyAccountController.updateDailyAccount,
     deleteDailyAccount: dailyAccountController.deleteDailyAccount,
+
+    // input Fields functions
+    createField: inputFieldsController.createInputField,
   },
 };

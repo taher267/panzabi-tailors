@@ -8,6 +8,7 @@ import OrderSchema from '../schema/orderSchema.mjs';
 import AuthSchema from '../schema/authSchema.mjs';
 import AccountSchema from '../schema/accountSchema.mjs';
 import TempateSchema from '../schema/templateSchema.mjs';
+import InputFields from '../schema/inputFieldSchema.mjs';
 
 export default gql`
   ${AuthSchema}
@@ -19,6 +20,7 @@ export default gql`
   ${OrderSchema}
   ${TempateSchema}
   ${DesignSchema}
+  ${InputFields}
   # type Icon {
   #   _id: String
   #   src: String
