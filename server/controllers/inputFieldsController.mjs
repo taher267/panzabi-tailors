@@ -6,6 +6,7 @@ import errorHandler, { InputErr } from '../utils/errorHandler.mjs';
 import inputFieldsServices from '../services/inputFieldsServices.mjs';
 import stringToQryString from '../utils/stringToQryString.mjs';
 import joiInputErrorsFormater from '../utils/joiInputErrorsFormater.mjs';
+import isJsonString from '../utils/isJsonString.mjs';
 
 export default {
   /**
@@ -82,11 +83,12 @@ export default {
    */
   allInputFields: async (_parent, { key, value }, _context) => {
     try {
-      let filter = key && value ? { [key]: value } : {};
-      if (key && !value) {
-        filter = stringToQryString(key);
+      let qry = key && value ? { [key]: value } : {};
+      if (key === 'in' && isJsonString(value)) {
+        qry = JSON.parse(value);
       }
-      const all = await InputField.find(filter);
+
+      const all = await inputFieldsServices.findInputFiled(qry);
       // console.log(all);
       return all;
     } catch (e) {

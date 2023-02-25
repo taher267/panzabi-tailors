@@ -29,23 +29,21 @@ export default gql`
     params: String
     icon: InpIcon
   }
-
   input InputFields {
     fieldGroup: String!
     existingGroup: String
     fields: [InputFieldsItem!]!
   }
-
   type Field {
     existingGroup: String
     fieldGroup: String!
     fields: [FieldsItem!]!
   }
 
-  # type Query {
-  #   allFields(key: String, value: String, options: String): [Fields!]!
-  #   getField(key: String!, value: String!): Field!
-  # }
+  type Query {
+    allFields(key: String, value: String, options: String): [Field!]!
+    # getField(key: String!, value: String!): Field!
+  }
   type Mutation {
     createInputField(fields: InputFields!): Field!
     # updateField(id: String!, update: InputField): Field

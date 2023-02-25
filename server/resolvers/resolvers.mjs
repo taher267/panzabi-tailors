@@ -35,6 +35,8 @@ export default {
     // userOrderItems: orderController.allOrders,
     getOrder: orderController.getOrder,
     getOrderItem: orderController.getOrderItem,
+    // Input fields
+    allFields: inputFieldsController.allInputFields,
   },
   ...others,
   Mutation: {

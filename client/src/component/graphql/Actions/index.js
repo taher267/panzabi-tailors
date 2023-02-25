@@ -36,6 +36,7 @@ import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
 import { ALL_TEMPATES, SINGLE_TEMPATE } from './../Query/templateQry';
 import { ALL_MEASUREMENTS, SINGLE_MEASUREMENT } from '../Query/measurementQry';
 import { ALL_PRODUCTS } from '../Query/productQry';
+import { ALL_INPUT_FIELDS, SINGLE_INPUT_FIELD } from '../Query/inputFieldQry';
 import {
   NEW_DESIGN,
   EDIT_DESIGN,
@@ -108,6 +109,8 @@ export default {
   EDIT_ACCOUNT,
   DELETE_ACCOUNT,
   // INPUT FIELD
+  ALL_INPUT_FIELDS,
+  SINGLE_INPUT_FIELD,
   NEW_INPUT_FIELD,
   EDIT_INPUT_FIELD,
 };
