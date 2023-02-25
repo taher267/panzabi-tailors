@@ -26,6 +26,11 @@ import {
   EDIT_MEASUREMENT,
 } from './../Mutations/measurementMut';
 
+import {
+  NEW_INPUT_FIELD,
+  EDIT_INPUT_FIELD,
+} from './../Mutations/inputFieldsMut';
+
 import { ALL_USERS } from '../Query/userQry';
 import { ALL_CUSTOMERS, SINGLE_CUSTOMER } from './../Query/customerQry';
 import { ALL_TEMPATES, SINGLE_TEMPATE } from './../Query/templateQry';
@@ -102,4 +107,7 @@ export default {
   NEW_ACCOUNT,
   EDIT_ACCOUNT,
   DELETE_ACCOUNT,
+  // INPUT FIELD
+  NEW_INPUT_FIELD,
+  EDIT_INPUT_FIELD,
 };

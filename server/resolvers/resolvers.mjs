@@ -76,6 +76,6 @@ export default {
     deleteDailyAccount: dailyAccountController.deleteDailyAccount,
 
     // input Fields functions
-    createField: inputFieldsController.createInputField,
+    createInputField: inputFieldsController.createInputField,
   },
 };

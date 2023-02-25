@@ -8,10 +8,16 @@ import {
   MenuItem,
   Autocomplete,
   Chip,
+  Checkbox,
 } from '@mui/material';
 import AdminLayout from '../../Layout/AdminLayout';
-import { Add, Save, Delete } from '@mui/icons-material';
-import { NEW_MEASUREMENT } from '../../graphql/Mutations/measurementMut';
+import {
+  Add,
+  Save,
+  Delete,
+  CheckBox,
+  CheckBoxOutlineBlank,
+} from '@mui/icons-material';
 import { errorFormat } from '../../utils/errorConv';
 import {
   measuementInputFields,
@@ -19,8 +25,7 @@ import {
 } from '../../arrayForms/measurementFields';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import stringToObject from '../../utils/stringToObject';
-import Field from '../../ui/Action/Field';
+
 import removeGqlErrors from '../../utils/removeGqlErrors';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
 import { useEffect } from 'react';
@@ -43,12 +48,15 @@ const initFields = {
 const NewInputField = () => {
   const navigate = useNavigate();
   const [gqlErrs, setGqlErrs] = useState({});
+  const [gqlCommonErr, setGqlCommonErr] = useState({});
+  const [checkingSL_Id, setCheckingSL_Id] = useState(false);
   const {
-    register,
     handleSubmit,
     reset,
     control,
     formState: { errors },
+    watch,
+    setError,
   } = useForm({
     mode: 'all',
     defaultValues: {
@@ -58,19 +66,48 @@ const NewInputField = () => {
   });
 
   const {
-    mutation: createMeasurement,
+    mutation: createInputField,
     data,
     processing,
     bug,
-  } = useMutationFunc('NEW_MEASUREMENT');
+  } = useMutationFunc(
+    'NEW_INPUT_FIELD',
+    null,
+    setGqlErrs,
+    null,
+    null,
+    setGqlCommonErr
+  );
 
-  //   console.dir(data);
   useEffect(() => {
     if (data) {
       reset();
-      navigate('/dashboard/measurement', { state: 'reload' });
+      // navigate('/dashboard/measurement', { state: 'reload' });
+      console.log(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (checkingSL_Id) {
+      uniqueSl_ID(watch('fields'));
+    }
+  }, [checkingSL_Id]);
+  const uniqueSl_ID = (data = []) => {
+    const mapping = [];
+    let k = 0;
+    const errs = [];
+    for (const { sl_id } of data) {
+      if (mapping.includes(sl_id)) {
+        errs.push({ k, sl_id });
+      }
+      mapping.push(sl_id);
+      k++;
+    }
+    if (errs.length) {
+      console.log(errs);
+      // setError('fields')
+    }
+  };
   const {
     fields: arrayForm,
     append,
@@ -79,9 +116,12 @@ const NewInputField = () => {
     name: 'fields',
     control,
   });
+
   const onSubmit = (data) => {
     setGqlErrs({});
+
     // const copyData = JSON.parse(JSON.stringify(data));
+    if (!data?.existingGroup) delete data?.existingGroup;
     data.fields = data.fields?.map?.((item) => {
       const { icon, options, type, placeholder, params, validation } = item;
       if (icon) {
@@ -106,8 +146,7 @@ const NewInputField = () => {
       }
       return item;
     });
-    console.log(data);
-    // createMeasurement({ variables: { measures: data } });
+    createInputField({ variables: { fields: data } });
   };
 
   const onFocus = ({ target: { name } }) => {
@@ -126,32 +165,42 @@ const NewInputField = () => {
       <Box>
         <Typography variant="h6">নতুন পরিমাপ</Typography>
         <Typography>
-          Instruction for validation syntex=&gt; Validation
+          Instruction for validation syntex=&gt;Validation
           /required→true←message∂
         </Typography>
+        <Box>
+          {Object.values(gqlErrs || {})?.map?.((item) => (
+            <Typography sx={{ color: 'red' }} key={item}>
+              {item}
+            </Typography>
+          ))}
+        </Box>
         <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
           <Controller
             rules={{
               required: { value: true, message: `Field group is mandatory!` },
+              pattern: {
+                value: /^[a-zA-Z0-9_]+$/,
+                message: `Invalid value, a to z 0 to 9 and _ allow`,
+              },
             }}
             control={control}
             name="fieldGroup"
-            render={({
-              field,
-              fieldState: { error },
-              // field: { onChange, onBlur, value, ref }
-            }) => (
+            render={({ field, fieldState: { error } }) => (
               <TextField
                 {...field}
                 fullWidth
                 variant="standard"
                 label="Field Group"
                 sx={{ marginY: 1 }}
-                error={error ? true : false}
-                helperText={error?.message}
+                placeholder="a to z 0 to 9 and _ allow"
+                error={error ? true : gqlErrs?.fieldGroup ? true : false}
+                helperText={error?.message || gqlErrs?.fieldGroup}
+                onFocus={onFocus}
               />
             )}
-          />{' '}
+          />
+
           <Controller
             rules={{
               pattern: { value: /^[0-9a-fA-F]{24}$/, message: `Invalid id` },
@@ -170,11 +219,13 @@ const NewInputField = () => {
                 variant="standard"
                 label="Existing Group id"
                 sx={{ marginY: 1 }}
-                error={error ? true : false}
-                helperText={error?.message}
+                error={error ? true : gqlErrs?.existingGroup ? true : false}
+                helperText={error?.message || gqlErrs?.existingGroup}
+                onFocus={onFocus}
               />
             )}
           />
+
           {arrayForm?.map?.((formItem, i) => (
             <Box key={i}>
               <Typography variant="h5">Item {i + 1}</Typography>
@@ -288,12 +339,19 @@ const NewInputField = () => {
               </Box>
             </Box>
           ))}
+          <Typography>
+            <Checkbox
+              onClick={() => setCheckingSL_Id((p) => !p)}
+              icon={checkingSL_Id ? <CheckBox /> : <CheckBoxOutlineBlank />}
+            />
+            Check SL ID
+          </Typography>
           <Box
             sx={{
               marginTop: 1,
               display: { md: 'flex' },
               gap: 1,
-              'button:first-child': {
+              'button:first-of-type': {
                 marginBottom: {
                   sm: 1,
                   xs: 1,
@@ -305,7 +363,7 @@ const NewInputField = () => {
             <Button
               disabled={
                 processing ||
-                Object.keys(gqlErrs).length > 0 ||
+                // Object.keys(gqlErrs).length > 0 ||
                 Object.keys(errors).length > 0
               }
               variant="contained"

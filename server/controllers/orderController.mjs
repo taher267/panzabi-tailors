@@ -134,8 +134,8 @@ export default {
       if (e?.isJoi) {
         const errors = joiInputErrorsFormater(e.details);
         return InputErr({
+          message: `Fail to update order item!`,
           extensions: {
-            message: `Fail to update order item!`,
             status: 400,
             errors,
           },

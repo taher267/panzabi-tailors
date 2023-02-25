@@ -32,10 +32,12 @@ export default gql`
 
   input InputFields {
     fieldGroup: String!
+    existingGroup: String
     fields: [InputFieldsItem!]!
   }
 
   type Field {
+    existingGroup: String
     fieldGroup: String!
     fields: [FieldsItem!]!
   }
@@ -45,7 +47,7 @@ export default gql`
   #   getField(key: String!, value: String!): Field!
   # }
   type Mutation {
-    createField(fields: InputFields!): Field!
+    createInputField(fields: InputFields!): Field!
     # updateField(id: String!, update: InputField): Field
     # deleteField(id: ID!): Boolean
   }

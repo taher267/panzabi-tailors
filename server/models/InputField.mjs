@@ -42,7 +42,7 @@ export default mg.model(
           default: 'ACTIVE',
         },
         validation: String,
-        options: [String],
+        options: Array,
         params: String,
         placeholder: String,
         icon: {
