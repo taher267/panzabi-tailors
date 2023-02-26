@@ -4,7 +4,6 @@ export const NEW_INPUT_FIELD = gql`
   mutation createInputField($fields: InputFields!) {
     createInputField(fields: $fields) {
       fieldGroup
-      existingGroup
       fields {
         label
         name
