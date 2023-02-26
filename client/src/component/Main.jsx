@@ -41,6 +41,7 @@ import TemplateList from './Admin/Tempalte';
 import NewTempate from './Admin/Tempalte/NewTemplate';
 import NewInputField from './Admin/InputField/NewInputField';
 import InputFieldList from './Admin/InputField';
+import InputGroupFieldsSync from './Admin/InputField/InputGroupFieldsSync';
 
 const Main = () => {
   const [mode, setMode] = React.useState(
@@ -117,8 +118,13 @@ const Main = () => {
                     <Route path="fields">
                       <Route path="" element={<InputFieldList />} />
                       <Route path="new" element={<NewInputField />} />
+
+                      <Route
+                        path=":fieldId"
+                        element={<InputGroupFieldsSync />}
+                      />
                       {/* 
-                      <Route path="field" element={<NewInputField />} />
+                      
                       <Route path="edit/:id" element={<EditMeasuremen />} /> */}
                     </Route>
                     <Route path="user" element={<UserList />} />

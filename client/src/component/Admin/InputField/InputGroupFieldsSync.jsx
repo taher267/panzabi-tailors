@@ -1,35 +1,42 @@
 import AdminLayout from '../../Layout/AdminLayout/index';
 import './measurement.css';
 import Box from '@mui/material/Box';
-// import Tooltip from '@mui/material/Tooltip';
+import LinearProgress from '@mui/material/LinearProgress';
+import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { useEffect, useState, useMemo } from 'react';
 import InputFieldActions from './InputFieldActions';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useGetQurey from '../../hooks/gql/useGetQurey';
 import { CircularProgress, Divider, Typography } from '@mui/material';
-import SyncIcon from '@mui/icons-material/Sync';
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 
 const rgbaGen = (min = 0, max = 255) => {
   const num = Math.floor(Math.random() * (max - min + 1)) + min;
   return num;
 };
-const InputFieldList = () => {
+const InputGroupFieldsSync = () => {
   const location = useLocation();
-  // const [pageSize, setPageSize] = useState(10);
+  const navigate = useNavigate();
+  const { fieldId } = useParams();
   // const [rowId, setRowId] = useState(null);
   // const [copyId, setCopyId] = useState();
   const { loading, data, error } = useGetQurey(
-    'ALL_INPUT_FIELDS',
-    null,
-    'allFields'
+    'SINGLE_INPUT_FIELD',
+    { key: '_id', value: fieldId },
+    'getInputField'
   );
+
   useEffect(() => {
     if (error) {
       console.log(error);
     }
   }, [error]);
+
+  useEffect(() => {
+    if (!/^[0-9a-fA-F]{24}$/.test(fieldId)) {
+      navigate('/dashboard/fields', { replace: true });
+    }
+  }, []);
   /** <Tooltip
                 title="Coppied the ID"
                 open={copyId === _id ? true : false}
@@ -51,12 +58,6 @@ const InputFieldList = () => {
                   {row?._id}
                 </Button>
               </Tooltip> */
-  useEffect(() => {
-    // if (location?.state) {
-    //   window.history.replaceState({}, document.title);
-    //   window.location.reload();
-    // }
-  }, []);
 
   return (
     <AdminLayout>
@@ -72,41 +73,24 @@ const InputFieldList = () => {
           <CircularProgress />
         </Box>
       )) || (
-        <Box
-          style={{
-            display: 'grid',
-            gap: '5px',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          }}
-        >
-          <Box sx={{ width: '100%' }} className="measuementActions">
-            {data?.map?.((item) => {
-              const { fieldGroup, fields } = item;
-              return (
-                <Box key={fieldGroup}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      marginBottom: 2,
-                    }}
-                  >
-                    <Typography variant="h5">
-                      Group Name: {fieldGroup}
-                    </Typography>
-                    <Link to={`/dashboard/fields/${item._id}`}>
-                      <Button
-                        variant="outlined"
-                        endIcon={<ArrowOutwardIcon />}
-                        startIcon={<SyncIcon />}
-                      >
-                        Sync
-                      </Button>
-                    </Link>
-                  </Box>
+        <Box>
+          <Typography>Group Field Sync</Typography>
+          {typeof data === 'object' && (
+            <Box
+              style={{
+                display: 'grid',
+                gap: '5px',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              }}
+            >
+              <Box sx={{ width: '100%' }} className="">
+                <Box>
+                  <Typography variant="h5">
+                    Group Name: {data?.fieldGroup}
+                  </Typography>
                   <Divider />
                   <Box>
-                    {fields.map?.((fld) => {
+                    {data?.fields?.map?.((fld) => {
                       const { icon, __typename, options, ...restFlds } = fld;
                       return (
                         <Box
@@ -160,12 +144,12 @@ const InputFieldList = () => {
                     })}
                   </Box>
                 </Box>
-              );
-            })}
-          </Box>
+              </Box>
+            </Box>
+          )}
         </Box>
       )}
     </AdminLayout>
   );
 };
-export default InputFieldList;
+export default InputGroupFieldsSync;

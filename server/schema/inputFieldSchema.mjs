@@ -35,14 +35,14 @@ export default gql`
     fields: [InputFieldsItem!]!
   }
   type Field {
-    existingGroup: String
+    _id: ID!
     fieldGroup: String!
     fields: [FieldsItem!]!
   }
 
   type Query {
     allFields(key: String, value: String, options: String): [Field!]!
-    # getField(key: String!, value: String!): Field!
+    getInputField(key: String!, value: String!): Field!
   }
   type Mutation {
     createInputField(fields: InputFields!): Field!
