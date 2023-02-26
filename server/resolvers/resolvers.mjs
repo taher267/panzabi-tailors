@@ -80,5 +80,6 @@ export default {
 
     // input Fields functions
     createInputField: inputFieldsController.createInputField,
+    inputGroupFieldsSync: inputFieldsController.inputGroupFieldsSync,
   },
 };

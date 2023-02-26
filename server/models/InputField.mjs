@@ -15,20 +15,20 @@ export default mg.model(
         __v: false,
         label: {
           type: String,
-          required: [true, 'Measurement field is mandatory!'],
+          required: [true, 'Field field is mandatory!'],
           unique: true,
           trim: true,
         },
         name: {
           type: String,
-          required: [true, 'Measurement name is mandatory!'],
+          required: [true, 'Field name is mandatory!'],
           unique: true,
           trim: true,
         },
         type: { type: String, default: 'text' },
         sl_id: {
           type: String,
-          required: [true, 'Measurement sl id is mandatory!'],
+          required: [true, 'Field sl id is mandatory!'],
           // unique: true,
           trim: true,
         },

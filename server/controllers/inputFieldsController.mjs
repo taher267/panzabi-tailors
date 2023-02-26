@@ -136,6 +136,86 @@ export default {
     }
   },
   /**
+   * Input group fields sync
+   */
+  inputGroupFieldsSync: async (
+    _parent,
+    { id, source, destination },
+    _context
+  ) => {
+    try {
+      if (!mg.isValidObjectId(id))
+        throw new UserInputError(`Fail to sync group fields`, {
+          status: 400,
+          message: `Invalid sync id!`,
+        });
+
+      let doesExist = await inputFieldsServices.findInputFiled('_id', id);
+
+      if (!doesExist)
+        throw new UserInputError(`Fail to sync input group fields`, {
+          status: 404,
+          message: `Input group fields doesn't exists!`,
+        });
+
+      const tasks = [...doesExist._doc.fields];
+      const [reOrderedItem] = tasks.splice(source, 1);
+      tasks.splice(destination, 0, reOrderedItem);
+      doesExist.fields = tasks;
+      await doesExist.save();
+      // console.log(tasks);
+      return true;
+    } catch (e) {
+      if (e?.extensions) {
+        return InputErr(e);
+      }
+      errorHandler(e);
+    }
+  },
+  /** inputGroupFieldsSync2: async (_parent, { _id, fields }, _context) => {
+    try {
+      if (!mg.isValidObjectId(_id))
+        throw new UserInputError(`Fail to sync group fields`, {
+          status: 400,
+          message: `Invalid sync id!`,
+        });
+      const values = await inputFieldsValidation.inputFieldsSyncValidation(
+        fields
+      );
+
+      let doesExist = await inputFieldsServices.findInputFiled(
+        '_id',
+        _id,
+        '-__v'
+      );
+
+      if (!doesExist)
+        throw new UserInputError(`Fail to sync input group fields`, {
+          status: 404,
+          message: `Input group fields doesn't exists!`,
+        });
+
+      doesExist.fields = values;
+      return await doesExist.save();
+    } catch (e) {
+      if (e?.isJoi) {
+        // console.log(JSON.stringify(e?.details));
+        // console.log(e?.details);
+        const errors = joiInputErrorsFormater(e?.details);
+        return InputErr({
+          message: `Fail to Create input Fields!`,
+          extensions: {
+            status: 400,
+            errors,
+          },
+        });
+      } else if (e?.extensions) {
+        return InputErr(e);
+      }
+      errorHandler(e);
+    }
+  }, */
+  /**
    * Delete InputField
    */
   deleteInputField: async (_parent, { id: _id }) => {

@@ -29,6 +29,7 @@ import {
 import {
   NEW_INPUT_FIELD,
   EDIT_INPUT_FIELD,
+  INPUT_GROUP_FIELDS_SYNC,
 } from './../Mutations/inputFieldsMut';
 
 import { ALL_USERS } from '../Query/userQry';
@@ -113,4 +114,5 @@ export default {
   SINGLE_INPUT_FIELD,
   NEW_INPUT_FIELD,
   EDIT_INPUT_FIELD,
+  INPUT_GROUP_FIELDS_SYNC,
 };

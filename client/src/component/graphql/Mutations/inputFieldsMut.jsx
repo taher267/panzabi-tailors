@@ -44,3 +44,26 @@ export const EDIT_INPUT_FIELD = gql`
     }
   }
 `;
+
+export const INPUT_GROUP_FIELDS_SYNC = gql`
+  mutation inputGroupFieldsSync($id: ID!, $source: Int!, $destination: Int!) {
+    inputGroupFieldsSync(id: $id, source: $source, destination: $destination)
+  }
+`;
+
+/**{
+      _id
+      label
+      name
+      sl_id
+      type
+      template
+      status
+      options
+      validation
+      placeholder
+      icon {
+        _id
+        src
+      }
+    } */

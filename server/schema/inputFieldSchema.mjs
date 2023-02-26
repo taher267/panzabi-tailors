@@ -1,33 +1,32 @@
 import { gql } from 'apollo-server-core';
-
+const InputCommon = `
+    label: String!
+    name: String!
+    sl_id: String!
+    type: String
+    template: String!
+    status: String!
+    validation: String
+    placeholder: String
+    options: [String]
+    params: String
+    `;
 export default gql`
   type FieldsItem {
     _id: ID!
-    label: String!
-    name: String!
-    type: String
-    sl_id: String!
-    template: String!
-    status: String!
-    options: [String]
-    params: String
-    validation: String
-    placeholder: String
-    icon: Icon
+   ${InputCommon}
+   icon:Icon
   }
 
   input InputFieldsItem {
-    label: String!
-    name: String!
-    sl_id: String!
-    type: String
-    template: String!
-    status: String!
-    validation: String
-    placeholder: String
-    options: [String]
-    params: String
-    icon: InpIcon
+   ${InputCommon}
+   icon: InpIcon
+  }
+  
+  input InputFieldsItemDragAndDrop {
+    _id:ID!
+   ${InputCommon}
+   icon: InpIcon
   }
   input InputFields {
     fieldGroup: String!
@@ -46,6 +45,7 @@ export default gql`
   }
   type Mutation {
     createInputField(fields: InputFields!): Field!
+    inputGroupFieldsSync(id: ID!, source: Int!, destination: Int!): Boolean!
     # updateField(id: String!, update: InputField): Field
     # deleteField(id: ID!): Boolean
   }
