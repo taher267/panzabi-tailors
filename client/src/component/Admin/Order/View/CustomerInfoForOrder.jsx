@@ -33,7 +33,7 @@ const CustomerInfoForOrder = ({
         <Typography variant="h6">Customer Info</Typography>
         <Box
           sx={{
-            color: 'rgba(0,0,0,.7)',
+            // color: 'rgba(0,0,0,.7)',
             fontWeight: 800,
             // border: '1px solid rgba(255,255,255, 0.5)',
             // padding: 2,

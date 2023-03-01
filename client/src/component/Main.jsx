@@ -42,6 +42,15 @@ import NewTempate from './Admin/Tempalte/NewTemplate';
 import NewInputField from './Admin/InputField/NewInputField';
 import InputFieldList from './Admin/InputField';
 import InputGroupFieldsSync from './Admin/InputField/InputGroupFieldsSync';
+import {
+  ACCOUNT_PATH,
+  CUSTOMER_PATH,
+  DASHBOARD_PATH,
+  DESIGN_PATH,
+  INPUT_FIELD_PATH,
+  TEMPLATE_PATH,
+  USER_PATH,
+} from '../config';
 
 const Main = () => {
   const [mode, setMode] = React.useState(
@@ -81,41 +90,34 @@ const Main = () => {
 
                 {/* <Route path="/new-measurement" element={<NewMeasuremen />} /> */}
                 <Route element={<ProtectedRoutes />}>
-                  <Route path="/dashboard">
+                  <Route path={DASHBOARD_PATH}>
                     <Route path="" element={<Dashboard />} />
-                    <Route path="customer">
+                    <Route path={CUSTOMER_PATH}>
                       <Route path="" element={<Customer />} />
                       <Route path="new" element={<NewCustomer />} />
                       <Route path="edit/:id" element={<EditCustomer />} />
                     </Route>
-                    <Route path="design">
+                    <Route path={DESIGN_PATH}>
                       <Route path="" element={<DesignsLists />} />
                       <Route path="new" element={<NewDesign />} />
                       <Route path="edit/:id" element={<EditDesign />} />
                     </Route>
-                    <Route path="account">
-                      <Route path="" element={<AccountsList />} />
-                      <Route path="new" element={<NewAccount />} />
-                      <Route path="edit/:id" element={<EditAccount />} />
-                    </Route>
-
-                    <Route path="product">
+                    <Route path="products">
                       <Route path="" element={<ProductList />} />
                       <Route path="new" element={<NewProduct />} />
                     </Route>
-                    <Route path="order">
+                    <Route path="orders">
                       <Route path="" element={<OrdersList />} />
                       <Route path="new/:customerID" element={<NewOrder />} />
                       <Route path=":id" element={<SingleOrder />} />
                       <Route path="print/:id/:keey" element={<Print />} />
                     </Route>
-                    <Route path="measurement">
+                    <Route path="measurements">
                       <Route path="" element={<MeasurementList />} />
                       <Route path="new" element={<NewMeasuremen />} />
                       <Route path="edit/:id" element={<EditMeasuremen />} />
                     </Route>
-
-                    <Route path="fields">
+                    <Route path={INPUT_FIELD_PATH}>
                       <Route path="" element={<InputFieldList />} />
                       <Route path="new" element={<NewInputField />} />
 
@@ -127,11 +129,16 @@ const Main = () => {
                       
                       <Route path="edit/:id" element={<EditMeasuremen />} /> */}
                     </Route>
-                    <Route path="user" element={<UserList />} />
-                  </Route>
-                  <Route path="/template">
-                    <Route path="" element={<TemplateList />} />
-                    <Route path="new" element={<NewTempate />} />
+                    <Route path={USER_PATH} element={<UserList />} />{' '}
+                    <Route path={TEMPLATE_PATH}>
+                      <Route path="" element={<TemplateList />} />
+                      <Route path="new" element={<NewTempate />} />
+                    </Route>
+                    <Route path={ACCOUNT_PATH}>
+                      <Route path="" element={<AccountsList />} />
+                      <Route path="new" element={<NewAccount />} />
+                      <Route path="edit/:id" element={<EditAccount />} />
+                    </Route>
                   </Route>
                 </Route>
                 <Route element={<AuthRoute />}>

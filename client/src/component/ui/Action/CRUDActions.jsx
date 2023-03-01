@@ -39,7 +39,7 @@ export default function CRUDActions({
       }}
     >
       <Link
-        to={`/dashboard/order/new/${id}`}
+        to={`/dashboard/orders/new/${id}`}
         style={{ display: 'flex' }}
         title=""
       >

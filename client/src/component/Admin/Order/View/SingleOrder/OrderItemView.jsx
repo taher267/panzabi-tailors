@@ -13,6 +13,7 @@ import StraightenIcon from '@mui/icons-material/Straighten';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
 // import { useNavigate } from 'react-router-dom';
 import { useTailors } from '../../../../context/TailorsContext';
+import { DASHBOARD_PATH, ORDER_PATH } from '../../../../../config';
 
 const OrderItemView = (props) => {
   const { setPrintData } = useTailors();
@@ -75,7 +76,7 @@ const OrderItemView = (props) => {
 
               <a
                 target="_blank"
-                href={`/dashboard/order/print/${order_id}/${_id}`}
+                href={`${DASHBOARD_PATH}/${ORDER_PATH}/print/${order_id}/${_id}`}
               >
                 <Button
                   endIcon={<PrintIcon />}
@@ -115,7 +116,7 @@ export default OrderItemView;
 const MeasuremntView = ({ measurements, _id, k }) => {
   return (
     <Box id={`${_id}_${k}`}>
-      <Typography variant="h5" color="rgba(0,0,0,0.7)">
+      <Typography variant="h5">
         <StraightenIcon sx={{ color: '#009dea' }} /> পরিমাপঃ
       </Typography>
       <Box
@@ -129,12 +130,8 @@ const MeasuremntView = ({ measurements, _id, k }) => {
         {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}> */}
         {measurements?.map?.((item) => (
           <Box key={item.msr_id}>
-            <Typography sx={{ fontWeight: 700, color: 'var(--black)' }}>
-              {item.label}
-            </Typography>
-            <Typography sx={{ color: 'var(--blackLight)' }}>
-              {item.size}
-            </Typography>
+            <Typography sx={{ fontWeight: 700 }}>{item.label}</Typography>
+            <Typography>{item.size}</Typography>
           </Box>
         ))}
       </Box>
@@ -156,10 +153,8 @@ const DesignView = ({ designs }) => {
         >
           {items?.map?.(({ dsn_id, label, desc }) => (
             <Box key={dsn_id} sx={{ display: 'flex', gap: 2 }}>
-              <Typography sx={{ fontWeight: 700, color: 'var(--black)' }}>
-                {label}
-              </Typography>
-              <Typography sx={{ color: 'var(--black)' }}>{desc}</Typography>
+              <Typography sx={{ fontWeight: 700 }}>{label}</Typography>
+              <Typography>{desc}</Typography>
             </Box>
           ))}
         </Box>

@@ -1,0 +1,9 @@
+export const DASHBOARD_PATH = '/dashboard';
+export const USER_PATH = 'users';
+export const ORDER_PATH = 'orders';
+export const CUSTOMER_PATH = 'customers';
+export const DESIGN_PATH = 'designs';
+export const PRODUCT_PATH = 'products';
+export const INPUT_FIELD_PATH = 'fields';
+export const TEMPLATE_PATH = 'templates';
+export const ACCOUNT_PATH = 'accounts';

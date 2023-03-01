@@ -8,21 +8,22 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 const menuItems = [
-  { url: '/dashboard/order', name: 'অর্ডার সমুহঃ' },
-  { url: '/dashboard/customer', name: 'গ্রাহকসমূহ' },
-  { url: '/dashboard/customer/new', name: 'নতুন গ্রাহক' },
-  { url: '/dashboard/design', name: 'নকশাসমূহ' },
-  { url: '/dashboard/design/new', name: 'নতুন নকশা' },
-  { url: '/dashboard/product', name: 'পণ্যসমূহ' },
-  { url: '/dashboard/product/new', name: 'নতুন পণ্য' },
-  { url: '/dashboard/measurement', name: 'পরিমাপ' },
-  { url: '/dashboard/measurement/new', name: 'নতুন পরিমাপ' },
+  { url: '/dashboard/orders', name: 'অর্ডার সমুহঃ' },
+  { url: '/dashboard/customers', name: 'গ্রাহকসমূহ' },
+  { url: '/dashboard/customers/new', name: 'নতুন গ্রাহক' },
+  { url: '/dashboard/designs', name: 'নকশাসমূহ' },
+  { url: '/dashboard/designs/new', name: 'নতুন নকশা' },
+  { url: '/dashboard/products', name: 'পণ্যসমূহ' },
+  { url: '/dashboard/products/new', name: 'নতুন পণ্য' },
+  { url: '/dashboard/measurements', name: 'পরিমাপ' },
+  { url: '/dashboard/measurements/new', name: 'নতুন পরিমাপ' },
   { url: '/dashboard/fields/new', name: 'নতুন ইনপুট ফিল্ড' },
   { url: '/dashboard/fields', name: 'ইনপুট ফিল্ড সমুহঃ' },
-  { url: '/template', name: 'Template' },
-  { url: '/template/new', name: 'New Template' },
-  { url: '/dashboard/account', name: 'হিসাবসমূহ' },
-  { url: '/dashboard/account/new', name: 'নতুন হিসাব' },
+  { url: '/dashboard/template', name: 'Template' },
+  { url: '/dashboard/template/new', name: 'New Template' },
+  { url: '/dashboard/accounts', name: 'হিসাবসমূহ' },
+  { url: '/dashboard/accounts/new', name: 'নতুন হিসাব' },
+  { url: '/dashboard/users', name: 'USERS' },
 ];
 export default function Sidebar() {
   return (

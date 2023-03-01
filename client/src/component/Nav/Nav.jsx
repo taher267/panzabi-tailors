@@ -16,6 +16,7 @@ import ToggleOff from '@mui/icons-material/ToggleOff';
 import ToggleOn from '@mui/icons-material/ToggleOn';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import { CUSTOMER_PATH, DASHBOARD_PATH, ORDER_PATH } from '../../config';
 
 function Nav({ mode, handleMode }) {
   const { user, logout } = useAuth();
@@ -44,8 +45,11 @@ function Nav({ mode, handleMode }) {
     { title: 'Logout', func: () => logout() },
   ];
   const pages = [
-    { title: 'Customer', func: () => nagivate('/dashboard/customer') },
-    { title: 'Order', func: () => nagivate('/dashboard/order') },
+    {
+      title: 'Customer',
+      func: () => nagivate(`${DASHBOARD_PATH}/${CUSTOMER_PATH}`),
+    },
+    { title: 'Order', func: () => nagivate(`${DASHBOARD_PATH}/${ORDER_PATH}`) },
   ];
   const authPages = [
     { title: 'login', func: () => nagivate('/login') },

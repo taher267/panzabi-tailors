@@ -195,7 +195,7 @@ const OrdersList = () => {
         headerName: 'Actions',
         sortable: false,
         headerAlign: 'center',
-        width: 250,
+        width: 300,
         type: 'actions',
         renderCell: (params) => {
           return (

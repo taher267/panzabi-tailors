@@ -399,7 +399,7 @@ const NewOrder = () => {
     if (data || newItemData) {
       reset();
       if (data?._id || prevOrderData?._id) {
-        navigate(`/dashboard/order/${data?._id || prevOrderData?._id}`, {
+        navigate(`/dashboard/orders/${data?._id || prevOrderData?._id}`, {
           replace: true,
         });
       }

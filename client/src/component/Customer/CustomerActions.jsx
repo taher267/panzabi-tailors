@@ -77,7 +77,7 @@ export default function CustomerActions({
           success,
           updateHandle,
           setRowId,
-          editUrl: '/dashboard/customer',
+          editUrl: '/dashboard/customers',
           delFunc: () => {
             if (confirm(`Are you sure to delete this User?`)) {
               delMutation({ variables: { _id: id } });

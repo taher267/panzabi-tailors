@@ -12,6 +12,7 @@ import {
 import { Button, Box, Fab, CircularProgress } from '@mui/material';
 import { green, red } from '@mui/material/colors';
 import useMutationFunc from '../../hooks/gql/useMutationFunc';
+import { DASHBOARD_PATH, ORDER_PATH } from '../../../config';
 // import useUpdateMutation from '../../hooks/gql/useUpdateMutation';
 // import useMutationFunc from '../../hooks/gql/useMutationFunc';
 // import Payment from './Payment';
@@ -72,11 +73,11 @@ export default function OrderActions({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 2,
+        gap: 1,
       }}
     >
-      <Link to={`/dashboard/order/${id}`}>
-        <Visibility />
+      <Link to={`${DASHBOARD_PATH}/${ORDER_PATH}/${id}`}>
+        <Button startIcon={<Visibility />} />
       </Link>
       {processing ? (
         <Fab
