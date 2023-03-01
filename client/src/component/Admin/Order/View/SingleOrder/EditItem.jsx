@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import clonning from '../../../../utils/clonning';
 import useGetQurey from '../../../../hooks/gql/useGetQurey';
 import OrderItemCard from '../../OrderItemCard';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch, Controller } from 'react-hook-form';
 import removeGqlErrors from '../../../../utils/removeGqlErrors';
 import { CircularProgress, IconButton, Snackbar } from '@mui/material';
 import designDevider from '../../../../utils/designDevider';
@@ -30,37 +30,6 @@ import defaultMeasurementsShape from '../../../../../utils/defaultMeasurementsSh
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-// const arrToObj = (data = [], key, selector) => {
-//   let newObje = {};
-//   for (const item of clonning(data)) {
-//     if (typeof selector === 'object') {
-//       let vals = {};
-//       for (const sel of selector || []) {
-//         vals[sel] = item[sel];
-//       }
-//       newObje[item[key]] = vals;
-//     } else {
-//       newObje[item[key]] = item[selector];
-//     }
-//   }
-//   return newObje;
-// };
-// const designDefaultValuesShape = (data) => {
-//   let newObj = {};
-//   for (const designsGroup of clonning(data)) {
-//     if (designsGroup?.group && designsGroup?.items?.length) {
-//       const { group, items } = designsGroup;
-//       let groupping = {};
-//       for (const { dsn_id, desc } of items) {
-//         groupping[dsn_id] = desc;
-//         // groupping[dsn_id] = { dsn_id, desc };
-//       }
-//       newObj[group] = groupping;
-//     }
-//   }
-//   // console.log(newObj, data);
-//   return newObj;
-// };
 
 export default function EditItem({ handleClickOpen, open, ...props }) {
   const {
@@ -79,6 +48,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   const [notice, setNotice] = React.useState(false);
   const [noticeMsg, setNoticeMsg] = React.useState('');
   const [orderProduct, setOrderProduct] = React.useState([]);
+  // console.log(measurements);
   const { data: all_designs, loading: designsLoading } = useGetQurey(
     'SPECIFIC_ALL_DESIGNS',
     null,
@@ -99,7 +69,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
   );
   const { data: all_products, loading: productsLoading } = useGetQurey(
     'PRODUCTS_NAME_ID_CAT',
-    null,
+    { key: 'category', value: connection === 'up' ? 'type-1' : 'type-2' },
     'allProducts'
   );
   const {
@@ -114,11 +84,26 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     register,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = useForm({
     mode: 'all',
+    defaultValues: {
+      products: products?.map?.(({ _id, name }) => ({ _id, name })),
+      measurements: measurements?.reduce?.((a, c) => {
+        const { size, msr_id, label } = c;
+        if (size) {
+          a[msr_id] = {
+            size,
+            // msr_id,
+            label,
+          };
+        }
+        return a;
+      }, []),
+    },
   });
-  // console.log(bug);
+  // console.log(watch());
   React.useEffect(() => {
     if (data?.updateOrderItem) {
       reset();
@@ -161,25 +146,19 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     control,
     name: 'pricing',
   });
-  const onSubmit = (d) => {
-    // console.log(
-    //   orderProduct.map(({ _id, name }) => ({ _id, name })),
-    //   products.map(({ _id, name }) => ({ _id, name }))
-    // );
-    const designs = designFiltering(d.designs);
-    const measurements = measurementKeyValue(d.measurements);
-    const productsMap = orderProduct?.length
-      ? orderProduct.map(({ _id, name }) => ({ _id, name }))
-      : products.map(({ _id, name }) => ({ _id, name }));
+
+  const onSubmit = ({ designs, measurements, pricing, products }) => {
+    const designsMapping = designFiltering(designs);
+    const measurementsMapping = measurementKeyValue(measurements);
     const variables = {
       _id: order_id,
       update: {
         itemId: _id,
         // connection,
-        products: productsMap,
-        ...d.pricing,
-        measurements,
-        designs,
+        products: products?.map?.(({ _id, name }) => ({ _id, name })),
+        ...pricing,
+        measurements: measurementsMapping,
+        designs: designsMapping,
         sample: {
           src: 'fdfdf',
           // _id: 'fdfd'
@@ -187,7 +166,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
       },
     };
     updateItem({ variables });
-    // console.log(designs);
+    // console.log(variables);
   };
   const connectionTypeProducts = (data = [], con) =>
     data.filter((p) => p.category === con);
@@ -226,10 +205,14 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                 <OrderItemCard
                   {...{
                     //Common
-                    products: connectionTypeProducts(
-                      all_products,
-                      connection === 'up' ? 'type-1' : 'type-2'
-                    ),
+                    watch,
+                    Controller,
+                    control,
+                    products: all_products,
+                    // products: connectionTypeProducts(
+                    //   all_products,
+                    //   connection === 'up' ? 'type-1' : 'type-2'
+                    // ),
                     errors,
                     register,
                     gqlErrs,
@@ -237,10 +220,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                     onFocus,
                     removeGqlErrors,
                     //product
-                    defaultProducts: products?.map(({ name, _id }) => ({
-                      name,
-                      _id,
-                    })),
+                    defaultProducts: products?.map(({ _id }) => _id),
                     // defaultProducts: [...products],
                     setOrderProduct,
                     productType: connection === 'up' ? 'type-1' : 'type-2',
@@ -248,11 +228,11 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                     //Measurement
                     measurementPrefix: '',
                     measurementFields: measurementsFields,
-                    measurementDefaultValues: defaultMeasurementsShape(
-                      measurements,
-                      'msr_id',
-                      'size'
-                    ),
+                    // measurementDefaultValues: defaultMeasurementsShape(
+                    //   measurements,
+                    //   'msr_id',
+                    //   'size'
+                    // ),
                     desings:
                       designDevider(all_designs || [])?.[connection] || [],
                     designsDefaultValues: defaultDesignsShape(designs),
@@ -281,6 +261,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                   color="secondary"
                   variant="contained"
                   type="submit"
+                  disabled={processing || Object.keys(errors)?.length !== 0}
                   //   onClick={handleClickOpen}
                 >
                   Update

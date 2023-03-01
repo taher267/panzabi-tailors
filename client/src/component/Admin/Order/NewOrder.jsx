@@ -13,7 +13,7 @@ import Save from '@mui/icons-material/Save';
 import CheckBoxOutlineBlank from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { OrderStatusField } from '../../arrayForms/orderFields';
-import { useForm, useWatch, useFieldArray } from 'react-hook-form';
+import { useForm, useWatch, useFieldArray, Controller } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import csses from './order.module.css';
 import commonCsses from '../../styles/common.module.css';
@@ -34,7 +34,8 @@ import useAuth from '../../hooks/useAuth';
 import CheckingExistingOrderView from './View/CheckingExistingOrderView';
 import AddOrderItemAlert from './View/SingleOrder/AddOrderItemAlert';
 import clientQuery from '../../hooks/gql/usePromissQurey';
-import SearchForCopy from './SearchForCopy';
+import SearchForCopy from './SearchForCopy'; // Existing order item using
+import Field2 from '../../ui/Field2';
 
 // const NOT_ANY_MEASUREMENT_CHECK = `Please check ☑️ at least one of the two measurement`;
 const initPrice = { quantity: 0, price: 0, total: 0 };
@@ -63,16 +64,16 @@ const NewOrder = () => {
   const [advanced, setAdvanced] = useState(0);
   const [designDownState, setDesignDownState] = useState({});
   const [prevOrderData, setPrevOrderData] = useState({});
-  const [copyPrderProduct, setCopyOrderProduct] = useState({
-    up: [],
-    down: [],
+  const [copyOrderProduct, setCopyOrderProduct] = useState({
+    0: [],
+    1: [],
   });
   // Copy item state
   const [copyDesigns, setCopyDesigns] = useState({});
   const [copyMeasurements, setCopyMeasurements] = useState({});
   const [orderProduct, setOrderProduct] = useState({
-    up: copyPrderProduct['up'] || [],
-    down: copyPrderProduct['down'] || [],
+    up: copyOrderProduct['up'] || [],
+    down: copyOrderProduct['down'] || [],
   });
 
   const [devideMeasurement, setDevideMeasurement] = useState({});
@@ -101,9 +102,12 @@ const NewOrder = () => {
     defaultValues: {
       checkboxUp: false,
       checkboxDown: false,
+      order_status: 'NEW',
+      order_no: '',
       // item_add_in_existing_order: false,
     },
   });
+
   // New product add
   const {
     mutation: createOrder,
@@ -120,7 +124,6 @@ const NewOrder = () => {
   } = useMutationFunc('ADD_NEW_ORDER_ITEM', null, null, 'addNewOrderItem', [
     'SINGLE_ORDER',
   ]);
-
   useEffect(() => {
     const fatch = async () => {
       try {
@@ -159,7 +162,17 @@ const NewOrder = () => {
       (async () => {
         try {
           const { data } = await clientQuery('PRODUCTS_NAME_ID_CAT');
-          set_all_products(data?.allProducts || []);
+          const devided = data?.allProducts?.reduce?.(
+            (a, c) => {
+              const { category, _id, name } = c;
+              const key = category === 'type-1' ? 'up' : 'down';
+              a[key].push({ _id, name });
+              return a;
+            },
+            { up: [], down: [] }
+          );
+          set_all_products(devided);
+          // set_all_products(data?.allProducts || []);
         } catch (e) {
           set_all_products([]);
           console.log(e?.message);
@@ -171,7 +184,18 @@ const NewOrder = () => {
       //!all_measurements?.length
       (async () => {
         try {
-          const { data } = await clientQuery('ALL_MEASUREMENTS', {
+          const { data } = await clientQuery('ALL_INPUT_FIELDS', {
+            key: 'in',
+            value: '{"fieldGroup":{"$in":["up", "down"]}}',
+          });
+          const devided = data?.allFields?.reduce?.((a, c) => {
+            a[c.fieldGroup] = c.fields;
+            return a;
+          }, {});
+          setDevideMeasurement(devided);
+
+          /**
+           * const { data } = await clientQuery('ALL_MEASUREMENTS', {
             key: 'status',
             value: 'ACTIVE',
           });
@@ -188,6 +212,7 @@ const NewOrder = () => {
               return a;
             }, {}) || {}
           );
+           */
         } catch (e) {
           set_all_measurements([]);
           console.log(e?.message);
@@ -215,15 +240,15 @@ const NewOrder = () => {
     name: 'measurements_up',
     control,
   });
-  useEffect(() => {
-    if (up_muesurement && !orderProduct?.up?.length) {
-      return setError('up_products', {
-        type: 'custom',
-        message: `Product is Mandatory!`,
-      });
-    }
-    clearErrors('up_products');
-  }, [up_muesurement, orderProduct]);
+  // useEffect(() => {
+  //   if (up_muesurement && !orderProduct?.up?.length) {
+  //     return setError('up_products', {
+  //       type: 'custom',
+  //       message: `Product is Mandatory!`,
+  //     });
+  //   }
+  //   clearErrors('up_products');
+  // }, [up_muesurement, orderProduct]);
 
   useEffect(() => {
     if (!Object.keys(desings)?.length && all_designs?.length) {
@@ -243,6 +268,8 @@ const NewOrder = () => {
       item_add_in_existing_order,
       // ...measure1
     } = data;
+    // console.log(data);
+    // return;
     if (!data?.previous_order) delete data.previous_order;
     if (
       (previous_order || item_add_in_existing_order) &&
@@ -300,8 +327,8 @@ const NewOrder = () => {
     if (data?.checkboxUp) {
       let up_item = {};
       total_up = up.price * up.quantity;
-      up_item.products =
-        orderProduct?.up?.map(({ _id, name }) => ({ _id, name })) || [];
+      // up_item.products = orderProduct?.up?.map(({ _id, name }) => ({ _id, name })) || [];
+      up_item.products = data?.[0].products;
       up_item.quantity = up.quantity;
       up_item.price = up.price;
       up_item.connection = 'up';
@@ -316,8 +343,8 @@ const NewOrder = () => {
     if (data?.checkboxDown) {
       let down_item = {};
       total_down = down.price * down.quantity;
-      down_item.products =
-        orderProduct?.down?.map(({ _id, name }) => ({ _id, name })) || [];
+      // down_item.products =orderProduct?.down?.map(({ _id, name }) => ({ _id, name })) || [];
+      down_item.products = data?.[1].products;
       down_item.quantity = down.quantity;
       down_item.price = down.price;
       down_item.connection = 'down';
@@ -353,7 +380,8 @@ const NewOrder = () => {
     };
 
     setGqlErrs({});
-    // console.log(data);
+    // console.log(newOrderDates);
+    // return;
     if (previous_order && item_add_in_existing_order) {
       delete newOrderDates.delivery_date;
       // console.log(newOrderDates);
@@ -384,7 +412,7 @@ const NewOrder = () => {
     }
   }, [prev_order]);
 
-  // console.log(errors);
+  // console.log(watch());
 
   useEffect(() => {
     //     designUpState
@@ -417,20 +445,36 @@ const NewOrder = () => {
 
   const upUnregiser = () => {
     unregister([
+      `0`,
       `up`,
       `pricing.0.quantity`,
       `pricing.0.price`,
       'measurements_up',
     ]);
+    // setCopyOrderProduct((p) => {
+    //   const item = { ...p };
+    //   delete item[0];
+    //   return item;
+    // });
+    // setCopyMeasurements((p) => {
+    //   console.log(p);
+    //   return p;
+    // });
   };
 
   const downUnregiser = () => {
     unregister([
+      `1`,
       `down`,
       `pricing.1.quantity`,
       `pricing.1.price`,
       'measurements_down',
     ]);
+    setCopyOrderProduct((p) => {
+      const item = { ...p };
+      delete item[1];
+      return item;
+    });
   };
   useEffect(() => {}, []);
 
@@ -536,7 +580,19 @@ const NewOrder = () => {
                 }}
               />
             </Box>
-            <select
+            <Field2
+              options={OrderStatusField?.options}
+              control={control}
+              Controller={Controller}
+              type="single_select"
+              label="Status"
+              placeholder="Select Status"
+              name="order_status"
+              sx={{ marginY: 2 }}
+              validation="required→true←Order status is mandatory!"
+              params="select→true"
+            />
+            {/* <select
               {...register('order_status', { required: true })}
               className={`${csses.orderStatus} ${
                 gqlErrs?.order_status
@@ -552,7 +608,7 @@ const NewOrder = () => {
                   {option}
                 </option>
               ))}
-            </select>
+            </select> */}
             {/* Measurement Type Start */}
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Box sx={{ border: 1, padding: 1, borderRadius: 2 }}>
@@ -652,6 +708,10 @@ const NewOrder = () => {
               <OrderItemCard
                 {...{
                   //Common
+                  watch,
+                  mainKey: '0',
+                  Controller,
+                  control,
                   errors,
                   register,
                   gqlErrs,
@@ -660,7 +720,7 @@ const NewOrder = () => {
                   removeGqlErrors,
                   //product
                   productLabel: 'পাঞ্জাবী, জুব্বা',
-                  defaultProducts: copyPrderProduct?.up || [],
+                  defaultProducts: copyOrderProduct?.[0]?.map?.((it) => it._id),
                   setOrderProduct,
                   prodType: 'up',
                   productType: 'type-1',
@@ -675,10 +735,11 @@ const NewOrder = () => {
                   type: 'up',
                   watching: up,
                   //Pricing
-                  productLen: orderProduct?.up?.length || 0,
-                  products: [
-                    ...all_products?.filter((p) => p.category === 'type-1'),
-                  ],
+                  // productLen: watch('0.products')?.length || 0,
+                  products: all_products?.up || [],
+                  // products: [
+                  //   ...all_products?.filter((p) => p.category === 'type-1'),
+                  // ],
                   total: pricingDetail?.up?.total || 0,
                   pricingKey: 0,
                 }}
@@ -692,6 +753,10 @@ const NewOrder = () => {
               <OrderItemCard
                 {...{
                   //Common
+                  watch,
+                  mainKey: '1',
+                  Controller,
+                  control,
                   errors,
                   register,
                   gqlErrs,
@@ -701,10 +766,11 @@ const NewOrder = () => {
                   //product
                   productLabel: 'সালোয়ার, পাজামা',
                   setOrderProduct,
-                  defaultProducts: copyPrderProduct?.down || [],
-                  products: [
-                    ...all_products?.filter((p) => p.category === 'type-2'),
-                  ],
+                  defaultProducts: copyOrderProduct?.down || [],
+                  products: all_products?.down || [],
+                  // products: [
+                  //   ...all_products?.filter((p) => p.category === 'type-2'),
+                  // ],
                   prodType: 'down',
                   fieldName: 'down_products',
                   //Measurement
@@ -717,7 +783,7 @@ const NewOrder = () => {
                   type: 'down',
                   watching: down,
                   //Pricing
-                  productLen: orderProduct?.down?.length || 0,
+                  productLen: watch('1.products')?.length || 0,
                   total: pricingDetail?.down?.total || 0,
                   pricingKey: 1,
                 }}
@@ -856,7 +922,7 @@ const objToArray = (data) => {
       if (!rest?.desc) delete rest.desc;
       if (isCheck) items.push(rest);
     }
-    console.log(items);
+    // console.log(items);
     if (items?.length) result = { group, items };
   }
   return result;

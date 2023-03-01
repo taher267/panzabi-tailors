@@ -63,7 +63,7 @@ const NewOrder = () => {
   const [advanced, setAdvanced] = useState(0);
   const [designDownState, setDesignDownState] = useState({});
   const [prevOrderData, setPrevOrderData] = useState({});
-  const [copyPrderProduct, setCopyOrderProduct] = useState({
+  const [copyOrderProduct, setCopyOrderProduct] = useState({
     up: [],
     down: [],
   });
@@ -71,8 +71,8 @@ const NewOrder = () => {
   const [copyDesigns, setCopyDesigns] = useState({});
   const [copyMeasurements, setCopyMeasurements] = useState({});
   const [orderProduct, setOrderProduct] = useState({
-    up: copyPrderProduct['up'] || [],
-    down: copyPrderProduct['down'] || [],
+    up: copyOrderProduct['up'] || [],
+    down: copyOrderProduct['down'] || [],
   });
 
   const [devideMeasurement, setDevideMeasurement] = useState({});
@@ -660,7 +660,7 @@ const NewOrder = () => {
                   removeGqlErrors,
                   //product
                   productLabel: 'পাঞ্জাবী, জুব্বা',
-                  defaultProducts: copyPrderProduct?.up || [],
+                  defaultProducts: copyOrderProduct?.up || [],
                   setOrderProduct,
                   prodType: 'up',
                   productType: 'type-1',
@@ -701,7 +701,7 @@ const NewOrder = () => {
                   //product
                   productLabel: 'সালোয়ার, পাজামা',
                   setOrderProduct,
-                  defaultProducts: copyPrderProduct?.down || [],
+                  defaultProducts: copyOrderProduct?.down || [],
                   products: [
                     ...all_products?.filter((p) => p.category === 'type-2'),
                   ],

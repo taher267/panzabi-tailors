@@ -74,6 +74,10 @@ const SearchForCopy = ({
     let selectedData = thisCustomerOrders?.[item];
     let connection = selectedData.connection;
     // measurements_up.632ea691a3a5bd3d881c565c.size
+    let key = '';
+    if (connection === 'up') key = '0';
+    if (connection === 'down') key = '1';
+
     if (selectedData?.measurements?.length) {
       setCopyMeasurements(
         defaultMeasurementsShape(selectedData?.measurements, 'msr_id', 'size')
@@ -87,14 +91,49 @@ const SearchForCopy = ({
       setCopyDesigns(defaultDesignsShape(selectedData?.designs));
     }
     if (selectedData?.products?.length) {
+      setCopyOrderProduct((p) => {
+        return {
+          ...p,
+          [connection]: selectedData?.products?.map?.(({ _id, name }) => ({
+            _id,
+            name,
+          })),
+        };
+      });
+
+      // setCopyOrderProduct((p) => ({
+      //   ...p,
+      //   [connection]: selectedData?.products?.map?.(({ _id, name }) => ({
+      //     _id,
+      //     name,
+      //   })),
+      // }));
+
       setCopyOrderProduct((p) => ({
         ...p,
-        [connection]: selectedData?.products,
+        [key]: selectedData?.products?.map?.(({ _id, name }) => ({
+          _id,
+          name,
+        })),
       }));
-      setOrderProduct((p) => ({
-        ...p,
-        [connection]: selectedData?.products,
-      }));
+      setValue(
+        `${key}.products`,
+        selectedData?.products?.map?.(({ _id, name }) => ({ _id, name }))
+      );
+      // if (connection === 'up')
+      //   setValue(
+      //     `0.products`,
+      //     selectedData?.products?.map?.(({ _id, name }) => ({ _id, name }))
+      //   );
+      // else if (connection === 'down')
+      //   setValue(
+      //     `1.products`,
+      //     selectedData?.products?.map?.(({ _id, name }) => ({ _id, name }))
+      //   );
+      // setOrderProduct((p) => ({
+      //   ...p,
+      //   [connection]: selectedData?.products,
+      // }));
     }
   };
   const setDesignsValues = () => {};

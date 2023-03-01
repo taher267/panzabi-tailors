@@ -415,7 +415,6 @@ export default {
   updateOrderItem: async (_parent, { _id, update }, { req }) => {
     try {
       const check = await orderValidation.isValidUpdateOrderItem(update);
-      // console.log(check, 'check');
       console.log('order');
 
       const order = await orderServices.findOrder('_id', _id);
@@ -456,7 +455,7 @@ export default {
       order.due = totalPrice - totalPayments;
 
       const updated = await order.save();
-      // console.log(updated);
+      console.log(updated);
       return true;
     } catch (e) {
       if (e.isJoi) {

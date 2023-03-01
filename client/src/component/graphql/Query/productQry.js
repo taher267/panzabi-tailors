@@ -1,10 +1,12 @@
 import { gql } from '@apollo/client';
-
+const common = `
+      _id
+      name
+      category`;
 export const ALL_PRODUCTS = gql`
   query allProducts {
     allProducts {
-      _id
-      name
+      ${common}
       description
       measurementItem {
         ms_id
@@ -12,17 +14,14 @@ export const ALL_PRODUCTS = gql`
         measures
       }
       price
-      category
     }
   }
 `;
 
 export const PRODUCTS_NAME_ID_CAT = gql`
-  query allProducts {
-    allProducts {
-      _id
-      name
-      category
+  query allProducts ($key: String, $value: String){
+    allProducts (key: $key, value: $value){
+     ${common}
     }
   }
 `;

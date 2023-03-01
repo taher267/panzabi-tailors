@@ -1,12 +1,17 @@
 import { Typography } from '@mui/material';
 import React from 'react';
 import VerticalTabs from '../../FORM-PRACTICE/VerticalTabs';
+import Field2 from '../../ui/Field2';
 import OrderMeasuementFields from './OrderMeasuementFields';
 import OrderProduct from './OrderProduct';
 import PriceFields from './PriceFields';
 
 const OrderItemCard = ({
   //Common
+  watch,
+  mainKey,
+  Controller,
+  control,
   onFocus,
   gqlErrs,
   setGqlErrs,
@@ -16,7 +21,7 @@ const OrderItemCard = ({
   //product
   products,
   prodType,
-  setOrderProduct,
+  // setOrderProduct,
   defaultProducts = [],
   productType = 'type-1',
   fieldName = 'up_products',
@@ -34,16 +39,39 @@ const OrderItemCard = ({
   defaultQty,
   defaultPrice,
   defaultTotal,
-  productLen,
+
   pricingKey,
   productLabel,
 }) => {
+  const KeyFilter = mainKey ? `${mainKey}.` : '';
+  // console.log(KeyFilter, 'KeyFilter');
+  const productLen = watch?.(`${KeyFilter}products`)?.length;
+  const defaultProds = watch?.(`${KeyFilter}products`);
   return (
     <>
       <Typography sx={{ margin: '10px 0' }}>পণ্য</Typography>
       {products ? (
         <>
-          <OrderProduct
+          {/* {console.log(defaultProducts)} */}
+          <Field2
+            control={control}
+            Controller={Controller}
+            type="multi_select"
+            label="Product"
+            predefined={[
+              ...products?.filter?.((item) =>
+                defaultProducts.includes?.(item._id)
+              ),
+            ]}
+            placeholder="Product 01"
+            multiSelectLebel="name"
+            name={`${KeyFilter}products`}
+            sx={{ marginY: 2 }}
+            validation="required→true←Product is mandatory!"
+            params="select→true"
+            options={products}
+          />
+          {/* <OrderProduct
             fullWidth={true}
             selectedProducts={(_, v) =>
               setOrderProduct?.((p) => {
@@ -58,7 +86,7 @@ const OrderItemCard = ({
             }
             error={errors?.[fieldName]}
             {...{ defaultProducts, products, productLabel }}
-          />
+          /> */}
         </>
       ) : (
         ''

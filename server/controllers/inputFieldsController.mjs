@@ -83,9 +83,11 @@ export default {
    */
   allInputFields: async (_parent, { key, value }, _context) => {
     try {
-      let qry = key && value ? { [key]: value } : {};
+      let qry = {};
       if (key === 'in' && isJsonString(value)) {
         qry = JSON.parse(value);
+      } else if (key && value) {
+        qry = { [key]: value };
       }
 
       const all = await inputFieldsServices.findInputFiled(qry);
