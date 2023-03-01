@@ -1,39 +1,25 @@
 import { gql } from 'apollo-server';
-
-export default gql`
-  type Orders {
-    _id: ID
-    customer: OrderCustomer
+const common = `
     order_no: String
-    totalQty: Int
-    totalPrice: Float
+    totalQty: Int!
+    totalPrice: Float!
     discount: Float
     advanced: Float
-    due: Float
+    due: Float!
     transport_charge: Float
+    additional_charge: Float
     order_status: String
-    delivery_date: Date
-    createdAt: DateTime
-    updatedAt: DateTime
-    order_items: [OrderItemsOfOrder]
-  }
-
-  type Order {
-    _id: ID
-    customer: OrderCustomer!
-    order_no: String
-    totalQty: Int
-    totalPrice: Float
-    discount: Float
-    advanced: Float
-    due: Float
-    transport_charge: Float
-    order_status: String
-    delivery_date: Date
-    createdAt: DateTime
-    updatedAt: DateTime
-    order_items: [OrderItemsOfOrder]
+    delivery_date: Date!
     notes: String
+`;
+export default gql`
+  type Order {
+    ${common}
+     _id: ID
+    customer: OrderCustomer!
+    createdAt: DateTime
+    updatedAt: DateTime
+    order_items: [OrderItemsOfOrder!]!
   }
   type OrderCustomer {
     _id: String!
@@ -105,6 +91,12 @@ export default gql`
     sample: Icon
     order_no: String!
   }
+  input InputOrder {
+    ${common}
+    previous_order: String
+    customer: ID!
+    order_items: [InputOrderItemsOfOrder!]!
+  }
   input InputOrderMeasurement {
     msr_id: String!
     size: String!
@@ -133,23 +125,6 @@ export default gql`
   input InputOrderDesign {
     group: String!
     items: [InputOrderDesignItems!]!
-  }
-  input InputOrder {
-    customer: ID!
-    order_no: String
-    # @constraint(minLength: 5)
-    previous_order: String
-    totalQty: Int!
-    totalPrice: Float!
-    # @constraint(min: 500000)
-    discount: Float
-    advanced: Float
-    due: Float!
-    transport_charge: Float
-    order_status: String
-    delivery_date: Date!
-    order_items: [InputOrderItemsOfOrder!]!
-    notes: String
   }
 
   input PaymentUpdate {
@@ -202,7 +177,7 @@ export default gql`
   }
 
   type Query {
-    allOrders(key: String, value: String, options: Options): [Orders!]
+    allOrders(key: String, value: String, options: Options): [Order!]
     # userOrderItems(key: String, value: String, options: Options): [Orders]
     getOrder(key: String!, value: String!): Order
     getOrderItem(id: ID!, key: String!): OrderItem!

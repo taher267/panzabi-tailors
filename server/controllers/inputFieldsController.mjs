@@ -102,13 +102,17 @@ export default {
    */
   getInputField: async (_parent, { key, value }, { isAuthorized }) => {
     try {
-      let qry = [];
       if (key === '_id' && !mg.isValidObjectId(value))
         throw new UserInputError(`Invalid id, get ${value}`);
-      if (key === '_id') {
-        qry = ['_id', value];
-      }
-      return await inputFieldsServices.findInputFiled(...qry);
+      let qry = { [key]: value };
+      // if (key === '_id') {
+      //   qry = { _id: value };
+      // } else {
+      //   qry = { [key]: value };
+      // }
+
+      const data = await inputFieldsServices.findInputFiled('single', qry);
+      return data;
     } catch (e) {
       errorHandler(e);
     }

@@ -44,11 +44,12 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     _id, // editId
     order_id,
   } = props;
+
   const [gqlErrs, setGqlErrs] = React.useState({});
   const [notice, setNotice] = React.useState(false);
   const [noticeMsg, setNoticeMsg] = React.useState('');
   const [orderProduct, setOrderProduct] = React.useState([]);
-  // console.log(measurements);
+
   const { data: all_designs, loading: designsLoading } = useGetQurey(
     'SPECIFIC_ALL_DESIGNS',
     null,
@@ -59,14 +60,15 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
     error,
     loading: measurementLoading,
   } = useGetQurey(
-    'ALL_MEASUREMENTS',
+    // 'ALL_MEASUREMENTS',
+    'SINGLE_INPUT_FIELD',
     {
-      key: `template:${
-        connection === 'up' ? 'template-01' : 'template-02'
-      },status:ACTIVE`,
+      key: 'fieldGroup',
+      value: connection,
     },
-    'allMeasurements'
+    'getInputField'
   );
+
   const { data: all_products, loading: productsLoading } = useGetQurey(
     'PRODUCTS_NAME_ID_CAT',
     { key: 'category', value: connection === 'up' ? 'type-1' : 'type-2' },
@@ -201,7 +203,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
           </Box>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ paddingX: 5 }}>
-              {(all_products && measurementsFields && (
+              {(all_products && measurementsFields?.fields && (
                 <OrderItemCard
                   {...{
                     //Common
@@ -227,7 +229,7 @@ export default function EditItem({ handleClickOpen, open, ...props }) {
                     fieldName: `${connection}_products`,
                     //Measurement
                     measurementPrefix: '',
-                    measurementFields: measurementsFields,
+                    measurementFields: measurementsFields?.fields,
                     // measurementDefaultValues: defaultMeasurementsShape(
                     //   measurements,
                     //   'msr_id',
