@@ -17,9 +17,11 @@ import ToggleOn from '@mui/icons-material/ToggleOn';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { CUSTOMER_PATH, DASHBOARD_PATH, ORDER_PATH } from '../../config';
+import { useAuth0 } from '@auth0/auth0-react';
 
 function Nav({ mode, handleMode }) {
-  const { user, logout } = useAuth();
+  const { loginWithRedirect, logout, user: auth0User } = useAuth0();
+  const { user, logout: CustomLogout } = useAuth();
   const nagivate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -39,10 +41,18 @@ function Nav({ mode, handleMode }) {
     setAnchorElUser(null);
   };
   const settings = [
-    { title: 'Profile', func: () => {} },
+    { title: auth0User?.name || 'Profile', func: () => {} },
     { title: 'Account', func: () => {} },
     { title: 'Dashboard', func: () => {} },
-    { title: 'Logout', func: () => logout() },
+    {
+      title: 'Logout Auth0',
+      func: () =>
+        logout({ logoutParams: { returnTo: window.location.origin } }),
+    },
+    {
+      title: 'Logout ',
+      func: CustomLogout,
+    },
   ];
   const pages = [
     {
@@ -51,7 +61,9 @@ function Nav({ mode, handleMode }) {
     },
     { title: 'Order', func: () => nagivate(`${DASHBOARD_PATH}/${ORDER_PATH}`) },
   ];
+  // <button onClick={() => loginWithRedirect()}>Log In</button>
   const authPages = [
+    { title: 'login Auth0', func: loginWithRedirect },
     { title: 'login', func: () => nagivate('/login') },
     { title: 'signup', func: () => nagivate('/signup') },
   ];
@@ -121,7 +133,6 @@ function Nav({ mode, handleMode }) {
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-
           <Typography
             variant="h5"
             noWrap
@@ -154,19 +165,17 @@ function Nav({ mode, handleMode }) {
               ))}
             </Box>
           ) : (
-            <>
-              <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
-                {authPages.map(({ title, func }) => (
-                  <Button
-                    key={title}
-                    onClick={func}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
-                  >
-                    {title}
-                  </Button>
-                ))}
-              </Box>
-            </>
+            <Box sx={{ flexGrow: 0, display: { xs: 'none', md: 'flex' } }}>
+              {authPages.map(({ title, func }) => (
+                <Button
+                  key={title}
+                  onClick={func}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {title}
+                </Button>
+              ))}
+            </Box>
           )}
           <Button
             endIcon={mode === 'light' ? <ToggleOn /> : <ToggleOff />}
@@ -190,7 +199,10 @@ function Nav({ mode, handleMode }) {
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar
                     alt="Remy Sharp"
-                    src="https://mui.com/static/images/avatar/2.jpg"
+                    src={
+                      auth0User?.picture ||
+                      `https://mui.com/static/images/avatar/2.jpg`
+                    }
                   />
                 </IconButton>
               </Tooltip>

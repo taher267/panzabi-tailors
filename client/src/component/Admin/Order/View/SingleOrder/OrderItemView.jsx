@@ -74,9 +74,10 @@ const OrderItemView = (props) => {
                 Edit
               </Button>
 
-              <a
+              <Typography
                 target="_blank"
                 href={`${DASHBOARD_PATH}/${ORDER_PATH}/print/${order_id}/${_id}`}
+                component="a"
               >
                 <Button
                   endIcon={<PrintIcon />}
@@ -85,7 +86,7 @@ const OrderItemView = (props) => {
                 >
                   Print
                 </Button>
-              </a>
+              </Typography>
             </Box>
             {(editId === _id && (
               <EditItem {...{ handleClickOpen, setEditId, open, ...props }} />
