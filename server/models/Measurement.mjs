@@ -4,7 +4,7 @@ import config from '../config/config.mjs';
 export default mg.model(
   'Measurement',
   new mg.Schema({
-    __v: false,
+    // __v: false,
     label: {
       type: String,
       required: [true, 'Measurement field is mandatory!'],

@@ -12,7 +12,7 @@ export default mg.model(
     },
     fields: [
       {
-        __v: false,
+        // __v: false,
         label: {
           type: String,
           required: [true, 'Field field is mandatory!'],

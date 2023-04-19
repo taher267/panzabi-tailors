@@ -1,9 +1,8 @@
 import { UserInputError } from 'apollo-server';
 import Joi from 'joi';
-import { Types } from 'mongoose';
+import mg from 'mongoose';
 import designServices from '../services/designServices.mjs';
 import errorHandler from '../utils/errorHandler.mjs';
-
 async function IsValid(payload) {
   try {
     let err = await Schema.validateAsync(payload, { abortEarly: false });
@@ -30,7 +29,7 @@ const updateDsignSchema = Joi.object().keys({
   designs: Joi.array()
     .items({
       item: Joi.string().required(),
-      _id: Joi.string().default(Types.ObjectId()),
+      _id: Joi.string().default(mg.Types.ObjectId),
       ds_id: Joi.number().required(),
       icon: Joi.object({
         _id: Joi.string(),

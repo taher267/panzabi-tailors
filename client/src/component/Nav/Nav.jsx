@@ -17,15 +17,15 @@ import ToggleOn from '@mui/icons-material/ToggleOn';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { CUSTOMER_PATH, DASHBOARD_PATH, ORDER_PATH } from '../../config';
-import { useAuth0 } from '@auth0/auth0-react';
+// import { useAuth0 } from '@auth0/auth0-react';
 
 function Nav({ mode, handleMode }) {
-  const { loginWithRedirect, logout, user: auth0User } = useAuth0();
+  // const auth0 = useAuth0();
+  // const { loginWithRedirect, logout, user: auth0User } = auth0;
   const { user, logout: CustomLogout } = useAuth();
   const nagivate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -41,7 +41,7 @@ function Nav({ mode, handleMode }) {
     setAnchorElUser(null);
   };
   const settings = [
-    { title: auth0User?.name || 'Profile', func: () => {} },
+    // { title: auth0User?.name || 'Profile', func: () => {} },
     { title: 'Account', func: () => {} },
     { title: 'Dashboard', func: () => {} },
     {
@@ -63,7 +63,7 @@ function Nav({ mode, handleMode }) {
   ];
   // <button onClick={() => loginWithRedirect()}>Log In</button>
   const authPages = [
-    { title: 'login Auth0', func: loginWithRedirect },
+    // { title: 'login Auth0', func: loginWithRedirect },
     { title: 'login', func: () => nagivate('/login') },
     { title: 'signup', func: () => nagivate('/signup') },
   ];
@@ -200,7 +200,7 @@ function Nav({ mode, handleMode }) {
                   <Avatar
                     alt="Remy Sharp"
                     src={
-                      auth0User?.picture ||
+                      // auth0User?.picture ||
                       `https://mui.com/static/images/avatar/2.jpg`
                     }
                   />

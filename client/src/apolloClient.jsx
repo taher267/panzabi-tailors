@@ -15,6 +15,7 @@ const httpLink = createHttpLink({
   //   ? import.meta.env.VITE_URI
   //   : 'https:tailor-server.onrender.com',
   // uri: 'https://tailor-server.onrender.com',
+  // uri: `https://tailors-panzabi-server.vercel.app`,
 });
 const authLink = setContext((_, { headers }) => {
   let token = ReactSession.get('token');

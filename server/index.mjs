@@ -14,6 +14,7 @@ import typeDefs from './typedefs/typeDefs.mjs';
 import contexts from './context/contexts.mjs';
 import db from './config/db.mjs';
 import auth from './auth/auth.mjs';
+// import verifyToken from './middlewire/verifyToken.mjs';
 
 const publicRoutes = ['userLogin', 'userSignup', '/'];
 // console.log(publicRoutes.indexOf('userLogin'));
@@ -29,12 +30,19 @@ const PORT = process.env.PORT || 4000;
 // ];
 const server = new ApolloServer({
   typeDefs,
-  // typeDefs: [constraintDirectiveTypeDefs, typeDefs],
-  // plugins: [createEnvelopQueryValidationPlugin()],
   resolvers,
   context: async (ctx) => {
-    const { req, res } = ctx;
-    let cuttentUser = null,
+    const { req, ...rest } = ctx;
+    let user = null,
+      isAuthorized = false;
+    try {
+      // const authHeader = req.headers.authorization ?? '';
+      // if (authHeader) {
+      //   const token = authHeader.split('Bearer ')[1];
+      //   const payload = await verifyToken.verifyToken(token);
+      // }
+      /**
+    *  let cuttentUser = null,
       isAuthorized = false;
     if (publicRoutes.indexOf(req?.body?.operationName) === -1) {
       const user = await auth.userAuthorization(req);
@@ -44,14 +52,14 @@ const server = new ApolloServer({
     }
     // console.log(req.body);
     return { ...contexts, req, res, cuttentUser, isAuthorized };
+    */
+    } catch (e) {
+      console.log(e);
+    }
+    return { req, ...rest, auth: { user, isAuthorized } };
   },
-  // csrfPrevention: true,
-  // cors: {
-  //   origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
-  // },
-
-  // plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
 });
+// console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'development') {
   db()
     .then((d) => {
